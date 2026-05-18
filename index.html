@@ -1,0 +1,2772 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Joinstick — Learner App Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, sans-serif; margin: 0; background: #09090b; }
+    ::-webkit-scrollbar { display: none; }
+    /* ── Fade in (tab content, general) ── */
+    .fade-in { animation: fadeIn 0.35s ease forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    /* ── Slide up (bottom sheets) ── */
+    .slide-up { animation: slideUp 0.38s cubic-bezier(0.32,1.15,0.64,1) forwards; }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0.4; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    /* ── Scale in (detail screens, cards) ── */
+    .scale-in { animation: scaleIn 0.28s cubic-bezier(0.34,1.2,0.64,1) forwards; }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.94); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    /* ── Bounce in (result/success icons) ── */
+    .bounce-in { animation: bounceIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+    @keyframes bounceIn {
+      0%   { opacity: 0; transform: scale(0.4); }
+      65%  { opacity: 1; transform: scale(1.12); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    /* ── Staggered list items ── */
+    .stagger { opacity: 0; animation: fadeIn 0.32s ease forwards; }
+    /* ── Dot pulse (bell, live indicators) ── */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.45; transform: scale(0.85); }
+    }
+    .anim-pulse { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+    /* ── Glow pulse (กำลังทำ badge) ── */
+    @keyframes glowAmber {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+      50%       { box-shadow: 0 0 0 4px rgba(245,158,11,0.22); }
+    }
+    .glow-amber { animation: glowAmber 2.2s ease-in-out infinite; }
+    /* ── CTA press ── */
+    .btn-press:active { transform: scale(0.97); transition: transform 0.1s; }
+    /* ── Video ripple on play ── */
+    @keyframes rippleOut {
+      0%   { transform: scale(1);   opacity: 0.7; }
+      100% { transform: scale(2.6); opacity: 0; }
+    }
+    .vdo-ripple { animation: rippleOut 0.55s cubic-bezier(0.2,0,0.4,1) forwards; }
+    /* ── Audio bar animation (ML player) ── */
+    @keyframes barPulse {
+      from { transform: scaleY(0.4); }
+      to   { transform: scaleY(1); }
+    }
+    /* ── Shimmer on locked cards ── */
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+    /* ── Flash Card 3D flip ── */
+    .fc-scene { perspective: 1200px; width: 100%; }
+    .fc-card {
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .fc-card.is-flipped { transform: rotateY(180deg); }
+    .fc-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      overflow: hidden;
+    }
+    .fc-back { transform: rotateY(180deg); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useRef, useEffect } = React;
+
+    /* ── SVG Icon primitives ─────────────────────── */
+    const Svg = ({ size=24, className='', strokeWidth=2, fill='none', children, style }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size}
+        viewBox="0 0 24 24" fill={fill} stroke="currentColor"
+        strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"
+        className={className} style={style}>{children}</svg>
+    );
+
+    const Home         = p => <Svg {...p}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></Svg>;
+    const BookOpen     = p => <Svg {...p}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></Svg>;
+    const BarChart2    = p => <Svg {...p}><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></Svg>;
+    const UserIcon     = p => <Svg {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></Svg>;
+    const PlayCircle   = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></Svg>;
+    const CheckCircle2 = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></Svg>;
+    const CheckCircle  = p => <Svg {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></Svg>;
+    const XCircle      = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></Svg>;
+    const ChevronRight = p => <Svg {...p}><path d="m9 18 6-6-6-6"/></Svg>;
+    const ChevronLeft  = p => <Svg {...p}><path d="m15 18-6-6 6-6"/></Svg>;
+    const ChevronDown  = p => <Svg {...p}><path d="m6 9 6 6 6-6"/></Svg>;
+    const Bell         = p => <Svg {...p}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></Svg>;
+    const Info         = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></Svg>;
+    const Plus         = p => <Svg {...p}><path d="M5 12h14"/><path d="M12 5v14"/></Svg>;
+    const Flame        = p => <Svg {...p}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></Svg>;
+    const Trophy       = p => <Svg {...p}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></Svg>;
+    const Activity     = p => <Svg {...p}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></Svg>;
+    const Award        = p => <Svg {...p}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></Svg>;
+    const Star         = p => <Svg {...p}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Svg>;
+    const Zap          = p => <Svg {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Svg>;
+    const Target       = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></Svg>;
+    const Video        = p => <Svg {...p}><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10 9 15 12 10 15 10 9" fill="currentColor" stroke="none"/></Svg>;
+    const Clock        = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></Svg>;
+    const Lock         = p => <Svg {...p}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Svg>;
+    const FlashCard    = p => <Svg {...p}><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></Svg>;
+    const Send         = p => <Svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></Svg>;
+
+    /* ── Mock Data ───────────────────────────────── */
+    const suggestedChallenges = [
+      { id:1, type:'Mission', title:"Identify your team's trust lenses", points:50, dueIn:'2 วัน' },
+      { id:2, type:'Quiz',    title:"Identify your team's trust lenses", points:30, dueIn:'3 วัน' },
+    ];
+    const lateChallenge = { id:3, type:'Mission', title:"Identify your team's trust lenses", daysLate:1 };
+
+    const challengeData = {
+      anytime: [
+        { id:10, type:'Flash Card',   title:'Trust Lenses Vocabulary',       points:20, status:'ยังไม่เริ่ม' },
+        { id:11, type:'Recall Quiz',  title:'Communication Styles Check',    points:25, status:'กำลังทำ'    },
+        { id:12, type:'Flash Card',   title:'Leadership Styles A–Z',         points:20, status:'ยังไม่เริ่ม' },
+      ],
+      main: [
+        { id:1,  type:'Quiz',    title:"Identify your team's trust lenses",  points:30, timeLeft:'3 วัน', status:'ยังไม่เริ่ม' },
+        { id:2,  type:'Mission', title:'Observe & report trust behaviors',   points:50, timeLeft:'2 วัน', status:'กำลังทำ'    },
+        { id:3,  type:'Quiz',    title:'Leadership Decision Making',         points:30, timeLeft:null,    status:'เสร็จสิ้น'  },
+        { id:4,  type:'Mission', title:'Team Conflict Resolution Log',       points:50, timeLeft:'1 วัน', status:'กำลังทำ'   },
+      ],
+      milestone: [
+        { id:5,  type:'Mission',        title:'Create a Trust Action Plan',      points:100, timeLeft:'7 วัน', status:'Lock' },
+        { id:6,  type:'Micro Learning', title:'Advanced Leadership Strategies',  points:75,  timeLeft:'7 วัน', status:'Lock' },
+      ],
+    };
+
+    const courseDetail = {
+      1: {
+        title: 'Leadership 101',
+        description: 'พัฒนาทักษะการเป็นผู้นำที่มีประสิทธิภาพ สร้างความไว้วางใจในทีม และนำพาองค์กรสู่เป้าหมาย',
+        lessons: [
+          { id:1,  title:'ความหมายของการเป็นผู้นำ',      done:true,  duration:'8 นาที'  },
+          { id:2,  title:'สร้างความไว้ใจในทีม',           done:true,  duration:'12 นาที' },
+          { id:3,  title:'การสื่อสารอย่างมีประสิทธิภาพ',  done:true,  duration:'10 นาที' },
+          { id:4,  title:'การตัดสินใจในสถานการณ์ยาก',    done:true,  duration:'15 นาที' },
+          { id:5,  title:'การ Delegate งานอย่างถูกต้อง',  done:true,  duration:'9 นาที'  },
+          { id:6,  title:'การให้ Feedback ที่สร้างสรรค์',  done:true,  duration:'11 นาที' },
+          { id:7,  title:'จัดการความขัดแย้งในทีม',        done:true,  duration:'14 นาที' },
+          { id:8,  title:'Emotional Intelligence',         done:true,  duration:'13 นาที' },
+          { id:9,  title:'การ Coach ทีมงาน',               done:false, duration:'16 นาที' },
+          { id:10, title:'สร้าง Culture ของทีม',           done:false, duration:'10 นาที' },
+          { id:11, title:'วัดผลและ KPI',                   done:false, duration:'12 นาที' },
+          { id:12, title:'Leadership ในยุคดิจิทัล',        done:false, duration:'8 นาที'  },
+        ],
+      },
+    };
+
+    const quizQuestions = [
+      { id:1, question:'เมื่อทีมของคุณทำผิดพลาด คุณมักจะทำอะไรเป็นอันดับแรก?',
+        options:['ค้นหาสาเหตุร่วมกันกับทีม','บอกให้ทีมแก้ไขทันที','รายงานให้ผู้บริหารทราบก่อน','รอให้สถานการณ์คลี่คลายเอง'],
+        correct:0, explanation:'การค้นหาสาเหตุร่วมกันสร้างความไว้ใจและช่วยให้ทีมเรียนรู้จากความผิดพลาด' },
+      { id:2, question:'Trust Lens ใดที่เน้นเรื่องความโปร่งใสและการสื่อสารเปิดเผย?',
+        options:['Competence Trust','Character Trust','Benevolence Trust','Integrity Trust'],
+        correct:3, explanation:'Integrity Trust หมายถึงการมีความซื่อสัตย์และโปร่งใส ซึ่งเป็นรากฐานของความไว้วางใจ' },
+      { id:3, question:'ข้อใดคือสัญญาณที่บ่งบอกว่าทีมมีระดับความไว้ใจสูง?',
+        options:['สมาชิกไม่กล้าแสดงความเห็น','ทุกคนเห็นด้วยกับทุกการตัดสินใจ','สมาชิกกล้าพูดความจริงและแสดงความเห็น','ไม่มีการขัดแย้งใดๆ ในทีม'],
+        correct:2, explanation:'ทีมที่มีความไว้ใจสูงจะรู้สึกปลอดภัยในการแสดงความเห็นและพูดความจริง' },
+    ];
+
+    const microlearningData = [
+      { id:1, section:'Anytime', title:'5 วิธีสร้างความไว้วางใจในทีม',
+        category:'Leadership & Trust', duration:'6 นาที', watched:true, color:'#3b82f6',
+        summary:'ความไว้วางใจในทีมไม่ได้เกิดขึ้นชั่วข้ามคืน แต่สร้างได้ผ่านพฤติกรรมที่สม่ำเสมอและโปร่งใส',
+        principles:['พูดความจริงแม้ในเรื่องที่ยาก — ความซื่อสัตย์สร้าง Integrity Trust','ทำตามที่พูด — ความน่าเชื่อถือเกิดจากการปฏิบัติ ไม่ใช่คำพูด','รับฟังอย่างแท้จริง — ให้ทีมรู้สึกว่าเสียงของเขามีความหมาย'] },
+      { id:2, section:'Anytime', title:'Communication Styles ทั้ง 4 แบบ',
+        category:'Communication', duration:'8 นาที', watched:false, color:'#8b5cf6',
+        summary:'แต่ละคนในทีมมีรูปแบบการสื่อสารที่แตกต่างกัน การเข้าใจความแตกต่างนี้ช่วยลดความขัดแย้งและเพิ่มประสิทธิภาพ',
+        principles:['Analytical — ต้องการข้อมูลและข้อเท็จจริงก่อนตัดสินใจ','Driver — มุ่งผลลัพธ์ ตรงไปตรงมา ไม่ชอบรายละเอียดมาก','Expressive — ให้ความสำคัญกับความสัมพันธ์และอารมณ์'] },
+      { id:3, section:'Main Challenge', title:'สร้าง Psychological Safety ในทีม',
+        category:'Team Culture', duration:'5 นาที', watched:false, color:'#06b6d4',
+        summary:'Psychological Safety คือบรรยากาศที่ทีมรู้สึกปลอดภัยในการแสดงความคิดเห็น ตั้งคำถาม และยอมรับความผิดพลาด',
+        principles:['เป็นแบบอย่างในการรับผิดชอบ — ผู้นำต้องกล้ายอมรับความผิดพลาดก่อน','สร้างนิสัยถามความเห็น — "คุณคิดว่าอะไรอีกไหม?" เปิดประตูให้ทุกเสียง','ฉลองความกล้าแสดงออก — ขอบคุณเมื่อใครกล้าพูดในสิ่งที่ยาก'] },
+      { id:4, section:'Anytime', title:'Feedback Loop ที่มีประสิทธิภาพ',
+        category:'Communication', duration:'7 นาที', watched:true, color:'#8b5cf6',
+        summary:'Feedback ที่ดีไม่ใช่การวิจารณ์ แต่เป็นเครื่องมือพัฒนาที่ทั้งผู้ให้และผู้รับได้ประโยชน์',
+        principles:['ให้ Feedback ทันที — ยิ่งใกล้เหตุการณ์ยิ่งมีผล','เฉพาะเจาะจงพฤติกรรม — ไม่ใช่ตัวตน เช่น "รายงานนี้" ไม่ใช่ "คุณ"','ปิดด้วยการถามความเห็น — "คุณคิดว่าจะปรับอะไรได้บ้าง?"'] },
+      { id:5, section:'Main Challenge', title:'Growth Mindset สำหรับผู้นำ',
+        category:'Leadership & Trust', duration:'10 นาที', watched:false, color:'#3b82f6',
+        summary:'ผู้นำที่มี Growth Mindset มองความท้าทายเป็นโอกาสเรียนรู้ ไม่ใช่ภัยคุกคาม และแพร่ทัศนคตินี้ไปยังทีม',
+        principles:['แทนคำว่า "ฉันทำไม่ได้" ด้วย "ฉันยังทำไม่ได้"','มองความล้มเหลวเป็น Data ไม่ใช่คำตัดสิน','ชื่นชมความพยายาม ไม่ใช่แค่ผลลัพธ์'] },
+    ];
+
+    /* ── Harvester Data ─────────────────────────── */
+    const harvesterData = [
+      { type:'multiple',
+        lines:['หัวข้อใหน','ที่คุณอยากฝึกเพิ่มเติม','**มากที่สุด**'],
+        options:['Affiliative','Democratic','Visionary','Coaching','Pacesetting','Commanding'] },
+      { type:'checkbox',
+        lines:['ลองนึกดูกันหน่อย','สิ่งที่ **Leadership Style**','ใหน **ใช้บ่อยที่สุด 3 อัน**'],
+        options:['Affiliative','Democratic','Visionary','Coaching','Pacesetting','Commanding'],
+        maxSelect:3 },
+      { type:'essay',
+        lines:['แชร์ให้ฟังหน่อย','ได้ไหมว่าคุณ','**โฟกัสต้องอย่างไร**'],
+        placeholder:'พิมพ์คำตอบของคุณที่นี่…' },
+      { type:'rating',
+        lines:['ประเมินตนเองว่าคุณสามารถทำ','สิ่งที่ **Leadership Style** ควรมี','ใช้ในการทำงาน','**ได้มากน้อยเพียงใด**'],
+        scales:['Visionary Style'] },
+      { type:'ranking',
+        lines:['ลองจัดอันดับความสำคัญ','สิ่งที่ **Leadership** ควรมี','**โดยเรียงจากมากไปน้อย**'],
+        items:['Affiliative','Democratic','Visionary','Pacesetting'] },
+    ];
+
+    const recallQuizData = [
+      { id:1, mode:'multiple', label:'RC01 - Multiple Choice',
+        question:'รูปแบบการนำทีมแบบใดที่เน้นการสร้างแรงบันดาลใจและวิสัยทัศน์ระยะยาว?',
+        options:['Visionary','Coaching','Affiliative','Democratic','Pacesetting','Commanding'],
+        correct:[0],
+        explanations:[
+          'ถูกต้อง! Visionary Leadership เน้นการสร้างแรงบันดาลใจและวิสัยทัศน์ระยะยาวให้ทีมมุ่งสู่เป้าหมายเดียวกัน',
+          'Coaching Leadership เน้นการพัฒนาทักษะรายบุคคล ไม่ใช่การสร้างวิสัยทัศน์ระยะยาว',
+          'Affiliative Leadership เน้นสร้างความสามัคคีและความสัมพันธ์ที่ดีในทีม',
+          'Democratic Leadership เน้นการมีส่วนร่วมในการตัดสินใจร่วมกัน',
+          'Pacesetting Leadership เน้นมาตรฐานสูงและความรวดเร็วในการทำงาน',
+          'Commanding Leadership ใช้อำนาจสั่งการโดยตรง เหมาะกับภาวะวิกฤต',
+        ]},
+      { id:2, mode:'checkbox', label:'RC02 - Checkbox',
+        question:'Trust Lens แบบใดบ้างที่เกี่ยวข้องกับคุณสมบัติด้านความซื่อสัตย์?',
+        options:['Integrity Trust','Competence Trust','Character Trust','Benevolence Trust','Reliability Trust','Openness Trust'],
+        correct:[0,2],
+        explanations:[
+          'ถูกต้อง! Integrity Trust คือความไว้วางใจที่เกิดจากความซื่อสัตย์และโปร่งใสโดยตรง',
+          'Competence Trust เกี่ยวกับความสามารถและทักษะ ไม่ใช่ความซื่อสัตย์',
+          'ถูกต้อง! Character Trust เกิดจากคุณสมบัติด้านจริยธรรมและความซื่อสัตย์ของบุคคล',
+          'Benevolence Trust เกิดจากความปรารถนาดีต่อผู้อื่น ไม่ใช่ความซื่อสัตย์โดยตรง',
+          'Reliability Trust เกิดจากการทำตามที่สัญญาอย่างสม่ำเสมอ',
+          'Openness Trust เกิดจากการเปิดเผยข้อมูลและความโปร่งใส',
+        ]},
+      { id:3, mode:'multiple', label:'RC03 - Multiple Choice',
+        question:'สไตล์การนำแบบใดที่เหมาะกับทีมที่ต้องการความเป็นเอกภาพและความสามัคคี?',
+        options:['Commanding','Pacesetting','Affiliative','Democratic','Coaching','Visionary'],
+        correct:[2],
+        explanations:[
+          'Commanding Leadership ใช้อำนาจสั่งการ เหมาะกับวิกฤต ไม่ใช่การสร้างสามัคคี',
+          'Pacesetting Leadership เน้นความเร็วและมาตรฐาน อาจสร้างแรงกดดันแทนความสามัคคี',
+          'ถูกต้อง! Affiliative Leadership เน้นสร้างความสัมพันธ์และความเป็นเอกภาพในทีมโดยตรง',
+          'Democratic Leadership เน้นการมีส่วนร่วม แต่จุดเน้นหลักไม่ใช่ความสามัคคี',
+          'Coaching Leadership เน้นพัฒนาทักษะรายบุคคลเป็นหลัก',
+          'Visionary Leadership เน้นแรงบันดาลใจและวิสัยทัศน์ระยะยาว',
+        ]},
+    ];
+
+    // **bold** segments → <span> with accent color
+    const renderFlashText = (text, boldColor='#ef4444') =>
+      text.split(/\*\*(.*?)\*\*/g).map((seg, i) =>
+        i % 2 === 0
+          ? seg.split('\n').reduce((acc, line, j) => j === 0 ? [line] : [...acc, <br key={j}/>, line], [])
+          : <span key={i} style={{fontWeight:800, color:boldColor}}>{seg}</span>
+      );
+
+    const flashCardData = [
+      { id:1,
+        frontText:'เรามี**ภารกิจเล็กๆ**\nที่**ลองฝึกได้ทันที**มาฝาก\nลองไปดูกัน …',
+        backTag:'Mission',
+        backText:'ลองใช้\n**Visionary Style**\nในการ**เล่าภาพสุดท้าย**ของโปรเจกต์\nโดยจะต้อง**Inspire และให้ทีม Buy in**\nในภาพนั้นด้วยกัน' },
+      { id:2,
+        frontText:'**Visionary Style**\nคือรูปแบบการนำทีมแบบใด?',
+        backTag:'Concept',
+        backText:'Leadership ที่เน้น**วิสัยทัศน์ระยะยาว**\nและ**สร้างแรงบันดาลใจ**ให้ทีม\nมุ่งสู่เป้าหมายเดียวกัน' },
+      { id:3,
+        frontText:'**Integrity Trust**\nคืออะไร?',
+        backTag:'Trust Lens',
+        backText:'ความไว้วางใจที่เกิดจาก\n**ความซื่อสัตย์**และ**ความโปร่งใส**\nทำตามที่พูดอย่างสม่ำเสมอ' },
+      { id:4,
+        frontText:'**Coaching Style**\nแตกต่างจาก Visionary อย่างไร?',
+        backTag:'Concept',
+        backText:'Coaching เน้น**พัฒนาทักษะรายบุคคล**\nผ่านการ**ตั้งคำถาม**และ Feedback\nไม่ใช่การสร้างวิสัยทัศน์ระยะยาว' },
+      { id:5,
+        frontText:'**Character Trust**\nเกิดขึ้นได้อย่างไร?',
+        backTag:'Trust Lens',
+        backText:'เกิดจาก**คุณสมบัติด้านจริยธรรม**\nและ**ค่านิยมที่ดี**ของบุคคล\nที่แสดงออกอย่างสม่ำเสมอ' },
+    ];
+
+    const missionInfo = {
+      title:"Identify your team's trust lenses", points:50,
+      description:'สังเกตพฤติกรรมของทีมคุณในช่วง 1 สัปดาห์ที่ผ่านมา แล้วระบุว่าทีมมี Trust Lens แบบไหน พร้อมยกตัวอย่างสถานการณ์จริง',
+      steps:['สังเกตพฤติกรรมการสื่อสารในทีมอย่างน้อย 3 สถานการณ์','จัดหมวดหมู่พฤติกรรมตาม Trust Lens ทั้ง 4 ประเภท','เขียนสรุปสั้นๆ พร้อมแนวทางพัฒนา'],
+    };
+
+    const podiumData    = [{rank:2,height:96},{rank:1,height:128},{rank:3,height:80}];
+    const engagementLB  = [
+      {rank:11,name:'Eird',   role:'Apprentice',  score:'375',isMe:false},
+      {rank:12,name:'Ninenoi',role:'Apprentice',  score:'375',isMe:true },
+      {rank:13,name:'Intron', role:'Activator',   score:'375',isMe:false},
+      {rank:14,name:'Ping',   role:'Practitioner',score:'375',isMe:false},
+    ];
+    const transformLB = [
+      {rank:11,name:'Eird',   role:'Apprentice',score:'76',isMe:false},
+      {rank:12,name:'Ninenoi',role:'Apprentice',score:'74',isMe:true },
+      {rank:13,name:'Intron', role:'Apprentice',score:'73',isMe:false},
+    ];
+    const skillScores = [
+      {name:'Leadership & Trust',score:85,color:'#3b82f6'},
+      {name:'Communication',     score:62,color:'#f59e0b'},
+      {name:'Problem Solving',   score:90,color:'#22c55e'},
+    ];
+
+    /* ── Phone mockup wrapper ────────────────────── */
+    function PhoneFrame({ children, statusBg }) {
+      const sBar = statusBg || '#09090b';
+      return (
+        <div style={{
+          minHeight: '100vh',
+          background: '#0f0f10',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1.5rem',
+        }}>
+          <div style={{
+            width: 390,
+            height: 844,
+            background: '#09090b',
+            borderRadius: 52,
+            boxShadow: '0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 0 1px rgba(255,255,255,0.04)',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            flexShrink: 0,
+          }}>
+            {/* Status bar */}
+            <div style={{
+              height: 44,
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '0 28px',
+              position: 'relative',
+              zIndex: 10,
+              background: sBar,
+            }}>
+              <span style={{color:'#fff',fontSize:'0.8125rem',fontWeight:600}}>9:41</span>
+              {/* Notch */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: 120,
+                height: 34,
+                background: sBar,
+                borderRadius: '0 0 20px 20px',
+              }}/>
+              <div style={{display:'flex',gap:6,alignItems:'center'}}>
+                <svg width="17" height="12" viewBox="0 0 17 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1" opacity=".4"/><rect x="4.5" y="2" width="3" height="10" rx="1" opacity=".6"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><path d="M8 2.4C10.6 2.4 12.9 3.5 14.5 5.3L16 3.7C14 1.4 11.2 0 8 0S2 1.4 0 3.7L1.5 5.3C3.1 3.5 5.4 2.4 8 2.4z" opacity=".4"/><path d="M8 5.5C9.8 5.5 11.4 6.3 12.6 7.5L14.1 5.9C12.5 4.3 10.4 3.3 8 3.3S3.5 4.3 1.9 5.9L3.4 7.5C4.6 6.3 6.2 5.5 8 5.5z" opacity=".7"/><circle cx="8" cy="10" r="2"/></svg>
+                <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" strokeOpacity=".35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="white"/><path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6S23.8 4.8 23 4.5z" fill="white" fillOpacity=".4"/></svg>
+              </div>
+            </div>
+            {children}
+          </div>
+        </div>
+      );
+    }
+
+    /* ── Unified Challenge Result Page ──────────── */
+    function ChallengeResult({ type, counter, headline, subline, scoreDisplay, scoreNote, exp, engagement, onDone }) {
+      // Gradient and accent per type — all stay in the app's dark-purple CI
+      const typeTheme = {
+        'Quiz':        { g1:'#0e1a38', g2:'#080e1e', accent:'#818cf8', iconBg:'rgba(99,102,241,0.15)',  iconColor:'#818cf8'  },
+        'Recall Quiz': { g1:'#0d1835', g2:'#07101e', accent:'#818cf8', iconBg:'rgba(99,102,241,0.15)',  iconColor:'#818cf8'  },
+        'Flash Card':  { g1:'#1c1000', g2:'#0e0800', accent:'#f59e0b', iconBg:'rgba(245,158,11,0.15)',  iconColor:'#fbbf24'  },
+        'Mission':     { g1:'#14093a', g2:'#0a0523', accent:'#a78bfa', iconBg:'rgba(139,92,246,0.15)',  iconColor:'#a78bfa'  },
+      };
+      const t = typeTheme[type] || typeTheme['Mission'];
+      const statusBg = t.g1;
+
+      return (
+        <PhoneFrame statusBg={statusBg}>
+          <div className="scale-in" style={{flex:1,display:'flex',flexDirection:'column',
+            background:`linear-gradient(170deg,${t.g1} 0%,${t.g2} 55%,#09090b 100%)`,
+            position:'relative',overflow:'hidden'}}>
+
+            {/* Blob decorations */}
+            <div style={{position:'absolute',top:-60,right:-60,width:220,height:220,borderRadius:'50%',
+              background:`rgba(${type==='Flash Card'?'245,158,11':'109,40,217'},0.12)`,filter:'blur(52px)',pointerEvents:'none'}}/>
+            <div style={{position:'absolute',bottom:100,left:-70,width:200,height:200,borderRadius:'50%',
+              background:`rgba(${type==='Flash Card'?'251,191,36':'139,92,246'},0.08)`,filter:'blur(48px)',pointerEvents:'none'}}/>
+
+            {/* Header */}
+            <div style={{padding:'14px 20px 0',display:'flex',alignItems:'center',gap:12,flexShrink:0}}>
+              <button onClick={onDone} style={{width:36,height:36,borderRadius:'50%',
+                background:'rgba(255,255,255,0.1)',border:'none',cursor:'pointer',
+                display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                <ChevronLeft size={18} style={{color:'white'}}/>
+              </button>
+              <span style={{color:'white',fontWeight:700,fontSize:'1rem',flex:1}}>{type}</span>
+              <div style={{display:'flex',alignItems:'center',gap:5,
+                background:'rgba(255,255,255,0.1)',borderRadius:20,padding:'4px 10px'}}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span style={{color:'rgba(255,255,255,0.7)',fontSize:'0.7rem',fontWeight:600}}>{counter}</span>
+              </div>
+            </div>
+
+            {/* Progress bar — full */}
+            <div style={{margin:'12px 20px 0',height:4,borderRadius:4,background:'rgba(255,255,255,0.12)',flexShrink:0}}>
+              <div style={{height:'100%',borderRadius:4,background:t.accent,width:'100%',
+                transition:'width 0.5s ease'}}/>
+            </div>
+
+            {/* Hero */}
+            <div style={{padding:'28px 24px 0',textAlign:'center',flexShrink:0}}>
+              <div className="bounce-in" style={{width:60,height:60,borderRadius:'50%',
+                background:t.iconBg,border:`1.5px solid ${t.accent}44`,
+                display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}}>
+                {type==='Flash Card'
+                  ? <Star size={26} style={{color:t.iconColor}}/>
+                  : <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={t.iconColor} strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>}
+              </div>
+              <h2 style={{color:'white',fontSize:'1.45rem',fontWeight:800,lineHeight:1.25,margin:'0 0 5px'}}>{headline}</h2>
+              <p style={{color:'rgba(255,255,255,0.55)',fontSize:'0.88rem',margin:0}}>{subline}</p>
+            </div>
+
+            {/* Stat cards */}
+            <div style={{padding:'20px 20px 0',display:'flex',flexDirection:'column',gap:10,flex:1}}>
+              {/* Score card */}
+              <div style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:20,padding:'16px 20px'}}>
+                <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:10}}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+                  </svg>
+                  <span style={{color:'rgba(255,255,255,0.4)',fontSize:'0.68rem',fontWeight:600,letterSpacing:'0.04em'}}>คะแนนรวม</span>
+                </div>
+                <div style={{color:'white',fontSize:'2rem',fontWeight:800,textAlign:'center',letterSpacing:'-0.02em',lineHeight:1}}>
+                  {scoreDisplay}
+                </div>
+                {scoreNote && <p style={{color:'rgba(255,255,255,0.3)',fontSize:'0.62rem',textAlign:'center',marginTop:5}}>{scoreNote}</p>}
+              </div>
+
+              {/* Rewards card */}
+              <div style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:20,padding:'16px 20px'}}>
+                <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:12}}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2">
+                    <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+                  </svg>
+                  <span style={{color:'rgba(255,255,255,0.4)',fontSize:'0.68rem',fontWeight:600,letterSpacing:'0.04em'}}>รางวัลที่ได้รับ</span>
+                </div>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+                  {[['EXP', exp], ['Engagement Score', engagement]].map(([label,val])=>(
+                    <div key={label} style={{background:'rgba(255,255,255,0.05)',borderRadius:14,padding:'11px 10px',textAlign:'center'}}>
+                      <div style={{color:'rgba(255,255,255,0.38)',fontSize:'0.6rem',marginBottom:5}}>{label}</div>
+                      <div style={{color:label==='EXP'?t.accent:'white',fontSize:'1.35rem',fontWeight:800}}>{val}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div style={{padding:'16px 20px 30px',flexShrink:0}}>
+              <button onClick={onDone} style={{width:'100%',background:'white',color:'#09090b',
+                fontWeight:700,fontSize:'0.9rem',border:'none',borderRadius:40,padding:'15px 0',
+                cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+                เริ่มเก็บเกี่ยวการเรียนรู้
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#09090b" strokeWidth="2.5">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </PhoneFrame>
+      );
+    }
+
+    /* ── LearnerApp ──────────────────────────────── */
+    function LearnerApp() {
+      const [activeTab,   setActiveTab ] = useState('home');
+      const [screen,      setScreen    ] = useState(null);
+      const [screenData,  setScreenData] = useState(null);
+      const [trendView,   setTrendView ] = useState('เดือน');
+
+      // quiz
+      const [quizStep,  setQuizStep ] = useState(0);
+      const [answers,   setAnswers  ] = useState([]);
+      const [selected,  setSelected ] = useState(null);
+      const [showExp,   setShowExp  ] = useState(false);
+
+      // flash card
+      const [fcStep,    setFcStep   ] = useState(0);
+      const [fcFlipped, setFcFlipped] = useState(false);
+      const [fcRating,  setFcRating ] = useState(null);
+
+      // recall quiz
+      const [rcStep,       setRcStep      ] = useState(0);
+      const [rcSelections, setRcSelections] = useState([]); // array of selected indices per step
+      const [rcRevealed,   setRcRevealed  ] = useState(false);
+      const [rcInspect,    setRcInspect   ] = useState(null); // index of bubble being inspected
+
+      // mission
+      const [missionText, setMissionText] = useState('');
+      const [submitted,   setSubmitted  ] = useState(false);
+
+      // notifications
+      const [notifOpen, setNotifOpen] = useState(false);
+
+      // microlearning player
+      const [mlPlaying, setMlPlaying] = useState(false);
+      const [mlChecked, setMlChecked] = useState(false);
+
+      // mission video
+      const [vdoPlaying, setVdoPlaying] = useState(false);
+      const [vdoRipple,  setVdoRipple ] = useState(false);
+
+      // harvester
+      const [hvStep,      setHvStep    ] = useState(0);
+      const [hvAnswers,   setHvAnswers ] = useState({});   // stepIdx → answer
+      const [hvRankOrder, setHvRankOrder] = useState([]);
+
+      // join class
+      const [joinOpen,   setJoinOpen  ] = useState(false);
+      const [joinDigits, setJoinDigits] = useState(['','','','']);
+      const [joinState,  setJoinState ] = useState('input'); // 'input' | 'success' | 'error'
+      const joinRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+
+      const openJoin = () => { setJoinOpen(true); setJoinDigits(['','','','']); setJoinState('input'); };
+      const closeJoin = () => setJoinOpen(false);
+
+      const handleJoinDigit = (i, val) => {
+        if (!/^\d*$/.test(val)) return;
+        const next = [...joinDigits];
+        next[i] = val.slice(-1);
+        setJoinDigits(next);
+        if (val && i < 3) joinRefs[i+1].current?.focus();
+        if (next.every(d => d !== '')) {
+          setTimeout(() => setJoinState('success'), 350);
+        }
+      };
+
+      const handleJoinKey = (i, e) => {
+        if (e.key === 'Backspace' && !joinDigits[i] && i > 0) {
+          joinRefs[i-1].current?.focus();
+        }
+      };
+
+      useEffect(() => {
+        if (joinOpen && joinState === 'input') {
+          setTimeout(() => joinRefs[0].current?.focus(), 100);
+        }
+      }, [joinOpen]);
+
+      const goBack = () => { setScreen(null); setScreenData(null); };
+      const startHarvester = () => {
+        setHvStep(0);
+        setHvAnswers({});
+        setHvRankOrder([]);
+        setScreen('harvester');
+      };
+
+      const startChallenge = ch => {
+        if (ch.type === 'Flash Card') {
+          setFcStep(0); setFcFlipped(false); setFcRating(null);
+          setScreen('flashCard');
+        } else if (ch.type === 'Recall Quiz') {
+          setRcStep(0); setRcSelections([]); setRcRevealed(false); setRcInspect(null);
+          setScreen('recallQuiz');
+        } else if (ch.type === 'Quiz') {
+          setQuizStep(0); setAnswers([]); setSelected(null); setShowExp(false);
+          setScreen('quiz');
+        } else {
+          setSubmitted(false); setMissionText(''); setVdoPlaying(false); setVdoRipple(false);
+          setScreen('mission');
+        }
+      };
+
+      const openChallenge = ch => {
+        setScreen('challengeDetail');
+        setScreenData(ch);
+      };
+
+      const openCourse = course => {
+        if (courseDetail[course.id]) { setScreen('courseDetail'); setScreenData(course); }
+      };
+
+      /* trend */
+      const getTrendLabels = () => ({
+        'ทั้งหมด': ['2023','2024','2025',<span key="l" style={{color:'#f59e0b',fontWeight:500}}>2026</span>],
+        'เดือน':   ['ก.ย.','ต.ค.','พ.ย.',<span key="l" style={{color:'#f59e0b',fontWeight:500}}>ธ.ค.</span>],
+        'สัปดาห์': ['W.1','W.2','W.3',  <span key="l" style={{color:'#f59e0b',fontWeight:500}}>W.4</span>],
+      }[trendView] || []);
+      const getTrendData = () => ({
+        'ทั้งหมด':{values:[110,85,50,10],score:'1,250 EXP'},
+        'เดือน'  :{values:[90,60,50,10], score:'450 EXP'  },
+        'สัปดาห์':{values:[60,95,40,20], score:'120 EXP'  },
+      }[trendView] || {values:[90,60,50,10],score:'450 EXP'});
+
+      const td   = getTrendData();
+      const xVals = [10,100,190,290];
+      const pts   = xVals.map((x,i)=>({x,y:td.values[i]}));
+      let line = `M ${pts[0].x} ${pts[0].y}`;
+      for(let i=0;i<pts.length-1;i++){
+        const c=pts[i],n=pts[i+1],cx=c.x+(n.x-c.x)/2;
+        line += ` C ${cx} ${c.y}, ${cx} ${n.y}, ${n.x} ${n.y}`;
+      }
+      const area = `${line} L 290 120 L 10 120 Z`;
+
+      /* ─── Microlearning Player Screen ───────── */
+      if (screen === 'mlPlayer') {
+        const ml = screenData;
+        const mlIdx = microlearningData.findIndex(m => m.id === ml.id);
+        const nextMl = microlearningData[mlIdx + 1] || null;
+
+        return (
+          <PhoneFrame>
+            <div className="flex-1 overflow-y-auto pb-32 scale-in">
+
+              {/* ── Header ── */}
+              <div className="flex items-center gap-3 px-5 pt-4 pb-3">
+                <button onClick={()=>{ setMlPlaying(false); setMlChecked(false); goBack(); }}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center cursor-pointer btn-press"
+                  style={{background:'#1c1c1e',border:'1px solid rgba(255,255,255,.1)'}}>
+                  <ChevronLeft size={17} className="text-zinc-300"/>
+                </button>
+                <span className="text-zinc-400 text-sm">กลับหน้าภารกิจ</span>
+              </div>
+
+              {/* ── Breadcrumb + Title ── */}
+              <div className="px-5 mb-4">
+                <div className="flex gap-2 mb-3">
+                  <span style={{background:'rgba(63,63,70,.5)',border:'1px solid rgba(63,63,70,.8)',
+                    color:'#a1a1aa',fontSize:'0.68rem',fontWeight:600,padding:'2px 10px',borderRadius:999}}>
+                    {ml.section}
+                  </span>
+                  <span style={{background:`${ml.color}18`,border:`1px solid ${ml.color}40`,
+                    color:ml.color,fontSize:'0.68rem',fontWeight:600,padding:'2px 10px',borderRadius:999}}>
+                    Micro Learning
+                  </span>
+                </div>
+                <h2 className="text-white text-[1.35rem] font-bold leading-snug mb-2">{ml.title}</h2>
+                <div className="flex items-center gap-1.5 text-zinc-500 text-xs">
+                  <Clock size={11}/>
+                  <span>ใช้เวลาทั้งหมด {ml.duration}</span>
+                </div>
+              </div>
+
+              {/* ── Video Player ── */}
+              <div className="mx-5 mb-2 rounded-2xl overflow-hidden relative"
+                style={{background:'#000',aspectRatio:'16/9',cursor:'pointer'}}
+                onClick={()=>setMlPlaying(p=>!p)}>
+                {/* Thumbnail gradient */}
+                {!mlPlaying && (
+                  <div className="absolute inset-0" style={{background:`linear-gradient(135deg,${ml.color}30,#000)`}}/>
+                )}
+                {/* Playing bars */}
+                {mlPlaying && (
+                  <div className="absolute inset-0 flex items-center justify-center"
+                    style={{background:`linear-gradient(135deg,${ml.color}18,#000)`}}>
+                    <div style={{display:'flex',gap:5,alignItems:'center',height:28}}>
+                      {[0,1,2,3,4].map(i=>(
+                        <div key={i} style={{width:4,borderRadius:3,background:'#fff',
+                          animation:`barPulse 0.8s ease-in-out ${i*0.12}s infinite alternate`,
+                          height:i===2?28:i===1||i===3?18:12,opacity:0.85}}/>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* Play button */}
+                {!mlPlaying && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center bounce-in"
+                      style={{background:'rgba(255,255,255,0.15)',backdropFilter:'blur(6px)',
+                        border:'2px solid rgba(255,255,255,0.35)'}}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                      </svg>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <p className="text-zinc-600 text-[0.65rem] text-center mb-5">
+                วิดีโอ {ml.duration} · {mlPlaying ? 'กำลังเล่น...' : 'แตะเพื่อเล่น'}
+              </p>
+
+              {/* ── Article Section ── */}
+              <div className="mx-5 rounded-2xl p-5 mb-4"
+                style={{background:'#161618',border:'1px solid rgba(63,63,70,.5)'}}>
+                <div className="text-zinc-300 text-sm font-semibold mb-3">บทความ</div>
+                <p className="text-zinc-400 text-sm leading-relaxed mb-4">{ml.summary}</p>
+                <div className="text-zinc-300 text-sm font-semibold mb-3">
+                  หลักการสำคัญ {ml.principles.length} ข้อ:
+                </div>
+                <div className="space-y-3">
+                  {ml.principles.map((p,i)=>(
+                    <div key={i} className="flex items-start gap-3">
+                      <div style={{width:20,height:20,borderRadius:'50%',flexShrink:0,marginTop:1,
+                        background:`${ml.color}20`,border:`1px solid ${ml.color}50`,
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        fontSize:'0.6rem',fontWeight:700,color:ml.color}}>
+                        {i+1}
+                      </div>
+                      <span className="text-zinc-400 text-sm leading-relaxed">{p}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Checkbox ── */}
+              <div className="mx-5 mb-4">
+                <button onClick={()=>setMlChecked(c=>!c)}
+                  className="flex items-center gap-3 cursor-pointer btn-press w-full"
+                  style={{background:'none',border:'none',padding:0}}>
+                  <div style={{width:22,height:22,borderRadius:6,flexShrink:0,
+                    background: mlChecked ? ml.color : 'transparent',
+                    border: `2px solid ${mlChecked ? ml.color : 'rgba(113,113,122,0.6)'}`,
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    transition:'all 0.2s'}}>
+                    {mlChecked && (
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                        stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-zinc-400 text-sm">อ่านและเรียนรู้ครบแล้ว</span>
+                </button>
+              </div>
+            </div>
+
+            {/* ── Fixed bottom CTA ── */}
+            <div className="absolute bottom-0 w-full px-5 pb-8 pt-3"
+              style={{background:'linear-gradient(to top,#09090b 70%,transparent)'}}>
+              <button
+                onClick={()=>{
+                  if(nextMl){ setMlPlaying(false); setMlChecked(false); setScreenData(nextMl); }
+                  else { setMlPlaying(false); setMlChecked(false); goBack(); }
+                }}
+                className="w-full font-semibold py-4 rounded-2xl text-base btn-press"
+                style={{background: mlChecked ? ml.color : '#27272a',
+                  color: mlChecked ? '#fff' : '#71717a',
+                  border:'none',cursor:'pointer',transition:'all 0.25s',
+                  boxShadow: mlChecked ? `0 8px 24px ${ml.color}50` : 'none'}}>
+                {nextMl ? 'ถัดไป →' : 'เสร็จสิ้น'}
+              </button>
+            </div>
+          </PhoneFrame>
+        );
+      }
+
+      /* ─── Flash Card Screen ─────────────────── */
+      if (screen === 'flashCard') {
+        const fc = flashCardData;
+        const done = fcStep >= fc.length;
+
+        if (done) return (
+          <ChallengeResult
+            type="Flash Card"
+            counter={`${fc.length} / ${fc.length}`}
+            headline="เสร็จแล้ว!"
+            subline={`ผ่านการ์ดทั้งหมด ${fc.length} ใบ`}
+            scoreDisplay={`${fc.length} / ${fc.length}`}
+            scoreNote="การ์ดที่ผ่านแล้ว"
+            exp={20}
+            engagement={80}
+            onDone={startHarvester}
+          />
+        );
+
+        const card = fc[fcStep];
+
+        const goNextCard = () => {
+          setFcFlipped(false);
+          setFcRating(null);
+          setTimeout(() => setFcStep(s => s + 1), 320);
+        };
+
+        return (
+          <PhoneFrame>
+            <div style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+
+              {/* ── Header ── */}
+              <div style={{padding:'16px 20px 0', flexShrink:0}}>
+                <div style={{fontSize:'0.65rem', color:'#f59e0b', fontWeight:600, marginBottom:10, letterSpacing:'0.04em'}}>
+                  FC0{fcStep+1} - Flashcard
+                </div>
+                <div style={{display:'flex', alignItems:'center', gap:12, marginBottom:12}}>
+                  <button onClick={goBack} className="btn-press"
+                    style={{width:36,height:36,borderRadius:10,background:'#1c1c1e',
+                      border:'1px solid rgba(255,255,255,.1)',display:'flex',alignItems:'center',
+                      justifyContent:'center',cursor:'pointer',flexShrink:0}}>
+                    <ChevronLeft size={17} className="text-zinc-300"/>
+                  </button>
+                  <span style={{flex:1, color:'#ffffff', fontSize:'1.05rem', fontWeight:700}}>Flash Card</span>
+                  <span style={{color:'#71717a', fontSize:'0.85rem', fontWeight:600, flexShrink:0}}>
+                    {fcStep+1} / {fc.length}
+                  </span>
+                </div>
+                <div style={{height:4, background:'#27272a', borderRadius:99, overflow:'hidden', marginBottom:20}}>
+                  <div style={{height:'100%', borderRadius:99, transition:'width 0.4s ease',
+                    width:`${((fcStep+1)/fc.length)*100}%`,
+                    background:'linear-gradient(to right,#f59e0b,#fbbf24)'}}/>
+                </div>
+              </div>
+
+              {/* ── Flip Card ── */}
+              <div style={{flex:1, display:'flex', flexDirection:'column', padding:'0 20px', minHeight:0}}>
+                <div style={{height:320, flexShrink:0, cursor:'pointer'}}
+                  onClick={() => setFcFlipped(f => !f)}>
+                  {!fcFlipped ? (
+                    /* FRONT */
+                    <div key={`front-${fcStep}`} className="scale-in" style={{
+                      height:'100%', borderRadius:22, overflow:'hidden', position:'relative',
+                      background:'linear-gradient(135deg,#7f1d1d 0%,#450a0a 55%,#1a0404 100%)',
+                      boxShadow:'0 20px 50px rgba(127,29,29,0.4)',
+                      display:'flex', alignItems:'center', justifyContent:'center', padding:28,
+                    }}>
+                      <div style={{position:'absolute',top:'-20%',right:'-10%',width:200,height:200,borderRadius:'50%',background:'rgba(239,68,68,0.15)',filter:'blur(40px)'}}/>
+                      <div style={{position:'absolute',bottom:'-20%',left:'-10%',width:180,height:180,borderRadius:'50%',background:'rgba(120,20,20,0.3)',filter:'blur(50px)'}}/>
+                      <p style={{color:'#ffffff',fontSize:'1.25rem',fontWeight:600,lineHeight:1.65,textAlign:'center',position:'relative',zIndex:1}}>
+                        {renderFlashText(card.frontText, '#fca5a5')}
+                      </p>
+                    </div>
+                  ) : (
+                    /* BACK */
+                    <div key={`back-${fcStep}`} className="scale-in" style={{
+                      height:'100%', borderRadius:22, overflow:'hidden',
+                      background:'#f5f5f5',
+                      boxShadow:'0 20px 50px rgba(0,0,0,0.35)',
+                      display:'flex', flexDirection:'column', alignItems:'center',
+                      justifyContent:'center', padding:28,
+                    }}>
+                      <div style={{fontSize:'0.7rem',fontWeight:600,color:'#9ca3af',marginBottom:14,letterSpacing:'0.06em'}}>
+                        {card.backTag}
+                      </div>
+                      <p style={{color:'#111111',fontSize:'1.05rem',fontWeight:500,lineHeight:1.8,textAlign:'center',margin:0}}>
+                        {renderFlashText(card.backText, '#dc2626')}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* ── Hint / Star rating ── */}
+                {!fcFlipped ? (
+                  <div style={{textAlign:'center', marginTop:18, color:'#52525b', fontSize:'0.82rem'}}>
+                    Tap to Flip card
+                  </div>
+                ) : (
+                  <div className="fade-in" style={{marginTop:18, textAlign:'center'}}>
+                    <p style={{color:'#a1a1aa', fontSize:'0.8rem', marginBottom:12}}>
+                      ตอบถูกแค่ไหน ลองให้คะแนนตัวเองหน่อย
+                    </p>
+                    <div style={{display:'flex', justifyContent:'center', gap:10}}>
+                      {[1,2,3,4,5].map(n => (
+                        <button key={n} onClick={() => setFcRating(n)}
+                          className="btn-press"
+                          style={{
+                            width:40, height:40, borderRadius:'50%', border:'none',
+                            cursor:'pointer', fontSize:'1.1rem',
+                            background: fcRating !== null && n <= fcRating
+                              ? 'linear-gradient(135deg,#f59e0b,#ef4444)'
+                              : '#27272a',
+                            display:'flex', alignItems:'center', justifyContent:'center',
+                            transition:'all 0.2s',
+                            boxShadow: fcRating !== null && n <= fcRating
+                              ? '0 4px 14px rgba(245,158,11,0.4)' : 'none',
+                          }}>
+                          <span style={{fontSize:'1.1rem'}}>
+                            {fcRating !== null && n <= fcRating ? '★' : '☆'}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ── Bottom CTA ── */}
+              <div style={{padding:'12px 20px 32px', flexShrink:0,
+                background:'linear-gradient(to top,#09090b 80%,transparent)'}}>
+                <button
+                  onClick={goNextCard}
+                  disabled={!fcFlipped}
+                  className="btn-press"
+                  style={{
+                    width:'100%', padding:'16px', borderRadius:16,
+                    fontSize:'1rem', fontWeight:700,
+                    background: fcFlipped ? '#ffffff' : '#27272a',
+                    color:      fcFlipped ? '#09090b' : '#52525b',
+                    border:'none', cursor: fcFlipped ? 'pointer' : 'not-allowed',
+                    transition:'all 0.25s',
+                  }}>
+                  {fcStep < fc.length - 1 ? 'ถัดไป' : 'เสร็จสิ้น'}
+                </button>
+              </div>
+            </div>
+          </PhoneFrame>
+        );
+      }
+
+      /* ─── Challenge Detail Screen ───────────── */
+      if (screen === 'challengeDetail') {
+        const ch = screenData;
+        const activatorDesc = {
+          'Quiz':          'ทดสอบความเข้าใจผ่านคำถามปรนัย พร้อมเฉลยรวมหลังส่งคำตอบครบทุกข้อ',
+          'Mission':       'ทำกิจกรรมในชีวิตจริงแล้วบันทึกผลลัพธ์ ส่งให้ Admin ตรวจสอบและ Review',
+          'Flash Card':    'ทบทวนคำศัพท์และแนวคิดสำคัญผ่านการ์ดสองด้าน เพิ่มความจำระยะยาว',
+          'Recall Quiz':   'ทดสอบความจำและความเข้าใจ พร้อมเฉลยอธิบายทุกตัวเลือกหลังตอบแต่ละข้อ',
+          'Micro Learning':'เรียนรู้เนื้อหาสั้นกระชับในรูปแบบ Video หรือ Article แล้วทำแบบทดสอบท้ายบท',
+        };
+        const activatorTime = {
+          'Quiz': '5–10 นาที', 'Mission': '10–20 นาที',
+          'Flash Card': '5 นาที', 'Recall Quiz': '10 นาที', 'Micro Learning': '8 นาที',
+        };
+        const typeStyle = {
+          'Quiz':          { bg:'rgba(59,130,246,.15)',  border:'rgba(59,130,246,.35)',  color:'#93c5fd' },
+          'Mission':       { bg:'rgba(139,92,246,.15)',  border:'rgba(139,92,246,.35)',  color:'#c4b5fd' },
+          'Flash Card':    { bg:'rgba(6,182,212,.15)',   border:'rgba(6,182,212,.35)',   color:'#67e8f9' },
+          'Recall Quiz':   { bg:'rgba(99,102,241,.15)',  border:'rgba(99,102,241,.35)',  color:'#a5b4fc' },
+          'Micro Learning':{ bg:'rgba(16,185,129,.15)',  border:'rgba(16,185,129,.35)',  color:'#6ee7b7' },
+        };
+        const statusLabel = {
+          'ยังไม่เริ่ม':'ยังไม่เริ่ม','กำลังทำ':'กำลังทำ','เสร็จสิ้น':'เสร็จสิ้น','Lock':'ล็อก',
+        };
+        const statusDot = {
+          'ยังไม่เริ่ม':'#3b82f6','กำลังทำ':'#f59e0b','เสร็จสิ้น':'#22c55e','Lock':'#52525b',
+        };
+        const ts = typeStyle[ch.type] || typeStyle['Quiz'];
+        const sectionLabel = ch.id >= 10 ? 'Anytime' : ch.id >= 5 ? 'Milestone' : 'Main Challenge';
+        const canStart = ch.status !== 'Lock';
+
+        /* ── Mission-specific layout ── */
+        if (ch.type === 'Mission') {
+          return (
+            <PhoneFrame>
+              <div className="flex-1 overflow-y-auto pb-28 scale-in">
+                {/* Header */}
+                <div className="flex items-center gap-3 px-5 pt-4 pb-3">
+                  <button onClick={goBack}
+                    className="w-9 h-9 rounded-xl flex items-center justify-center border cursor-pointer text-zinc-400 btn-press"
+                    style={{background:'#1c1c1e',border:'1px solid rgba(255,255,255,.1)'}}>
+                    <ChevronLeft size={17}/>
+                  </button>
+                  <span className="text-zinc-400 text-sm">กลับหน้าภารกิจ</span>
+                </div>
+
+                <div className="px-5">
+                  {/* Tags */}
+                  <div className="flex gap-2 mb-4">
+                    <span style={{background:'rgba(63,63,70,.4)',border:'1px solid rgba(63,63,70,.6)',color:'#a1a1aa',fontSize:'0.7rem',fontWeight:600,padding:'3px 10px',borderRadius:999}}>
+                      {sectionLabel}
+                    </span>
+                    <span style={{background:ts.bg,border:`1px solid ${ts.border}`,color:ts.color,fontSize:'0.7rem',fontWeight:600,padding:'3px 10px',borderRadius:999}}>
+                      Mission
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="text-white text-[1.6rem] font-bold leading-snug mb-5">{ch.title}</h2>
+
+                  {/* Challenge Brief */}
+                  <div className="rounded-2xl p-5 mb-4" style={{background:'rgba(109,40,217,0.18)',border:'1px solid rgba(139,92,246,0.35)'}}>
+                    <div className="text-sm font-semibold mb-2" style={{color:'#a78bfa'}}>Challenge Brief</div>
+                    <p className="text-zinc-300 text-sm leading-relaxed">{activatorDesc['Mission']}</p>
+                  </div>
+
+                  {/* Video */}
+                  <div className="mb-1">
+                    <div onClick={() => {
+                      if (vdoPlaying) return;
+                      setVdoRipple(true);
+                      setTimeout(() => { setVdoRipple(false); setVdoPlaying(true); }, 420);
+                    }} style={{borderRadius:14,aspectRatio:'16/9',position:'relative',overflow:'hidden',cursor: vdoPlaying ? 'default' : 'pointer'}}>
+                      {/* Thumbnail (shown before play) */}
+                      {!vdoPlaying && (
+                        <>
+                          {/* Video thumbnail background */}
+                          <div style={{position:'absolute',inset:0,background:'linear-gradient(160deg,#2d1b69 0%,#1a0a3e 40%,#0d0618 100%)'}}/>
+                          {/* Decorative circles simulating bokeh/scene */}
+                          <div style={{position:'absolute',top:'18%',left:'12%',width:60,height:60,borderRadius:'50%',background:'rgba(167,139,250,0.18)',filter:'blur(14px)'}}/>
+                          <div style={{position:'absolute',bottom:'22%',right:'14%',width:80,height:80,borderRadius:'50%',background:'rgba(109,40,217,0.22)',filter:'blur(18px)'}}/>
+                          <div style={{position:'absolute',top:'38%',right:'28%',width:40,height:40,borderRadius:'50%',background:'rgba(196,181,253,0.12)',filter:'blur(10px)'}}/>
+                          {/* Duration badge top-right */}
+                          <div style={{position:'absolute',top:10,right:10,background:'rgba(0,0,0,0.55)',backdropFilter:'blur(4px)',borderRadius:6,padding:'2px 7px',fontSize:'0.6rem',color:'rgba(255,255,255,0.75)',fontWeight:600,zIndex:2}}>5:00</div>
+                          {/* Dark bottom gradient for label */}
+                          <div style={{position:'absolute',bottom:0,left:0,right:0,height:'45%',background:'linear-gradient(to top,rgba(0,0,0,0.75),transparent)',zIndex:1}}/>
+                          {/* Label inside thumbnail */}
+                          <div style={{position:'absolute',bottom:10,left:12,zIndex:2,display:'flex',alignItems:'center',gap:5}}>
+                            <div style={{width:18,height:18,borderRadius:4,background:'rgba(139,92,246,0.8)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                              <svg width="9" height="9" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            </div>
+                            <span style={{fontSize:'0.62rem',color:'rgba(255,255,255,0.8)',fontWeight:600}}>VDO Brief · Leadership Styles</span>
+                          </div>
+                          {/* Ripple ring */}
+                          {vdoRipple && (
+                            <div className="vdo-ripple" style={{position:'absolute',top:'50%',left:'50%',marginTop:-26,marginLeft:-26,width:52,height:52,borderRadius:'50%',border:'2px solid rgba(255,255,255,0.5)',zIndex:3,pointerEvents:'none'}}/>
+                          )}
+                          {/* Centre play button */}
+                          <div className={vdoRipple ? 'btn-press' : ''} style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',width:52,height:52,borderRadius:'50%',background:'rgba(255,255,255,0.14)',backdropFilter:'blur(8px)',border:'2px solid rgba(255,255,255,0.3)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2,transition:'transform 0.12s'}}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                          </div>
+                        </>
+                      )}
+                      {/* Playing state */}
+                      {vdoPlaying && (
+                        <>
+                          <div style={{position:'absolute',inset:0,background:'linear-gradient(160deg,#1a0a3e 0%,#0d0618 100%)'}}/>
+                          <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                            <div className="bounce-in" style={{display:'flex',alignItems:'flex-end',gap:3,height:28}}>
+                              {[1,0.6,1,0.7,1].map((h,i) => (
+                                <div key={i} style={{width:4,borderRadius:2,background:'rgba(255,255,255,0.7)',
+                                  animation:`barPulse ${0.5+i*0.12}s ease-in-out infinite alternate`,
+                                  height:`${h*100}%`,transformOrigin:'bottom'}}/>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    <p className="text-center text-zinc-600 text-[0.68rem] mt-1.5">
+                      VDO Brief 5 นาที — {vdoPlaying ? 'กำลังเล่น...' : 'แนะเพื่อนๆ'}
+                    </p>
+                  </div>
+
+                  {/* เอกสาร */}
+                  <div className="rounded-2xl overflow-hidden mb-4 mt-4" style={{background:'#111113',border:'1px solid rgba(63,63,70,.5)'}}>
+                    <div className="text-zinc-400 text-xs font-semibold px-5 pt-4 pb-2 border-b border-zinc-800/60">เอกสาร</div>
+                    <div className="px-5 py-3.5 flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div style={{width:28,height:28,borderRadius:7,background:'rgba(139,92,246,0.15)',border:'1px solid rgba(139,92,246,0.3)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <span className="text-zinc-200 text-sm">ชื่อ</span>
+                      </div>
+                      <button style={{background:'rgba(139,92,246,0.15)',border:'1px solid rgba(139,92,246,0.3)',color:'#a78bfa',fontSize:'0.68rem',fontWeight:600,padding:'4px 10px',borderRadius:999,cursor:'pointer'}}>
+                        ดาวน์โหลดได้
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* ข้อมูลเพิ่มเติม */}
+                  <div className="rounded-2xl overflow-hidden mb-6" style={{background:'#111113',border:'1px solid rgba(63,63,70,.5)'}}>
+                    <div className="text-zinc-400 text-xs font-semibold px-5 pt-4 pb-2 border-b border-zinc-800/60">ข้อมูลเพิ่มเติม</div>
+                    <div className="px-5 py-3 flex justify-between items-center border-b border-zinc-800/40">
+                      <span className="text-zinc-400 text-sm">สถานะ</span>
+                      <div className="flex items-center gap-1.5">
+                        <div style={{width:7,height:7,borderRadius:'50%',background:statusDot[ch.status]}}/>
+                        <span className="text-zinc-200 text-sm font-medium">{statusLabel[ch.status]}</span>
+                      </div>
+                    </div>
+                    {ch.timeLeft && (
+                      <div className="px-5 py-3 flex justify-between items-center border-b border-zinc-800/40">
+                        <span className="text-zinc-400 text-sm">เวลาเหลือ</span>
+                        <span className="text-zinc-200 text-sm font-medium">{ch.timeLeft}</span>
+                      </div>
+                    )}
+                    <div className="px-5 py-3 flex justify-between items-center">
+                      <span className="text-zinc-400 text-sm flex items-center gap-1.5">
+                        <Clock size={13}/>เวลาใช้ทำ
+                      </span>
+                      <span className="text-zinc-200 text-sm font-medium">10–20 นาที</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fixed CTA */}
+              <div className="absolute bottom-0 w-full px-5 pb-8 pt-3"
+                style={{background:'linear-gradient(to top,#09090b 70%,transparent)'}}>
+                <button
+                  onClick={() => canStart && startChallenge(ch)}
+                  className="w-full font-semibold py-4 rounded-full text-base flex items-center justify-center gap-2 btn-press"
+                  style={{background:canStart?'#ffffff':'#27272a',color:canStart?'#09090b':'#52525b',border:'none',cursor:canStart?'pointer':'not-allowed',transition:'all 0.2s'}}>
+                  เริ่มทำภารกิจ
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 16 16 12 12 8"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </button>
+              </div>
+            </PhoneFrame>
+          );
+        }
+
+        /* ── Default layout (Quiz / Flash Card / Recall Quiz) ── */
+        return (
+          <PhoneFrame>
+            <div className="flex-1 overflow-y-auto px-6 pt-4 pb-10">
+              <div className="scale-in">
+                <div className="flex items-center gap-3 mb-6 pt-2">
+                  <button onClick={goBack}
+                    className="w-10 h-10 bg-[#161618] rounded-full flex items-center justify-center border border-zinc-800/80 cursor-pointer text-zinc-400 btn-press">
+                    <ChevronLeft size={18}/>
+                  </button>
+                  <span className="text-zinc-400 text-sm">กลับหน้าภารกิจ</span>
+                </div>
+                <div className="flex gap-2 mb-4">
+                  <span style={{background:'rgba(63,63,70,.4)',border:'1px solid rgba(63,63,70,.6)',color:'#a1a1aa',fontSize:'0.7rem',fontWeight:600,padding:'3px 10px',borderRadius:999}}>
+                    {sectionLabel}
+                  </span>
+                  <span style={{background:ts.bg,border:`1px solid ${ts.border}`,color:ts.color,fontSize:'0.7rem',fontWeight:600,padding:'3px 10px',borderRadius:999}}>
+                    {ch.type}
+                  </span>
+                </div>
+                <h2 className="text-white text-2xl font-bold leading-snug mb-6">{ch.title}</h2>
+                <div className="rounded-2xl p-5 mb-4" style={{background:ts.bg,border:`1px solid ${ts.border}`}}>
+                  <div className="text-sm font-semibold mb-1" style={{color:ts.color}}>{ch.type}</div>
+                  <p className="text-zinc-300 text-sm leading-relaxed">{activatorDesc[ch.type]}</p>
+                </div>
+                <div className="rounded-2xl overflow-hidden mb-8" style={{background:'#111113',border:'1px solid rgba(63,63,70,.5)'}}>
+                  <div className="text-zinc-400 text-xs font-semibold px-5 pt-4 pb-2 border-b border-zinc-800/60">ข้อมูลเพิ่มเติม</div>
+                  <div className="px-5 py-3 flex justify-between items-center border-b border-zinc-800/40">
+                    <span className="text-zinc-400 text-sm">สถานะ</span>
+                    <div className="flex items-center gap-1.5">
+                      <div style={{width:7,height:7,borderRadius:'50%',background:statusDot[ch.status]}}/>
+                      <span className="text-zinc-200 text-sm font-medium">{statusLabel[ch.status]}</span>
+                    </div>
+                  </div>
+                  {ch.timeLeft && (
+                    <div className="px-5 py-3 flex justify-between items-center border-b border-zinc-800/40">
+                      <span className="text-zinc-400 text-sm">เวลาเหลือ</span>
+                      <span className="text-sm font-medium" style={{color:'#e4e4e7'}}>{ch.timeLeft}</span>
+                    </div>
+                  )}
+                  {ch.points && (
+                    <div className="px-5 py-3 flex justify-between items-center border-b border-zinc-800/40">
+                      <span className="text-zinc-400 text-sm">คะแนนที่ได้รับ</span>
+                      <span className="text-amber-400 text-sm font-semibold">+{ch.points} EXP</span>
+                    </div>
+                  )}
+                  <div className="px-5 py-3 flex justify-between items-center">
+                    <span className="text-zinc-400 text-sm flex items-center gap-1.5">
+                      <Clock size={13}/>เวลาใช้ทำ
+                    </span>
+                    <span className="text-zinc-200 text-sm font-medium">{activatorTime[ch.type]}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => canStart && startChallenge(ch)}
+                  className="w-full font-semibold py-4 rounded-full text-base flex items-center justify-center gap-2 transition-all btn-press"
+                  style={{background:canStart?'#ffffff':'#27272a',color:canStart?'#09090b':'#52525b',cursor:canStart?'pointer':'not-allowed',border:'none'}}>
+                  เริ่มทำภารกิจ
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 16 16 12 12 8"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </button>
+              </div>
+            </div>
+          </PhoneFrame>
+        );
+      }
+
+      /* ─── Recall Quiz Screen ─────────────────── */
+      if (screen === 'recallQuiz') {
+        const rq = recallQuizData;
+        const done = rcStep >= rq.length;
+
+        if (done) {
+          const correct = rq.filter((q,i) => {
+            const sel = rcSelections[i] || [];
+            return sel.length === q.correct.length && q.correct.every(c => sel.includes(c));
+          }).length;
+          const rcExp = Math.round((correct/rq.length)*25);
+          const rcHeadline = correct===rq.length ? 'ยอดเยี่ยม!' : correct>=rq.length/2 ? 'ดีมาก!' : 'ลองอีกครั้งนะ';
+          return (
+            <ChallengeResult
+              type="Recall Quiz"
+              counter={`${rq.length} / ${rq.length}`}
+              headline={rcHeadline}
+              subline={`ตอบถูก ${correct} จาก ${rq.length} ข้อ`}
+              scoreDisplay={`${correct} / ${rq.length}`}
+              scoreNote="ข้อที่ตอบถูก"
+              exp={rcExp}
+              engagement={100}
+              onDone={startHarvester}
+            />
+          );
+        }
+
+        const cur = rq[rcStep];
+        const isCheckbox = cur.mode === 'checkbox';
+        const curSel = rcSelections[rcStep] || [];
+
+        const toggleOption = idx => {
+          if (rcRevealed) { setRcInspect(idx); return; }
+          const prev = rcSelections[rcStep] || [];
+          let next;
+          if (isCheckbox) {
+            next = prev.includes(idx) ? prev.filter(x => x !== idx) : [...prev, idx];
+          } else {
+            next = [idx];
+          }
+          const updated = [...rcSelections];
+          updated[rcStep] = next;
+          setRcSelections(updated);
+        };
+
+        const canNext = curSel.length > 0;
+
+        const handleNext = () => {
+          if (!rcRevealed) {
+            setRcRevealed(true);
+          } else {
+            setRcRevealed(false);
+            setRcInspect(null);
+            setRcStep(s => s + 1);
+          }
+        };
+
+        // Size per exact char count — wider range for visible variation
+        const getDynamicSize = text => {
+          const len = text.length;
+          if (len <= 6)  return 86;
+          if (len === 7) return 96;
+          if (len === 8) return 104;  // Coaching
+          if (len === 9) return 114;  // Visionary
+          if (len === 10) return 124; // Democratic, Commanding
+          return 132;                 // Affiliative, Pacesetting (11+)
+        };
+
+        // Rows spaced so adjacent bubbles never touch (gap ≥ 20px between edges)
+        // Bubble area ≈ 500px tall. Max radius ≈ 60px.
+        // Row centres at 13%, 46%, 79% → 65px, 230px, 395px → gaps of 165px > 120px ✓
+        // Left col x=25%, right col x=72% → horiz gap 185px > 120px ✓
+        const bubblePositions = [
+          { x: 25, y: 13 },  // idx0: left  row1
+          { x: 72, y:  5 },  // idx1: right row1 (higher stagger)
+          { x: 23, y: 46 },  // idx2: left  row2
+          { x: 72, y: 40 },  // idx3: right row2
+          { x: 25, y: 79 },  // idx4: left  row3
+          { x: 71, y: 74 },  // idx5: right row3
+        ];
+
+        const getBubbleStyle = idx => {
+          const isSelected = curSel.includes(idx);
+          const isCorrect  = cur.correct.includes(idx);
+          if (rcRevealed) {
+            if (isCorrect)  return { bg:'rgba(21,128,61,0.7)',  border:'#22c55e', color:'#bbf7d0', icon:'✓', glow:'0 0 18px rgba(34,197,94,0.35)' };
+            if (isSelected) return { bg:'rgba(127,29,29,0.7)',  border:'#ef4444', color:'#fca5a5', icon:'✗', glow:'none' };
+            return { bg:'#1a1a1c', border:'rgba(63,63,70,0.4)', color:'#3f3f46', icon:null, glow:'none' };
+          }
+          if (isSelected) return { bg:'rgba(120,53,15,0.85)', border:'#f59e0b', color:'#fde68a', icon:null, glow:'0 0 20px rgba(245,158,11,0.4)' };
+          return { bg:'#1e1e20', border:'rgba(63,63,70,0.6)', color:'#a1a1aa', icon:null, glow:'none' };
+        };
+
+        return (
+          <PhoneFrame>
+            <div style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+
+              {/* ── Header ── */}
+              <div style={{padding:'16px 20px 0', flexShrink:0}}>
+                {/* top label */}
+                <div style={{fontSize:'0.65rem', color:'#6366f1', fontWeight:600, marginBottom:10, letterSpacing:'0.04em'}}>
+                  {cur.label}
+                </div>
+                {/* back + title + counter row */}
+                <div style={{display:'flex', alignItems:'center', gap:12, marginBottom:12}}>
+                  <button onClick={goBack} className="btn-press"
+                    style={{width:36,height:36,borderRadius:10,background:'#1c1c1e',
+                      border:'1px solid rgba(255,255,255,.1)',display:'flex',alignItems:'center',
+                      justifyContent:'center',cursor:'pointer',flexShrink:0}}>
+                    <ChevronLeft size={17} className="text-zinc-300"/>
+                  </button>
+                  <span style={{flex:1,color:'#ffffff',fontSize:'1.05rem',fontWeight:700}}>Recall Quiz</span>
+                  <span style={{color:'#71717a',fontSize:'0.85rem',fontWeight:600,flexShrink:0}}>
+                    {rcStep} / {rq.length}
+                  </span>
+                </div>
+                {/* progress bar */}
+                <div style={{height:4,background:'#27272a',borderRadius:99,overflow:'hidden',marginBottom:20}}>
+                  <div style={{height:'100%',borderRadius:99,transition:'width 0.4s ease',
+                    width:`${(rcStep/rq.length)*100}%`,
+                    background:'linear-gradient(to right,#6366f1,#818cf8)'}}/>
+                </div>
+              </div>
+
+              {/* ── Question ── */}
+              <div style={{padding:'0 20px 16px', flexShrink:0}}>
+                <p style={{color:'#ffffff', fontSize:'1.0rem', fontWeight:600, lineHeight:1.5, margin:0}}>
+                  {cur.question}
+                </p>
+                <div style={{marginTop:8, display:'flex', alignItems:'center', gap:6}}>
+                  <div style={{
+                    fontSize:'0.65rem', fontWeight:600, padding:'2px 9px', borderRadius:999,
+                    background: isCheckbox ? 'rgba(99,102,241,.15)' : 'rgba(245,158,11,.12)',
+                    border: `1px solid ${isCheckbox ? 'rgba(99,102,241,.35)' : 'rgba(245,158,11,.28)'}`,
+                    color: isCheckbox ? '#a5b4fc' : '#fde68a',
+                  }}>
+                    {isCheckbox ? 'เลือกได้หลายข้อ' : 'เลือก 1 ข้อ'}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Bubble Area ── */}
+              <div style={{flex:1, position:'relative', minHeight:0}}>
+                {cur.options.map((opt, idx) => {
+                  const pos = bubblePositions[idx];
+                  const bs = getBubbleStyle(idx);
+                  const isSelected = curSel.includes(idx);
+                  const base = getDynamicSize(opt);
+                  const sz = isSelected && !rcRevealed ? base + 16 : base;
+                  const fontSize = sz >= 140 ? '0.85rem' : sz >= 128 ? '0.8rem' : sz >= 116 ? '0.75rem' : '0.72rem';
+                  return (
+                    <button key={idx}
+                      onClick={() => toggleOption(idx)}
+                      style={{
+                        position:'absolute',
+                        left: `${pos.x}%`,
+                        top:  `${pos.y}%`,
+                        width: sz,
+                        height: sz,
+                        transform: 'translate(-50%,-50%)',
+                        borderRadius: '50%',
+                        background: bs.bg,
+                        border: `2px solid ${bs.border}`,
+                        color: bs.color,
+                        cursor: rcRevealed ? 'default' : 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.25s cubic-bezier(0.34,1.2,0.64,1)',
+                        lineHeight: 1.25,
+                        zIndex: isSelected ? 3 : 1,
+                        boxShadow: bs.glow,
+                        padding: 0,
+                      }}>
+                      {bs.icon
+                        ? <span style={{fontSize:'1.4rem', fontWeight:700}}>{bs.icon}</span>
+                        : <span style={{
+                            fontSize,
+                            fontWeight: 600,
+                            textAlign: 'center',
+                            padding: '0 10px',
+                            letterSpacing: '-0.01em',
+                          }}>{opt}</span>
+                      }
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* ── Tap hint (after reveal) ── */}
+              {rcRevealed && (
+                <div style={{margin:'0 20px 8px', padding:'10px 14px', borderRadius:14,
+                  background:'rgba(99,102,241,.07)', border:'1px solid rgba(99,102,241,.18)'}}
+                  className="fade-in">
+                  <div style={{color:'#818cf8', fontSize:'0.72rem', lineHeight:1.5}}>
+                    ✦ แตะที่วงกลมแต่ละอันเพื่อดูเฉลย
+                  </div>
+                </div>
+              )}
+
+              {/* ── Bottom CTA ── */}
+              <div style={{padding:'8px 20px 32px', flexShrink:0,
+                background:'linear-gradient(to top,#09090b 80%,transparent)'}}>
+                <button
+                  onClick={handleNext}
+                  disabled={!canNext}
+                  className="btn-press"
+                  style={{
+                    width:'100%', padding:'16px', borderRadius:16,
+                    fontSize:'1rem', fontWeight:700,
+                    background: canNext ? (rcRevealed ? '#6366f1' : '#ffffff') : '#27272a',
+                    color:      canNext ? (rcRevealed ? '#ffffff' : '#09090b') : '#52525b',
+                    border: 'none', cursor: canNext ? 'pointer' : 'not-allowed',
+                    transition: 'all 0.2s',
+                    boxShadow: canNext && rcRevealed ? '0 8px 24px rgba(99,102,241,0.35)' : 'none',
+                  }}>
+                  {rcRevealed ? (rcStep < rq.length - 1 ? 'ข้อถัดไป →' : 'ดูผลลัพธ์') : 'ถัดไป'}
+                </button>
+              </div>
+            </div>
+
+            {/* ── Inspect Modal Overlay ── */}
+            {rcInspect !== null && rcRevealed && (() => {
+              const opt    = cur.options[rcInspect];
+              const isCorr = cur.correct.includes(rcInspect);
+              const expTxt = cur.explanations[rcInspect];
+              return (
+                <div className="scale-in" onClick={() => setRcInspect(null)}
+                  style={{
+                    position:'absolute', inset:0, zIndex:50,
+                    background:'rgba(0,0,0,0.65)',
+                    backdropFilter:'blur(6px)',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    padding:'24px',
+                  }}>
+                  <div onClick={e => e.stopPropagation()}
+                    style={{
+                      width:'100%', borderRadius:24,
+                      background:'#1a1a1c',
+                      border:'1px solid rgba(255,255,255,0.08)',
+                      boxShadow:'0 24px 60px rgba(0,0,0,0.6)',
+                      overflow:'hidden',
+                    }}>
+                    {/* Header bar */}
+                    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between',
+                      padding:'16px 16px 0'}}>
+                      <span/>
+                      <button onClick={() => setRcInspect(null)}
+                        style={{width:30,height:30,borderRadius:'50%',background:'rgba(255,255,255,.08)',
+                          border:'none',cursor:'pointer',display:'flex',alignItems:'center',
+                          justifyContent:'center',color:'#a1a1aa',fontSize:'1rem',fontWeight:700}}>
+                        ×
+                      </button>
+                    </div>
+
+                    {/* Choice name */}
+                    <div style={{textAlign:'center', padding:'8px 20px 16px'}}>
+                      <div style={{
+                        color:'#ffffff', fontSize:'1.5rem', fontWeight:800, marginBottom:16,
+                      }}>{opt}</div>
+
+                      {/* Correct / Wrong card */}
+                      <div style={{
+                        borderRadius:14, padding:'12px 14px',
+                        background: isCorr ? 'rgba(34,197,94,.1)' : 'rgba(239,68,68,.08)',
+                        border: `1px solid ${isCorr ? 'rgba(34,197,94,.3)' : 'rgba(239,68,68,.25)'}`,
+                        textAlign:'left', marginBottom:14,
+                      }}>
+                        <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:6}}>
+                          <div style={{
+                            width:22, height:22, borderRadius:'50%', flexShrink:0,
+                            background: isCorr ? '#16a34a' : '#dc2626',
+                            display:'flex', alignItems:'center', justifyContent:'center',
+                          }}>
+                            <span style={{color:'#fff', fontSize:'0.75rem', fontWeight:800}}>
+                              {isCorr ? '✓' : '✗'}
+                            </span>
+                          </div>
+                          <span style={{
+                            color: isCorr ? '#4ade80' : '#f87171',
+                            fontSize:'0.9rem', fontWeight:700,
+                          }}>
+                            {isCorr ? 'ถูกต้อง' : 'ไม่ถูกต้อง'}
+                          </span>
+                        </div>
+                        <p style={{color:'#d4d4d8', fontSize:'0.85rem', lineHeight:1.6, margin:0}}>
+                          {expTxt}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </PhoneFrame>
+        );
+      }
+
+      /* ─── Detail Screens (no bottom nav) ─────── */
+      if (screen === 'quiz') {
+        const q   = quizQuestions;
+        const done = quizStep >= q.length;
+        const score = answers.filter((a,i)=>a===q[i].correct).length;
+
+        if (done) {
+          const qExp = Math.round((score/q.length)*30);
+          const qHeadline = score===q.length ? 'ยอดเยี่ยม!' : score>=q.length/2 ? 'ดีมาก!' : 'ลองอีกครั้งนะ';
+          return (
+            <ChallengeResult
+              type="Quiz"
+              counter={`${q.length} / ${q.length}`}
+              headline={qHeadline}
+              subline={`ตอบถูก ${score} จาก ${q.length} ข้อ`}
+              scoreDisplay={`${score} / ${q.length}`}
+              scoreNote="ข้อที่ตอบถูก"
+              exp={qExp}
+              engagement={100}
+              onDone={startHarvester}
+            />
+          );
+        }
+
+        const cur = q[quizStep];
+        return (
+          <PhoneFrame>
+            <div className="flex-1 overflow-y-auto px-6 pt-4 pb-10">
+              <div className="scale-in">
+                <div className="flex items-center gap-3 mb-6 pt-2">
+                  <button onClick={goBack} className="w-10 h-10 bg-[#161618] rounded-full flex items-center justify-center border border-zinc-800/80 cursor-pointer text-zinc-400 btn-press">
+                    <ChevronLeft size={18}/>
+                  </button>
+                  <div className="flex-1">
+                    <div className="text-xs text-zinc-500 mb-1">Quiz · ข้อ {quizStep+1}/{q.length}</div>
+                    <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-500 rounded-full transition-all duration-300" style={{width:`${((quizStep+1)/q.length)*100}%`}}/>
+                    </div>
+                  </div>
+                </div>
+
+                <h2 className="text-white text-xl font-semibold mb-6 leading-snug">{cur.question}</h2>
+
+                <div className="space-y-3 mb-6">
+                  {cur.options.map((opt,i)=>{
+                    let bg='#161618', border='rgba(63,63,70,0.6)', color='#d4d4d8';
+                    if (selected!==null) {
+                      if (i===cur.correct) { bg='rgba(34,197,94,.12)'; border='rgba(34,197,94,.5)'; color='#86efac'; }
+                      else if (i===selected) { bg='rgba(239,68,68,.12)'; border='rgba(239,68,68,.5)'; color='#fca5a5'; }
+                    }
+                    return (
+                      <button key={i} disabled={selected!==null} onClick={()=>{setSelected(i);setShowExp(true);}}
+                        style={{background:bg,border:`1px solid ${border}`,color,borderRadius:'1rem',padding:'1rem 1.25rem',textAlign:'left',cursor:selected!==null?'default':'pointer',transition:'all .2s',display:'flex',alignItems:'center',gap:'0.75rem',width:'100%'}}>
+                        <div style={{width:28,height:28,borderRadius:'50%',flexShrink:0,background:selected!==null&&i===cur.correct?'rgba(34,197,94,.2)':selected===i&&i!==cur.correct?'rgba(239,68,68,.2)':'rgba(63,63,70,.5)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.75rem',fontWeight:600,color}}>
+                          {['A','B','C','D'][i]}
+                        </div>
+                        <span style={{fontSize:'0.9375rem',lineHeight:1.4}}>{opt}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {showExp && (
+                  <div className="rounded-2xl p-4 mb-6" style={{background:'rgba(59,130,246,.08)',border:'1px solid rgba(59,130,246,.25)'}}>
+                    <div className="text-blue-300 text-xs font-medium mb-1">คำอธิบาย</div>
+                    <div className="text-zinc-300 text-sm leading-relaxed">{cur.explanation}</div>
+                  </div>
+                )}
+
+                {selected!==null && (
+                  <button onClick={()=>{setAnswers([...answers,selected]);setSelected(null);setShowExp(false);setQuizStep(quizStep+1);}}
+                    className="w-full bg-blue-500 text-white font-semibold py-3.5 rounded-full text-base cursor-pointer border-0">
+                    {quizStep<q.length-1?'ข้อถัดไป →':'ดูผลลัพธ์'}
+                  </button>
+                )}
+              </div>
+            </div>
+          </PhoneFrame>
+        );
+      }
+
+      /* ─── Harvester Screen ──────────────────────── */
+      if (screen === 'harvester') {
+        const hd = harvesterData;
+        const isEnding = hvStep >= hd.length;
+        const q = isEnding ? null : hd[hvStep];
+        const accent = '#f97316';
+        const accentDark = '#ea580c';
+
+        // Ending screen
+        if (isEnding) return (
+          <PhoneFrame statusBg="#1a0404">
+            <div className="scale-in" style={{flex:1,display:'flex',flexDirection:'column',
+              background:'linear-gradient(135deg,#7f1d1d 0%,#450a0a 55%,#1a0404 100%)',
+              position:'relative',overflow:'hidden'}}>
+              <div style={{position:'absolute',top:-40,right:-40,width:200,height:200,borderRadius:'50%',
+                background:'rgba(239,68,68,0.15)',filter:'blur(48px)',pointerEvents:'none'}}/>
+              {/* Header */}
+              <div style={{padding:'14px 20px 0',display:'flex',alignItems:'center',flexShrink:0}}>
+                <button onClick={()=>setHvStep(hd.length-1)} style={{width:36,height:36,borderRadius:'50%',
+                  background:'rgba(255,255,255,0.1)',border:'none',cursor:'pointer',
+                  display:'flex',alignItems:'center',justifyContent:'center'}}>
+                  <ChevronLeft size={18} style={{color:'white'}}/>
+                </button>
+                <span style={{flex:1}}/>
+                <span style={{color:'rgba(255,255,255,0.5)',fontSize:'0.75rem',fontWeight:600}}>{hd.length} / {hd.length}</span>
+              </div>
+              {/* Progress full */}
+              <div style={{margin:'10px 20px 0',height:3,borderRadius:4,background:'rgba(255,255,255,0.15)',flexShrink:0}}>
+                <div style={{height:'100%',borderRadius:4,background:accent,width:'100%'}}/>
+              </div>
+              {/* Content */}
+              <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'24px 28px',textAlign:'center'}}>
+                <div className="bounce-in" style={{fontSize:'3.5rem',marginBottom:16}}>🎉</div>
+                <h2 style={{color:'white',fontSize:'1.7rem',fontWeight:800,lineHeight:1.2,margin:'0 0 12px'}}>ยอดเยี่ยมไปเลย!</h2>
+                <p style={{color:'rgba(255,255,255,0.6)',fontSize:'0.95rem',lineHeight:1.6,margin:0}}>
+                  เราผ่านสิ่งสำคัญ<br/>การเรียนรู้ด้วยกันสมบูรณ์แล้ว
+                </p>
+              </div>
+              {/* CTA */}
+              <div style={{padding:'0 20px 32px',flexShrink:0}}>
+                <button onClick={()=>{ setScreen(null); setScreenData(null); setActiveTab('challenges'); }}
+                  style={{width:'100%',background:accent,color:'white',fontWeight:700,fontSize:'0.95rem',
+                    border:'none',borderRadius:40,padding:'15px 0',cursor:'pointer',
+                    display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+                  ถัดไป
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                    <path d="M9 18l6-6-6-6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </PhoneFrame>
+        );
+
+        // Helpers
+        const curAns = hvAnswers[hvStep];
+        const setAns = val => setHvAnswers(a => ({...a, [hvStep]: val}));
+        const canNext = q.type==='rating'  ? true
+          : q.type==='ranking'  ? hvRankOrder.length >= q.items.length
+          : q.type==='essay'    ? (curAns||'').trim().length > 0
+          : q.type==='checkbox' ? (curAns||[]).length > 0
+          : curAns !== undefined;
+
+        const goNext = () => {
+          if (q.type==='ranking' && !curAns) setAns([...hvRankOrder]);
+          setHvStep(s => s+1);
+        };
+
+        // Ranking: tap to assign rank in order
+        const toggleRank = (item) => {
+          const idx = hvRankOrder.indexOf(item);
+          if (idx >= 0) {
+            // Remove this and everything ranked after it
+            const next = hvRankOrder.slice(0, idx);
+            setHvRankOrder(next); setAns(next);
+          } else {
+            const next = [...hvRankOrder, item];
+            setHvRankOrder(next); setAns(next);
+          }
+        };
+
+        return (
+          <PhoneFrame statusBg="#1a0404">
+            <div style={{flex:1,display:'flex',flexDirection:'column',
+              background:'linear-gradient(135deg,#7f1d1d 0%,#450a0a 55%,#1a0404 100%)',
+              position:'relative',overflow:'hidden'}}>
+              <div style={{position:'absolute',top:-40,right:-40,width:180,height:180,borderRadius:'50%',
+                background:'rgba(239,68,68,0.12)',filter:'blur(40px)',pointerEvents:'none'}}/>
+
+              {/* Header */}
+              <div style={{padding:'14px 20px 0',display:'flex',alignItems:'center',gap:12,flexShrink:0}}>
+                <button onClick={()=>hvStep>0?setHvStep(s=>s-1):goBack()}
+                  style={{width:36,height:36,borderRadius:'50%',background:'rgba(255,255,255,0.1)',
+                    border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                  <ChevronLeft size={18} style={{color:'white'}}/>
+                </button>
+                <span style={{flex:1}}/>
+                <span style={{color:'rgba(255,255,255,0.55)',fontSize:'0.75rem',fontWeight:600}}>
+                  {hvStep+1} / {hd.length}
+                </span>
+              </div>
+
+              {/* Progress bar */}
+              <div style={{margin:'10px 20px 0',height:3,borderRadius:4,background:'rgba(255,255,255,0.15)',flexShrink:0}}>
+                <div style={{height:'100%',borderRadius:4,background:accent,
+                  width:`${((hvStep+1)/hd.length)*100}%`,transition:'width 0.4s ease'}}/>
+              </div>
+
+              {/* Question */}
+              <div style={{padding:'24px 24px 0',flexShrink:0}}>
+                <div style={{fontSize:'1.55rem',fontWeight:800,lineHeight:1.3,color:'white'}}>
+                  {q.lines.map((line,i) => (
+                    <div key={i}>{renderFlashText(line, accent)}</div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Answer area */}
+              <div style={{flex:1,overflowY:'auto',padding:'20px 20px 0'}}>
+
+                {/* ── Multiple Choice ── */}
+                {q.type==='multiple' && (
+                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+                    {q.options.map((opt,i) => {
+                      const sel = curAns === i;
+                      return (
+                        <button key={i} onClick={()=>setAns(i)} style={{
+                          padding:'13px 10px',borderRadius:40,fontWeight:600,fontSize:'0.88rem',
+                          background:sel?accentDark:'rgba(255,255,255,0.08)',
+                          color:'white',cursor:'pointer',
+                          border:`1.5px solid ${sel?accentDark:'rgba(255,255,255,0.18)'}`,
+                          transition:'all 0.15s'}}>
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* ── Checkbox ── */}
+                {q.type==='checkbox' && (
+                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+                    {q.options.map((opt,i) => {
+                      const sel = (curAns||[]).includes(i);
+                      const atMax = (curAns||[]).length >= q.maxSelect;
+                      return (
+                        <button key={i} onClick={()=>{
+                          const prev = curAns||[];
+                          if (sel) setAns(prev.filter(x=>x!==i));
+                          else if (!atMax) setAns([...prev, i]);
+                        }} style={{
+                          padding:'13px 10px',borderRadius:14,fontWeight:600,fontSize:'0.88rem',
+                          background:sel?accentDark:'rgba(255,255,255,0.08)',
+                          color:'white',cursor:'pointer',
+                          border:`1.5px solid ${sel?accentDark:'rgba(255,255,255,0.18)'}`,
+                          display:'flex',alignItems:'center',gap:8,transition:'all 0.15s',textAlign:'left'}}>
+                          <div style={{width:16,height:16,borderRadius:4,flexShrink:0,
+                            background:sel?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.15)',
+                            display:'flex',alignItems:'center',justifyContent:'center'}}>
+                            {sel && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={accentDark} strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                          </div>
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* ── Essay ── */}
+                {q.type==='essay' && (
+                  <div>
+                    <p style={{color:'rgba(255,255,255,0.4)',fontSize:'0.75rem',margin:'0 0 10px'}}>
+                      โปรดพิมพ์คำตอบในช่องด้านล่าง
+                    </p>
+                    <textarea value={curAns||''} onChange={e=>setAns(e.target.value)}
+                      placeholder={q.placeholder} rows={5}
+                      style={{width:'100%',background:'rgba(255,255,255,0.07)',
+                        border:'1.5px solid rgba(255,255,255,0.15)',borderRadius:16,
+                        padding:'14px',color:'white',fontSize:'0.9rem',resize:'none',
+                        outline:'none',fontFamily:'inherit',lineHeight:1.6,boxSizing:'border-box'}}/>
+                  </div>
+                )}
+
+                {/* ── Rating Scale ── */}
+                {q.type==='rating' && (
+                  <div style={{display:'flex',flexDirection:'column',gap:20}}>
+                    {q.scales.map((scale,si) => {
+                      const ratings = curAns || [3,3];
+                      const val = ratings[si];
+                      return (
+                        <div key={si} style={{background:'rgba(255,255,255,0.06)',
+                          borderRadius:16,padding:'14px 16px',
+                          border:'1px solid rgba(255,255,255,0.1)'}}>
+                          <div style={{color:'rgba(255,255,255,0.7)',fontSize:'0.78rem',fontWeight:600,marginBottom:4}}>{scale}</div>
+                          <div style={{color:'rgba(255,255,255,0.35)',fontSize:'0.65rem',marginBottom:12}}>
+                            โปรดให้คะแนน (0 = น้อยที่สุด, 6 = มากที่สุด)
+                          </div>
+                          <div style={{display:'flex',gap:6,justifyContent:'space-between'}}>
+                            {[0,1,2,3,4,5,6].map(n => {
+                              const active = val===n;
+                              return (
+                                <button key={n} onClick={()=>{
+                                  const r=[...(curAns||[3,3])]; r[si]=n; setAns(r);
+                                }} style={{
+                                  width:36,height:36,borderRadius:'50%',fontWeight:700,fontSize:'0.85rem',
+                                  background:active?accentDark:'rgba(255,255,255,0.08)',
+                                  color:'white',border:`1.5px solid ${active?accentDark:'rgba(255,255,255,0.15)'}`,
+                                  cursor:'pointer',flexShrink:0,transition:'all 0.15s'}}>
+                                  {n}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* ── Ranking ── */}
+                {q.type==='ranking' && (
+                  <div>
+                    <p style={{color:'rgba(255,255,255,0.38)',fontSize:'0.72rem',margin:'0 0 12px',letterSpacing:'0.01em'}}>
+                      กดเลือกตามลำดับความสำคัญ จากมากไปน้อย
+                    </p>
+                    <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                      {q.items.map(item => {
+                        const ri = hvRankOrder.indexOf(item);
+                        const ranked = ri >= 0;
+                        return (
+                          <button key={item} onClick={()=>toggleRank(item)} style={{
+                            display:'flex',alignItems:'center',gap:14,
+                            background:ranked?'rgba(249,115,22,0.1)':'rgba(255,255,255,0.06)',
+                            border:`1.5px solid ${ranked?'rgba(249,115,22,0.45)':'rgba(255,255,255,0.1)'}`,
+                            borderRadius:16,padding:'14px 16px',cursor:'pointer',textAlign:'left',
+                            transition:'all 0.2s',width:'100%'}}>
+                            <div style={{width:32,height:32,borderRadius:'50%',flexShrink:0,
+                              background:ranked?accentDark:'rgba(255,255,255,0.08)',
+                              display:'flex',alignItems:'center',justifyContent:'center',
+                              fontWeight:800,fontSize:'0.95rem',color:'white',transition:'all 0.2s'}}>
+                              {ranked ? ri+1 : ''}
+                            </div>
+                            <span style={{flex:1,color:ranked?'white':'rgba(255,255,255,0.65)',
+                              fontWeight:ranked?700:500,fontSize:'0.92rem',transition:'all 0.2s'}}>
+                              {item}
+                            </span>
+                            {ranked && (
+                              <span style={{color:'rgba(249,115,22,0.5)',fontSize:'0.75rem',fontWeight:700}}>✕</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {hvRankOrder.length > 0 && hvRankOrder.length < q.items.length && (
+                      <p style={{color:'rgba(255,255,255,0.25)',fontSize:'0.68rem',textAlign:'center',marginTop:10}}>
+                        เลือกอีก {q.items.length - hvRankOrder.length} อัน
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Next button */}
+              <div style={{padding:'16px 20px 28px',flexShrink:0}}>
+                <button onClick={goNext}
+                  style={{width:'100%',background:canNext?accent:'rgba(255,255,255,0.1)',
+                    color:canNext?'white':'rgba(255,255,255,0.3)',
+                    fontWeight:700,fontSize:'0.95rem',border:'none',borderRadius:40,
+                    padding:'15px 0',cursor:canNext?'pointer':'not-allowed',
+                    display:'flex',alignItems:'center',justifyContent:'center',gap:6,
+                    transition:'all 0.2s'}}>
+                  ถัดไป
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke={canNext?'white':'rgba(255,255,255,0.3)'} strokeWidth="2.5">
+                    <path d="M9 18l6-6-6-6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </PhoneFrame>
+        );
+      }
+
+      if (screen === 'mission') {
+        if (submitted) return (
+          <ChallengeResult
+            type="Mission"
+            counter="ส่งแล้ว"
+            headline="ยินดีด้วย !"
+            subline="คุณส่งภารกิจเสร็จแล้ว"
+            scoreDisplay="50 EXP"
+            scoreNote="จะได้รับเมื่อ Admin อนุมัติ"
+            exp={100}
+            engagement={100}
+            onDone={startHarvester}
+          />
+        );
+
+        return (
+          <PhoneFrame>
+            <div className="flex-1 overflow-y-auto px-6 pt-4 pb-10">
+              <div className="fade-in">
+                <div className="flex items-center gap-3 mb-6 pt-2">
+                  <button onClick={goBack} className="w-10 h-10 bg-[#161618] rounded-full flex items-center justify-center border border-zinc-800/80 cursor-pointer text-zinc-400">
+                    <ChevronLeft size={18}/>
+                  </button>
+                  <span className="text-zinc-400 text-xs">Mission</span>
+                </div>
+
+                <div className="rounded-2xl p-5 mb-6" style={{background:'rgba(59,130,246,.08)',border:'1px solid rgba(59,130,246,.2)'}}>
+                  <div className="text-blue-300 text-xs font-medium mb-1">+{missionInfo.points} EXP เมื่อผ่าน</div>
+                  <h2 className="text-white text-xl font-semibold leading-snug mb-2">{missionInfo.title}</h2>
+                  <p className="text-zinc-400 text-sm leading-relaxed">{missionInfo.description}</p>
+                </div>
+
+                <div className="mb-6">
+                  <div className="text-zinc-300 text-sm font-medium mb-3">ขั้นตอน</div>
+                  {missionInfo.steps.map((s,i)=>(
+                    <div key={i} className="flex gap-3 items-start mb-3">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[0.7rem] font-semibold text-blue-400" style={{background:'rgba(59,130,246,.15)',border:'1px solid rgba(59,130,246,.3)'}}>
+                        {i+1}
+                      </div>
+                      <p className="text-zinc-300 text-sm leading-relaxed">{s}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="text-zinc-300 text-sm font-medium mb-2">บันทึกผลการสังเกต</div>
+                <textarea value={missionText} onChange={e=>setMissionText(e.target.value)}
+                  placeholder="เขียนสิ่งที่คุณสังเกตพบ..." rows={5}
+                  className="w-full bg-[#161618] border border-zinc-800/80 rounded-2xl p-4 text-zinc-200 text-sm resize-none outline-none mb-4"
+                  style={{fontFamily:'inherit',lineHeight:1.6}}/>
+                <button onClick={()=>missionText.trim()&&setSubmitted(true)}
+                  className="w-full font-semibold py-3.5 rounded-full text-base border-0 transition-all"
+                  style={{background:missionText.trim()?'#3b82f6':'#27272a',color:missionText.trim()?'white':'#71717a',cursor:missionText.trim()?'pointer':'not-allowed'}}>
+                  ส่งภารกิจ
+                </button>
+              </div>
+            </div>
+          </PhoneFrame>
+        );
+      }
+
+      if (screen === 'courseDetail') {
+        const detail = courseDetail[screenData.id];
+        if (!detail) return null;
+        const done = detail.lessons.filter(l=>l.done).length;
+        const pct  = Math.round((done/detail.lessons.length)*100);
+        return (
+          <PhoneFrame>
+            <div className="flex-1 overflow-y-auto px-6 pt-4 pb-10">
+              <div className="fade-in">
+                <div className="flex items-center gap-3 mb-6 pt-2">
+                  <button onClick={goBack} className="w-10 h-10 bg-[#161618] rounded-full flex items-center justify-center border border-zinc-800/80 cursor-pointer text-zinc-400">
+                    <ChevronLeft size={18}/>
+                  </button>
+                </div>
+
+                <div className="rounded-3xl p-6 mb-4 relative overflow-hidden" style={{background:'linear-gradient(135deg,#1e3a5f,#0a0a0c)',border:'1px solid rgba(59,130,246,.2)'}}>
+                  <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full" style={{background:'rgba(59,130,246,.12)',filter:'blur(24px)'}}></div>
+                  <h2 className="text-white text-xl font-bold mb-2">{detail.title}</h2>
+                  <p className="text-zinc-400 text-sm leading-relaxed mb-4">{detail.description}</p>
+                  <div className="flex gap-3">
+                    <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5" style={{background:'rgba(59,130,246,.15)'}}>
+                      <CheckCircle2 size={12} className="text-blue-400"/>
+                      <span className="text-blue-300 text-xs font-medium">{done}/{detail.lessons.length} บทเรียน</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5" style={{background:'rgba(245,158,11,.1)'}}>
+                      <Zap size={12} className="text-amber-400"/>
+                      <span className="text-amber-300 text-xs font-medium">{pct}% เสร็จ</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="h-2 bg-zinc-800 rounded-full overflow-hidden mb-6">
+                  <div className="h-full rounded-full" style={{background:'linear-gradient(to right,#3b82f6,#60a5fa)',width:`${pct}%`}}/>
+                </div>
+
+                <div className="text-zinc-300 text-sm font-medium mb-3">บทเรียนทั้งหมด</div>
+                <div className="space-y-2">
+                  {detail.lessons.map(lesson=>(
+                    <div key={lesson.id} className="flex items-center gap-3.5 rounded-2xl p-3.5"
+                      style={{background:lesson.done?'rgba(34,197,94,.06)':'#161618',border:`1px solid ${lesson.done?'rgba(34,197,94,.2)':'rgba(63,63,70,.6)'}`}}>
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                        style={{background:lesson.done?'rgba(34,197,94,.15)':'rgba(63,63,70,.4)'}}>
+                        {lesson.done
+                          ? <CheckCircle2 size={15} className="text-green-400"/>
+                          : <span className="text-zinc-500 text-xs font-semibold">{lesson.id}</span>}
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm" style={{color:lesson.done?'#d4d4d8':'#a1a1aa'}}>{lesson.title}</div>
+                        <div className="text-zinc-600 text-xs mt-0.5">{lesson.duration}</div>
+                      </div>
+                      {!lesson.done && <PlayCircle size={18} className="text-zinc-600"/>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </PhoneFrame>
+        );
+      }
+
+      /* ─── TAB VIEWS ──────────────────────────────
+         เหมือน original prototype:
+         - content: flex-1 overflow-y-auto px-6 pt-12 pb-28
+         - nav: absolute bottom-0
+      ─────────────────────────────────────────── */
+      const renderHome = () => (
+        <div className="space-y-6 animate-in fade-in duration-500 pb-8">
+
+          {/* Top Bar */}
+          <div className="flex justify-between items-center pt-2 px-1">
+            <button onClick={()=>setNotifOpen(true)} className="w-10 h-10 bg-[#161618] rounded-full flex items-center justify-center border border-zinc-800/80 relative cursor-pointer">
+              <Bell className="text-zinc-500" size={18} fill="currentColor"/>
+              <div className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-[#09090b] anim-pulse"></div>
+            </button>
+            <button onClick={openJoin} className="bg-[#161618] hover:bg-zinc-800/80 rounded-full px-3 py-1.5 flex items-center gap-1.5 border border-zinc-800/80 transition-colors cursor-pointer">
+              <Plus className="text-zinc-400" size={14} strokeWidth={2.5}/>
+              <span className="text-zinc-300 text-xs font-medium">Join Class</span>
+            </button>
+          </div>
+
+          {/* Greeting & Gauge */}
+          <div className="text-center mt-6 relative">
+            <h1 className="text-2xl font-semibold text-zinc-300 mb-1">สวัสดี ผู้เรียน</h1>
+            <div className="flex items-center justify-center gap-1.5">
+              <span className="text-2xl font-medium text-blue-400">Practitioner</span>
+              <Info size={14} className="text-zinc-500"/>
+            </div>
+
+            <div className="relative w-full max-w-[340px] mx-auto mt-10 mb-2">
+              <div className="flex justify-between px-8 text-[10px] text-zinc-500 mb-[-15px] relative z-10">
+                <span className="transform -rotate-12">น้อยเกินไป</span>
+                <span className="-mt-4">กำลังดี</span>
+                <span className="transform rotate-12">ยอดเยี่ยม</span>
+              </div>
+              <div className="relative">
+                <div className="absolute top-0 left-0 w-1/2 h-full bg-amber-500/20 blur-3xl rounded-full"></div>
+                <svg viewBox="0 0 200 100" className="w-full drop-shadow-[0_0_8px_rgba(251,191,36,0.5)] relative z-10" style={{overflow:'visible'}}>
+                  <defs>
+                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#fbbf24"/>
+                      <stop offset="70%" stopColor="#f59e0b"/>
+                      <stop offset="100%" stopColor="#3b82f6" stopOpacity="0"/>
+                    </linearGradient>
+                    {/* Soft halo around sparkle */}
+                    <filter id="glowOuter" x="-200%" y="-200%" width="500%" height="500%">
+                      <feGaussianBlur in="SourceGraphic" stdDeviation="3.5"/>
+                    </filter>
+                    {/* Crisp sparkle core */}
+                    <filter id="glowMid" x="-100%" y="-100%" width="300%" height="300%">
+                      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="b"/>
+                      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                  </defs>
+
+                  {/* Motion path — full arc, animation will stop at 50% (กำลังดี / top) */}
+                  <path id="gaugeArcMotion" d="M 15 90 A 85 85 0 0 1 185 90" fill="none" stroke="none"/>
+
+                  {/* Track */}
+                  <path d="M 15 90 A 85 85 0 0 1 185 90" fill="none" stroke="#27272a" strokeWidth="3" strokeLinecap="round"/>
+                  {/* Filled arc */}
+                  <path d="M 15 90 A 85 85 0 0 1 129 10.2" fill="none" stroke="url(#gaugeGrad)" strokeWidth="4.5" strokeLinecap="round"/>
+
+                  {/* Milestone dots */}
+                  <circle cx="20.2"  cy="61"   r="2" fill="#ef4444"/>
+                  <circle cx="45.4"  cy="24.9" r="2" fill="#ef4444"/>
+                  <circle cx="85.3"  cy="6.3"  r="2" fill="#f59e0b"/>
+                  <circle cx="129"   cy="10.2" r="2" fill="#22c55e"/>
+                  <circle cx="165.1" cy="35.4" r="2" fill="#22c55e"/>
+                  <circle cx="183.7" cy="75.3" r="2" fill="#3b82f6"/>
+
+                  {/* ── Sparkle: soft outer halo ── */}
+                  <circle r="5" fill="#fbbf24" filter="url(#glowOuter)">
+                    <animateMotion dur="5.5s" repeatCount="indefinite" calcMode="spline"
+                      keyPoints="0;0.50;0.50;0" keyTimes="0;0.62;0.88;1"
+                      keySplines="0.42 0 0.58 1;0 0 1 1;0 0 1 1">
+                      <mpath href="#gaugeArcMotion"/>
+                    </animateMotion>
+                    <animate attributeName="opacity"
+                      values="0;0;0.55;0.7;0.7;0.3;0"
+                      keyTimes="0;0.04;0.22;0.62;0.88;0.94;1"
+                      dur="5.5s" repeatCount="indefinite"/>
+                  </circle>
+
+                  {/* ── Sparkle: bright crisp core ── */}
+                  <circle r="2" fill="#fff8e1" filter="url(#glowMid)">
+                    <animateMotion dur="5.5s" repeatCount="indefinite" calcMode="spline"
+                      keyPoints="0;0.50;0.50;0" keyTimes="0;0.62;0.88;1"
+                      keySplines="0.42 0 0.58 1;0 0 1 1;0 0 1 1">
+                      <mpath href="#gaugeArcMotion"/>
+                    </animateMotion>
+                    <animate attributeName="opacity"
+                      values="0;0;0.9;1;1;0.5;0"
+                      keyTimes="0;0.04;0.22;0.62;0.88;0.94;1"
+                      dur="5.5s" repeatCount="indefinite"/>
+                    <animate attributeName="r"
+                      values="1.5;2;2.8;2.2;1.5"
+                      keyTimes="0;0.62;0.72;0.88;1"
+                      dur="5.5s" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+                <div className="absolute bottom-1 left-0 w-full flex flex-col items-center justify-end z-20">
+                  <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                    <h2 className="text-[17px] font-medium text-white">ใช้ได้เลยผู้เรียน</h2>
+                    <div className="w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center text-zinc-500 text-[10px]">i</div>
+                  </div>
+                  <p className="text-zinc-400 text-sm leading-relaxed max-w-[260px] mx-auto px-2 text-center">
+                    คุณเริ่มจะลืมแล้ว แต่เป็นเรื่องปกติ<br/>ลองใส่ใจอีกหน่อยจะดูดีเลย
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-amber-500/30 to-transparent my-8"></div>
+
+          {/* Suggested Challenges */}
+          <div className="px-1">
+            <h3 className="text-lg font-medium text-white mb-0.5">ภารกิจที่แนะนำ</h3>
+            <p className="text-xs text-zinc-500 mb-4">Suggested Challenge</p>
+            <div className="space-y-3">
+              {suggestedChallenges.map(ch=>(
+                <button key={ch.id} onClick={()=>openChallenge(ch)}
+                  className="w-full bg-[#09090b] rounded-2xl p-5 relative overflow-hidden border border-zinc-800/60 shadow-lg text-left cursor-pointer">
+                  <div className="absolute left-[-20px] top-1/2 transform -translate-y-1/2 w-20 h-32 bg-blue-500/20 blur-xl rounded-full"></div>
+                  <div className="relative z-10">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-blue-200 text-xs font-medium opacity-80">{ch.type}</span>
+                      <span className="text-amber-400 text-xs font-medium">+{ch.points} EXP</span>
+                    </div>
+                    <h4 className="text-white text-xl font-medium leading-tight pr-4">{ch.title}</h4>
+                    <div className="text-blue-400 text-xs font-medium mt-3">แตะเพื่อเริ่ม →</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-center gap-4 my-6">
+              <div className="h-px flex-1 bg-zinc-800"></div>
+              <span className="text-zinc-500 text-xs tracking-[0.2em] font-medium">L a t e</span>
+              <div className="h-px flex-1 bg-zinc-800"></div>
+            </div>
+
+            <button onClick={()=>openChallenge(lateChallenge)}
+              className="w-full bg-[#09090b] rounded-2xl p-5 relative overflow-hidden border border-zinc-800/60 shadow-lg text-left cursor-pointer mb-8">
+              <div className="absolute left-[-20px] top-1/2 transform -translate-y-1/2 w-20 h-32 bg-zinc-500/10 blur-xl rounded-full"></div>
+              <div className="relative z-10">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-zinc-400 text-xs font-medium">{lateChallenge.type}</span>
+                  <span className="text-red-400 text-xs font-medium">เลย {lateChallenge.daysLate} วัน</span>
+                </div>
+                <h4 className="text-white text-xl font-medium leading-tight pr-4">{lateChallenge.title}</h4>
+                <div className="text-zinc-500 text-xs font-medium mt-3">แตะเพื่อส่งช้า →</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      );
+
+      const renderChallenges = () => {
+        const typeStyle = {
+          'Quiz':          { bg:'rgba(59,130,246,.15)',  border:'rgba(59,130,246,.4)',  color:'#93c5fd', label:'Quiz'          },
+          'Mission':       { bg:'rgba(139,92,246,.15)',  border:'rgba(139,92,246,.4)',  color:'#c4b5fd', label:'Mission'       },
+          'Flash Card':    { bg:'rgba(6,182,212,.15)',   border:'rgba(6,182,212,.4)',   color:'#67e8f9', label:'Flash Card'    },
+          'Recall Quiz':   { bg:'rgba(99,102,241,.15)',  border:'rgba(99,102,241,.4)',  color:'#a5b4fc', label:'Recall Quiz'   },
+          'Micro Learning':{ bg:'rgba(16,185,129,.15)',  border:'rgba(16,185,129,.4)',  color:'#6ee7b7', label:'Micro Learning'},
+        };
+        const statusStyle = {
+          'ยังไม่เริ่ม':{ bg:'rgba(59,130,246,.15)',  color:'#93c5fd',  label:'ยังไม่เริ่ม' },
+          'กำลังทำ':    { bg:'rgba(245,158,11,.15)',  color:'#fcd34d',  label:'กำลังทำ'    },
+          'เสร็จสิ้น':  { bg:'rgba(34,197,94,.15)',   color:'#86efac',  label:'เสร็จสิ้น'  },
+          'Lock':       { bg:'rgba(63,63,70,.3)',      color:'#71717a',  label:'ล็อก'       },
+        };
+
+        const canOpen = ch => ch.status !== 'Lock';
+
+        const ChallengeCard = ({ ch, compact, delay=0 }) => {
+          const ts = typeStyle[ch.type] || typeStyle['Quiz'];
+          const ss = statusStyle[ch.status] || statusStyle['Available'];
+          const tappable = canOpen(ch);
+          return (
+            <button
+              onClick={() => tappable ? openChallenge(ch) : null}
+              style={{
+                background: ch.status==='Lock' ? '#111113' : '#161618',
+                border: `1px solid ${ch.status==='Lock' ? 'rgba(63,63,70,.4)' : 'rgba(63,63,70,.7)'}`,
+                borderRadius: '1rem',
+                padding: compact ? '0.75rem' : '1rem 1.125rem',
+                textAlign: 'left',
+                cursor: tappable ? 'pointer' : 'default',
+                opacity: ch.status==='Lock' ? 0.6 : 1,
+                width: compact ? 160 : '100%',
+                flexShrink: 0,
+                position: 'relative',
+                overflow: 'hidden',
+                transform: 'scale(1)',
+                transition: 'transform 0.15s, opacity 0.15s',
+                animation: `fadeIn 0.3s ease forwards ${delay}ms`,
+                animationFillMode: 'both',
+              }}
+              onMouseDown={e => tappable && (e.currentTarget.style.transform='scale(0.97)')}
+              onMouseUp={e => e.currentTarget.style.transform='scale(1)'}
+              onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}>
+              {/* Glow */}
+              {tappable && <div style={{position:'absolute',left:-16,top:'50%',transform:'translateY(-50%)',width:48,height:80,background:ts.bg,filter:'blur(18px)',borderRadius:'50%'}}/>}
+              <div style={{position:'relative',zIndex:1}}>
+                {/* Top row */}
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6,flexWrap:'wrap',gap:4}}>
+                  <span style={{background:ts.bg,border:`1px solid ${ts.border}`,color:ts.color,fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:999}}>{ts.label}</span>
+                  <span style={{color:'#fcd34d',fontSize:'0.65rem',fontWeight:600}}>+{ch.points} EXP</span>
+                </div>
+                {/* Title */}
+                <div style={{color: ch.status==='Lock'?'#52525b':'#e4e4e7',fontWeight:500,fontSize:compact?'0.8rem':'0.9375rem',lineHeight:1.35,marginBottom:8,
+                  overflow:compact?'hidden':'visible',display:compact?'-webkit-box':'block',WebkitLineClamp:compact?2:10,WebkitBoxOrient:'vertical'}}>
+                  {ch.status==='Lock' && <Lock size={12} style={{display:'inline',marginRight:4,verticalAlign:'middle'}}/>}
+                  {ch.title}
+                </div>
+                {/* Bottom row */}
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span className={ch.status==='กำลังทำ'?'glow-amber':''} style={{background:ss.bg,color:ss.color,fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:999}}>{ss.label}</span>
+                  {ch.timeLeft && <span style={{color: ch.status==='Late'?'#f87171':'#71717a',fontSize:'0.65rem'}}>{ch.timeLeft}</span>}
+                </div>
+              </div>
+            </button>
+          );
+        };
+
+        return (
+          <div className="fade-in pb-8">
+            {/* Header */}
+            <div className="flex justify-between items-end pb-4 pt-2 px-1">
+              <div>
+                <h1 className="text-2xl font-semibold text-white">ภารกิจ</h1>
+                <p className="text-zinc-500 text-xs mt-0.5">Challenge</p>
+              </div>
+              <div style={{background:'rgba(59,130,246,.12)',border:'1px solid rgba(59,130,246,.3)',borderRadius:999,padding:'4px 12px',display:'flex',alignItems:'center',gap:6}}>
+                <Target size={12} className="text-blue-400"/>
+                <span style={{color:'#93c5fd',fontSize:'0.7rem',fontWeight:600}}>Stage 2</span>
+              </div>
+            </div>
+
+            {/* ── Anytime Section ── */}
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-3 px-1">
+                <Zap size={14} className="text-cyan-400"/>
+                <span className="text-white text-sm font-semibold">Anytime</span>
+                <span className="text-zinc-600 text-xs">· ทำเมื่อไรก็ได้</span>
+              </div>
+              <div style={{display:'flex',gap:10,overflowX:'auto',paddingBottom:4,paddingLeft:4,paddingRight:4}}>
+                {challengeData.anytime.map((ch,i)=>(
+                  <ChallengeCard key={ch.id} ch={ch} compact={true} delay={i*70}/>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Main Challenge Section ── */}
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-3 px-1">
+                <Target size={14} className="text-blue-400"/>
+                <span className="text-white text-sm font-semibold">Main Challenge</span>
+                <span className="text-zinc-600 text-xs">· ภารกิจหลัก</span>
+              </div>
+              <div className="space-y-3">
+                {challengeData.main.map((ch,i)=>(
+                  <ChallengeCard key={ch.id} ch={ch} compact={false} delay={i*80}/>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Milestone Section ── */}
+            <div>
+              <div className="flex items-center gap-2 mb-3 px-1">
+                <Award size={14} className="text-amber-400"/>
+                <span className="text-white text-sm font-semibold">Milestone</span>
+                <span className="text-zinc-600 text-xs">· ภารกิจพิเศษ</span>
+              </div>
+              <div className="space-y-3">
+                {challengeData.milestone.map((ch,i)=>(
+                  <ChallengeCard key={ch.id} ch={ch} compact={false} delay={i*80}/>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      const renderStats = () => (
+        <div className="space-y-6 fade-in pb-8">
+          <div className="flex justify-between items-end pb-2">
+            <h1 className="text-2xl font-semibold text-white">สถิติและคะแนน</h1>
+            <button className="text-zinc-400 p-2 bg-[#161618] rounded-full border border-zinc-800">
+              <Activity size={18}/>
+            </button>
+          </div>
+
+          {/* Score Card */}
+          <div className="bg-gradient-to-br from-[#161618] to-[#0a0a0c] border border-zinc-800/80 rounded-[2rem] p-6 relative overflow-hidden shadow-lg">
+            <div className="absolute -right-8 -top-8 w-32 h-32 bg-amber-500/10 blur-3xl rounded-full"></div>
+            <div className="absolute -left-4 -bottom-4 w-24 h-24 bg-blue-500/10 blur-2xl rounded-full"></div>
+            <div className="relative z-10 flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Award size={16} className="text-amber-500"/>
+                  <p className="text-zinc-400 text-sm font-medium">Shift Score รวม</p>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl font-bold text-white tracking-tight">450</span>
+                  <span className="text-amber-500 font-bold text-sm tracking-wider uppercase">EXP</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-green-400 text-sm font-medium">+12%</div>
+                <span className="text-[10px] text-zinc-500">เทียบกับสัปดาห์ที่แล้ว</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Trend Graph */}
+          <div>
+            <div className="flex justify-between items-center mb-4 px-1">
+              <h3 className="text-lg font-medium text-white">แนวโน้มการเติบโต</h3>
+              <div className="flex bg-[#161618] p-1 rounded-xl border border-zinc-800/80">
+                {['ทั้งหมด','เดือน','สัปดาห์'].map(v=>(
+                  <button key={v} onClick={()=>setTrendView(v)}
+                    className={`text-[11px] px-3 py-1.5 rounded-lg transition-all ${trendView===v?'bg-zinc-800 text-amber-500 font-medium shadow-sm':'text-zinc-500 hover:text-zinc-300'}`}>
+                    {v}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="bg-[#111113] border border-zinc-800/60 rounded-3xl p-5 relative">
+              <div className="absolute top-[25%] left-5 right-5 h-px bg-zinc-800/50"></div>
+              <div className="absolute top-[50%] left-5 right-5 h-px bg-zinc-800/50"></div>
+              <div className="absolute top-[75%] left-5 right-5 h-px bg-zinc-800/50"></div>
+              <div className="h-36 w-full relative mt-2">
+                <svg key={trendView} viewBox="0 0 300 120" className="w-full h-full overflow-visible relative z-10">
+                  <defs>
+                    <linearGradient id="trendGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.25"/>
+                      <stop offset="100%" stopColor="#f59e0b" stopOpacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  {/* Hidden motion path for the travelling dot */}
+                  <path id={`trendPath-${trendView}`} d={line} fill="none" stroke="none"/>
+
+                  <path d={area} fill="url(#trendGrad)"/>
+                  <path d={line} fill="none" stroke="#f59e0b" strokeWidth="3" strokeLinecap="round"/>
+
+                  {/* Static data-point dots */}
+                  {pts.map((p,i)=>(
+                    <circle key={i} cx={p.x} cy={p.y} r={i===3?5:3}
+                      fill={i===3?"#f59e0b":"#09090b"}
+                      stroke="#f59e0b" strokeWidth="2"/>
+                  ))}
+                  <circle cx={pts[3].x} cy={pts[3].y} r="2" fill="#fff"/>
+
+                  {/* ── Travelling dot: outer glow — plays once ── */}
+                  <circle r="9" fill="#f59e0b" opacity="0">
+                    <animateMotion dur="1.4s" repeatCount="1" fill="freeze" calcMode="spline"
+                      keySplines="0.4 0 0.2 1">
+                      <mpath href={`#trendPath-${trendView}`}/>
+                    </animateMotion>
+                    <animate attributeName="opacity" values="0;0.25;0.25;0"
+                      keyTimes="0;0.1;0.85;1" dur="1.4s" repeatCount="1" fill="freeze"/>
+                  </circle>
+
+                  {/* ── Travelling dot: bright core — plays once ── */}
+                  <circle r="4" fill="#fde68a" opacity="0">
+                    <animateMotion dur="1.4s" repeatCount="1" fill="freeze" calcMode="spline"
+                      keySplines="0.4 0 0.2 1">
+                      <mpath href={`#trendPath-${trendView}`}/>
+                    </animateMotion>
+                    <animate attributeName="opacity" values="0;0.9;0.9;0"
+                      keyTimes="0;0.08;0.88;1" dur="1.4s" repeatCount="1" fill="freeze"/>
+                  </circle>
+                </svg>
+                <div className="absolute bg-amber-500 text-black text-[10px] font-bold px-2 py-1 rounded-full z-20 shadow-[0_0_10px_rgba(245,158,11,0.5)]"
+                  style={{right:0,top:`${(pts[3].y/120)*100}%`,transform:'translate(4px,-100%)'}}>
+                  {td.score}
+                </div>
+              </div>
+              <div className="flex justify-between text-[10px] text-zinc-500 mt-3 px-1">
+                {getTrendLabels().map((l,i)=><span key={i}>{l}</span>)}
+              </div>
+            </div>
+          </div>
+
+          {/* Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {[{label:'ความต่อเนื่อง',value:'4',unit:'Days Streak',c:'text-amber-500'},{label:'บทเรียนที่ผ่าน',value:'12',unit:'Courses',c:'text-green-500'}].map(({label,value,unit,c})=>(
+              <div key={label} className="bg-[#111113] border border-zinc-800/60 p-5 rounded-[2rem] flex flex-col justify-between h-28">
+                <div className="text-zinc-400 text-xs font-medium">{label}</div>
+                <div className="text-2xl font-bold text-white flex items-baseline gap-1">
+                  {value} <span className={`text-[10px] font-normal ${c} uppercase tracking-widest`}>{unit}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Skill Bars */}
+          <div className="pt-2">
+            <h3 className="text-lg font-medium text-white mb-4 px-1">ความก้าวหน้ารายทักษะ</h3>
+            <div className="bg-[#111113] border border-zinc-800/60 rounded-3xl p-6 space-y-5">
+              {skillScores.map((s,i)=>(
+                <div key={i}>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-zinc-300 font-medium">{s.name}</span>
+                    <span className="text-white font-bold">{s.score}%</span>
+                  </div>
+                  <div className="h-2 w-full bg-[#161618] rounded-full overflow-hidden shadow-inner">
+                    <div className="h-full rounded-full relative" style={{width:`${s.score}%`,background:s.color}}>
+                      <div className="absolute top-0 right-0 bottom-0 w-10 bg-white/20 blur-[2px]"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+
+      const renderLeaderboard = () => (
+        <div className="space-y-6 fade-in pb-8">
+          <div className="flex flex-col items-center mt-2">
+            <div className="w-10 h-10 rounded-full bg-[#161618] flex items-center justify-center mb-4 border border-zinc-800">
+              <Flame className="text-zinc-300" size={20} fill="currentColor"/>
+            </div>
+            <h1 className="text-2xl font-bold text-white tracking-widest uppercase mb-1">Leaderboard</h1>
+            <p className="text-zinc-400 text-sm">Most Engagement</p>
+          </div>
+
+          {/* Podium */}
+          <div className="flex justify-center items-end gap-3 mt-12 mb-8 h-40">
+            {podiumData.map((item,idx)=>(
+              <div key={idx} className={`w-[85px] bg-gradient-to-b from-zinc-200 to-transparent rounded-t-2xl flex flex-col items-center justify-end pb-4 relative`}
+                style={{height:item.height}}>
+                <div className="absolute -top-7 w-12 h-12 rounded-full border-[3px] border-black overflow-hidden bg-zinc-800 flex items-center justify-center">
+                  <UserIcon className={item.rank===1?'text-amber-500':'text-zinc-400'} size={24}/>
+                </div>
+                <span className="text-black font-bold text-2xl mt-4 z-10">{item.rank}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-zinc-500/30 to-transparent my-8"></div>
+
+          {/* Engagement List */}
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-medium text-white flex items-center gap-2">
+                Most Engagement <Info size={14} className="text-zinc-500"/>
+              </h2>
+              <button className="bg-[#161618] border border-zinc-800/80 rounded-full px-4 py-1.5 flex items-center gap-2 text-xs text-zinc-300 hover:bg-zinc-800 transition-colors">
+                This Week <ChevronDown size={14} className="text-zinc-500"/>
+              </button>
+            </div>
+            <div className="space-y-2.5">
+              {engagementLB.map(u=>(
+                <div key={u.rank} className="flex items-center rounded-[2rem] bg-[#111113] relative overflow-hidden h-16">
+                  {u.isMe && <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-zinc-400/80 to-transparent opacity-80 mix-blend-screen"></div>}
+                  <div className={`w-14 flex justify-center z-10 text-base ${u.isMe?'text-white font-medium':'text-zinc-500'}`}>{u.rank}</div>
+                  <div className="w-10 h-10 rounded-full bg-zinc-800 z-10 mr-4 flex items-center justify-center border border-zinc-700">
+                    <UserIcon className={u.isMe?'text-white':'text-zinc-400'} size={18}/>
+                  </div>
+                  <div className="flex-1 z-10 flex items-center justify-between pr-6">
+                    <div>
+                      <div className={`font-semibold ${u.isMe?'text-white':'text-zinc-200'}`}>{u.name}</div>
+                      <div className="text-xs text-zinc-500">{u.role}</div>
+                    </div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-white font-bold text-lg">{u.score}</span>
+                      <span className="text-zinc-500 text-[10px] uppercase font-medium tracking-wider">EXP</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Transformation Rank */}
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-medium text-white flex items-center gap-2">
+                Transformation Rank <Info size={14} className="text-zinc-500"/>
+              </h2>
+            </div>
+            <div className="space-y-2.5">
+              {transformLB.map(u=>(
+                <div key={u.rank} className="flex items-center rounded-[2rem] bg-[#111113] relative overflow-hidden h-16">
+                  {u.isMe && <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-zinc-400/80 to-transparent opacity-80 mix-blend-screen"></div>}
+                  <div className={`w-14 flex justify-center z-10 text-base ${u.isMe?'text-white font-medium':'text-zinc-500'}`}>{u.rank}</div>
+                  <div className="w-10 h-10 rounded-full bg-zinc-800 z-10 mr-4 flex items-center justify-center border border-zinc-700">
+                    <UserIcon className={u.isMe?'text-white':'text-zinc-400'} size={18}/>
+                  </div>
+                  <div className="flex-1 z-10 flex items-center justify-between pr-6">
+                    <div>
+                      <div className={`font-semibold ${u.isMe?'text-white':'text-zinc-200'}`}>{u.name}</div>
+                      <div className="text-xs text-zinc-500">{u.role}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white font-bold text-lg">{u.score}</span>
+                      <span className="text-zinc-500 text-[10px] uppercase font-medium tracking-wider w-12 text-right leading-tight">Shift<br/>Score</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+
+      const renderLessons = () => (
+        <div className="fade-in pb-8">
+          {/* Header */}
+          <div className="flex justify-between items-end pb-4 pt-2 px-1">
+            <div>
+              <h1 className="text-2xl font-semibold text-white">บทเรียน</h1>
+              <p className="text-zinc-500 text-xs mt-0.5">Micro Learning</p>
+            </div>
+            <div style={{background:'rgba(34,197,94,.12)',border:'1px solid rgba(34,197,94,.3)',borderRadius:999,padding:'4px 12px',display:'flex',alignItems:'center',gap:6}}>
+              <CheckCircle2 size={12} className="text-green-400"/>
+              <span style={{color:'#86efac',fontSize:'0.7rem',fontWeight:600}}>{microlearningData.filter(m=>m.watched).length}/{microlearningData.length} ดูแล้ว</span>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="mb-6 px-1">
+            <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-full rounded-full transition-all duration-700"
+                style={{width:`${(microlearningData.filter(m=>m.watched).length/microlearningData.length)*100}%`,
+                  background:'linear-gradient(to right,#22c55e,#4ade80)'}}/>
+            </div>
+          </div>
+
+          {/* Lesson cards */}
+          <div className="space-y-3">
+            {microlearningData.map((ml,i)=>(
+              <button key={ml.id}
+                onClick={()=>{ setScreen('mlPlayer'); setScreenData(ml); setMlPlaying(false); setMlChecked(false); }}
+                className="w-full text-left cursor-pointer btn-press stagger"
+                style={{animationDelay:`${i*70}ms`,background:'#161618',
+                  border:`1px solid rgba(63,63,70,.7)`,borderRadius:'1rem',
+                  padding:0,overflow:'hidden',display:'block',transform:'scale(1)',transition:'transform 0.15s'}}
+                onMouseDown={e=>e.currentTarget.style.transform='scale(0.98)'}
+                onMouseUp={e=>e.currentTarget.style.transform='scale(1)'}
+                onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}>
+                {/* Color band */}
+                <div style={{height:4,background:`linear-gradient(to right,${ml.color},${ml.color}40)`}}/>
+                <div style={{padding:'0.875rem 1rem',display:'flex',gap:12,alignItems:'center'}}>
+                  {/* Thumbnail icon */}
+                  <div style={{width:48,height:48,borderRadius:'0.75rem',background:`${ml.color}18`,
+                    border:`1px solid ${ml.color}35`,flexShrink:0,
+                    display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+                    <Video size={20} style={{color:ml.color}}/>
+                    {ml.watched && (
+                      <div style={{position:'absolute',bottom:-4,right:-4,width:16,height:16,
+                        borderRadius:'50%',background:'#22c55e',border:'2px solid #161618',
+                        display:'flex',alignItems:'center',justifyContent:'center'}}>
+                        <CheckCircle2 size={10} style={{color:'#fff'}}/>
+                      </div>
+                    )}
+                  </div>
+                  {/* Info */}
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{color:'#e4e4e7',fontWeight:500,fontSize:'0.875rem',lineHeight:1.35,
+                      marginBottom:4,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+                      {ml.title}
+                    </div>
+                    <div style={{display:'flex',alignItems:'center',gap:8}}>
+                      <span style={{color:ml.color,fontSize:'0.65rem',fontWeight:600,
+                        background:`${ml.color}18`,padding:'1px 7px',borderRadius:999}}>
+                        {ml.category}
+                      </span>
+                      <span style={{color:'#71717a',fontSize:'0.65rem',display:'flex',alignItems:'center',gap:3}}>
+                        <Clock size={10}/> {ml.duration}
+                      </span>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} style={{color:'#52525b',flexShrink:0}}/>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+
+      const tabs = [
+        {id:'home',        label:'หน้าหลัก', Icon:Home     },
+        {id:'challenges',  label:'ภารกิจ',   Icon:Target   },
+        {id:'lessons',     label:'บทเรียน',  Icon:Video    },
+        {id:'stats',       label:'สถิติ',     Icon:BarChart2 },
+        {id:'leaderboard', label:'อันดับ',    Icon:Trophy    },
+      ];
+
+      return (
+        <PhoneFrame>
+          {/* ── Content: flex-1 scroll พร้อม pb-28 เผื่อ nav ── */}
+          <div className="flex-1 overflow-y-auto px-6 pt-4 pb-28">
+            {activeTab==='home'        && renderHome()}
+            {activeTab==='challenges'  && renderChallenges()}
+            {activeTab==='lessons'     && renderLessons()}
+            {activeTab==='stats'       && renderStats()}
+            {activeTab==='leaderboard' && renderLeaderboard()}
+          </div>
+
+          {/* ── Notification Panel ── */}
+          {notifOpen && (() => {
+            const allChallenges = [
+              ...challengeData.anytime,
+              ...challengeData.main,
+              ...challengeData.milestone,
+            ];
+            const ready   = allChallenges.filter(c => c.status === 'ยังไม่เริ่ม');
+            const ongoing = allChallenges.filter(c => c.status === 'กำลังทำ');
+            const late    = [
+              { id:20, type:'Mission', title:'Team Feedback Survey',          timeLeft:'-2 วัน' },
+              { id:21, type:'Quiz',    title:'Problem Solving Fundamentals',  timeLeft:'-3 วัน' },
+            ];
+            const typeColor = {
+              'Quiz':'#93c5fd','Mission':'#c4b5fd','Flash Card':'#67e8f9',
+              'Recall Quiz':'#a5b4fc','Micro Learning':'#6ee7b7',
+            };
+
+            const NotifItem = ({ ch, accent, sub, delay=0 }) => (
+              <button onClick={()=>{ setNotifOpen(false); if(ch.id<20) openChallenge(ch); }}
+                style={{width:'100%',background:'#161618',border:`1px solid rgba(63,63,70,.6)`,
+                  borderLeft:`3px solid ${accent}`,borderRadius:'0.875rem',
+                  padding:'0.75rem 1rem',textAlign:'left',cursor:'pointer',display:'block',marginBottom:8,
+                  animation:`fadeIn 0.28s ease forwards ${delay}ms`,opacity:0,
+                  transition:'transform 0.12s',}}
+                onMouseDown={e=>e.currentTarget.style.transform='scale(0.98)'}
+                onMouseUp={e=>e.currentTarget.style.transform='scale(1)'}
+                onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:8}}>
+                  <div style={{flex:1}}>
+                    <div style={{color:'#e4e4e7',fontSize:'0.8125rem',fontWeight:500,lineHeight:1.35,marginBottom:4}}>{ch.title}</div>
+                    <div style={{display:'flex',alignItems:'center',gap:6}}>
+                      <span style={{color:typeColor[ch.type]||'#93c5fd',fontSize:'0.65rem',fontWeight:600,
+                        background:'rgba(255,255,255,.06)',padding:'1px 7px',borderRadius:999}}>{ch.type}</span>
+                      <span style={{color: sub.startsWith('-')?'#f87171':'#a1a1aa', fontSize:'0.65rem'}}>{sub}</span>
+                    </div>
+                  </div>
+                  <ChevronRight size={14} style={{color:'#52525b',flexShrink:0,marginTop:2}}/>
+                </div>
+              </button>
+            );
+
+            const Section = ({ icon, label, color, children, count }) => (
+              <div style={{marginBottom:20}}>
+                <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:10}}>
+                  <div style={{width:8,height:8,borderRadius:'50%',background:color,flexShrink:0}}/>
+                  <span style={{color:'#e4e4e7',fontSize:'0.8125rem',fontWeight:600}}>{label}</span>
+                  <span style={{background:'rgba(255,255,255,.08)',color:'#71717a',fontSize:'0.65rem',
+                    fontWeight:700,padding:'1px 7px',borderRadius:999,marginLeft:2}}>{count}</span>
+                </div>
+                {children}
+              </div>
+            );
+
+            return (
+              <div className="absolute inset-0 z-[100] flex flex-col justify-end">
+                <div className="absolute inset-0 bg-black/60" style={{backdropFilter:'blur(4px)'}} onClick={()=>setNotifOpen(false)}/>
+                <div className="relative rounded-t-3xl px-5 pt-5 pb-8 slide-up" style={{background:'#111113',border:'1px solid rgba(63,63,70,.6)',borderBottom:'none',maxHeight:'80%',display:'flex',flexDirection:'column'}}>
+                  {/* Handle */}
+                  <div style={{width:40,height:4,background:'#3f3f46',borderRadius:99,margin:'0 auto 16px'}}/>
+                  {/* Header */}
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20}}>
+                    <div>
+                      <div style={{color:'#fff',fontSize:'1.125rem',fontWeight:700}}>การแจ้งเตือน</div>
+                      <div style={{color:'#71717a',fontSize:'0.75rem',marginTop:2}}>{ready.length+ongoing.length+late.length} รายการ</div>
+                    </div>
+                    <button onClick={()=>setNotifOpen(false)}
+                      style={{width:32,height:32,borderRadius:'50%',background:'#27272a',border:'none',
+                        cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                      <XCircle size={16} style={{color:'#71717a'}}/>
+                    </button>
+                  </div>
+                  {/* Sections */}
+                  <div style={{overflowY:'auto',flex:1,paddingRight:2}}>
+                    {late.length > 0 && (
+                      <Section label="เลยกำหนดแล้ว" color="#ef4444" count={late.length}>
+                        {late.map((ch,i)=><NotifItem key={ch.id} ch={ch} accent="#ef4444" sub={`เลย ${ch.timeLeft.replace('-','')} แล้ว`} delay={80+i*60}/>)}
+                      </Section>
+                    )}
+                    {ongoing.length > 0 && (
+                      <Section label="ใกล้ครบกำหนด" color="#f59e0b" count={ongoing.length}>
+                        {ongoing.map((ch,i)=><NotifItem key={ch.id} ch={ch} accent="#f59e0b" sub={ch.timeLeft ? `เหลือ ${ch.timeLeft}` : 'กำลังทำอยู่'} delay={200+i*60}/>)}
+                      </Section>
+                    )}
+                    {ready.length > 0 && (
+                      <Section label="พร้อมทำแล้ว" color="#3b82f6" count={ready.length}>
+                        {ready.map((ch,i)=><NotifItem key={ch.id} ch={ch} accent="#3b82f6" sub="ยังไม่เริ่ม" delay={350+i*60}/>)}
+                      </Section>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* ── Join Class Modal ── */}
+          {joinOpen && (
+            <div className="absolute inset-0 z-[100] flex flex-col justify-end">
+              {/* Backdrop */}
+              <div className="absolute inset-0 bg-black/60" style={{backdropFilter:'blur(4px)'}} onClick={closeJoin}/>
+
+              {/* Bottom Sheet */}
+              <div className="relative rounded-t-3xl px-6 pt-6 pb-10 slide-up" style={{background:'#111113',border:'1px solid rgba(63,63,70,0.6)',borderBottom:'none'}}>
+
+                {/* Handle */}
+                <div className="w-10 h-1 bg-zinc-700 rounded-full mx-auto mb-6"/>
+
+                {joinState === 'success' ? (
+                  /* ── Success State ── */
+                  <div className="flex flex-col items-center text-center pb-2 fade-in">
+                    <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4" style={{background:'rgba(34,197,94,0.15)'}}>
+                      <CheckCircle size={36} className="text-green-400"/>
+                    </div>
+                    <h2 className="text-white text-xl font-bold mb-1">เข้าคลาสสำเร็จ!</h2>
+                    <p className="text-zinc-400 text-sm mb-6">คุณได้เข้าร่วมคลาสแล้ว</p>
+
+                    {/* Class Card */}
+                    <div className="w-full rounded-2xl p-4 mb-6 text-left" style={{background:'rgba(59,130,246,0.08)',border:'1px solid rgba(59,130,246,0.2)'}}>
+                      <div className="text-blue-300 text-xs font-medium mb-2">คลาสที่เข้าร่วม</div>
+                      <div className="text-white font-semibold text-base mb-1">Leadership &amp; Trust Fundamentals</div>
+                      <div className="text-zinc-400 text-xs">ผู้สอน: อาจารย์ สมชาย · 24 คน</div>
+                      <div className="flex items-center gap-2 mt-3">
+                        <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                          <div className="h-full bg-blue-500 rounded-full" style={{width:'0%'}}/>
+                        </div>
+                        <span className="text-zinc-500 text-xs">0%</span>
+                      </div>
+                    </div>
+
+                    <button onClick={closeJoin} className="w-full bg-blue-500 text-white font-semibold py-3.5 rounded-full text-base cursor-pointer border-0">
+                      เริ่มเรียน
+                    </button>
+                  </div>
+                ) : (
+                  /* ── Input State ── */
+                  <>
+                    <h2 className="text-white text-xl font-bold mb-1">เข้าร่วมคลาส</h2>
+                    <p className="text-zinc-400 text-sm mb-8">ใส่รหัส 4 หลักที่ได้รับจากผู้สอน</p>
+
+                    {/* 4-digit OTP boxes */}
+                    <div className="flex justify-center gap-3 mb-8">
+                      {joinDigits.map((d, i) => (
+                        <input
+                          key={i}
+                          ref={joinRefs[i]}
+                          type="tel"
+                          inputMode="numeric"
+                          maxLength={1}
+                          value={d}
+                          onChange={e => handleJoinDigit(i, e.target.value)}
+                          onKeyDown={e => handleJoinKey(i, e)}
+                          className="text-center text-2xl font-bold text-white rounded-2xl outline-none transition-all"
+                          style={{
+                            width: 64, height: 72,
+                            background: d ? 'rgba(59,130,246,0.12)' : '#161618',
+                            border: `2px solid ${d ? 'rgba(59,130,246,0.6)' : 'rgba(63,63,70,0.8)'}`,
+                            caretColor: '#3b82f6',
+                          }}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => joinDigits.every(d=>d) && setJoinState('success')}
+                      className="w-full font-semibold py-3.5 rounded-full text-base border-0 transition-all"
+                      style={{
+                        background: joinDigits.every(d=>d) ? '#3b82f6' : '#27272a',
+                        color:      joinDigits.every(d=>d) ? 'white'   : '#71717a',
+                        cursor:     joinDigits.every(d=>d) ? 'pointer' : 'not-allowed',
+                      }}>
+                      ยืนยัน
+                    </button>
+
+                    <button onClick={closeJoin} className="w-full text-zinc-500 text-sm mt-3 py-2 cursor-pointer border-0 bg-transparent">
+                      ยกเลิก
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ── Bottom Nav: absolute bottom เหมือน original ── */}
+          <div className="absolute bottom-0 w-full bg-zinc-900/95 backdrop-blur-md border-t border-zinc-800 pt-2 pb-6 px-2 z-50">
+            <div className="flex justify-between items-center py-2">
+              {tabs.map(({id,label,Icon:I})=>{
+                const active = activeTab===id;
+                return (
+                  <button key={id} onClick={()=>setActiveTab(id)}
+                    className="flex flex-col items-center justify-center gap-0.5 transition-colors cursor-pointer border-0 bg-transparent"
+                    style={{flex:1}}>
+                    <I size={20} strokeWidth={active?2.5:2} className={active?'text-white':'text-zinc-600'}/>
+                    <span className={`font-medium ${active?'text-white':'text-zinc-600'}`}
+                      style={{fontSize:'0.6rem'}}>{label}</span>
+                    <div className={`h-1 w-1 rounded-full mt-0.5 ${active?'bg-blue-500':'bg-transparent'}`}/>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </PhoneFrame>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<LearnerApp />);
+  </script>
+</body>
+</html>
