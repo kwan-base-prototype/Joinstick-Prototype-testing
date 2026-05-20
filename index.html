@@ -505,6 +505,383 @@
       );
     }
 
+    /* ── LandingPage ─────────────────────────────── */
+    function LandingPage({ onEnter }) {
+      const [exiting, setExiting] = useState(false);
+
+      const handleEnter = () => {
+        setExiting(true);
+        setTimeout(onEnter, 520);
+      };
+
+      const features = [
+        { icon:'🎯', title:'Mission-Based Learning', desc:'ภารกิจที่ออกแบบให้เหมาะกับคุณโดยเฉพาะ เรียนรู้ผ่านการลงมือทำจริง ไม่ใช่แค่อ่านทฤษฎี' },
+        { icon:'⚡', title:'Micro Learning', desc:'เนื้อหา 5–10 นาที เรียนได้ทุกที่ ทุกเวลา ไม่เสียเวลา ไม่ต้องจัดตาราง' },
+        { icon:'📊', title:'Real-time Progress', desc:'ติดตามพัฒนาการของตัวเอง เห็นชัดว่าเรียนได้มากแค่ไหน และต้องพัฒนาอะไรต่อไป' },
+        { icon:'🏆', title:'Leaderboard & Rewards', desc:'แข่งขันกับเพื่อนร่วมองค์กร สะสมคะแนน รับ Badge และสร้างแรงจูงใจในการเรียนรู้' },
+      ];
+
+      return (
+        <div style={{
+          minHeight: '100vh',
+          background: '#09090b',
+          color: '#fff',
+          fontFamily: "'Inter', system-ui, sans-serif",
+          overflowX: 'hidden',
+          opacity: exiting ? 0 : 1,
+          transform: exiting ? 'scale(0.98)' : 'scale(1)',
+          transition: 'opacity 0.5s ease, transform 0.5s ease',
+        }}>
+
+          {/* ── Ambient background ── */}
+          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+            <div style={{
+              position:'absolute', top:'-20%', left:'-10%',
+              width:'60vw', height:'60vw', maxWidth:800, maxHeight:800,
+              background:'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 65%)',
+              borderRadius:'50%',
+            }}/>
+            <div style={{
+              position:'absolute', bottom:'-15%', right:'-10%',
+              width:'55vw', height:'55vw', maxWidth:700, maxHeight:700,
+              background:'radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 65%)',
+              borderRadius:'50%',
+            }}/>
+          </div>
+
+          {/* ── Navbar ── */}
+          <nav style={{
+            position:'sticky', top:0, zIndex:100,
+            display:'flex', alignItems:'center', justifyContent:'space-between',
+            padding:'0 max(24px, calc((100vw - 1200px)/2))',
+            height:64,
+            background:'rgba(9,9,11,0.8)',
+            backdropFilter:'blur(12px)',
+            borderBottom:'1px solid rgba(255,255,255,0.06)',
+          }}>
+            {/* Logo */}
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <div style={{
+                width:36, height:36, borderRadius:10,
+                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+                display:'flex', alignItems:'center', justifyContent:'center',
+                flexShrink:0,
+              }}>
+                <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
+                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
+                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
+                  <rect x="13" y="34" width="18" height="4" rx="2" fill="white" fillOpacity="0.45"/>
+                </svg>
+              </div>
+              <span style={{fontWeight:700,fontSize:'1.1rem',letterSpacing:'-0.02em'}}>Joinstick</span>
+            </div>
+
+            {/* Nav links — hide on small screens via inline media trick */}
+            <div style={{display:'flex',alignItems:'center',gap:32}}>
+              {['Features','How it works','Pricing'].map(l => (
+                <span key={l} style={{color:'#a1a1aa',fontSize:'0.875rem',cursor:'pointer',
+                  transition:'color 0.15s'}}
+                  onMouseEnter={e=>e.target.style.color='#fff'}
+                  onMouseLeave={e=>e.target.style.color='#a1a1aa'}>{l}</span>
+              ))}
+            </div>
+
+            <button onClick={handleEnter} className="btn-press" style={{
+              padding:'9px 20px', borderRadius:10, border:'none',
+              background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+              color:'#fff', fontSize:'0.875rem', fontWeight:600,
+              cursor:'pointer', boxShadow:'0 4px 16px rgba(99,102,241,0.3)',
+            }}>ดูตัวอย่าง</button>
+          </nav>
+
+          {/* ── Hero ── */}
+          <section style={{
+            position:'relative', zIndex:1,
+            display:'flex', alignItems:'center', justifyContent:'center',
+            gap:'clamp(32px, 6vw, 80px)',
+            padding:'clamp(60px,10vh,120px) max(24px,calc((100vw - 1200px)/2))',
+            flexWrap:'wrap',
+          }}>
+            {/* Left copy */}
+            <div className="fade-in" style={{flex:'1 1 340px', maxWidth:520}}>
+              <div style={{
+                display:'inline-flex', alignItems:'center', gap:8,
+                background:'rgba(59,130,246,0.1)', border:'1px solid rgba(59,130,246,0.2)',
+                borderRadius:999, padding:'5px 14px', marginBottom:24,
+              }}>
+                <span style={{width:6,height:6,borderRadius:'50%',background:'#3b82f6',display:'inline-block'}}/>
+                <span style={{color:'#93c5fd',fontSize:'0.8rem',fontWeight:500}}>Prototype Demo · 2025</span>
+              </div>
+
+              <h1 style={{
+                fontSize:'clamp(2.2rem,5vw,3.4rem)', fontWeight:800,
+                lineHeight:1.1, letterSpacing:'-0.04em',
+                margin:'0 0 20px',
+              }}>
+                เรียนรู้ที่<br/>
+                <span style={{
+                  background:'linear-gradient(135deg,#60a5fa,#a78bfa)',
+                  WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
+                }}>ทรงพลังกว่าเดิม</span>
+              </h1>
+
+              <p style={{
+                color:'#a1a1aa', fontSize:'clamp(1rem,2vw,1.125rem)',
+                lineHeight:1.7, margin:'0 0 36px', fontWeight:400,
+              }}>
+                แพลตฟอร์ม Learning & Development ที่ออกแบบมาสำหรับคนทำงาน
+                ผ่านภารกิจ Micro Learning และ Flash Card
+                ที่เชื่อมกับการทำงานจริงของคุณ
+              </p>
+
+              <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+                <button onClick={handleEnter} className="btn-press" style={{
+                  padding:'14px 28px', borderRadius:14, border:'none',
+                  background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+                  color:'#fff', fontSize:'1rem', fontWeight:700,
+                  cursor:'pointer', boxShadow:'0 8px 32px rgba(99,102,241,0.35)',
+                  letterSpacing:'-0.01em',
+                }}>ลองใช้ Prototype →</button>
+                <button style={{
+                  padding:'14px 28px', borderRadius:14,
+                  border:'1px solid rgba(255,255,255,0.1)',
+                  background:'rgba(255,255,255,0.04)',
+                  color:'#d4d4d8', fontSize:'1rem', fontWeight:600,
+                  cursor:'pointer',
+                }}>ดูวิธีใช้งาน</button>
+              </div>
+
+              {/* Social proof */}
+              <div style={{
+                display:'flex', alignItems:'center', gap:16, marginTop:36,
+                paddingTop:28, borderTop:'1px solid rgba(255,255,255,0.07)',
+              }}>
+                {[['500+','องค์กรที่ใช้งาน'],['92%','ผู้ใช้รู้สึกพัฒนาขึ้น'],['4.8★','คะแนนจากผู้ใช้']].map(([val,label])=>(
+                  <div key={label}>
+                    <div style={{fontWeight:700,fontSize:'1.1rem',letterSpacing:'-0.02em'}}>{val}</div>
+                    <div style={{color:'#71717a',fontSize:'0.75rem',marginTop:2}}>{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — Phone mockup */}
+            <div className="fade-in" style={{
+              animationDelay:'0.15s', opacity:0,
+              flex:'0 0 auto', position:'relative',
+            }}>
+              {/* Glow behind phone */}
+              <div style={{
+                position:'absolute', top:'10%', left:'50%',
+                transform:'translateX(-50%)',
+                width:320, height:420,
+                background:'radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, transparent 70%)',
+                pointerEvents:'none',
+              }}/>
+              {/* Phone shell */}
+              <div style={{
+                width:260, height:560,
+                background:'#09090b',
+                borderRadius:44,
+                boxShadow:'0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.04)',
+                position:'relative', overflow:'hidden',
+                flexShrink:0,
+              }}>
+                {/* Status bar */}
+                <div style={{height:32,background:'#09090b',display:'flex',alignItems:'center',
+                  justifyContent:'space-between',padding:'0 20px',position:'relative'}}>
+                  <span style={{color:'#fff',fontSize:'0.65rem',fontWeight:600}}>9:41</span>
+                  <div style={{
+                    position:'absolute',top:0,left:'50%',transform:'translateX(-50%)',
+                    width:80,height:24,background:'#09090b',borderRadius:'0 0 14px 14px',
+                  }}/>
+                  <div style={{display:'flex',gap:4,alignItems:'center'}}>
+                    <div style={{width:10,height:7,borderRadius:1,background:'rgba(255,255,255,0.5)'}}/>
+                    <div style={{width:10,height:7,borderRadius:1,background:'rgba(255,255,255,0.5)'}}/>
+                    <div style={{width:16,height:8,borderRadius:2,border:'1px solid rgba(255,255,255,0.3)',
+                      display:'flex',alignItems:'center',paddingLeft:2}}>
+                      <div style={{width:10,height:4,borderRadius:1,background:'#fff'}}/>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mock app content */}
+                <div style={{padding:'12px 16px',overflowY:'hidden',height:'calc(100% - 32px)'}}>
+                  {/* Header */}
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+                    <div>
+                      <div style={{color:'#71717a',fontSize:'0.6rem'}}>สวัสดี 👋</div>
+                      <div style={{color:'#fff',fontSize:'0.8rem',fontWeight:700}}>คุณสมชาย</div>
+                    </div>
+                    <div style={{width:30,height:30,borderRadius:'50%',background:'linear-gradient(135deg,#3b82f6,#8b5cf6)',
+                      display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.7rem',fontWeight:700}}>S</div>
+                  </div>
+                  {/* Streak card */}
+                  <div style={{
+                    background:'linear-gradient(135deg,rgba(59,130,246,0.15),rgba(99,102,241,0.1))',
+                    border:'1px solid rgba(59,130,246,0.2)',
+                    borderRadius:14, padding:'12px 14px', marginBottom:12,
+                    display:'flex',alignItems:'center',justifyContent:'space-between',
+                  }}>
+                    <div>
+                      <div style={{color:'#93c5fd',fontSize:'0.6rem',fontWeight:600}}>🔥 Streak</div>
+                      <div style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,lineHeight:1}}>7 วัน</div>
+                    </div>
+                    <div style={{textAlign:'right'}}>
+                      <div style={{color:'#71717a',fontSize:'0.55rem'}}>คะแนนสะสม</div>
+                      <div style={{color:'#fbbf24',fontSize:'0.9rem',fontWeight:700}}>1,240 pts</div>
+                    </div>
+                  </div>
+                  {/* Mission card */}
+                  {[
+                    {type:'Quiz',title:"Trust Lenses",pts:30,time:'3 วัน',color:'#3b82f6'},
+                    {type:'Mission',title:"Observe & report",pts:50,time:'2 วัน',color:'#8b5cf6'},
+                  ].map((c,i)=>(
+                    <div key={i} style={{
+                      background:'rgba(255,255,255,0.04)',
+                      border:'1px solid rgba(255,255,255,0.07)',
+                      borderRadius:12, padding:'10px 12px', marginBottom:8,
+                      display:'flex',alignItems:'center',gap:10,
+                    }}>
+                      <div style={{
+                        width:34,height:34,borderRadius:9,flexShrink:0,
+                        background:`${c.color}22`,border:`1px solid ${c.color}44`,
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        fontSize:'0.65rem',fontWeight:700,color:c.color,
+                      }}>{c.type}</div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{color:'#f4f4f5',fontSize:'0.65rem',fontWeight:600,
+                          overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{c.title}</div>
+                        <div style={{color:'#71717a',fontSize:'0.6rem'}}>+{c.pts} pts · {c.time}</div>
+                      </div>
+                    </div>
+                  ))}
+                  {/* Progress bar area */}
+                  <div style={{marginTop:12}}>
+                    <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
+                      <span style={{color:'#a1a1aa',fontSize:'0.6rem'}}>Leadership 101</span>
+                      <span style={{color:'#3b82f6',fontSize:'0.6rem',fontWeight:600}}>75%</span>
+                    </div>
+                    <div style={{height:4,background:'rgba(255,255,255,0.08)',borderRadius:999}}>
+                      <div style={{width:'75%',height:'100%',
+                        background:'linear-gradient(90deg,#3b82f6,#6366f1)',borderRadius:999}}/>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom nav */}
+                <div style={{
+                  position:'absolute',bottom:0,left:0,right:0,
+                  height:52, background:'rgba(9,9,11,0.95)',
+                  borderTop:'1px solid rgba(255,255,255,0.07)',
+                  display:'flex', alignItems:'center', justifyContent:'space-around',
+                  paddingBottom:6,
+                }}>
+                  {['🏠','🎯','📺','📊','🏆'].map((ic,i)=>(
+                    <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2}}>
+                      <span style={{fontSize:'0.85rem'}}>{ic}</span>
+                      {i===0 && <div style={{width:4,height:4,borderRadius:'50%',background:'#3b82f6'}}/>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── Features ── */}
+          <section style={{
+            position:'relative', zIndex:1,
+            padding:'80px max(24px,calc((100vw - 1200px)/2))',
+            borderTop:'1px solid rgba(255,255,255,0.05)',
+          }}>
+            <div style={{textAlign:'center',marginBottom:56}}>
+              <h2 style={{
+                fontSize:'clamp(1.6rem,3.5vw,2.4rem)',fontWeight:800,
+                letterSpacing:'-0.03em',margin:'0 0 12px',
+              }}>ทำไมต้อง Joinstick?</h2>
+              <p style={{color:'#71717a',fontSize:'1rem',margin:0}}>
+                เพราะการเรียนรู้ที่ดีที่สุดคือการเรียนรู้ที่เกิดขึ้นจริงในชีวิตการทำงาน
+              </p>
+            </div>
+            <div style={{
+              display:'grid',
+              gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))',
+              gap:20,
+            }}>
+              {features.map(({icon,title,desc})=>(
+                <div key={title} style={{
+                  background:'rgba(255,255,255,0.03)',
+                  border:'1px solid rgba(255,255,255,0.07)',
+                  borderRadius:20, padding:'28px 24px',
+                  transition:'border-color 0.2s, background 0.2s',
+                }}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(99,102,241,0.3)';e.currentTarget.style.background='rgba(99,102,241,0.05)'}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.07)';e.currentTarget.style.background='rgba(255,255,255,0.03)'}}>
+                  <div style={{fontSize:'2rem',marginBottom:16}}>{icon}</div>
+                  <h3 style={{fontWeight:700,fontSize:'1rem',margin:'0 0 8px',letterSpacing:'-0.01em'}}>{title}</h3>
+                  <p style={{color:'#71717a',fontSize:'0.875rem',lineHeight:1.65,margin:0}}>{desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ── Bottom CTA ── */}
+          <section style={{
+            position:'relative', zIndex:1,
+            padding:'80px max(24px,calc((100vw - 1200px)/2))',
+            borderTop:'1px solid rgba(255,255,255,0.05)',
+            textAlign:'center',
+          }}>
+            <div style={{
+              maxWidth:560, margin:'0 auto',
+              background:'linear-gradient(135deg,rgba(59,130,246,0.08),rgba(139,92,246,0.08))',
+              border:'1px solid rgba(99,102,241,0.2)',
+              borderRadius:28, padding:'56px 40px',
+            }}>
+              <h2 style={{
+                fontSize:'clamp(1.6rem,3vw,2.2rem)',fontWeight:800,
+                letterSpacing:'-0.03em',margin:'0 0 12px',
+              }}>พร้อมลองใช้งานแล้วหรือยัง?</h2>
+              <p style={{color:'#a1a1aa',marginBottom:32,lineHeight:1.6}}>
+                ดู Prototype ของ Joinstick Learner App<br/>และสัมผัสประสบการณ์การเรียนรู้รูปแบบใหม่
+              </p>
+              <button onClick={handleEnter} className="btn-press" style={{
+                padding:'16px 40px', borderRadius:14, border:'none',
+                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+                color:'#fff', fontSize:'1rem', fontWeight:700,
+                cursor:'pointer', boxShadow:'0 8px 32px rgba(99,102,241,0.35)',
+                letterSpacing:'-0.01em',
+              }}>เข้าสู่ Prototype →</button>
+            </div>
+          </section>
+
+          {/* ── Footer ── */}
+          <footer style={{
+            position:'relative', zIndex:1,
+            padding:'24px max(24px,calc((100vw - 1200px)/2))',
+            borderTop:'1px solid rgba(255,255,255,0.05)',
+            display:'flex', alignItems:'center', justifyContent:'space-between',
+            flexWrap:'wrap', gap:12,
+          }}>
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              <div style={{
+                width:26,height:26,borderRadius:7,
+                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+                display:'flex',alignItems:'center',justifyContent:'center',
+              }}>
+                <svg width="14" height="14" viewBox="0 0 44 44" fill="none">
+                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
+                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
+                </svg>
+              </div>
+              <span style={{fontWeight:700,fontSize:'0.875rem'}}>Joinstick</span>
+            </div>
+            <span style={{color:'#52525b',fontSize:'0.8rem'}}>© 2025 Joinstick · Prototype Demo</span>
+          </footer>
+        </div>
+      );
+    }
+
     /* ── LearnerApp ──────────────────────────────── */
     function LearnerApp() {
       const [activeTab,   setActiveTab ] = useState('home');
@@ -2766,7 +3143,2110 @@
       );
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<LearnerApp />);
+    /* ── PreClassApp ─────────────────────────────── */
+    function PreClassApp({ onBack }) {
+      const [screen, setScreen] = useState('invite');
+      const [ptStep, setPtStep] = useState(0);
+      const [ptAnswers, setPtAnswers] = useState([]);
+      const [ptSelected, setPtSelected] = useState(null);
+
+      const classInfo = {
+        name: 'Leadership Excellence Program',
+        org: 'บริษัท ABC จำกัด',
+        sender: 'คุณวิไลวรรณ สุขสมบูรณ์',
+        senderRole: 'HR Manager',
+        dates: '10–14 มิถุนายน 2568',
+        duration: '5 วัน · 30 ชั่วโมง',
+        participants: 24,
+        sessions: [
+          { day:'วันที่ 1', title:'Foundation of Leadership',       time:'09:00–16:00' },
+          { day:'วันที่ 2', title:'Trust & Communication',          time:'09:00–16:00' },
+          { day:'วันที่ 3', title:'Decision Making & Conflict',     time:'09:00–16:00' },
+          { day:'วันที่ 4', title:'Coaching & Feedback',            time:'09:00–16:00' },
+          { day:'วันที่ 5', title:'Action Planning',                time:'09:00–15:00' },
+        ],
+        instructor: {
+          name: 'ดร. ศุภชัย มั่นคง',
+          title: 'Executive Coach & Leadership Consultant',
+          exp: '15+ ปีประสบการณ์',
+        },
+        outcomes: [
+          'เข้าใจ Leadership Style ของตัวเองอย่างลึกซึ้ง',
+          'สร้างความไว้วางใจและ Trust ในทีม',
+          'พัฒนาทักษะการสื่อสารและ Feedback',
+          'นำทีมในสถานการณ์ยากลำบากได้อย่างมีประสิทธิภาพ',
+        ],
+      };
+
+      const preTestQuestions = [
+        { id:1, category:'ประสบการณ์',
+          question:'คุณมีประสบการณ์ด้านการเป็นผู้นำทีมมานานเท่าไร?',
+          options:['น้อยกว่า 1 ปี','1–3 ปี','3–5 ปี','มากกว่า 5 ปี'] },
+        { id:2, category:'ความรู้เดิม',
+          question:'คุณเคยศึกษาหรือฝึกอบรมเรื่อง Leadership Style มาก่อนหรือไม่?',
+          options:['ไม่เคยเลย','เคยอ่านบ้างเล็กน้อย','เคยอบรม 1–2 ครั้ง','มีความรู้ค่อนข้างดีแล้ว'] },
+        { id:3, category:'ความท้าทาย',
+          question:'ความท้าทายด้านใดที่คุณเผชิญบ่อยที่สุดในฐานะผู้นำ?',
+          options:['สร้างแรงจูงใจในทีม','การสื่อสารที่มีประสิทธิภาพ','ตัดสินใจในสถานการณ์ยาก','จัดการความขัดแย้งในทีม'] },
+        { id:4, category:'สไตล์การนำ',
+          question:'คุณมักใช้รูปแบบการบริหารทีมแบบใดมากที่สุด?',
+          options:['สั่งการและควบคุม','ให้คำแนะนำและ Coach','ระดมความคิดร่วมกัน','มอบหมายและไว้ใจทีม'] },
+        { id:5, category:'เป้าหมาย',
+          question:'คุณคาดหวังจะได้อะไรจากคอร์สนี้มากที่สุด?',
+          options:['เทคนิคและเครื่องมือใหม่ๆ','เข้าใจตัวเองในฐานะผู้นำ','วิธีสร้างทีมที่แข็งแกร่ง','การสร้าง Trust ในองค์กร'] },
+      ];
+
+      const goNextPT = () => {
+        if (ptSelected === null) return;
+        const ans = [...ptAnswers, ptSelected];
+        if (ptStep < preTestQuestions.length - 1) {
+          setPtAnswers(ans); setPtStep(ptStep + 1); setPtSelected(null);
+        } else {
+          setPtAnswers(ans); setScreen('result');
+        }
+      };
+
+      /* ── Invite ── */
+      const renderInvite = () => (
+        <div style={{flex:1,display:'flex',flexDirection:'column',
+          background:'linear-gradient(160deg,#0c0c0f 0%,#111827 50%,#0c0c0f 100%)',
+          position:'relative',overflow:'hidden'}}>
+          <div style={{position:'absolute',top:-80,left:-80,width:260,height:260,
+            background:'radial-gradient(circle,rgba(245,158,11,0.12) 0%,transparent 65%)',
+            borderRadius:'50%',pointerEvents:'none'}}/>
+          <div style={{position:'absolute',bottom:60,right:-60,width:220,height:220,
+            background:'radial-gradient(circle,rgba(99,102,241,0.1) 0%,transparent 65%)',
+            borderRadius:'50%',pointerEvents:'none'}}/>
+
+          <div style={{flex:1,display:'flex',flexDirection:'column',
+            alignItems:'center',justifyContent:'center',padding:'24px 24px 0'}}>
+            {/* Brand */}
+            <div className="fade-in" style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
+              <div style={{width:32,height:32,borderRadius:9,
+                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+                display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <svg width="17" height="17" viewBox="0 0 44 44" fill="none">
+                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
+                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
+                  <rect x="13" y="34" width="18" height="4" rx="2" fill="white" fillOpacity="0.45"/>
+                </svg>
+              </div>
+              <span style={{fontWeight:700,fontSize:'0.9rem',color:'#d4d4d8'}}>Joinstick</span>
+            </div>
+
+            <div className="fade-in" style={{animationDelay:'0.06s',opacity:0,textAlign:'center',marginBottom:24}}>
+              <div style={{color:'#71717a',fontSize:'0.78rem',marginBottom:8}}>คุณได้รับคำเชิญจาก</div>
+              <div style={{display:'flex',alignItems:'center',gap:8,justifyContent:'center'}}>
+                <div style={{width:28,height:28,borderRadius:'50%',
+                  background:'linear-gradient(135deg,#f59e0b,#ef4444)',
+                  display:'flex',alignItems:'center',justifyContent:'center',
+                  fontSize:'0.75rem',fontWeight:700,color:'#fff'}}>ว</div>
+                <span style={{color:'#e4e4e7',fontSize:'0.875rem',fontWeight:600}}>
+                  {classInfo.sender} · {classInfo.senderRole}
+                </span>
+              </div>
+            </div>
+
+            {/* Invitation card */}
+            <div className="scale-in" style={{
+              animationDelay:'0.12s',opacity:0,width:'100%',
+              background:'rgba(255,255,255,0.04)',
+              border:'1px solid rgba(245,158,11,0.2)',
+              borderRadius:24,overflow:'hidden',
+              boxShadow:'0 24px 60px rgba(0,0,0,0.4)',
+            }}>
+              <div style={{
+                background:'linear-gradient(135deg,#1e1b4b,#312e81,#1e3a5f)',
+                padding:'22px 22px 18px',
+                borderBottom:'1px solid rgba(255,255,255,0.06)',
+                position:'relative',overflow:'hidden',
+              }}>
+                <div style={{position:'absolute',top:-30,right:-30,width:120,height:120,
+                  borderRadius:'50%',background:'rgba(255,255,255,0.04)'}}/>
+                <div style={{
+                  display:'inline-flex',alignItems:'center',gap:6,
+                  background:'rgba(245,158,11,0.15)',border:'1px solid rgba(245,158,11,0.3)',
+                  borderRadius:999,padding:'3px 10px',marginBottom:10,position:'relative',
+                }}>
+                  <span style={{width:5,height:5,borderRadius:'50%',background:'#f59e0b',display:'inline-block'}}/>
+                  <span style={{color:'#fbbf24',fontSize:'0.65rem',fontWeight:600,letterSpacing:'0.05em'}}>คำเชิญเข้าร่วมคอร์ส</span>
+                </div>
+                <h2 style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,
+                  margin:'0 0 4px',letterSpacing:'-0.02em',lineHeight:1.3,position:'relative'}}>
+                  {classInfo.name}
+                </h2>
+                <p style={{color:'#93c5fd',fontSize:'0.73rem',margin:0,position:'relative'}}>{classInfo.org}</p>
+              </div>
+              <div style={{padding:'16px 22px'}}>
+                {[
+                  {icon:'📅',label:'วันที่จัดอบรม',value:classInfo.dates},
+                  {icon:'⏱',label:'ระยะเวลา',value:classInfo.duration},
+                  {icon:'👥',label:'ผู้เข้าร่วม',value:`${classInfo.participants} คน`},
+                  {icon:'🎓',label:'วิทยากร',value:classInfo.instructor.name},
+                ].map(({icon,label,value})=>(
+                  <div key={label} style={{display:'flex',alignItems:'center',gap:12,
+                    padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
+                    <span style={{fontSize:'1rem',width:22,textAlign:'center'}}>{icon}</span>
+                    <div style={{flex:1}}>
+                      <div style={{color:'#71717a',fontSize:'0.63rem'}}>{label}</div>
+                      <div style={{color:'#e4e4e7',fontSize:'0.79rem',fontWeight:600,marginTop:1}}>{value}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="fade-in" style={{animationDelay:'0.24s',opacity:0,
+            padding:'20px 24px 32px',display:'flex',flexDirection:'column',gap:10}}>
+            <button onClick={()=>setScreen('overview')} className="btn-press" style={{
+              width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+              background:'linear-gradient(135deg,#f59e0b,#d97706)',
+              color:'#fff',fontSize:'0.95rem',fontWeight:700,
+              cursor:'pointer',boxShadow:'0 8px 24px rgba(245,158,11,0.3)',
+            }}>ยอมรับคำเชิญ ✓</button>
+            <button style={{
+              width:'100%',padding:'11px 0',borderRadius:16,
+              border:'1px solid rgba(255,255,255,0.07)',background:'transparent',
+              color:'#52525b',fontSize:'0.82rem',cursor:'pointer',
+            }}>ปฏิเสธ</button>
+          </div>
+        </div>
+      );
+
+      /* ── Class Overview ── */
+      const renderOverview = () => (
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+          <div style={{display:'flex',alignItems:'center',gap:12,padding:'12px 20px',
+            borderBottom:'1px solid rgba(255,255,255,0.06)',flexShrink:0}}>
+            <button onClick={()=>setScreen('invite')} style={{
+              width:32,height:32,borderRadius:'50%',
+              background:'rgba(255,255,255,0.06)',border:'none',
+              display:'flex',alignItems:'center',justifyContent:'center',
+              cursor:'pointer',color:'#fff',fontSize:'1rem'}}>←</button>
+            <span style={{fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>รายละเอียดคอร์ส</span>
+          </div>
+
+          <div style={{flex:1,overflowY:'auto',paddingBottom:100}}>
+            {/* Banner */}
+            <div style={{background:'linear-gradient(135deg,#1e1b4b,#312e81,#1e3a5f)',
+              padding:'22px 20px',position:'relative',overflow:'hidden'}}>
+              <div style={{position:'absolute',top:-40,right:-40,width:160,height:160,
+                borderRadius:'50%',background:'rgba(255,255,255,0.04)'}}/>
+              <div style={{display:'inline-flex',alignItems:'center',gap:5,
+                background:'rgba(245,158,11,0.2)',border:'1px solid rgba(245,158,11,0.3)',
+                borderRadius:999,padding:'3px 10px',marginBottom:10}}>
+                <span style={{color:'#fbbf24',fontSize:'0.65rem',fontWeight:600}}>✓ ยืนยันแล้ว</span>
+              </div>
+              <h2 style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,
+                margin:'0 0 4px',letterSpacing:'-0.02em',lineHeight:1.3}}>{classInfo.name}</h2>
+              <p style={{color:'#93c5fd',fontSize:'0.73rem',margin:'0 0 14px'}}>{classInfo.org}</p>
+              <div style={{display:'flex',gap:14,flexWrap:'wrap'}}>
+                {[['📅',classInfo.dates],['⏱',classInfo.duration],['👥',`${classInfo.participants} คน`]].map(([ic,v])=>(
+                  <div key={v} style={{display:'flex',alignItems:'center',gap:4}}>
+                    <span style={{fontSize:'0.73rem'}}>{ic}</span>
+                    <span style={{color:'#c7d2fe',fontSize:'0.7rem',fontWeight:500}}>{v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{padding:'20px 20px 0'}}>
+              {/* Outcomes */}
+              <h3 style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:700,margin:'0 0 12px'}}>สิ่งที่คุณจะได้เรียนรู้</h3>
+              {classInfo.outcomes.map((o,i)=>(
+                <div key={i} style={{display:'flex',alignItems:'flex-start',gap:10,marginBottom:10}}>
+                  <div style={{width:20,height:20,borderRadius:'50%',flexShrink:0,
+                    background:'rgba(99,102,241,0.15)',border:'1px solid rgba(99,102,241,0.3)',
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    fontSize:'0.6rem',color:'#818cf8',fontWeight:700,marginTop:1}}>{i+1}</div>
+                  <span style={{color:'#a1a1aa',fontSize:'0.8rem',lineHeight:1.5}}>{o}</span>
+                </div>
+              ))}
+
+              {/* Schedule */}
+              <h3 style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:700,margin:'20px 0 12px'}}>ตารางการอบรม</h3>
+              {classInfo.sessions.map((s,i)=>(
+                <div key={i} style={{display:'flex',gap:12,padding:'10px 14px',
+                  background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
+                  borderRadius:12,marginBottom:8,alignItems:'center'}}>
+                  <div style={{width:34,height:34,borderRadius:10,flexShrink:0,
+                    background:'rgba(99,102,241,0.12)',
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    fontSize:'0.65rem',fontWeight:700,color:'#818cf8'}}>D{i+1}</div>
+                  <div style={{flex:1}}>
+                    <div style={{color:'#e4e4e7',fontSize:'0.79rem',fontWeight:600}}>{s.title}</div>
+                    <div style={{color:'#52525b',fontSize:'0.68rem',marginTop:2}}>{s.day} · {s.time}</div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Instructor */}
+              <h3 style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:700,margin:'20px 0 12px'}}>วิทยากร</h3>
+              <div style={{display:'flex',alignItems:'center',gap:14,
+                background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
+                borderRadius:16,padding:'16px 14px',marginBottom:8}}>
+                <div style={{width:46,height:46,borderRadius:'50%',flexShrink:0,
+                  background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                  display:'flex',alignItems:'center',justifyContent:'center',
+                  fontSize:'1.1rem',fontWeight:800,color:'#fff'}}>ศ</div>
+                <div>
+                  <div style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:700}}>{classInfo.instructor.name}</div>
+                  <div style={{color:'#71717a',fontSize:'0.7rem',marginTop:2}}>{classInfo.instructor.title}</div>
+                  <div style={{color:'#6366f1',fontSize:'0.68rem',marginTop:3}}>{classInfo.instructor.exp}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{position:'absolute',bottom:0,left:0,right:0,
+            padding:'16px 20px 28px',
+            background:'linear-gradient(to top,#09090b 70%,transparent)'}}>
+            <button onClick={()=>setScreen('pretest-intro')} className="btn-press" style={{
+              width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+              background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+              color:'#fff',fontSize:'0.95rem',fontWeight:700,
+              cursor:'pointer',boxShadow:'0 8px 24px rgba(99,102,241,0.35)',
+            }}>เริ่มทำ Pre-Test →</button>
+          </div>
+        </div>
+      );
+
+      /* ── Pre-Test Intro ── */
+      const renderPreTestIntro = () => (
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',
+          position:'relative',overflow:'hidden'}}>
+          <div style={{position:'absolute',top:-60,right:-60,width:200,height:200,
+            background:'radial-gradient(circle,rgba(99,102,241,0.1) 0%,transparent 65%)',
+            borderRadius:'50%',pointerEvents:'none'}}/>
+          <div style={{display:'flex',alignItems:'center',gap:12,padding:'12px 20px',
+            borderBottom:'1px solid rgba(255,255,255,0.06)',flexShrink:0}}>
+            <button onClick={()=>setScreen('overview')} style={{
+              width:32,height:32,borderRadius:'50%',background:'rgba(255,255,255,0.06)',
+              border:'none',display:'flex',alignItems:'center',justifyContent:'center',
+              cursor:'pointer',color:'#fff',fontSize:'1rem'}}>←</button>
+            <span style={{fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>แบบทดสอบก่อนเรียน</span>
+          </div>
+
+          <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',
+            justifyContent:'center',padding:'32px 24px'}}>
+            <div className="bounce-in" style={{
+              width:80,height:80,borderRadius:24,
+              background:'linear-gradient(135deg,rgba(99,102,241,0.2),rgba(139,92,246,0.2))',
+              border:'1px solid rgba(99,102,241,0.3)',
+              display:'flex',alignItems:'center',justifyContent:'center',
+              fontSize:'2rem',marginBottom:24,
+              boxShadow:'0 8px 32px rgba(99,102,241,0.2)',
+            }}>📝</div>
+
+            <h2 style={{fontSize:'1.3rem',fontWeight:800,letterSpacing:'-0.02em',
+              textAlign:'center',margin:'0 0 10px'}}>Pre-Test ก่อนเรียน</h2>
+            <p style={{color:'#71717a',fontSize:'0.875rem',textAlign:'center',
+              lineHeight:1.7,margin:'0 0 28px'}}>
+              แบบทดสอบนี้ช่วยให้เราปรับ<br/>การเรียนรู้ให้เหมาะกับคุณโดยเฉพาะ<br/>
+              <span style={{color:'#4b5563'}}>ไม่มีคะแนน · ไม่มีผิดถูก</span>
+            </p>
+
+            <div style={{width:'100%',display:'flex',flexDirection:'column',gap:10,marginBottom:28}}>
+              {[
+                {icon:'⏱',label:'ใช้เวลาประมาณ',value:'3–5 นาที'},
+                {icon:'❓',label:'จำนวนคำถาม',value:`${preTestQuestions.length} ข้อ`},
+                {icon:'🎯',label:'วัตถุประสงค์',value:'ปรับ Learning Path ให้เหมาะกับคุณ'},
+              ].map(({icon,label,value})=>(
+                <div key={label} style={{display:'flex',alignItems:'center',gap:12,
+                  background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
+                  borderRadius:14,padding:'12px 16px'}}>
+                  <span style={{fontSize:'1.1rem'}}>{icon}</span>
+                  <div>
+                    <div style={{color:'#71717a',fontSize:'0.65rem'}}>{label}</div>
+                    <div style={{color:'#e4e4e7',fontSize:'0.8rem',fontWeight:600,marginTop:1}}>{value}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button onClick={()=>{setPtStep(0);setPtSelected(null);setPtAnswers([]);setScreen('pretest');}}
+              className="btn-press" style={{
+                width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+                background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                color:'#fff',fontSize:'0.95rem',fontWeight:700,
+                cursor:'pointer',boxShadow:'0 8px 24px rgba(99,102,241,0.35)',
+              }}>เริ่มทำเลย →</button>
+          </div>
+        </div>
+      );
+
+      /* ── Pre-Test Questions ── */
+      const renderPreTest = () => {
+        const q = preTestQuestions[ptStep];
+        return (
+          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b'}}>
+            <div style={{padding:'16px 20px 0',flexShrink:0}}>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
+                <button onClick={()=>{
+                  if (ptStep===0) setScreen('pretest-intro');
+                  else { setPtStep(ptStep-1); setPtSelected(ptAnswers[ptStep-1]??null); }
+                }} style={{width:32,height:32,borderRadius:'50%',background:'rgba(255,255,255,0.06)',
+                  border:'none',display:'flex',alignItems:'center',justifyContent:'center',
+                  cursor:'pointer',color:'#fff',fontSize:'1rem'}}>←</button>
+                <span style={{color:'#71717a',fontSize:'0.8rem',fontWeight:500}}>
+                  {ptStep+1} / {preTestQuestions.length}
+                </span>
+                <div style={{width:32}}/>
+              </div>
+              <div style={{height:3,background:'rgba(255,255,255,0.07)',borderRadius:999,marginBottom:24}}>
+                <div style={{
+                  width:`${((ptStep+1)/preTestQuestions.length)*100}%`,
+                  height:'100%',background:'linear-gradient(90deg,#6366f1,#8b5cf6)',
+                  borderRadius:999,transition:'width 0.35s ease',
+                }}/>
+              </div>
+            </div>
+
+            <div style={{flex:1,padding:'0 20px',overflowY:'auto'}}>
+              <div className="fade-in" key={ptStep}>
+                <div style={{display:'inline-flex',alignItems:'center',
+                  background:'rgba(99,102,241,0.1)',border:'1px solid rgba(99,102,241,0.2)',
+                  borderRadius:999,padding:'3px 10px',marginBottom:14}}>
+                  <span style={{color:'#a5b4fc',fontSize:'0.68rem',fontWeight:600}}>{q.category}</span>
+                </div>
+                <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,
+                  lineHeight:1.5,margin:'0 0 22px',letterSpacing:'-0.01em'}}>{q.question}</h3>
+                <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                  {q.options.map((opt,i)=>{
+                    const sel = ptSelected===i;
+                    return (
+                      <button key={i} onClick={()=>setPtSelected(i)} className="btn-press" style={{
+                        width:'100%',textAlign:'left',padding:'13px 16px',borderRadius:14,
+                        background: sel?'rgba(99,102,241,0.15)':'rgba(255,255,255,0.03)',
+                        border: sel?'1px solid rgba(99,102,241,0.5)':'1px solid rgba(255,255,255,0.07)',
+                        color: sel?'#c7d2fe':'#a1a1aa',
+                        fontSize:'0.875rem',fontWeight:sel?600:400,
+                        cursor:'pointer',transition:'all 0.15s',
+                        display:'flex',alignItems:'center',gap:12,
+                      }}>
+                        <div style={{
+                          width:22,height:22,borderRadius:'50%',flexShrink:0,
+                          background:sel?'#6366f1':'rgba(255,255,255,0.06)',
+                          border:sel?'none':'1px solid rgba(255,255,255,0.1)',
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'0.65rem',fontWeight:700,color:sel?'#fff':'#52525b',
+                        }}>{String.fromCharCode(65+i)}</div>
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div style={{padding:'16px 20px 32px',flexShrink:0}}>
+              <button onClick={goNextPT} className="btn-press" style={{
+                width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+                background:ptSelected!==null?'linear-gradient(135deg,#6366f1,#8b5cf6)':'rgba(255,255,255,0.05)',
+                color:ptSelected!==null?'#fff':'#3f3f46',
+                fontSize:'0.95rem',fontWeight:700,
+                cursor:ptSelected!==null?'pointer':'default',
+                boxShadow:ptSelected!==null?'0 8px 24px rgba(99,102,241,0.3)':'none',
+                transition:'all 0.2s',
+              }}>
+                {ptStep<preTestQuestions.length-1?'ถัดไป →':'ส่งคำตอบ ✓'}
+              </button>
+            </div>
+          </div>
+        );
+      };
+
+      /* ── Pre-Test Result ── */
+      const renderResult = () => {
+        const score = ptAnswers.reduce((a,b)=>a+b,0);
+        const levels = ['Emerging Leader','Developing Leader','Practitioner','Advanced Leader'];
+        const level = levels[Math.min(3,Math.floor(score/3))];
+        const focusAreas = ['Trust & Psychological Safety','Communication & Feedback','Decision Making Under Pressure'];
+        return (
+          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflowY:'auto',paddingBottom:32}}>
+            <div style={{background:'linear-gradient(135deg,#1e1b4b,#312e81)',
+              padding:'32px 20px',textAlign:'center',position:'relative',overflow:'hidden'}}>
+              <div style={{position:'absolute',top:-30,left:-30,width:120,height:120,
+                borderRadius:'50%',background:'rgba(255,255,255,0.04)'}}/>
+              <div className="bounce-in" style={{fontSize:'2.5rem',marginBottom:12}}>🎉</div>
+              <h2 style={{color:'#fff',fontSize:'1.2rem',fontWeight:800,margin:'0 0 6px'}}>ทำ Pre-Test เสร็จแล้ว!</h2>
+              <p style={{color:'#a5b4fc',fontSize:'0.8rem',margin:0}}>
+                เราจะปรับ Learning Path ให้เหมาะกับคุณโดยเฉพาะ
+              </p>
+            </div>
+
+            <div style={{padding:'20px'}}>
+              <div style={{background:'rgba(99,102,241,0.08)',border:'1px solid rgba(99,102,241,0.2)',
+                borderRadius:18,padding:'20px',marginBottom:16,textAlign:'center'}}>
+                <div style={{color:'#71717a',fontSize:'0.72rem',marginBottom:6}}>ระดับเริ่มต้นของคุณ</div>
+                <div style={{fontSize:'1.2rem',fontWeight:800,color:'#a5b4fc',
+                  letterSpacing:'-0.02em',marginBottom:4}}>{level}</div>
+                <div style={{color:'#4b5563',fontSize:'0.7rem'}}>จะประเมินใหม่หลังจบคอร์ส</div>
+              </div>
+
+              <h3 style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:700,margin:'0 0 12px'}}>
+                3 หัวข้อที่ควรโฟกัส
+              </h3>
+              {focusAreas.map((f,i)=>(
+                <div key={i} style={{display:'flex',alignItems:'center',gap:12,
+                  background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
+                  borderRadius:12,padding:'12px 14px',marginBottom:8}}>
+                  <div style={{width:28,height:28,borderRadius:8,flexShrink:0,
+                    background:'rgba(99,102,241,0.12)',
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    fontSize:'0.7rem',fontWeight:700,color:'#818cf8'}}>{i+1}</div>
+                  <span style={{color:'#d4d4d8',fontSize:'0.82rem',fontWeight:500}}>{f}</span>
+                </div>
+              ))}
+
+              <div style={{marginTop:16,background:'rgba(245,158,11,0.08)',
+                border:'1px solid rgba(245,158,11,0.2)',borderRadius:16,padding:'18px'}}>
+                <div style={{display:'flex',gap:10,alignItems:'flex-start'}}>
+                  <span style={{fontSize:'1.2rem'}}>📅</span>
+                  <div>
+                    <div style={{color:'#fbbf24',fontSize:'0.82rem',fontWeight:700,marginBottom:4}}>ขั้นตอนต่อไป</div>
+                    <div style={{color:'#78350f',fontSize:'0.78rem',lineHeight:1.65}}>
+                      รอพบกันในวันอบรม<br/>
+                      <strong style={{color:'#fbbf24'}}>{classInfo.dates}</strong><br/>
+                      ระบบจะแจ้งเตือนคุณก่อนวันเรียน 1 วัน
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button onClick={onBack} className="btn-press" style={{
+                width:'100%',marginTop:20,padding:'14px 0',borderRadius:16,
+                border:'1px solid rgba(255,255,255,0.08)',
+                background:'rgba(255,255,255,0.04)',
+                color:'#a1a1aa',fontSize:'0.875rem',fontWeight:600,cursor:'pointer',
+              }}>← กลับหน้าเลือก Phase</button>
+            </div>
+          </div>
+        );
+      };
+
+      return (
+        <PhoneFrame>
+          {screen==='invite'        && renderInvite()}
+          {screen==='overview'      && renderOverview()}
+          {screen==='pretest-intro' && renderPreTestIntro()}
+          {screen==='pretest'       && renderPreTest()}
+          {screen==='result'        && renderResult()}
+        </PhoneFrame>
+      );
+    }
+
+    /* ── InClassApp ─────────────────────────────── */
+    function InClassApp({ onBack }) {
+      const [screen, setScreen] = useState('checkin');
+
+      // check-in
+      const [digits, setDigits] = useState(['','','','']);
+      const [joined,  setJoined ] = useState(false);
+      const r0=useRef(null),r1=useRef(null),r2=useRef(null),r3=useRef(null);
+      const dRefs=[r0,r1,r2,r3];
+
+      // poll
+      const [pollSel,  setPollSel ] = useState(null);
+      const [pollDone, setPollDone] = useState(false);
+
+      // group challenge
+      const [grpSel,  setGrpSel ] = useState(null);
+      const [grpDone, setGrpDone] = useState(false);
+
+      // live quiz
+      const [qStep,    setQStep   ] = useState(0);
+      const [qSel,     setQSel    ] = useState(null);
+      const [qShown,   setQShown  ] = useState(false);
+      const [qScore,   setQScore  ] = useState(0);
+      const [qDone,    setQDone   ] = useState(false);
+
+      // Q&A
+      const [qaText,   setQaText  ] = useState('');
+      const [qaSent,   setQaSent  ] = useState(false);
+      const [qaLiked,  setQaLiked ] = useState([false,false,false]);
+      const [qaCount,  setQaCount ] = useState([12,8,5]);
+
+      // reflection
+      const [rfRate,   setRfRate  ] = useState(null);
+      const [rfText,   setRfText  ] = useState('');
+      const [rfDone,   setRfDone  ] = useState(false);
+
+      useEffect(() => {
+        if (screen==='checkin' && !joined)
+          setTimeout(()=>dRefs[0].current?.focus(), 120);
+      }, [screen]);
+
+      const onDigit = (i,v) => {
+        if (!/^\d*$/.test(v)) return;
+        const n=[...digits]; n[i]=v.slice(-1); setDigits(n);
+        if (v && i<3) dRefs[i+1].current?.focus();
+        if (n.every(d=>d)) setTimeout(()=>setJoined(true),350);
+      };
+      const onKey = (i,e) => {
+        if (e.key==='Backspace'&&!digits[i]&&i>0) dRefs[i-1].current?.focus();
+      };
+
+      const SESSION={
+        day:2,total:5,title:'Trust & Communication',
+        course:'Leadership Excellence Program',
+        instructor:'ดร. ศุภชัย มั่นคง',
+        participants:24, online:21,
+      };
+      const AGENDA=[
+        {time:'09:00',label:'Opening & Recap',done:true},
+        {time:'09:30',label:'Trust Frameworks Deep Dive',done:true},
+        {time:'10:30',label:'Live Poll: Trust in Your Team',active:true},
+        {time:'11:00',label:'Group Challenge',done:false},
+        {time:'13:00',label:'Communication Styles Workshop',done:false},
+        {time:'14:30',label:'Live Quiz',done:false},
+        {time:'15:30',label:'Reflection & Wrap-up',done:false},
+      ];
+      const ACTS=[
+        {id:'poll', icon:'📊',label:'Live Poll',     sub:'กำลัง Live',  live:true, color:'#06b6d4'},
+        {id:'group',icon:'👥',label:'Group Challenge',sub:'เริ่ม 11:00',live:false,color:'#10b981'},
+        {id:'quiz', icon:'⚡',label:'Live Quiz',      sub:'เริ่ม 14:30',live:false,color:'#f59e0b'},
+        {id:'qna',  icon:'💬',label:'Q&A',            sub:'21 คำถาม',   live:true, color:'#8b5cf6'},
+      ];
+      const POLL={
+        q:'ในทีมของคุณ Trust ด้านใดที่ท้าทายมากที่สุดในปัจจุบัน?',
+        opts:['Competence Trust','Integrity Trust','Benevolence Trust','Openness Trust'],
+        results:[34,28,22,16],
+      };
+      const GROUP={
+        q:'ทีมของคุณจะใช้ Trust Lens ใดแก้ปัญหาความขัดแย้ง?',
+        opts:[
+          'Integrity Trust — พูดความจริงและโปร่งใส',
+          'Competence Trust — แสดงความสามารถให้เห็นจริง',
+          'Benevolence Trust — แสดงความห่วงใยที่แท้จริง',
+          'ผสมหลาย Trust Lens ตามสถานการณ์',
+        ],
+        board:[
+          {name:'ทีมน้ำเงิน',pts:380},
+          {name:'ทีมของคุณ',pts:350,you:true},
+          {name:'ทีมเขียว',pts:320},
+        ],
+      };
+      const QUIZ=[
+        {q:'Leadership Style ใดเน้นการสร้างวิสัยทัศน์ระยะยาว?',
+         opts:['Affiliative','Visionary','Commanding','Pacesetting'],c:1,pts:150},
+        {q:'Psychological Safety คือบรรยากาศแบบใด?',
+         opts:['ปลอดภัยจากอุบัติเหตุ','ไม่มีความขัดแย้ง','กล้าแสดงออกและยอมรับความผิดพลาด','ทำงาน Remote ได้'],c:2,pts:150},
+        {q:'Trust Lens ใดเกี่ยวข้องกับความซื่อสัตย์โดยตรง?',
+         opts:['Competence Trust','Benevolence Trust','Integrity Trust','Reliability Trust'],c:2,pts:150},
+      ];
+      const QNA_LIST=[
+        {user:'สมหมาย ท.',av:'ส',q:'Visionary Leadership เหมาะกับทุก situation ไหมครับ?',time:'10:15'},
+        {user:'วิไลวรรณ ส.',av:'ว',q:'จะรู้ได้อย่างไรว่าทีมมี Trust ในระดับที่พอเพียงแล้ว?',time:'10:20'},
+        {user:'ประภาส ก.',av:'ป',q:'ถ้าทีมมี Trust ต่ำ ควรเริ่มจาก Trust Lens ไหนก่อน?',time:'10:28'},
+      ];
+
+      const Hdr=({title,onBack:ob})=>(
+        <div style={{display:'flex',alignItems:'center',gap:12,padding:'12px 20px',
+          borderBottom:'1px solid rgba(255,255,255,0.06)',flexShrink:0}}>
+          <button onClick={ob} style={{width:32,height:32,borderRadius:'50%',
+            background:'rgba(255,255,255,0.06)',border:'none',
+            display:'flex',alignItems:'center',justifyContent:'center',
+            cursor:'pointer',color:'#fff',fontSize:'1rem'}}>←</button>
+          <span style={{fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>{title}</span>
+        </div>
+      );
+
+      /* ── 1. Check-in ── */
+      const renderCheckin=()=>(
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',
+          position:'relative',overflow:'hidden'}}>
+          <div style={{position:'absolute',top:-60,left:-60,width:200,height:200,
+            background:'radial-gradient(circle,rgba(6,182,212,0.12) 0%,transparent 65%)',
+            borderRadius:'50%',pointerEvents:'none'}}/>
+          {joined?(
+            <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',
+              justifyContent:'center',padding:'32px 24px',textAlign:'center'}}>
+              <div className="bounce-in" style={{width:72,height:72,borderRadius:'50%',
+                background:'linear-gradient(135deg,#06b6d4,#0891b2)',
+                display:'flex',alignItems:'center',justifyContent:'center',
+                fontSize:'2rem',marginBottom:20,
+                boxShadow:'0 8px 32px rgba(6,182,212,0.3)'}}>✓</div>
+              <h2 style={{fontWeight:800,fontSize:'1.2rem',margin:'0 0 6px'}}>เข้าร่วมสำเร็จ!</h2>
+              <p style={{color:'#06b6d4',fontSize:'0.82rem',margin:'0 0 24px'}}>{SESSION.title} · Day {SESSION.day}/{SESSION.total}</p>
+              <div style={{display:'flex',gap:20,marginBottom:28}}>
+                {[['👥',`${SESSION.participants} คน`],['🟢',`${SESSION.online} Online`],['📅',`Day ${SESSION.day}/${SESSION.total}`]].map(([ic,v])=>(
+                  <div key={v} style={{textAlign:'center'}}>
+                    <div style={{fontSize:'1.1rem'}}>{ic}</div>
+                    <div style={{color:'#a1a1aa',fontSize:'0.7rem',marginTop:2}}>{v}</div>
+                  </div>
+                ))}
+              </div>
+              <button onClick={()=>setScreen('dashboard')} className="btn-press" style={{
+                width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+                background:'linear-gradient(135deg,#06b6d4,#0891b2)',
+                color:'#fff',fontSize:'0.95rem',fontWeight:700,cursor:'pointer',
+                boxShadow:'0 8px 24px rgba(6,182,212,0.3)'}}>เข้าสู่ Session →</button>
+            </div>
+          ):(
+            <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',
+              justifyContent:'center',padding:'32px 24px'}}>
+              <div style={{width:72,height:72,borderRadius:22,
+                background:'linear-gradient(135deg,rgba(6,182,212,0.2),rgba(8,145,178,0.15))',
+                border:'1px solid rgba(6,182,212,0.3)',
+                display:'flex',alignItems:'center',justifyContent:'center',
+                fontSize:'2.2rem',marginBottom:20}}>🏫</div>
+              <h2 style={{fontWeight:800,fontSize:'1.2rem',letterSpacing:'-0.02em',margin:'0 0 6px'}}>เข้าร่วม Session</h2>
+              <p style={{color:'#71717a',fontSize:'0.8rem',textAlign:'center',margin:'0 0 26px',lineHeight:1.6}}>
+                กรอกรหัส 4 หลักที่วิทยากรให้บนจอ<br/>
+                <span style={{color:'#4b5563'}}>Day {SESSION.day} · {SESSION.title}</span>
+              </p>
+              <div style={{display:'flex',gap:12,marginBottom:24}}>
+                {digits.map((d,i)=>(
+                  <input key={i} ref={dRefs[i]} value={d}
+                    inputMode="numeric" maxLength={1}
+                    onChange={e=>onDigit(i,e.target.value)}
+                    onKeyDown={e=>onKey(i,e)}
+                    style={{width:56,height:64,borderRadius:16,
+                      background:'rgba(255,255,255,0.05)',
+                      border:`1.5px solid ${d?'rgba(6,182,212,0.5)':'rgba(255,255,255,0.1)'}`,
+                      color:'#fff',fontSize:'1.6rem',fontWeight:700,
+                      textAlign:'center',outline:'none',transition:'border-color 0.15s'}}/>
+                ))}
+              </div>
+              <div style={{width:'100%',padding:'13px 16px',borderRadius:14,
+                background:'rgba(6,182,212,0.06)',border:'1px solid rgba(6,182,212,0.15)',marginBottom:24}}>
+                <div style={{color:'#71717a',fontSize:'0.65rem',marginBottom:3}}>กำลังเข้าร่วม</div>
+                <div style={{color:'#e4e4e7',fontSize:'0.85rem',fontWeight:600}}>{SESSION.title}</div>
+                <div style={{color:'#06b6d4',fontSize:'0.72rem',marginTop:2}}>{SESSION.course} · Day {SESSION.day}/{SESSION.total}</div>
+              </div>
+              <button onClick={onBack} style={{background:'none',border:'none',color:'#52525b',fontSize:'0.8rem',cursor:'pointer'}}>
+                ← กลับหน้าเลือก Phase
+              </button>
+            </div>
+          )}
+        </div>
+      );
+
+      /* ── 2. Dashboard ── */
+      const renderDashboard=()=>(
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+          <div style={{padding:'14px 20px',borderBottom:'1px solid rgba(255,255,255,0.06)',
+            background:'rgba(6,182,212,0.04)',flexShrink:0}}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:6}}>
+              <div>
+                <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
+                  <span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>
+                  <span style={{color:'#22c55e',fontSize:'0.68rem',fontWeight:600}}>LIVE · Day {SESSION.day}/{SESSION.total}</span>
+                </div>
+                <div style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:800,letterSpacing:'-0.02em'}}>{SESSION.title}</div>
+              </div>
+              <div style={{textAlign:'right'}}>
+                <div style={{color:'#71717a',fontSize:'0.65rem'}}>Online</div>
+                <div style={{color:'#06b6d4',fontSize:'0.9rem',fontWeight:700}}>{SESSION.online}/{SESSION.participants}</div>
+              </div>
+            </div>
+            <div style={{color:'#52525b',fontSize:'0.7rem'}}>{SESSION.instructor} · {SESSION.course}</div>
+          </div>
+
+          <div style={{flex:1,overflowY:'auto',padding:'16px 20px 20px'}}>
+            <h3 style={{color:'#f4f4f5',fontSize:'0.82rem',fontWeight:700,margin:'0 0 10px'}}>กิจกรรมวันนี้</h3>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:20}}>
+              {ACTS.map(({id,icon,label,sub,live,color})=>(
+                <button key={id} onClick={()=>setScreen(id)} className="btn-press" style={{
+                  padding:'14px 12px',borderRadius:16,
+                  background:live?`${color}10`:'rgba(255,255,255,0.03)',
+                  border:`1px solid ${live?`${color}30`:'rgba(255,255,255,0.07)'}`,
+                  cursor:'pointer',textAlign:'left',
+                }}>
+                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:6}}>
+                    <span style={{fontSize:'1.2rem'}}>{icon}</span>
+                    {live&&<span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>}
+                  </div>
+                  <div style={{color:'#f4f4f5',fontSize:'0.8rem',fontWeight:700,marginBottom:2}}>{label}</div>
+                  <div style={{color:live?color:'#52525b',fontSize:'0.65rem',fontWeight:live?600:400}}>{sub}</div>
+                </button>
+              ))}
+            </div>
+
+            <h3 style={{color:'#f4f4f5',fontSize:'0.82rem',fontWeight:700,margin:'0 0 10px'}}>ตารางวันนี้</h3>
+            {AGENDA.map(({time,label,done,active},i)=>(
+              <div key={i} style={{display:'flex',gap:12,padding:'8px 0',
+                borderBottom:'1px solid rgba(255,255,255,0.04)'}}>
+                <span style={{width:36,flexShrink:0,textAlign:'right',paddingTop:1,
+                  color:active?'#06b6d4':done?'#3f3f46':'#52525b',fontSize:'0.67rem',fontWeight:600}}>{time}</span>
+                <div style={{display:'flex',gap:8,alignItems:'center',flex:1}}>
+                  <div style={{width:8,height:8,borderRadius:'50%',flexShrink:0,marginTop:1,
+                    background:active?'#06b6d4':done?'#22c55e':'rgba(255,255,255,0.1)',
+                    boxShadow:active?'0 0 0 3px rgba(6,182,212,0.15)':done?'0 0 0 3px rgba(34,197,94,0.1)':'none'}}/>
+                  <span style={{fontSize:'0.78rem',lineHeight:1.3,fontWeight:active?600:400,
+                    color:active?'#f4f4f5':done?'#52525b':'#71717a',
+                    textDecoration:done?'line-through':'none'}}>{label}</span>
+                  {active&&<span style={{fontSize:'0.6rem',fontWeight:700,color:'#06b6d4',
+                    background:'rgba(6,182,212,0.1)',borderRadius:999,padding:'1px 6px'}}>LIVE</span>}
+                </div>
+              </div>
+            ))}
+
+            <div style={{marginTop:14,background:'rgba(255,255,255,0.02)',
+              border:'1px solid rgba(255,255,255,0.05)',borderRadius:12,
+              padding:'12px 14px',display:'flex',alignItems:'center',gap:10}}>
+              <div style={{width:32,height:32,borderRadius:'50%',flexShrink:0,
+                background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                display:'flex',alignItems:'center',justifyContent:'center',
+                fontSize:'0.75rem',fontWeight:700,color:'#fff'}}>ศ</div>
+              <div>
+                <div style={{color:'#71717a',fontSize:'0.65rem'}}>{SESSION.instructor}</div>
+                <div style={{color:'#d4d4d8',fontSize:'0.75rem',marginTop:1,lineHeight:1.4}}>
+                  "เชิญทำ Live Poll ก่อนเลยนะครับ เพื่อดูว่าทีมของพวกเรามี Trust ด้านใดที่ต้องพัฒนา"
+                </div>
+              </div>
+            </div>
+
+            <div style={{display:'flex',gap:10,marginTop:12}}>
+              <button onClick={()=>setScreen('reflection')} className="btn-press" style={{
+                flex:1,padding:'12px 0',borderRadius:14,border:'1px solid rgba(255,255,255,0.07)',
+                background:'rgba(255,255,255,0.03)',color:'#a1a1aa',
+                fontSize:'0.8rem',fontWeight:600,cursor:'pointer'}}>🪞 Reflection</button>
+              <button onClick={onBack} style={{
+                flex:1,padding:'12px 0',borderRadius:14,border:'1px solid rgba(255,255,255,0.06)',
+                background:'transparent',color:'#52525b',fontSize:'0.8rem',cursor:'pointer'}}>← Phase</button>
+            </div>
+          </div>
+        </div>
+      );
+
+      /* ── 3. Live Poll ── */
+      const renderPoll=()=>(
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+          <Hdr title="Live Poll" onBack={()=>setScreen('dashboard')}/>
+          <div style={{flex:1,overflowY:'auto',padding:'20px'}}>
+            <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:14}}>
+              <span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>
+              <span style={{color:'#22c55e',fontSize:'0.72rem',fontWeight:600}}>LIVE · {SESSION.participants} คนกำลังตอบ</span>
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16,
+              padding:'10px 12px',background:'rgba(6,182,212,0.06)',borderRadius:12,
+              border:'1px solid rgba(6,182,212,0.12)'}}>
+              <div style={{width:28,height:28,borderRadius:'50%',flexShrink:0,
+                background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                display:'flex',alignItems:'center',justifyContent:'center',
+                fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>ศ</div>
+              <div>
+                <div style={{color:'#71717a',fontSize:'0.62rem'}}>คำถามจาก {SESSION.instructor}</div>
+                <div style={{color:'#06b6d4',fontSize:'0.72rem',fontWeight:600}}>กำลัง Live อยู่</div>
+              </div>
+            </div>
+            <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,lineHeight:1.5,margin:'0 0 18px'}}>{POLL.q}</h3>
+            {!pollDone?(
+              <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                {POLL.opts.map((opt,i)=>{
+                  const sel=pollSel===i;
+                  return(
+                    <button key={i} onClick={()=>setPollSel(i)} className="btn-press" style={{
+                      width:'100%',textAlign:'left',padding:'13px 16px',borderRadius:14,
+                      background:sel?'rgba(6,182,212,0.15)':'rgba(255,255,255,0.03)',
+                      border:sel?'1px solid rgba(6,182,212,0.5)':'1px solid rgba(255,255,255,0.07)',
+                      color:sel?'#a5f3fc':'#a1a1aa',fontSize:'0.875rem',fontWeight:sel?600:400,
+                      cursor:'pointer',transition:'all 0.15s',
+                      display:'flex',alignItems:'center',gap:12}}>
+                      <div style={{width:22,height:22,borderRadius:'50%',flexShrink:0,
+                        background:sel?'#06b6d4':'rgba(255,255,255,0.06)',
+                        border:sel?'none':'1px solid rgba(255,255,255,0.1)',
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        fontSize:'0.65rem',fontWeight:700,color:sel?'#fff':'#52525b'}}>{String.fromCharCode(65+i)}</div>
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            ):(
+              <div>
+                <div style={{color:'#71717a',fontSize:'0.75rem',marginBottom:12}}>ผลโหวตสด</div>
+                {POLL.opts.map((opt,i)=>{
+                  const pct=POLL.results[i]; const isMe=pollSel===i;
+                  return(
+                    <div key={i} style={{marginBottom:14}}>
+                      <div style={{display:'flex',justifyContent:'space-between',marginBottom:5}}>
+                        <span style={{color:isMe?'#a5f3fc':'#a1a1aa',fontSize:'0.8rem',fontWeight:isMe?600:400}}>
+                          {opt}{isMe?' (คุณ)':''}
+                        </span>
+                        <span style={{color:i===0?'#06b6d4':'#71717a',fontSize:'0.8rem',fontWeight:600}}>{pct}%</span>
+                      </div>
+                      <div style={{height:8,background:'rgba(255,255,255,0.07)',borderRadius:999}}>
+                        <div style={{width:`${pct}%`,height:'100%',borderRadius:999,
+                          background:isMe?'linear-gradient(90deg,#06b6d4,#0891b2)':'rgba(255,255,255,0.15)',
+                          transition:'width 0.6s ease'}}/>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div style={{marginTop:12,padding:'12px 14px',background:'rgba(6,182,212,0.06)',
+                  border:'1px solid rgba(6,182,212,0.15)',borderRadius:12,
+                  color:'#67e8f9',fontSize:'0.78rem',lineHeight:1.6}}>
+                  💡 ผลโหวตชี้ว่าทีมส่วนใหญ่ท้าทายใน <strong>Competence Trust</strong> — วิทยากรจะพูดถึงในช่วงถัดไป
+                </div>
+              </div>
+            )}
+          </div>
+          {!pollDone&&(
+            <div style={{padding:'16px 20px 32px',flexShrink:0}}>
+              <button onClick={()=>{if(pollSel!==null) setPollDone(true);}} className="btn-press" style={{
+                width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+                background:pollSel!==null?'linear-gradient(135deg,#06b6d4,#0891b2)':'rgba(255,255,255,0.05)',
+                color:pollSel!==null?'#fff':'#3f3f46',fontSize:'0.95rem',fontWeight:700,
+                cursor:pollSel!==null?'pointer':'default',transition:'all 0.2s'}}>ส่งคำตอบ ✓</button>
+            </div>
+          )}
+        </div>
+      );
+
+      /* ── 4. Group Challenge ── */
+      const renderGroup=()=>(
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+          <Hdr title="Group Challenge" onBack={()=>setScreen('dashboard')}/>
+          <div style={{flex:1,overflowY:'auto',padding:'20px'}}>
+            <div style={{display:'inline-flex',alignItems:'center',gap:6,
+              background:'rgba(16,185,129,0.1)',border:'1px solid rgba(16,185,129,0.2)',
+              borderRadius:999,padding:'3px 10px',marginBottom:14}}>
+              <span style={{width:5,height:5,borderRadius:'50%',background:'#10b981',display:'inline-block'}}/>
+              <span style={{color:'#6ee7b7',fontSize:'0.68rem',fontWeight:600}}>ทีมของคุณ · 6 คน</span>
+            </div>
+            <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,lineHeight:1.5,margin:'0 0 6px'}}>{GROUP.q}</h3>
+            <p style={{color:'#71717a',fontSize:'0.8rem',margin:'0 0 18px'}}>อภิปรายในกลุ่มแล้วเลือกคำตอบร่วมกัน</p>
+            {!grpDone?(
+              <>
+                <div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:18}}>
+                  {GROUP.opts.map((opt,i)=>{
+                    const sel=grpSel===i;
+                    return(
+                      <button key={i} onClick={()=>setGrpSel(i)} className="btn-press" style={{
+                        width:'100%',textAlign:'left',padding:'13px 16px',borderRadius:14,
+                        background:sel?'rgba(16,185,129,0.12)':'rgba(255,255,255,0.03)',
+                        border:sel?'1px solid rgba(16,185,129,0.4)':'1px solid rgba(255,255,255,0.07)',
+                        color:sel?'#a7f3d0':'#a1a1aa',fontSize:'0.875rem',fontWeight:sel?600:400,
+                        cursor:'pointer',transition:'all 0.15s',
+                        display:'flex',alignItems:'flex-start',gap:12}}>
+                        <div style={{width:22,height:22,borderRadius:'50%',flexShrink:0,marginTop:1,
+                          background:sel?'#10b981':'rgba(255,255,255,0.06)',
+                          border:sel?'none':'1px solid rgba(255,255,255,0.1)',
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'0.65rem',fontWeight:700,color:sel?'#fff':'#52525b'}}>{String.fromCharCode(65+i)}</div>
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{padding:'12px 14px',background:'rgba(255,255,255,0.02)',
+                  border:'1px solid rgba(255,255,255,0.05)',borderRadius:12}}>
+                  <div style={{color:'#71717a',fontSize:'0.7rem',marginBottom:8}}>สมาชิกทีม (5/6 Online)</div>
+                  <div style={{display:'flex',gap:6}}>
+                    {['ส','ว','ป','อ','น'].map((a,i)=>(
+                      <div key={i} style={{width:28,height:28,borderRadius:'50%',
+                        background:`linear-gradient(135deg,${['#06b6d4','#6366f1','#10b981','#f59e0b','#ef4444'][i]},${['#0891b2','#8b5cf6','#059669','#d97706','#dc2626'][i]})`,
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        fontSize:'0.7rem',fontWeight:700,color:'#fff',border:'2px solid #09090b'}}>{a}</div>
+                    ))}
+                    <div style={{width:28,height:28,borderRadius:'50%',background:'rgba(255,255,255,0.06)',
+                      border:'2px solid #09090b',display:'flex',alignItems:'center',justifyContent:'center',
+                      fontSize:'0.7rem',color:'#52525b'}}>?</div>
+                  </div>
+                </div>
+              </>
+            ):(
+              <div>
+                <div style={{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.2)',
+                  borderRadius:16,padding:'16px',marginBottom:16,textAlign:'center'}}>
+                  <div style={{fontSize:'1.8rem',marginBottom:6}}>🎉</div>
+                  <div style={{color:'#6ee7b7',fontWeight:700,fontSize:'0.9rem'}}>ทีมของคุณส่งคำตอบแล้ว!</div>
+                  <div style={{color:'#71717a',fontSize:'0.75rem',marginTop:4}}>{GROUP.opts[grpSel]}</div>
+                </div>
+                <h4 style={{color:'#f4f4f5',fontSize:'0.82rem',fontWeight:700,margin:'0 0 10px'}}>คะแนนทีมชั่วคราว</h4>
+                {GROUP.board.map(({name,pts,you},i)=>(
+                  <div key={i} style={{display:'flex',alignItems:'center',gap:12,padding:'10px 14px',
+                    background:you?'rgba(16,185,129,0.08)':'rgba(255,255,255,0.02)',
+                    border:you?'1px solid rgba(16,185,129,0.2)':'1px solid rgba(255,255,255,0.05)',
+                    borderRadius:12,marginBottom:8}}>
+                    <div style={{width:24,height:24,borderRadius:'50%',flexShrink:0,
+                      background:i===0?'rgba(251,191,36,0.2)':i===1?'rgba(161,161,170,0.15)':'rgba(180,83,9,0.15)',
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      fontSize:'0.7rem',fontWeight:700,
+                      color:i===0?'#fbbf24':i===1?'#a1a1aa':'#b45309'}}>{i+1}</div>
+                    <span style={{flex:1,color:you?'#a7f3d0':'#a1a1aa',fontSize:'0.82rem',fontWeight:you?600:400}}>
+                      {name}{you?' (ทีมคุณ)':''}
+                    </span>
+                    <span style={{color:'#f4f4f5',fontSize:'0.85rem',fontWeight:700}}>{pts} pts</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {!grpDone&&(
+            <div style={{padding:'16px 20px 32px',flexShrink:0}}>
+              <button onClick={()=>{if(grpSel!==null) setGrpDone(true);}} className="btn-press" style={{
+                width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+                background:grpSel!==null?'linear-gradient(135deg,#10b981,#059669)':'rgba(255,255,255,0.05)',
+                color:grpSel!==null?'#fff':'#3f3f46',fontSize:'0.95rem',fontWeight:700,
+                cursor:grpSel!==null?'pointer':'default',transition:'all 0.2s'}}>ส่งคำตอบทีม ✓</button>
+            </div>
+          )}
+        </div>
+      );
+
+      /* ── 5. Live Quiz ── */
+      const renderQuiz=()=>{
+        if(qDone){
+          const board=[
+            {name:'คุณสมหมาย',pts:450},{name:'คุณ (คุณ)',pts:qScore,you:true},
+            {name:'คุณวิไลวรรณ',pts:300},{name:'คุณประภาส',pts:200},
+          ].sort((a,b)=>b.pts-a.pts);
+          return(
+            <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+              <Hdr title="Live Quiz · จบแล้ว!" onBack={()=>setScreen('dashboard')}/>
+              <div style={{flex:1,overflowY:'auto',padding:'20px'}}>
+                <div style={{textAlign:'center',marginBottom:20,
+                  background:'linear-gradient(135deg,rgba(245,158,11,0.1),rgba(234,179,8,0.05))',
+                  border:'1px solid rgba(245,158,11,0.2)',borderRadius:20,padding:'22px 20px'}}>
+                  <div style={{fontSize:'2rem',marginBottom:8}}>⚡</div>
+                  <div style={{color:'#fbbf24',fontSize:'1.4rem',fontWeight:800}}>{qScore} pts</div>
+                  <div style={{color:'#71717a',fontSize:'0.8rem',marginTop:4}}>
+                    ตอบถูก {Math.round(qScore/150)}/{QUIZ.length} ข้อ
+                  </div>
+                </div>
+                <h4 style={{color:'#f4f4f5',fontSize:'0.85rem',fontWeight:700,margin:'0 0 12px'}}>🏆 Leaderboard</h4>
+                {board.map(({name,pts,you},i)=>(
+                  <div key={i} style={{display:'flex',alignItems:'center',gap:12,padding:'11px 14px',
+                    background:you?'rgba(245,158,11,0.08)':'rgba(255,255,255,0.02)',
+                    border:you?'1px solid rgba(245,158,11,0.25)':'1px solid rgba(255,255,255,0.05)',
+                    borderRadius:12,marginBottom:8}}>
+                    <span style={{width:24,height:24,borderRadius:'50%',flexShrink:0,
+                      display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.75rem',fontWeight:800,
+                      background:i===0?'rgba(251,191,36,0.2)':i===1?'rgba(192,192,192,0.15)':'transparent',
+                      color:i===0?'#fbbf24':i===1?'#d4d4d8':'#71717a'}}>{i+1}</span>
+                    <span style={{flex:1,color:you?'#fde68a':'#a1a1aa',fontSize:'0.82rem',fontWeight:you?700:400}}>{name}</span>
+                    <span style={{color:you?'#fbbf24':'#71717a',fontSize:'0.85rem',fontWeight:700}}>{pts}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        }
+        const q=QUIZ[qStep];
+        return(
+          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b'}}>
+            <div style={{padding:'16px 20px 0',flexShrink:0}}>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
+                <button onClick={()=>setScreen('dashboard')} style={{width:32,height:32,borderRadius:'50%',
+                  background:'rgba(255,255,255,0.06)',border:'none',
+                  display:'flex',alignItems:'center',justifyContent:'center',
+                  cursor:'pointer',color:'#fff',fontSize:'1rem'}}>✕</button>
+                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                  <span style={{width:6,height:6,borderRadius:'50%',background:'#f59e0b',display:'inline-block'}} className="anim-pulse"/>
+                  <span style={{color:'#fbbf24',fontSize:'0.75rem',fontWeight:700}}>
+                    ข้อ {qStep+1}/{QUIZ.length} · {qScore} pts
+                  </span>
+                </div>
+              </div>
+              <div style={{height:3,background:'rgba(255,255,255,0.07)',borderRadius:999,marginBottom:20}}>
+                <div style={{width:`${(qStep/QUIZ.length)*100}%`,height:'100%',
+                  background:'linear-gradient(90deg,#f59e0b,#d97706)',borderRadius:999}}/>
+              </div>
+            </div>
+            <div style={{flex:1,padding:'0 20px',overflowY:'auto'}}>
+              <div className="fade-in" key={qStep}>
+                <div style={{display:'inline-flex',alignItems:'center',
+                  background:'rgba(245,158,11,0.1)',border:'1px solid rgba(245,158,11,0.2)',
+                  borderRadius:999,padding:'3px 10px',marginBottom:14}}>
+                  <span style={{color:'#fbbf24',fontSize:'0.68rem',fontWeight:700}}>⚡ LIVE QUIZ · +{q.pts} pts</span>
+                </div>
+                <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,lineHeight:1.5,margin:'0 0 18px'}}>{q.q}</h3>
+                <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                  {q.opts.map((opt,i)=>{
+                    const sel=qSel===i; const right=q.c===i;
+                    const wrong=qShown&&sel&&!right; const correct=qShown&&right;
+                    return(
+                      <button key={i} onClick={()=>{if(!qShown)setQSel(i);}} className="btn-press" style={{
+                        width:'100%',textAlign:'left',padding:'13px 16px',borderRadius:14,
+                        background:correct?'rgba(34,197,94,0.15)':wrong?'rgba(239,68,68,0.12)':sel?'rgba(245,158,11,0.12)':'rgba(255,255,255,0.03)',
+                        border:correct?'1px solid rgba(34,197,94,0.4)':wrong?'1px solid rgba(239,68,68,0.35)':sel?'1px solid rgba(245,158,11,0.4)':'1px solid rgba(255,255,255,0.07)',
+                        color:correct?'#86efac':wrong?'#fca5a5':sel?'#fde68a':'#a1a1aa',
+                        fontSize:'0.875rem',fontWeight:(sel||correct)?600:400,
+                        cursor:qShown?'default':'pointer',transition:'all 0.15s',
+                        display:'flex',alignItems:'center',gap:12}}>
+                        <div style={{width:22,height:22,borderRadius:'50%',flexShrink:0,
+                          background:correct?'#22c55e':wrong?'#ef4444':sel?'#f59e0b':'rgba(255,255,255,0.06)',
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>
+                          {correct?'✓':wrong?'✗':String.fromCharCode(65+i)}
+                        </div>
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+                {qShown&&(
+                  <div className="fade-in" style={{marginTop:14,padding:'12px 14px',
+                    background:'rgba(34,197,94,0.08)',border:'1px solid rgba(34,197,94,0.15)',borderRadius:12}}>
+                    <div style={{color:'#86efac',fontSize:'0.8rem',fontWeight:600}}>
+                      {qSel===q.c?`+${q.pts} pts! ถูกต้อง 🎉`:'ยังไม่ใช่ ไปต่อกันเลย! 💪'}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div style={{padding:'16px 20px 32px',flexShrink:0}}>
+              {!qShown?(
+                <button onClick={()=>{
+                  if(qSel===null) return;
+                  setQShown(true);
+                  if(qSel===q.c) setQScore(s=>s+q.pts);
+                }} className="btn-press" style={{
+                  width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+                  background:qSel!==null?'linear-gradient(135deg,#f59e0b,#d97706)':'rgba(255,255,255,0.05)',
+                  color:qSel!==null?'#fff':'#3f3f46',fontSize:'0.95rem',fontWeight:700,
+                  cursor:qSel!==null?'pointer':'default',transition:'all 0.2s'}}>ตอบ</button>
+              ):(
+                <button onClick={()=>{
+                  if(qStep<QUIZ.length-1){setQStep(s=>s+1);setQSel(null);setQShown(false);}
+                  else{setQDone(true);}
+                }} className="btn-press" style={{
+                  width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+                  background:'linear-gradient(135deg,#f59e0b,#d97706)',
+                  color:'#fff',fontSize:'0.95rem',fontWeight:700,cursor:'pointer'}}>
+                  {qStep<QUIZ.length-1?'ข้อถัดไป →':'ดูผลลัพธ์ →'}
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      /* ── 6. Q&A ── */
+      const renderQnA=()=>(
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+          <Hdr title="Q&A" onBack={()=>setScreen('dashboard')}/>
+          <div style={{flex:1,overflowY:'auto',padding:'16px 20px'}}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
+              <span style={{color:'#71717a',fontSize:'0.78rem'}}>{QNA_LIST.length+(qaSent?1:0)} คำถาม</span>
+              <div style={{display:'flex',alignItems:'center',gap:4}}>
+                <span style={{width:5,height:5,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>
+                <span style={{color:'#22c55e',fontSize:'0.68rem',fontWeight:600}}>Live</span>
+              </div>
+            </div>
+            {QNA_LIST.map(({user,av,q,time},i)=>(
+              <div key={i} style={{padding:'14px',background:'rgba(255,255,255,0.03)',
+                border:'1px solid rgba(255,255,255,0.06)',borderRadius:14,marginBottom:10}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+                  <div style={{width:26,height:26,borderRadius:'50%',flexShrink:0,
+                    background:`linear-gradient(135deg,${['#6366f1','#f59e0b','#10b981'][i]},${['#8b5cf6','#d97706','#059669'][i]})`,
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>{av}</div>
+                  <span style={{color:'#a1a1aa',fontSize:'0.72rem',fontWeight:500}}>{user}</span>
+                  <span style={{color:'#3f3f46',fontSize:'0.65rem',marginLeft:'auto'}}>{time}</span>
+                </div>
+                <p style={{color:'#e4e4e7',fontSize:'0.82rem',lineHeight:1.5,margin:'0 0 10px'}}>{q}</p>
+                <button onClick={()=>{
+                  const l=[...qaLiked],c=[...qaCount];
+                  l[i]=!l[i]; c[i]+=l[i]?1:-1;
+                  setQaLiked(l); setQaCount(c);
+                }} style={{
+                  display:'flex',alignItems:'center',gap:4,
+                  background:qaLiked[i]?'rgba(99,102,241,0.12)':'rgba(255,255,255,0.04)',
+                  border:`1px solid ${qaLiked[i]?'rgba(99,102,241,0.3)':'rgba(255,255,255,0.07)'}`,
+                  borderRadius:999,padding:'4px 10px',cursor:'pointer',
+                  color:qaLiked[i]?'#a5b4fc':'#71717a',fontSize:'0.72rem',fontWeight:600}}>
+                  👍 {qaCount[i]}
+                </button>
+              </div>
+            ))}
+            {qaSent&&(
+              <div style={{padding:'14px',background:'rgba(99,102,241,0.06)',
+                border:'1px solid rgba(99,102,241,0.2)',borderRadius:14,marginBottom:10}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+                  <div style={{width:26,height:26,borderRadius:'50%',flexShrink:0,
+                    background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>คุ</div>
+                  <span style={{color:'#a5b4fc',fontSize:'0.72rem',fontWeight:600}}>คุณ</span>
+                  <span style={{color:'#6366f1',fontSize:'0.65rem',marginLeft:'auto',
+                    background:'rgba(99,102,241,0.15)',borderRadius:999,padding:'1px 6px'}}>ส่งแล้ว</span>
+                </div>
+                <p style={{color:'#e4e4e7',fontSize:'0.82rem',lineHeight:1.5,margin:0}}>{qaText}</p>
+              </div>
+            )}
+          </div>
+          {!qaSent&&(
+            <div style={{padding:'12px 20px 28px',borderTop:'1px solid rgba(255,255,255,0.06)',
+              flexShrink:0,background:'rgba(9,9,11,0.95)'}}>
+              <div style={{display:'flex',gap:8}}>
+                <input value={qaText} onChange={e=>setQaText(e.target.value)}
+                  placeholder="ถามวิทยากร…"
+                  style={{flex:1,background:'rgba(255,255,255,0.05)',
+                    border:'1px solid rgba(255,255,255,0.1)',borderRadius:12,
+                    padding:'10px 14px',color:'#fff',fontSize:'0.875rem',outline:'none'}}/>
+                <button onClick={()=>{if(qaText.trim())setQaSent(true);}} style={{
+                  padding:'10px 16px',borderRadius:12,
+                  background:qaText.trim()?'linear-gradient(135deg,#6366f1,#8b5cf6)':'rgba(255,255,255,0.05)',
+                  border:'none',color:qaText.trim()?'#fff':'#3f3f46',
+                  fontWeight:700,cursor:qaText.trim()?'pointer':'default',fontSize:'0.875rem'}}>ส่ง</button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+
+      /* ── 7. Reflection ── */
+      const renderReflection=()=>(
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+          <Hdr title="Reflection" onBack={()=>setScreen('dashboard')}/>
+          <div style={{flex:1,overflowY:'auto',padding:'24px 20px'}}>
+            {!rfDone?(
+              <>
+                <div style={{textAlign:'center',marginBottom:24}}>
+                  <div style={{fontSize:'2rem',marginBottom:10}}>🪞</div>
+                  <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:800,margin:'0 0 6px'}}>สรุปสิ่งที่ได้วันนี้</h3>
+                  <p style={{color:'#71717a',fontSize:'0.8rem',margin:0}}>Day {SESSION.day} · {SESSION.title}</p>
+                </div>
+                <div style={{marginBottom:22}}>
+                  <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginBottom:10}}>วันนี้คุณได้เรียนรู้สิ่งใหม่มากแค่ไหน?</div>
+                  <div style={{display:'flex',gap:8}}>
+                    {['😕','😐','🙂','😊','🤩'].map((e,i)=>(
+                      <button key={i} onClick={()=>setRfRate(i)} style={{
+                        flex:1,padding:'10px 0',borderRadius:12,
+                        background:rfRate===i?'rgba(99,102,241,0.15)':'rgba(255,255,255,0.04)',
+                        border:`1px solid ${rfRate===i?'rgba(99,102,241,0.35)':'rgba(255,255,255,0.07)'}`,
+                        cursor:'pointer',fontSize:'1.3rem',transition:'all 0.15s',
+                        transform:rfRate===i?'scale(1.08)':'scale(1)'}}>
+                        {e}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div style={{marginBottom:20}}>
+                  <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginBottom:8}}>สิ่งที่จะนำไปใช้จริงในการทำงาน</div>
+                  <textarea value={rfText} onChange={e=>setRfText(e.target.value)}
+                    placeholder="เขียนอย่างน้อย 1 สิ่งที่จะนำไปลองทำ…"
+                    rows={4}
+                    style={{width:'100%',background:'rgba(255,255,255,0.04)',
+                      border:'1px solid rgba(255,255,255,0.08)',borderRadius:14,
+                      padding:'12px 14px',color:'#fff',fontSize:'0.875rem',
+                      outline:'none',resize:'none',boxSizing:'border-box',lineHeight:1.6}}/>
+                </div>
+                <button onClick={()=>{if(rfRate!==null&&rfText.trim())setRfDone(true);}} className="btn-press" style={{
+                  width:'100%',padding:'15px 0',borderRadius:16,border:'none',
+                  background:(rfRate!==null&&rfText.trim())?'linear-gradient(135deg,#6366f1,#8b5cf6)':'rgba(255,255,255,0.05)',
+                  color:(rfRate!==null&&rfText.trim())?'#fff':'#3f3f46',
+                  fontSize:'0.95rem',fontWeight:700,
+                  cursor:(rfRate!==null&&rfText.trim())?'pointer':'default',transition:'all 0.2s'}}>
+                  ส่ง Reflection ✓
+                </button>
+              </>
+            ):(
+              <div style={{textAlign:'center',paddingTop:12}}>
+                <div className="bounce-in" style={{fontSize:'3rem',marginBottom:16}}>🌟</div>
+                <h2 style={{fontSize:'1.3rem',fontWeight:800,margin:'0 0 8px'}}>ยอดเยี่ยม!</h2>
+                <p style={{color:'#71717a',fontSize:'0.875rem',lineHeight:1.7,margin:'0 0 24px'}}>
+                  คุณทำกิจกรรม Day {SESSION.day} ครบทุกขั้นตอนแล้ว
+                </p>
+                <div style={{background:'rgba(99,102,241,0.08)',border:'1px solid rgba(99,102,241,0.2)',
+                  borderRadius:18,padding:'20px',marginBottom:16}}>
+                  <div style={{color:'#71717a',fontSize:'0.72rem',marginBottom:6}}>คะแนนวันนี้</div>
+                  <div style={{fontSize:'1.6rem',fontWeight:800,color:'#a5b4fc'}}>
+                    {qScore+(pollDone?30:0)+(grpDone?100:0)+50} pts
+                  </div>
+                  <div style={{color:'#4b5563',fontSize:'0.7rem',marginTop:4}}>
+                    Quiz: {qScore} · Poll: {pollDone?30:0} · Group: {grpDone?100:0} · Reflection: 50
+                  </div>
+                </div>
+                <div style={{background:'rgba(245,158,11,0.08)',border:'1px solid rgba(245,158,11,0.2)',
+                  borderRadius:14,padding:'14px',marginBottom:20,textAlign:'left'}}>
+                  <div style={{color:'#fbbf24',fontSize:'0.8rem',fontWeight:700,marginBottom:4}}>📅 พรุ่งนี้</div>
+                  <div style={{color:'#92400e',fontSize:'0.78rem',lineHeight:1.6}}>
+                    Day 3 · Decision Making & Conflict<br/>09:00–16:00
+                  </div>
+                </div>
+                <button onClick={()=>setScreen('dashboard')} className="btn-press" style={{
+                  width:'100%',padding:'14px 0',borderRadius:16,
+                  border:'1px solid rgba(255,255,255,0.08)',
+                  background:'rgba(255,255,255,0.04)',
+                  color:'#a1a1aa',fontSize:'0.875rem',fontWeight:600,cursor:'pointer'}}>
+                  ← กลับ Dashboard
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+
+      return (
+        <PhoneFrame>
+          {screen==='checkin'    && renderCheckin()}
+          {screen==='dashboard'  && renderDashboard()}
+          {screen==='poll'       && renderPoll()}
+          {screen==='group'      && renderGroup()}
+          {screen==='quiz'       && renderQuiz()}
+          {screen==='qna'        && renderQnA()}
+          {screen==='reflection' && renderReflection()}
+        </PhoneFrame>
+      );
+    }
+
+    /* ── HRDashboard ─────────────────────────────── */
+    function HRDashboard({ onBack }) {
+      const [tab, setTab] = useState('overview');
+      const [expanded, setExpanded] = useState(null);
+
+      const LEARNERS = [
+        {id:1,name:'วิไลวรรณ สุขสมบูรณ์',role:'HR Manager',       av:'ว',bg:'#f59e0b',progress:92,done:14,pts:2100,last:'30 นาที',streak:12,status:'active'},
+        {id:2,name:'สมหมาย ทองดี',        role:'Team Lead',         av:'ส',bg:'#3b82f6',progress:85,done:12,pts:1840,last:'1 ชม.',  streak:7, status:'active'},
+        {id:3,name:'ธนพล วัฒนา',          role:'Sales Manager',     av:'ธ',bg:'#6366f1',progress:82,done:11,pts:1720,last:'4 ชม.',  streak:8, status:'active'},
+        {id:4,name:'นุชนาถ พิทักษ์',       role:'Project Manager',   av:'น',bg:'#10b981',progress:78,done:11,pts:1560,last:'1 วัน', streak:5, status:'active'},
+        {id:5,name:'ประภาส กาญจนา',       role:'Senior Developer',  av:'ป',bg:'#06b6d4',progress:68,done:9, pts:1320,last:'2 วัน', streak:3, status:'at-risk'},
+        {id:6,name:'พิมพ์ใจ รุ่งเรือง',    role:'Business Analyst',  av:'พ',bg:'#8b5cf6',progress:55,done:7, pts:1050,last:'3 วัน', streak:1, status:'at-risk'},
+        {id:7,name:'อรุณ จิตใจดี',         role:'UX Designer',       av:'อ',bg:'#f97316',progress:45,done:6, pts:890, last:'5 วัน', streak:0, status:'inactive'},
+        {id:8,name:'กัญญา ศิริวงศ์',       role:'Finance Lead',      av:'ก',bg:'#ef4444',progress:35,done:4, pts:620, last:'1 สัปดาห์',streak:0,status:'inactive'},
+      ];
+      const CHDATA = [
+        {type:'Flash Card',    icon:'🃏',pct:91,done:3.6,total:4, color:'#8b5cf6'},
+        {type:'Quiz',          icon:'❓',pct:85,done:6.8,total:8, color:'#3b82f6'},
+        {type:'Micro Learning',icon:'⚡',pct:79,done:7.9,total:10,color:'#06b6d4'},
+        {type:'Recall Quiz',   icon:'🔄',pct:72,done:2.9,total:4, color:'#10b981'},
+        {type:'Mission',       icon:'🎯',pct:68,done:4.1,total:6, color:'#6366f1'},
+      ];
+      const TREND = [42,58,51,74,67,82,78];
+      const DAYS  = ['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'];
+
+      const active   = LEARNERS.filter(l=>l.status==='active').length;
+      const atRisk   = LEARNERS.filter(l=>l.status==='at-risk').length;
+      const inactive = LEARNERS.filter(l=>l.status==='inactive').length;
+      const avgProg  = Math.round(LEARNERS.reduce((a,l)=>a+l.progress,0)/LEARNERS.length);
+      const avgPts   = Math.round(LEARNERS.reduce((a,l)=>a+l.pts,0)/LEARNERS.length).toLocaleString();
+
+      const sBg    = s=>s==='active'?'rgba(16,185,129,0.12)':s==='at-risk'?'rgba(245,158,11,0.12)':'rgba(239,68,68,0.12)';
+      const sTxt   = s=>s==='active'?'#6ee7b7':s==='at-risk'?'#fde68a':'#fca5a5';
+      const sLabel = s=>s==='active'?'Active':s==='at-risk'?'At Risk':'Inactive';
+
+      const SparkLine = () => {
+        const W=200,H=40,max=Math.max(...TREND),min=Math.min(...TREND),range=max-min||1;
+        const pts=TREND.map((v,i)=>`${(i/(TREND.length-1))*W},${H-((v-min)/range)*(H-6)-3}`).join(' ');
+        const area=`0,${H} ${pts} ${W},${H}`;
+        return(
+          <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{overflow:'visible'}}>
+            <defs>
+              <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25"/>
+                <stop offset="100%" stopColor="#6366f1" stopOpacity="0"/>
+              </linearGradient>
+            </defs>
+            <polygon points={area} fill="url(#tg)"/>
+            <polyline points={pts} fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            {TREND.map((v,i)=>(
+              <circle key={i} cx={(i/(TREND.length-1))*W}
+                cy={H-((v-min)/range)*(H-6)-3} r="3.5" fill="#6366f1"/>
+            ))}
+          </svg>
+        );
+      };
+
+      /* ── Overview ── */
+      const renderOverview = () => (
+        <div>
+          {/* KPI cards */}
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:16,marginBottom:24}}>
+            {[
+              {icon:'👥',label:'ผู้เรียนทั้งหมด',    value:'24',        sub:'คน',  color:'#3b82f6'},
+              {icon:'🟢',label:'Active 7 วันล่าสุด',  value:`${active}`, sub:'คน',  color:'#10b981'},
+              {icon:'📊',label:'Avg Completion',       value:`${avgProg}%`,sub:'',   color:'#6366f1'},
+              {icon:'⭐',label:'Avg คะแนน',            value:avgPts,      sub:'pts', color:'#f59e0b'},
+            ].map(({icon,label,value,sub,color})=>(
+              <div key={label} style={{background:'rgba(255,255,255,0.03)',
+                border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'20px 22px'}}>
+                <div style={{fontSize:'1.3rem',marginBottom:10}}>{icon}</div>
+                <div style={{color:'#71717a',fontSize:'0.72rem',marginBottom:4}}>{label}</div>
+                <div style={{display:'flex',alignItems:'baseline',gap:4}}>
+                  <span style={{fontSize:'1.8rem',fontWeight:800,letterSpacing:'-0.04em',color}}>{value}</span>
+                  {sub&&<span style={{color:'#71717a',fontSize:'0.8rem'}}>{sub}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
+            {/* Challenge completion bars */}
+            <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'22px'}}>
+              <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>
+                Completion ตามประเภทภารกิจ
+              </h3>
+              {CHDATA.map(({type,icon,pct,color})=>(
+                <div key={type} style={{marginBottom:14}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:5}}>
+                    <div style={{display:'flex',alignItems:'center',gap:6}}>
+                      <span style={{fontSize:'0.9rem'}}>{icon}</span>
+                      <span style={{color:'#d4d4d8',fontSize:'0.8rem',fontWeight:500}}>{type}</span>
+                    </div>
+                    <span style={{color,fontSize:'0.82rem',fontWeight:700}}>{pct}%</span>
+                  </div>
+                  <div style={{height:6,background:'rgba(255,255,255,0.07)',borderRadius:999}}>
+                    <div style={{width:`${pct}%`,height:'100%',borderRadius:999,background:color}}/>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right column */}
+            <div style={{display:'flex',flexDirection:'column',gap:16}}>
+              {/* Sparkline */}
+              <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'22px',flex:1}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:14}}>
+                  <div>
+                    <h3 style={{margin:'0 0 3px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>Activity 7 วันล่าสุด</h3>
+                    <p style={{margin:0,color:'#71717a',fontSize:'0.7rem'}}>% ผู้เรียนที่ Active ในแต่ละวัน</p>
+                  </div>
+                  <span style={{color:'#10b981',fontSize:'0.73rem',fontWeight:600,
+                    background:'rgba(16,185,129,0.1)',border:'1px solid rgba(16,185,129,0.2)',
+                    borderRadius:999,padding:'2px 8px'}}>↑ 14%</span>
+                </div>
+                <SparkLine/>
+                <div style={{display:'flex',justifyContent:'space-between',marginTop:6}}>
+                  {DAYS.map(d=><span key={d} style={{color:'#52525b',fontSize:'0.6rem'}}>{d}</span>)}
+                </div>
+              </div>
+              {/* Status distribution */}
+              <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'18px 22px'}}>
+                <h3 style={{margin:'0 0 12px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>สถานะผู้เรียน</h3>
+                <div style={{display:'flex',gap:10,marginBottom:12}}>
+                  {[['Active',active,'#10b981'],['At Risk',atRisk,'#f59e0b'],['Inactive',inactive,'#ef4444']].map(([l,v,c])=>(
+                    <div key={l} style={{flex:1,textAlign:'center',
+                      background:`${c}12`,border:`1px solid ${c}30`,borderRadius:12,padding:'10px 0'}}>
+                      <div style={{color:c,fontSize:'1.3rem',fontWeight:800}}>{v}</div>
+                      <div style={{color:'#71717a',fontSize:'0.68rem',marginTop:2}}>{l}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{display:'flex',height:6,borderRadius:999,overflow:'hidden'}}>
+                  <div style={{width:`${(active/LEARNERS.length)*100}%`,background:'#10b981'}}/>
+                  <div style={{width:`${(atRisk/LEARNERS.length)*100}%`,background:'#f59e0b'}}/>
+                  <div style={{flex:1,background:'#ef4444'}}/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* At-risk alert */}
+          {atRisk>0&&(
+            <div style={{background:'rgba(245,158,11,0.06)',border:'1px solid rgba(245,158,11,0.2)',
+              borderRadius:16,padding:'16px 20px',
+              display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}>
+              <div style={{display:'flex',alignItems:'center',gap:10}}>
+                <span style={{fontSize:'1.1rem'}}>⚠️</span>
+                <div>
+                  <div style={{color:'#fbbf24',fontWeight:600,fontSize:'0.875rem'}}>
+                    พบผู้เรียน {atRisk} คนที่อาจต้องการความช่วยเหลือ
+                  </div>
+                  <div style={{color:'#92400e',fontSize:'0.78rem',marginTop:2}}>
+                    ไม่มีกิจกรรมมากกว่า 2 วัน หรือ Streak เหลือน้อยมาก
+                  </div>
+                </div>
+              </div>
+              <button onClick={()=>setTab('learners')} style={{
+                padding:'8px 16px',borderRadius:10,cursor:'pointer',flexShrink:0,
+                border:'1px solid rgba(245,158,11,0.3)',background:'rgba(245,158,11,0.1)',
+                color:'#fbbf24',fontSize:'0.8rem',fontWeight:600}}>ดูรายชื่อ →</button>
+            </div>
+          )}
+        </div>
+      );
+
+      /* ── Learners ── */
+      const renderLearners = () => (
+        <div>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:18}}>
+            <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+              {[`ทั้งหมด (${LEARNERS.length})`,`Active (${active})`,`At Risk (${atRisk})`,`Inactive (${inactive})`].map(l=>(
+                <span key={l} style={{padding:'4px 12px',borderRadius:999,fontSize:'0.78rem',
+                  background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',
+                  color:'#a1a1aa'}}>{l}</span>
+              ))}
+            </div>
+            <span style={{color:'#52525b',fontSize:'0.78rem'}}>จัดเรียง: คะแนนสูงสุด</span>
+          </div>
+
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
+            {LEARNERS.map(l=>(
+              <div key={l.id}
+                onClick={()=>setExpanded(expanded===l.id?null:l.id)}
+                style={{
+                  background:'rgba(255,255,255,0.03)',
+                  border:`1px solid ${expanded===l.id?'rgba(99,102,241,0.35)':'rgba(255,255,255,0.07)'}`,
+                  borderRadius:16,padding:'16px 20px',cursor:'pointer',
+                  transition:'border-color 0.2s',
+                }}>
+                <div style={{display:'flex',alignItems:'center',gap:14,flexWrap:'wrap'}}>
+                  <div style={{width:40,height:40,borderRadius:'50%',flexShrink:0,
+                    background:`linear-gradient(135deg,${l.bg},${l.bg}99)`,
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    fontSize:'0.9rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
+                  <div style={{flex:'1 1 140px',minWidth:0}}>
+                    <div style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:600,
+                      overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</div>
+                    <div style={{color:'#71717a',fontSize:'0.72rem',marginTop:1}}>{l.role}</div>
+                  </div>
+                  <div style={{flex:'1 1 120px',minWidth:80}}>
+                    <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
+                      <span style={{color:'#71717a',fontSize:'0.65rem'}}>Completion</span>
+                      <span style={{color:'#d4d4d8',fontSize:'0.7rem',fontWeight:600}}>{l.progress}%</span>
+                    </div>
+                    <div style={{height:4,background:'rgba(255,255,255,0.08)',borderRadius:999}}>
+                      <div style={{width:`${l.progress}%`,height:'100%',borderRadius:999,
+                        background:l.progress>=75?'#10b981':l.progress>=50?'#f59e0b':'#ef4444'}}/>
+                    </div>
+                  </div>
+                  <div style={{flex:'0 0 80px',textAlign:'center'}}>
+                    <div style={{color:'#fbbf24',fontSize:'0.95rem',fontWeight:700}}>{l.pts.toLocaleString()}</div>
+                    <div style={{color:'#71717a',fontSize:'0.65rem'}}>pts</div>
+                  </div>
+                  <div style={{flex:'0 0 56px',textAlign:'center'}}>
+                    <div style={{color:l.streak>0?'#fb923c':'#52525b',fontSize:'0.875rem',fontWeight:700}}>
+                      {l.streak>0?`🔥${l.streak}`:'—'}
+                    </div>
+                    <div style={{color:'#71717a',fontSize:'0.65rem'}}>streak</div>
+                  </div>
+                  <div style={{flex:'0 0 72px',textAlign:'right'}}>
+                    <span style={{background:sBg(l.status),borderRadius:999,
+                      padding:'3px 10px',color:sTxt(l.status),fontSize:'0.7rem',fontWeight:600}}>
+                      {sLabel(l.status)}
+                    </span>
+                  </div>
+                </div>
+
+                {expanded===l.id&&(
+                  <div className="fade-in" style={{marginTop:16,paddingTop:16,
+                    borderTop:'1px solid rgba(255,255,255,0.06)',
+                    display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))',gap:10}}>
+                    {[
+                      {label:'ภารกิจเสร็จ',    value:`${l.done} ภารกิจ`},
+                      {label:'Active ล่าสุด',   value:`${l.last}ที่แล้ว`},
+                      {label:'Streak ปัจจุบัน', value:l.streak>0?`${l.streak} วัน`:'หมดแล้ว'},
+                      {label:'คะแนนรวม',        value:`${l.pts.toLocaleString()} pts`},
+                    ].map(({label,value})=>(
+                      <div key={label} style={{background:'rgba(255,255,255,0.03)',borderRadius:12,padding:'12px 14px'}}>
+                        <div style={{color:'#71717a',fontSize:'0.67rem'}}>{label}</div>
+                        <div style={{color:'#e4e4e7',fontSize:'0.88rem',fontWeight:700,marginTop:3}}>{value}</div>
+                      </div>
+                    ))}
+                    {l.status!=='active'&&(
+                      <div style={{background:'rgba(245,158,11,0.08)',border:'1px solid rgba(245,158,11,0.2)',
+                        borderRadius:12,padding:'12px 14px',cursor:'pointer'}}>
+                        <div style={{color:'#71717a',fontSize:'0.67rem'}}>การดำเนินการ</div>
+                        <div style={{color:'#fbbf24',fontSize:'0.82rem',fontWeight:600,marginTop:3}}>
+                          📩 ส่ง Reminder
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+      /* ── Challenges ── */
+      const renderChallenges = () => (
+        <div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:14,marginBottom:24}}>
+            {[
+              {icon:'📋',label:'ภารกิจทั้งหมด',   value:'32',        sub:'ประเภท'},
+              {icon:'✅',label:'เสร็จสิ้น (เฉลี่ย)',value:'1,048',     sub:'ครั้ง'},
+              {icon:'📊',label:'Avg Completion',    value:`${avgProg}%`,sub:''},
+              {icon:'🏆',label:'ยอดนิยมสูงสุด',    value:'Flash Card', sub:''},
+            ].map(({icon,label,value,sub})=>(
+              <div key={label} style={{background:'rgba(255,255,255,0.03)',
+                border:'1px solid rgba(255,255,255,0.07)',borderRadius:16,
+                padding:'18px 20px',display:'flex',alignItems:'center',gap:14}}>
+                <div style={{fontSize:'1.5rem'}}>{icon}</div>
+                <div>
+                  <div style={{color:'#71717a',fontSize:'0.72rem'}}>{label}</div>
+                  <div style={{color:'#f4f4f5',fontSize:'1.2rem',fontWeight:800,letterSpacing:'-0.02em'}}>
+                    {value}{sub&&<span style={{color:'#71717a',fontSize:'0.75rem',fontWeight:400}}> {sub}</span>}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
+            <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'22px'}}>
+              <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>
+                Completion Rate ตามประเภทภารกิจ
+              </h3>
+              {CHDATA.map(({type,icon,pct,done,total,color})=>(
+                <div key={type} style={{marginBottom:18}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8}}>
+                      <div style={{width:32,height:32,borderRadius:9,flexShrink:0,
+                        background:`${color}18`,border:`1px solid ${color}30`,
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        fontSize:'0.9rem'}}>{icon}</div>
+                      <div>
+                        <div style={{color:'#e4e4e7',fontSize:'0.82rem',fontWeight:600}}>{type}</div>
+                        <div style={{color:'#71717a',fontSize:'0.67rem'}}>เฉลี่ย {done.toFixed(1)}/{total} ต่อคน</div>
+                      </div>
+                    </div>
+                    <span style={{color,fontSize:'0.95rem',fontWeight:800}}>{pct}%</span>
+                  </div>
+                  <div style={{height:6,background:'rgba(255,255,255,0.07)',borderRadius:999}}>
+                    <div style={{width:`${pct}%`,height:'100%',borderRadius:999,background:color}}/>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{display:'flex',flexDirection:'column',gap:16}}>
+              <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'22px'}}>
+                <h3 style={{margin:'0 0 16px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>🏆 Top Learners</h3>
+                {LEARNERS.slice(0,5).map((l,i)=>(
+                  <div key={l.id} style={{display:'flex',alignItems:'center',gap:10,
+                    padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.04)'}}>
+                    <span style={{width:22,height:22,flexShrink:0,borderRadius:'50%',
+                      display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.65rem',fontWeight:800,
+                      background:i<3?['rgba(251,191,36,0.2)','rgba(203,213,225,0.15)','rgba(180,83,9,0.15)'][i]:'transparent',
+                      color:i<3?['#fbbf24','#94a3b8','#b45309'][i]:'#52525b'}}>{i+1}</span>
+                    <div style={{width:26,height:26,borderRadius:'50%',flexShrink:0,
+                      background:`linear-gradient(135deg,${l.bg},${l.bg}88)`,
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
+                    <span style={{flex:1,color:'#d4d4d8',fontSize:'0.8rem',fontWeight:500,
+                      overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</span>
+                    <span style={{color:'#fbbf24',fontSize:'0.82rem',fontWeight:700}}>{l.pts.toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{background:'rgba(239,68,68,0.06)',border:'1px solid rgba(239,68,68,0.15)',borderRadius:18,padding:'18px 22px'}}>
+                <h3 style={{margin:'0 0 14px',fontWeight:700,fontSize:'0.875rem',color:'#fca5a5'}}>⚠️ ต้องการความสนใจ</h3>
+                {LEARNERS.filter(l=>l.status!=='active').map(l=>(
+                  <div key={l.id} style={{display:'flex',alignItems:'center',gap:10,
+                    padding:'7px 0',borderBottom:'1px solid rgba(255,255,255,0.04)'}}>
+                    <div style={{width:26,height:26,borderRadius:'50%',flexShrink:0,
+                      background:`linear-gradient(135deg,${l.bg},${l.bg}88)`,
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{color:'#e4e4e7',fontSize:'0.78rem',fontWeight:500,
+                        overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</div>
+                      <div style={{color:'#71717a',fontSize:'0.65rem'}}>{l.last}ที่แล้ว</div>
+                    </div>
+                    <span style={{color:sTxt(l.status),fontSize:'0.68rem',fontWeight:600,
+                      background:sBg(l.status),borderRadius:999,padding:'2px 8px',flexShrink:0}}>
+                      {sLabel(l.status)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+      return (
+        <div style={{minHeight:'100vh',background:'#09090b',color:'#fff',
+          fontFamily:"'Inter',system-ui,sans-serif",overflowX:'hidden'}}>
+
+          {/* Navbar */}
+          <nav style={{position:'sticky',top:0,zIndex:100,height:60,
+            display:'flex',alignItems:'center',justifyContent:'space-between',
+            padding:'0 max(24px,calc((100vw - 1400px)/2))',
+            background:'rgba(9,9,11,0.9)',backdropFilter:'blur(12px)',
+            borderBottom:'1px solid rgba(255,255,255,0.06)'}}>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <div style={{width:30,height:30,borderRadius:8,
+                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+                display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <svg width="16" height="16" viewBox="0 0 44 44" fill="none">
+                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
+                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
+                </svg>
+              </div>
+              <span style={{fontWeight:700,fontSize:'0.95rem',letterSpacing:'-0.02em'}}>Joinstick</span>
+              <div style={{width:1,height:16,background:'rgba(255,255,255,0.1)'}}/>
+              <span style={{color:'#71717a',fontSize:'0.82rem'}}>HR Dashboard</span>
+              <div style={{display:'inline-flex',alignItems:'center',gap:4,
+                background:'rgba(99,102,241,0.1)',border:'1px solid rgba(99,102,241,0.2)',
+                borderRadius:999,padding:'2px 8px'}}>
+                <span style={{width:5,height:5,borderRadius:'50%',background:'#818cf8',display:'inline-block'}}/>
+                <span style={{color:'#a5b4fc',fontSize:'0.67rem',fontWeight:600}}>Out of Class</span>
+              </div>
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:12}}>
+              <span style={{color:'#52525b',fontSize:'0.78rem',display:'none'}}>Leadership Excellence Program</span>
+              <button onClick={onBack} style={{padding:'7px 14px',borderRadius:9,cursor:'pointer',
+                border:'1px solid rgba(255,255,255,0.1)',background:'rgba(255,255,255,0.04)',
+                color:'#a1a1aa',fontSize:'0.8rem'}}>← กลับ</button>
+            </div>
+          </nav>
+
+          {/* Tab bar */}
+          <div style={{borderBottom:'1px solid rgba(255,255,255,0.06)',
+            padding:'0 max(24px,calc((100vw - 1400px)/2))'}}>
+            <div style={{display:'flex'}}>
+              {[['overview','📊 Overview'],['learners','👥 ผู้เรียน'],['challenges','🎯 ภารกิจ']].map(([id,label])=>(
+                <button key={id} onClick={()=>setTab(id)} style={{
+                  padding:'13px 20px',border:'none',background:'transparent',
+                  color:tab===id?'#fff':'#71717a',fontSize:'0.875rem',fontWeight:tab===id?600:400,
+                  cursor:'pointer',
+                  borderBottom:tab===id?'2px solid #6366f1':'2px solid transparent',
+                  transition:'color 0.15s'}}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div style={{padding:'28px max(24px,calc((100vw - 1400px)/2)) 60px'}}>
+            {tab==='overview'   && renderOverview()}
+            {tab==='learners'   && renderLearners()}
+            {tab==='challenges' && renderChallenges()}
+          </div>
+        </div>
+      );
+    }
+
+    /* ── PhaseSelect ─────────────────────────────── */
+    function PhaseSelect({ onSelect, onBack }) {
+      const [exiting, setExiting] = useState(false);
+      const [hovered, setHovered] = useState(null);
+
+      const go = (phase) => {
+        setExiting(true);
+        setTimeout(() => onSelect(phase), 480);
+      };
+
+      const phases = [
+        {
+          id: 'preclass',
+          num: '01',
+          label: 'Pre-Class',
+          thai: 'ก่อนเรียน',
+          status: 'live',
+          color: '#f59e0b',
+          glow: 'rgba(245,158,11,0.15)',
+          border: 'rgba(245,158,11,0.25)',
+          icon: '📋',
+          desc: 'เตรียมความพร้อมก่อนเข้าคอร์ส ประเมินตัวเอง และตั้งเป้าหมายการเรียนรู้',
+          features: ['Pre-Assessment', 'Goal Setting', 'Onboarding Journey', 'Learning Path'],
+        },
+        {
+          id: 'inclass',
+          num: '02',
+          label: 'In-Class',
+          thai: 'ระหว่างเรียน',
+          status: 'live',
+          color: '#06b6d4',
+          glow: 'rgba(6,182,212,0.15)',
+          border: 'rgba(6,182,212,0.25)',
+          icon: '🎓',
+          desc: 'กิจกรรม Live ระหว่างการเรียน Harvester และ Real-time Engagement',
+          features: ['Live Activities', 'Harvester', 'Real-time Poll', 'Group Challenge'],
+        },
+        {
+          id: 'outofclass',
+          num: '03',
+          label: 'Out of Class',
+          thai: 'หลังเรียน',
+          status: 'live',
+          color: '#6366f1',
+          glow: 'rgba(99,102,241,0.2)',
+          border: 'rgba(99,102,241,0.4)',
+          icon: '🚀',
+          desc: 'ฝึกฝนต่อเนื่องหลังห้องเรียน ทำภารกิจ ทบทวนเนื้อหา และติดตามความก้าวหน้า',
+          features: ['Mission & Quiz', 'Micro Learning', 'Flash Card', 'Progress & Leaderboard'],
+        },
+      ];
+
+      return (
+        <div style={{
+          minHeight: '100vh',
+          background: '#09090b',
+          color: '#fff',
+          fontFamily: "'Inter', system-ui, sans-serif",
+          opacity: exiting ? 0 : 1,
+          transform: exiting ? 'scale(0.98)' : 'scale(1)',
+          transition: 'opacity 0.48s ease, transform 0.48s ease',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
+          {/* Ambient */}
+          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+            <div style={{position:'absolute',top:'-15%',left:'20%',width:'50vw',height:'50vw',
+              background:'radial-gradient(circle,rgba(99,102,241,0.07) 0%,transparent 65%)',borderRadius:'50%'}}/>
+            <div style={{position:'absolute',bottom:'-15%',right:'10%',width:'45vw',height:'45vw',
+              background:'radial-gradient(circle,rgba(245,158,11,0.05) 0%,transparent 65%)',borderRadius:'50%'}}/>
+          </div>
+
+          {/* Navbar */}
+          <nav style={{
+            position:'sticky',top:0,zIndex:100,
+            display:'flex',alignItems:'center',justifyContent:'space-between',
+            padding:'0 max(24px,calc((100vw - 1200px)/2))',
+            height:64,
+            background:'rgba(9,9,11,0.85)',
+            backdropFilter:'blur(12px)',
+            borderBottom:'1px solid rgba(255,255,255,0.06)',
+          }}>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <div style={{width:36,height:36,borderRadius:10,
+                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+                display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
+                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
+                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
+                  <rect x="13" y="34" width="18" height="4" rx="2" fill="white" fillOpacity="0.45"/>
+                </svg>
+              </div>
+              <span style={{fontWeight:700,fontSize:'1.1rem',letterSpacing:'-0.02em'}}>Joinstick</span>
+            </div>
+            <button onClick={onBack} style={{
+              display:'flex',alignItems:'center',gap:6,
+              background:'rgba(255,255,255,0.05)',
+              border:'1px solid rgba(255,255,255,0.08)',
+              borderRadius:10,padding:'8px 16px',
+              color:'#a1a1aa',fontSize:'0.875rem',cursor:'pointer',
+              transition:'color 0.15s,background 0.15s',
+            }}
+              onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.background='rgba(255,255,255,0.08)'}}
+              onMouseLeave={e=>{e.currentTarget.style.color='#a1a1aa';e.currentTarget.style.background='rgba(255,255,255,0.05)'}}>
+              ← กลับหน้าหลัก
+            </button>
+          </nav>
+
+          {/* Content */}
+          <div style={{
+            flex:1,position:'relative',zIndex:1,
+            display:'flex',flexDirection:'column',alignItems:'center',
+            padding:'64px max(24px,calc((100vw - 1200px)/2)) 80px',
+          }}>
+            {/* Header */}
+            <div className="fade-in" style={{textAlign:'center',marginBottom:56}}>
+              <div style={{
+                display:'inline-flex',alignItems:'center',gap:8,
+                background:'rgba(99,102,241,0.1)',border:'1px solid rgba(99,102,241,0.2)',
+                borderRadius:999,padding:'5px 14px',marginBottom:20,
+              }}>
+                <span style={{width:6,height:6,borderRadius:'50%',background:'#6366f1',display:'inline-block'}}/>
+                <span style={{color:'#a5b4fc',fontSize:'0.8rem',fontWeight:500}}>เลือก Phase การเรียนรู้</span>
+              </div>
+              <h1 style={{
+                fontSize:'clamp(1.8rem,4vw,2.8rem)',fontWeight:800,
+                letterSpacing:'-0.04em',margin:'0 0 14px',lineHeight:1.1,
+              }}>Learning Journey ของคุณ</h1>
+              <p style={{color:'#71717a',fontSize:'1rem',margin:0,lineHeight:1.6}}>
+                เลือก Phase ที่ต้องการดู Prototype<br/>
+                <span style={{color:'#4b5563',fontSize:'0.875rem'}}>Out of Class พร้อมใช้งาน · Phase อื่นกำลังพัฒนา</span>
+              </p>
+            </div>
+
+            {/* Phase cards */}
+            <div style={{
+              display:'grid',
+              gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))',
+              gap:20,width:'100%',maxWidth:1100,
+            }}>
+              {phases.map(({id,num,label,thai,status,color,glow,border,icon,desc,features},i)=>{
+                const isLive = status==='live';
+                const isHov = hovered===id;
+                return (
+                  <div key={id}
+                    className="fade-in"
+                    style={{animationDelay:`${i*0.1}s`,opacity:0}}
+                    onMouseEnter={()=>setHovered(id)}
+                    onMouseLeave={()=>setHovered(null)}>
+                    <div
+                      onClick={()=>go(id)}
+                      style={{
+                        position:'relative',
+                        background: isHov
+                          ? `linear-gradient(145deg, rgba(255,255,255,0.05), ${glow})`
+                          : 'rgba(255,255,255,0.03)',
+                        border:`1px solid ${isHov ? border : 'rgba(255,255,255,0.07)'}`,
+                        borderRadius:24,
+                        padding:'32px 28px',
+                        cursor: isLive ? 'pointer' : 'default',
+                        transition:'all 0.25s ease',
+                        transform: isHov && isLive ? 'translateY(-4px)' : 'none',
+                        boxShadow: isHov && isLive ? `0 20px 60px ${glow}` : 'none',
+                        height:'100%',
+                        display:'flex',flexDirection:'column',
+                        opacity: isLive ? 1 : 0.6,
+                      }}>
+
+                      {/* Status badge */}
+                      <div style={{
+                        position:'absolute',top:20,right:20,
+                        display:'flex',alignItems:'center',gap:5,
+                        background: isLive ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.06)',
+                        border: `1px solid ${isLive ? 'rgba(99,102,241,0.35)' : 'rgba(255,255,255,0.1)'}`,
+                        borderRadius:999,padding:'4px 10px',
+                      }}>
+                        {isLive && <span style={{width:5,height:5,borderRadius:'50%',background:'#818cf8',
+                          display:'inline-block'}} className="anim-pulse"/>}
+                        <span style={{
+                          fontSize:'0.65rem',fontWeight:600,
+                          color: isLive ? '#a5b4fc' : '#52525b',
+                          letterSpacing:'0.04em',textTransform:'uppercase',
+                        }}>{isLive ? 'Live Prototype' : 'Coming Soon'}</span>
+                      </div>
+
+                      {/* Phase number */}
+                      <div style={{
+                        fontSize:'0.7rem',fontWeight:700,color,
+                        letterSpacing:'0.1em',marginBottom:14,
+                        opacity:0.7,
+                      }}>PHASE {num}</div>
+
+                      {/* Icon + Title */}
+                      <div style={{display:'flex',alignItems:'center',gap:14,marginBottom:16}}>
+                        <div style={{
+                          width:52,height:52,borderRadius:16,flexShrink:0,
+                          background:`${color}18`,
+                          border:`1px solid ${color}33`,
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'1.5rem',
+                          boxShadow: isHov ? `0 0 24px ${color}30` : 'none',
+                          transition:'box-shadow 0.25s',
+                        }}>{icon}</div>
+                        <div>
+                          <div style={{fontWeight:800,fontSize:'1.25rem',
+                            letterSpacing:'-0.02em',lineHeight:1}}>{label}</div>
+                          <div style={{color:'#71717a',fontSize:'0.8rem',marginTop:3}}>{thai}</div>
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <p style={{color:'#a1a1aa',fontSize:'0.875rem',lineHeight:1.65,
+                        margin:'0 0 24px',flex:1}}>{desc}</p>
+
+                      {/* Feature list */}
+                      <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:28}}>
+                        {features.map(f=>(
+                          <div key={f} style={{display:'flex',alignItems:'center',gap:8}}>
+                            <div style={{width:5,height:5,borderRadius:'50%',
+                              background: isLive ? color : '#3f3f46',flexShrink:0}}/>
+                            <span style={{fontSize:'0.8rem',
+                              color: isLive ? '#d4d4d8' : '#52525b'}}>{f}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* CTA */}
+                      <div style={{
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        padding:'13px 0',borderRadius:14,
+                        background: isLive
+                          ? (isHov ? `linear-gradient(135deg,${color},#8b5cf6)` : `linear-gradient(135deg,${color}cc,#8b5cf640)`)
+                          : 'rgba(255,255,255,0.04)',
+                        border: isLive ? 'none' : '1px solid rgba(255,255,255,0.08)',
+                        transition:'background 0.25s',
+                      }}>
+                        <span style={{
+                          fontWeight:700,fontSize:'0.9rem',
+                          color: isLive ? '#fff' : '#3f3f46',
+                          letterSpacing:'-0.01em',
+                        }}>
+                          {isLive ? 'เข้าใช้งาน Prototype →' : 'กำลังพัฒนา…'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Journey timeline hint */}
+            <div className="fade-in" style={{
+              animationDelay:'0.35s',opacity:0,
+              marginTop:56, display:'flex',alignItems:'center',gap:0,
+            }}>
+              {[['Pre-Class','#f59e0b'],['In-Class','#06b6d4'],['Out of Class','#6366f1']].map(([l,c],i)=>(
+                <React.Fragment key={l}>
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:6}}>
+                    <div style={{
+                      width:36,height:36,borderRadius:'50%',
+                      background:`linear-gradient(135deg,${c},${c}99)`,
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      fontSize:'0.75rem',fontWeight:700,color:'#fff',
+                      boxShadow:`0 0 14px ${c}55`,
+                    }}>{i+1}</div>
+                    <span style={{fontSize:'0.7rem',color:c,fontWeight:600,opacity:0.85}}>{l}</span>
+                  </div>
+                  {i<2 && (
+                    <div style={{
+                      width:80,height:1,margin:'0 4px',marginBottom:22,
+                      background:`linear-gradient(90deg,${[['#f59e0b','#06b6d4'],['#06b6d4','#6366f1']][i].join(',')})`,
+                      opacity:0.4,
+                    }}/>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            {/* HR Dashboard entry */}
+            <div className="fade-in" style={{
+              animationDelay:'0.45s',opacity:0,
+              marginTop:40,width:'100%',maxWidth:1100,
+            }}>
+              <div
+                onClick={()=>go('hr')}
+                style={{
+                  background:'rgba(99,102,241,0.06)',
+                  border:'1px solid rgba(99,102,241,0.18)',
+                  borderRadius:18,padding:'18px 28px',
+                  display:'flex',alignItems:'center',justifyContent:'space-between',
+                  cursor:'pointer',transition:'all 0.2s ease',
+                }}
+                onMouseEnter={e=>{e.currentTarget.style.background='rgba(99,102,241,0.12)';e.currentTarget.style.borderColor='rgba(99,102,241,0.38)';e.currentTarget.style.transform='translateY(-2px)';}}
+                onMouseLeave={e=>{e.currentTarget.style.background='rgba(99,102,241,0.06)';e.currentTarget.style.borderColor='rgba(99,102,241,0.18)';e.currentTarget.style.transform='none';}}>
+                <div style={{display:'flex',alignItems:'center',gap:14}}>
+                  <div style={{
+                    width:46,height:46,borderRadius:13,flexShrink:0,
+                    background:'rgba(99,102,241,0.15)',border:'1px solid rgba(99,102,241,0.3)',
+                    display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.4rem',
+                  }}>👩‍💼</div>
+                  <div>
+                    <div style={{fontWeight:700,fontSize:'0.95rem',letterSpacing:'-0.01em'}}>
+                      HR Dashboard
+                      <span style={{marginLeft:8,display:'inline-flex',alignItems:'center',gap:4,
+                        background:'rgba(99,102,241,0.12)',border:'1px solid rgba(99,102,241,0.25)',
+                        borderRadius:999,padding:'2px 8px',verticalAlign:'middle'}}>
+                        <span style={{width:4,height:4,borderRadius:'50%',background:'#818cf8',display:'inline-block'}} className="anim-pulse"/>
+                        <span style={{color:'#a5b4fc',fontSize:'0.62rem',fontWeight:600,letterSpacing:'0.03em'}}>OUT OF CLASS</span>
+                      </span>
+                    </div>
+                    <div style={{color:'#71717a',fontSize:'0.8rem',marginTop:3}}>
+                      ดูภาพรวมผู้เรียน · ติดตามความก้าวหน้า · ข้อมูลสำหรับ HR & Admin
+                    </div>
+                  </div>
+                </div>
+                <div style={{
+                  display:'flex',alignItems:'center',gap:6,flexShrink:0,
+                  background:'rgba(99,102,241,0.18)',border:'1px solid rgba(99,102,241,0.35)',
+                  borderRadius:10,padding:'8px 16px',
+                  color:'#c7d2fe',fontSize:'0.82rem',fontWeight:600,
+                }}>เปิด Dashboard →</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <footer style={{
+            position:'relative',zIndex:1,
+            padding:'20px max(24px,calc((100vw - 1200px)/2))',
+            borderTop:'1px solid rgba(255,255,255,0.05)',
+            display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8,
+          }}>
+            <span style={{color:'#3f3f46',fontSize:'0.78rem'}}>Joinstick Learning Platform</span>
+            <span style={{color:'#3f3f46',fontSize:'0.78rem'}}>Prototype Demo · 2025</span>
+          </footer>
+        </div>
+      );
+    }
+
+    /* ── JourneyNav ─ fixed overlay outside phone ── */
+    function JourneyNav({ onJourney, onNext, nextLabel, nextColor }) {
+      const font = "'Inter', system-ui, sans-serif";
+      return (
+        <>
+          {/* ← Back to Journey Timeline */}
+          <button
+            onClick={onJourney}
+            style={{
+              position:'fixed', top:28, left:28, zIndex:9999,
+              display:'flex', alignItems:'center', gap:8,
+              background:'rgba(24,24,27,0.85)', backdropFilter:'blur(14px)',
+              border:'1px solid rgba(255,255,255,0.12)',
+              borderRadius:12, padding:'10px 18px',
+              color:'#a1a1aa', fontSize:'0.82rem', fontWeight:600,
+              cursor:'pointer', fontFamily:font,
+              transition:'color 0.15s, background 0.15s, border-color 0.15s',
+              boxShadow:'0 4px 20px rgba(0,0,0,0.4)',
+            }}
+            onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.background='rgba(40,40,45,0.95)';e.currentTarget.style.borderColor='rgba(255,255,255,0.22)';}}
+            onMouseLeave={e=>{e.currentTarget.style.color='#a1a1aa';e.currentTarget.style.background='rgba(24,24,27,0.85)';e.currentTarget.style.borderColor='rgba(255,255,255,0.12)';}}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            Journey Timeline
+          </button>
+
+          {/* Next Phase → */}
+          {onNext && (
+            <button
+              onClick={onNext}
+              style={{
+                position:'fixed', top:28, right:28, zIndex:9999,
+                display:'flex', alignItems:'center', gap:8,
+                background:`rgba(24,24,27,0.85)`, backdropFilter:'blur(14px)',
+                border:`1px solid ${nextColor}55`,
+                borderRadius:12, padding:'10px 18px',
+                color:nextColor, fontSize:'0.82rem', fontWeight:600,
+                cursor:'pointer', fontFamily:font,
+                transition:'color 0.15s, background 0.15s, border-color 0.15s',
+                boxShadow:`0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px ${nextColor}11`,
+              }}
+              onMouseEnter={e=>{e.currentTarget.style.background=`${nextColor}18`;e.currentTarget.style.borderColor=`${nextColor}99`;}}
+              onMouseLeave={e=>{e.currentTarget.style.background='rgba(24,24,27,0.85)';e.currentTarget.style.borderColor=`${nextColor}55`;}}>
+              {nextLabel}
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          )}
+        </>
+      );
+    }
+
+    /* ── App shell ────────────────────────────────── */
+    function App() {
+      const [scene, setScene] = useState('landing'); // 'landing'|'phases'|'preclass'|'inclass'|'learner'|'hr'
+
+      const goTo = (s) => setScene(s);
+
+      const NEXT = {
+        preclass: { scene:'inclass',  label:'In-Class',      color:'#06b6d4' },
+        inclass:  { scene:'learner',  label:'Out of Class',  color:'#6366f1' },
+        learner:  { scene:'hr',       label:'HR Dashboard',  color:'#818cf8' },
+      };
+
+      const isPhase = ['preclass','inclass','learner'].includes(scene);
+
+      return (
+        <>
+          {isPhase && (
+            <JourneyNav
+              onJourney={() => goTo('phases')}
+              onNext={NEXT[scene] ? () => goTo(NEXT[scene].scene) : null}
+              nextLabel={NEXT[scene]?.label}
+              nextColor={NEXT[scene]?.color}
+            />
+          )}
+
+          {scene === 'landing' && <LandingPage onEnter={() => goTo('phases')} />}
+          {scene === 'phases'  && (
+            <PhaseSelect
+              onSelect={(phase) =>
+                goTo(phase === 'preclass' ? 'preclass' :
+                     phase === 'inclass'  ? 'inclass'  :
+                     phase === 'hr'       ? 'hr'       : 'learner')
+              }
+              onBack={() => goTo('landing')}
+            />
+          )}
+          {scene === 'preclass' && <PreClassApp onBack={() => goTo('phases')} />}
+          {scene === 'inclass'  && <InClassApp  onBack={() => goTo('phases')} />}
+          {scene === 'hr'       && <HRDashboard onBack={() => goTo('phases')} />}
+          {scene === 'learner'  && <LearnerApp />}
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
