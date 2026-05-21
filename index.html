@@ -134,6 +134,8 @@
     const Zap          = p => <Svg {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Svg>;
     const Target       = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></Svg>;
     const Video        = p => <Svg {...p}><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10 9 15 12 10 15 10 9" fill="currentColor" stroke="none"/></Svg>;
+    const Smartphone   = p => <Svg {...p}><rect x="7" y="2" width="10" height="20" rx="2.2"/><polygon points="10.5 9 14 12 10.5 15 10.5 9" fill="currentColor" stroke="none"/></Svg>;
+    const FileText     = p => <Svg {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></Svg>;
     const Clock        = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></Svg>;
     const Lock         = p => <Svg {...p}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Svg>;
     const FlashCard    = p => <Svg {...p}><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></Svg>;
@@ -198,26 +200,103 @@
     ];
 
     const microlearningData = [
-      { id:1, section:'Anytime', title:'5 วิธีสร้างความไว้วางใจในทีม',
-        category:'Leadership & Trust', duration:'6 นาที', watched:true, color:'#3b82f6',
-        summary:'ความไว้วางใจในทีมไม่ได้เกิดขึ้นชั่วข้ามคืน แต่สร้างได้ผ่านพฤติกรรมที่สม่ำเสมอและโปร่งใส',
-        principles:['พูดความจริงแม้ในเรื่องที่ยาก — ความซื่อสัตย์สร้าง Integrity Trust','ทำตามที่พูด — ความน่าเชื่อถือเกิดจากการปฏิบัติ ไม่ใช่คำพูด','รับฟังอย่างแท้จริง — ให้ทีมรู้สึกว่าเสียงของเขามีความหมาย'] },
-      { id:2, section:'Anytime', title:'Communication Styles ทั้ง 4 แบบ',
-        category:'Communication', duration:'8 นาที', watched:false, color:'#8b5cf6',
-        summary:'แต่ละคนในทีมมีรูปแบบการสื่อสารที่แตกต่างกัน การเข้าใจความแตกต่างนี้ช่วยลดความขัดแย้งและเพิ่มประสิทธิภาพ',
-        principles:['Analytical — ต้องการข้อมูลและข้อเท็จจริงก่อนตัดสินใจ','Driver — มุ่งผลลัพธ์ ตรงไปตรงมา ไม่ชอบรายละเอียดมาก','Expressive — ให้ความสำคัญกับความสัมพันธ์และอารมณ์'] },
-      { id:3, section:'Main Challenge', title:'สร้าง Psychological Safety ในทีม',
-        category:'Team Culture', duration:'5 นาที', watched:false, color:'#06b6d4',
-        summary:'Psychological Safety คือบรรยากาศที่ทีมรู้สึกปลอดภัยในการแสดงความคิดเห็น ตั้งคำถาม และยอมรับความผิดพลาด',
-        principles:['เป็นแบบอย่างในการรับผิดชอบ — ผู้นำต้องกล้ายอมรับความผิดพลาดก่อน','สร้างนิสัยถามความเห็น — "คุณคิดว่าอะไรอีกไหม?" เปิดประตูให้ทุกเสียง','ฉลองความกล้าแสดงออก — ขอบคุณเมื่อใครกล้าพูดในสิ่งที่ยาก'] },
-      { id:4, section:'Anytime', title:'Feedback Loop ที่มีประสิทธิภาพ',
-        category:'Communication', duration:'7 นาที', watched:true, color:'#8b5cf6',
-        summary:'Feedback ที่ดีไม่ใช่การวิจารณ์ แต่เป็นเครื่องมือพัฒนาที่ทั้งผู้ให้และผู้รับได้ประโยชน์',
-        principles:['ให้ Feedback ทันที — ยิ่งใกล้เหตุการณ์ยิ่งมีผล','เฉพาะเจาะจงพฤติกรรม — ไม่ใช่ตัวตน เช่น "รายงานนี้" ไม่ใช่ "คุณ"','ปิดด้วยการถามความเห็น — "คุณคิดว่าจะปรับอะไรได้บ้าง?"'] },
-      { id:5, section:'Main Challenge', title:'Growth Mindset สำหรับผู้นำ',
-        category:'Leadership & Trust', duration:'10 นาที', watched:false, color:'#3b82f6',
-        summary:'ผู้นำที่มี Growth Mindset มองความท้าทายเป็นโอกาสเรียนรู้ ไม่ใช่ภัยคุกคาม และแพร่ทัศนคตินี้ไปยังทีม',
-        principles:['แทนคำว่า "ฉันทำไม่ได้" ด้วย "ฉันยังทำไม่ได้"','มองความล้มเหลวเป็น Data ไม่ใช่คำตัดสิน','ชื่นชมความพยายาม ไม่ใช่แค่ผลลัพธ์'] },
+      { id:0, section:'Anytime', title:'Leadership Video Lesson',
+        category:'Leadership & Trust', duration:'6 นาที', watched:false, color:'#ef4444',
+        youtubeId:'FZc17b44PYU',
+        summary:'บทเรียนวิดีโอเปิดประเด็นด้าน Leadership ที่จะปูพื้นฐานก่อนเข้าสู่บทเรียนถัดไป รับชมและสะท้อนคิดไปพร้อมกัน',
+        principles:['รับชมวิดีโอจนจบ — จดประเด็นที่น่าสนใจระหว่างดู','สะท้อนคิด — ลองคิดว่าเนื้อหาเชื่อมโยงกับงานของคุณอย่างไร','นำไปใช้ — เลือก 1 ข้อจากวิดีโอไปทดลองใช้สัปดาห์นี้'] },
+      { id:1, section:'Main Challenge', title:'The Foundation Of Trust',
+        category:'Leadership & Trust', duration:'8 นาที', watched:false, color:'#3b82f6',
+        summary:'ความไว้วางใจคือรากฐานของทีมที่แข็งแกร่ง ผู้นำสามารถสร้าง Trust ได้ผ่าน 7 แนวทางที่จับต้องได้และนำไปใช้ได้จริงในชีวิตการทำงาน',
+        principles:['สื่อสารอย่างโปร่งใส — แบ่งปันข้อมูล เป้าหมาย และเหตุผลของการตัดสินใจ','ทำตามคำพูดอย่างสม่ำเสมอ — Reliability คือหัวใจของความน่าเชื่อถือ','กล้าแสดง Vulnerability — ยอมรับเมื่อไม่รู้ และพร้อมขอความช่วยเหลือ'],
+        article:[
+          { h:'ทำไมความไว้วางใจคือรากฐานของทีม',
+            p:'ในทีมที่ขาดความไว้วางใจ คนจะระมัดระวังตัว ปกปิดความคิดเห็นที่แท้จริง และไม่กล้าแบ่งปันไอเดียใหม่ ๆ ผลลัพธ์ที่ได้คือทีมที่ดูเงียบสงบแต่ขาดพลังในการขับเคลื่อน ตรงกันข้าม ทีมที่มี Trust สูงจะพร้อมท้าทายความคิดของกันและกัน เรียนรู้จากความผิดพลาด และเดินไปข้างหน้าได้เร็วกว่าทีมอื่นอย่างชัดเจน' },
+          { h:'1. สื่อสารอย่างโปร่งใส',
+            p:'ผู้นำที่สร้าง Trust ได้ดีจะแบ่งปันข้อมูลให้ทีมมากที่สุดเท่าที่จะทำได้ ทั้งเป้าหมายขององค์กร เหตุผลเบื้องหลังการตัดสินใจ และทิศทางในอนาคต เมื่อทีมเข้าใจ "ทำไม" ของสิ่งที่ทำ พวกเขาจะรู้สึกถึงความเป็นเจ้าของและพร้อมทุ่มเทมากขึ้น' },
+          { h:'2. ทำตามคำพูดอย่างสม่ำเสมอ',
+            p:'Reliability คือคุณสมบัติที่สร้าง Trust ได้เร็วและถูกทำลายได้ง่ายที่สุด การพูดในสิ่งที่ทำได้และทำในสิ่งที่พูดอย่างต่อเนื่องคือพื้นฐานสำคัญ ถ้ารู้ว่าทำตามที่รับปากไม่ได้ ให้สื่อสารล่วงหน้าและอธิบายเหตุผลแทนการเงียบหายไป' },
+          { h:'3. กล้าแสดงความเปราะบาง (Vulnerability)',
+            p:'ผู้นำที่ดีไม่ใช่คนที่รู้ทุกเรื่อง แต่เป็นคนที่กล้ายอมรับเมื่อตัวเองไม่รู้ และเปิดใจขอความช่วยเหลือจากทีม การแสดง Vulnerability อย่างเหมาะสมจะปลดล็อกให้สมาชิกทีมกล้าทำเช่นเดียวกัน และสร้างวัฒนธรรมที่ทุกคนเรียนรู้ร่วมกันได้' },
+          { h:'4. ฟังอย่างตั้งใจ ไม่ใช่แค่ได้ยิน',
+            p:'การฟังที่แท้จริงคือการให้ความสนใจกับสิ่งที่อีกฝ่ายพูดโดยไม่ขัด ไม่ตัดสิน และไม่รีบเสนอทางออก ผู้นำที่ฟังเป็นจะถามคำถามต่อยอด และทบทวนสิ่งที่ได้ยินเพื่อให้แน่ใจว่าเข้าใจถูกต้อง ทีมที่รู้สึกว่าเสียงของตัวเองมีคนรับฟัง จะกล้าพูดสิ่งสำคัญในครั้งต่อไป' },
+          { h:'5. ให้เครดิตทีมเสมอ',
+            p:'เมื่อผลงานสำเร็จ ผู้นำที่สร้าง Trust ได้ดีจะให้เครดิตทีม และเมื่อผลงานล้มเหลว เขาจะรับผิดชอบเอง พฤติกรรมแบบนี้สื่อสารให้ทีมรู้ว่า "คุณปลอดภัยที่จะลองและล้ม" ซึ่งเป็นรากฐานสำคัญของ Psychological Safety' },
+          { h:'6. ยอมรับผิดและขอโทษเมื่อพลาด',
+            p:'ผู้นำที่ไม่เคยขอโทษคือผู้นำที่ทีมเริ่มไม่ไว้ใจ การยอมรับว่า "ผมตัดสินใจผิด" หรือ "ขอโทษที่จัดการเรื่องนี้ไม่ดีพอ" ต้องใช้ความกล้า แต่จะคืนความน่าเชื่อถือให้กับตัวเองและสร้างมาตรฐานใหม่ให้ทีมตามได้' },
+          { h:'7. ลงทุนสร้างความสัมพันธ์รายบุคคล',
+            p:'Trust ในระดับลึกเกิดจากความสัมพันธ์รายบุคคล ไม่ใช่แค่ความสัมพันธ์ในนามทีม ใช้เวลาทำความรู้จักสมาชิกแต่ละคนนอกเหนือจากบทบาทในงาน รับรู้เป้าหมายส่วนตัว ความกังวล และสิ่งที่เขาให้ความสำคัญ การลงทุนนี้จะตอบแทนกลับมาในรูปของทีมที่เหนียวแน่นและพร้อมเดินไปกับคุณในทุกสถานการณ์' },
+          { h:'สรุป: Trust สร้างจากพฤติกรรมเล็ก ๆ ทุกวัน',
+            p:'Trust ไม่ใช่สิ่งที่ประกาศแล้วเกิดขึ้น แต่เป็นผลรวมของพฤติกรรมเล็ก ๆ ที่ทำซ้ำทุกวัน เริ่มจากการเลือก 1-2 ข้อข้างต้นที่คุณอยากพัฒนาก่อน ฝึกอย่างต่อเนื่อง 30 วัน แล้วคุณจะเห็นความแตกต่างของความสัมพันธ์ในทีมอย่างชัดเจน' },
+        ] },
+      { id:2, section:'Anytime', title:'Team Diversity & Leveraging Strengths',
+        category:'Team Culture', duration:'10 นาที', watched:false, color:'#8b5cf6',
+        summary:'MBTI ช่วยให้เราเข้าใจความแตกต่างของแต่ละคนในทีม ผ่านการแบ่งบุคลิกภาพ 16 แบบ จาก 4 มิติหลัก เพื่อนำจุดแข็งของทุกคนมาใช้ร่วมกัน',
+        principles:['16 บุคลิกภาพจาก 4 มิติ — E/I, S/N, T/F, J/P','ไม่มีบุคลิกที่ดีหรือแย่ — แต่ละแบบมีจุดแข็งและจุดที่ต้องระวังต่างกัน','ใช้ความแตกต่างให้เป็นพลัง — มอบหมายงานตามจุดแข็งของแต่ละคน'],
+        article:[
+          { h:'MBTI คืออะไร',
+            p:'MBTI หรือ Myers-Briggs Type Indicator คือเครื่องมือประเมินบุคลิกภาพที่พัฒนาจากทฤษฎีของ Carl Jung โดยแบ่งคนออกเป็น 16 แบบจากการผสมกันของ 4 มิติ จุดประสงค์ของ MBTI ไม่ใช่การตัดสินว่าใครดีกว่าใคร แต่ช่วยให้แต่ละคนเข้าใจตัวเอง และเข้าใจว่าคนรอบข้างคิดและทำงานต่างกันอย่างไร' },
+          { h:'มิติที่ 1 — Extraversion (E) vs Introversion (I)',
+            p:'มิตินี้บอกว่าคุณได้พลังจากที่ไหน คน E จะรู้สึกมีพลังเมื่ออยู่กับคนอื่น คิดออกผ่านการพูดคุย และชอบทำงานเป็นทีม ส่วนคน I จะได้พลังจากการอยู่กับตัวเอง คิดให้รอบคอบก่อนพูด และทำงานได้ดีที่สุดในสภาพแวดล้อมที่สงบ ความเข้าใจมิตินี้ช่วยให้เราจัด setting การประชุมและการทำงานให้เหมาะกับแต่ละคน' },
+          { h:'มิติที่ 2 — Sensing (S) vs iNtuition (N)',
+            p:'มิตินี้บอกว่าคุณรับข้อมูลแบบไหน คน S จะให้ความสำคัญกับข้อเท็จจริง รายละเอียด และสิ่งที่จับต้องได้ ส่วนคน N จะมองภาพรวม เห็นความเป็นไปได้ และชอบคิดเรื่องอนาคต ทีมที่มีทั้ง S และ N จะสามารถมองทั้งป่าและต้นไม้ได้พร้อมกัน ทำให้แผนงานทั้งวิสัยทัศน์และรายละเอียดสมดุล' },
+          { h:'มิติที่ 3 — Thinking (T) vs Feeling (F)',
+            p:'มิตินี้บอกว่าคุณตัดสินใจอย่างไร คน T จะใช้ตรรกะ วิเคราะห์ข้อดีข้อเสีย และให้ความสำคัญกับความถูกต้องเป็นกลาง ส่วนคน F จะให้น้ำหนักกับผลกระทบต่อคน ความรู้สึก และความสัมพันธ์ ทีมที่ขาด F อาจตัดสินใจที่ทำให้คนเสียกำลังใจ ส่วนทีมที่ขาด T อาจเลี่ยงการตัดสินใจยาก ๆ เพื่อรักษาน้ำใจกัน' },
+          { h:'มิติที่ 4 — Judging (J) vs Perceiving (P)',
+            p:'มิตินี้บอกว่าคุณจัดการกับโลกภายนอกอย่างไร คน J จะชอบความชัดเจน วางแผนล่วงหน้า และอยากให้สิ่งต่าง ๆ มีโครงสร้าง ส่วนคน P จะยืดหยุ่น เปิดรับข้อมูลใหม่ และทำงานได้ดีในสถานการณ์ที่เปลี่ยนแปลง ทั้งสองแบบจำเป็นต่อทีม — J ช่วยให้งานเสร็จตามเป้า P ช่วยให้ทีมปรับตัวได้ทันเมื่อสถานการณ์เปลี่ยน' },
+          { h:'ทำไมความหลากหลายในทีมจึงสำคัญ',
+            p:'ทีมที่ทุกคนเป็นแบบเดียวกันจะมีจุดบอดเหมือนกัน เห็นปัญหาแบบเดียวกัน และพลาดมุมมองเดียวกัน ในทางตรงข้าม ทีมที่มีบุคลิกหลากหลายจะเสริมจุดอ่อนของกันและกันได้โดยธรรมชาติ ความขัดแย้งที่เกิดจากความแตกต่างไม่ใช่ปัญหา แต่เป็นโอกาสได้มุมมองที่ครบถ้วน' },
+          { h:'การใช้ MBTI ในการทำงานเป็นทีม',
+            p:'เริ่มจากให้สมาชิกทุกคนรู้จัก type ของตัวเองและของเพื่อนร่วมทีม จากนั้นออกแบบวิธีทำงานให้เคารพความแตกต่าง เช่น ส่ง agenda ล่วงหน้าให้คน I มีเวลาคิด เปิดให้คน N เสนอ big picture ก่อน แล้วให้คน S ช่วยลงรายละเอียด เมื่อต้องตัดสินใจยาก ให้ทั้ง T และ F ได้แสดงความเห็น เพื่อให้การตัดสินใจครอบคลุมทั้งเหตุผลและผลกระทบต่อคน' },
+          { h:'ข้อควรระวังในการใช้ MBTI',
+            p:'MBTI เป็นเครื่องมือเข้าใจคน ไม่ใช่กล่องที่ตีตราคน อย่าใช้ type ตัดสินว่าใครเหมาะหรือไม่เหมาะกับงานอะไร เพราะคนคนเดียวสามารถพัฒนาทักษะนอกเหนือจาก type ของตัวเองได้เสมอ ใช้ MBTI เป็นจุดเริ่มต้นของบทสนทนา ไม่ใช่ข้อสรุปสุดท้าย' },
+          { h:'สรุป: ความแตกต่างคือพลังของทีม',
+            p:'เป้าหมายของการใช้ MBTI ไม่ใช่ทำให้ทีมเหมือนกัน แต่คือทำให้ทุกคนเข้าใจและเคารพความแตกต่างของกันและกัน เมื่อแต่ละคนรู้ว่าจุดแข็งของตัวเองคืออะไรและของเพื่อนคืออะไร ทีมจะเริ่มมอบหมายงานให้เหมาะกับแต่ละคน และเสริมจุดอ่อนของกันและกันได้อย่างเป็นธรรมชาติ' },
+        ] },
+      { id:3, section:'Main Challenge', title:'Delivering A Meaningful ONE ON ONE Session',
+        category:'Communication', duration:'9 นาที', watched:false, color:'#06b6d4',
+        summary:'STAR Model เป็นเครื่องมือที่ทำให้ One-on-One Session มีคุณค่า โดยช่วยให้ทั้งผู้นำและสมาชิกทีมพูดคุยกันอย่างมีโครงสร้างและได้ข้อสรุปที่ชัดเจน',
+        principles:['Situation — อธิบายบริบทและสถานการณ์ที่เกิดขึ้นอย่างชัดเจน','Task — ระบุหน้าที่และเป้าหมายที่ต้องบรรลุ','Action & Result — เล่าสิ่งที่ทำและผลลัพธ์ที่ได้ เพื่อเรียนรู้ต่อยอด'],
+        article:[
+          { h:'ทำไม One-on-One ต้องมีโครงสร้าง',
+            p:'One-on-One Session ที่ไม่มีโครงสร้างมักลงเอยที่การอัปเดตงานเหมือนรายงานสถานะ ผ่านไปครึ่งชั่วโมงโดยไม่มีอะไรเปลี่ยน ทั้งฝ่ายผู้นำและสมาชิกทีมต่างรู้สึกว่าเสียเวลา การมีกรอบที่ชัดเจนจะช่วยให้บทสนทนามีทิศทาง ได้ข้อสรุปที่จับต้องได้ และสร้างความเชื่อมั่นว่าเวลาที่ใช้ไปมีประโยชน์จริง' },
+          { h:'STAR Model คืออะไร',
+            p:'STAR เป็นกรอบการพูดคุยที่ประกอบด้วย 4 ขั้นตอน — Situation, Task, Action, Result เดิมทีนิยมใช้ในการสัมภาษณ์งานเพื่อให้ผู้สมัครเล่าประสบการณ์อย่างเป็นระบบ แต่กรอบเดียวกันใช้ได้ดีมากใน One-on-One เพราะช่วยให้บทสนทนาเคลื่อนจาก "เกิดอะไรขึ้น" ไปสู่ "เราจะเรียนรู้อะไรและทำต่ออย่างไร"' },
+          { h:'S — Situation: ปูบริบทให้ชัดเจน',
+            p:'เริ่มด้วยการให้สมาชิกทีมเล่าสถานการณ์ที่ต้องการพูดคุย ไม่ว่าจะเป็นโปรเจกต์ที่กำลังทำ ปัญหาที่กำลังเจอ หรือเหตุการณ์ที่เกิดขึ้นเมื่อสัปดาห์ที่แล้ว ผู้นำต้องฟังอย่างตั้งใจ ถามคำถามเพื่อทำความเข้าใจบริบทให้ครบ ไม่ด่วนเข้าสู่ทางออกก่อนเข้าใจสถานการณ์จริง' },
+          { h:'T — Task: ระบุสิ่งที่ต้องทำให้สำเร็จ',
+            p:'หลังเข้าใจสถานการณ์แล้ว ชวนคุยต่อว่าหน้าที่หรือเป้าหมายในเรื่องนั้นคืออะไร ใครเป็นคนรับผิดชอบหลัก และอะไรคือเกณฑ์ว่า "สำเร็จ" ขั้นตอนนี้สำคัญมากเพราะหลายครั้งความสับสนในงานเกิดจากการที่แต่ละคนเข้าใจ Task ไม่ตรงกันตั้งแต่แรก' },
+          { h:'A — Action: เล่าสิ่งที่ทำไปแล้ว',
+            p:'ให้สมาชิกทีมเล่าว่าได้ลงมือทำอะไรไปบ้าง ทำไมถึงเลือกวิธีนั้น และเจออุปสรรคอะไร ผู้นำควรถามด้วยความอยากรู้ ไม่ใช่ด้วยการตัดสิน เพื่อให้สมาชิกกล้าเล่าทั้งสิ่งที่ทำได้ดีและสิ่งที่ทำไม่ได้อย่างที่หวัง' },
+          { h:'R — Result: ทบทวนผลลัพธ์และเรียนรู้',
+            p:'ปิดด้วยการพูดถึงผลลัพธ์ที่เกิดขึ้น — ทั้งผลทางตัวเลขและผลทางความรู้สึก แล้วชวนคิดต่อว่า "ถ้าทำอีกครั้งจะทำต่างจากเดิมอย่างไร" คำถามนี้คือหัวใจของการเรียนรู้ เพราะมันเปลี่ยนเรื่องที่เกิดขึ้นแล้วให้กลายเป็นบทเรียนสำหรับครั้งต่อไป' },
+          { h:'การประยุกต์ใช้ STAR ใน One-on-One',
+            p:'ใน One-on-One ไม่จำเป็นต้องเดินตาม 4 ขั้นตอนนี้เคร่งครัด แต่ให้ใช้เป็นเช็คลิสต์ในใจว่า "เราเข้าใจสถานการณ์ครบไหม Task ชัดเจนไหม Action ทำอะไรไปแล้ว Result เป็นอย่างไร" ถ้ามีขั้นไหนยังเบลอ ให้ขุดต่อในขั้นนั้น แทนการรีบเสนอความเห็นหรือคำแนะนำ' },
+          { h:'ตัวอย่างคำถามตามกรอบ STAR',
+            p:'Situation: "เล่าให้ฟังหน่อยว่าเกิดอะไรขึ้นในที่ประชุมเมื่อวาน" Task: "ตอนนั้นเรากำลังพยายามจะ deliver อะไรกันแน่" Action: "คุณตัดสินใจทำแบบนั้นเพราะอะไร" Result: "ผลเป็นยังไงบ้าง และถ้าย้อนไปได้ คุณคิดว่าจะทำต่างจากเดิมตรงไหน" คำถามแบบนี้จะดึงข้อมูลและการสะท้อนคิดออกมาจากสมาชิกทีมเอง ดีกว่าการที่ผู้นำเป็นคนสรุปให้ฟัง' },
+          { h:'สรุป: One-on-One ที่มีคุณค่าเริ่มจากการฟัง',
+            p:'STAR Model ไม่ใช่สูตรลับ แต่เป็นเครื่องมือที่บังคับให้เราหยุดและฟังก่อนตอบ การใช้กรอบนี้อย่างต่อเนื่องจะเปลี่ยน One-on-One จากเซสชันรายงานงาน ให้กลายเป็นพื้นที่ที่สมาชิกทีมรู้สึกว่าได้รับการรับฟัง ได้เรียนรู้ และพร้อมก้าวต่อในสัปดาห์ถัดไป' },
+        ] },
+      { id:4, section:'Anytime', title:'Leadership Shorts',
+        category:'Leadership & Trust', duration:'1 นาที', watched:false, color:'#ec4899',
+        youtubeId:'kxMpEGxq-8I', isShort:true,
+        summary:'คลิปสั้นสไตล์ Shorts สำหรับเก็บประเด็น Leadership แบบรวดเร็วในเวลาว่าง รับชมในแนวตั้ง เหมาะกับการเปิดดูบนมือถือก่อนเข้าประชุมหรือระหว่างพักสั้น ๆ',
+        principles:['รับชมแบบ Quick Bite — ใช้เวลาไม่ถึง 1 นาที','จดประเด็นเดียวที่อยากนำไปลองใช้','แชร์ต่อให้เพื่อนร่วมทีมถ้าคิดว่าน่าสนใจ'] },
+    ];
+
+    /* ── Module Data ──────────────────────────────
+       จัดกลุ่มบทเรียนเป็น Module เพื่อให้ผู้เรียน
+       เห็นโครงสร้างหลักสูตรและลำดับการเรียนรู้ ─── */
+    const moduleData = [
+      { id:1, num:'01', title:'Trust Fundamentals', subtitle:'รากฐานความไว้วางใจในทีม',
+        desc:'ปูพื้นฐานการสร้าง Trust ที่ทำให้ทีมกล้าเสี่ยง กล้าพูด และพร้อมเดินไปข้างหน้าด้วยกัน',
+        color:'#3b82f6', icon:'🤝', lessonIds:[0, 1] },
+      { id:2, num:'02', title:'Understanding Team Diversity', subtitle:'เข้าใจและใช้ความหลากหลายของทีม',
+        desc:'ใช้ MBTI เป็นเครื่องมือเข้าใจความแตกต่างของแต่ละคน เพื่อมอบหมายงานให้เหมาะกับจุดแข็งของแต่ละคน',
+        color:'#8b5cf6', icon:'👥', lessonIds:[2] },
+      { id:3, num:'03', title:'Coaching Conversations', subtitle:'การสนทนาแบบ One-on-One ที่มีคุณค่า',
+        desc:'ฝึกใช้ STAR Model เปลี่ยน One-on-One จากเซสชันรายงานงานให้กลายเป็นพื้นที่พัฒนาคน',
+        color:'#06b6d4', icon:'💬', lessonIds:[3, 4] },
     ];
 
     /* ── Harvester Data ─────────────────────────── */
@@ -351,7 +430,16 @@
             height: 844,
             background: '#09090b',
             borderRadius: 52,
-            boxShadow: '0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 0 1px rgba(255,255,255,0.04)',
+            border: '2px solid rgba(255,255,255,0.18)',
+            boxShadow: [
+              '0 40px 90px rgba(0,0,0,0.85)',
+              '0 0 0 6px #1a1a1d',
+              '0 0 0 7px rgba(255,255,255,0.28)',
+              '0 0 0 10px #0a0a0c',
+              '0 0 0 11px rgba(255,255,255,0.08)',
+              'inset 0 0 0 1px rgba(255,255,255,0.1)',
+              'inset 0 1px 0 rgba(255,255,255,0.12)',
+            ].join(', '),
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
@@ -508,6 +596,8 @@
     /* ── LandingPage ─────────────────────────────── */
     function LandingPage({ onEnter }) {
       const [exiting, setExiting] = useState(false);
+      const [activeTab, setActiveTab] = useState('Home');
+      const [hoverTab, setHoverTab] = useState(null);
 
       const handleEnter = () => {
         setExiting(true);
@@ -576,14 +666,47 @@
               <span style={{fontWeight:700,fontSize:'1.1rem',letterSpacing:'-0.02em'}}>Joinstick</span>
             </div>
 
-            {/* Nav links — hide on small screens via inline media trick */}
-            <div style={{display:'flex',alignItems:'center',gap:32}}>
-              {['Features','How it works','Pricing'].map(l => (
-                <span key={l} style={{color:'#a1a1aa',fontSize:'0.875rem',cursor:'pointer',
-                  transition:'color 0.15s'}}
-                  onMouseEnter={e=>e.target.style.color='#fff'}
-                  onMouseLeave={e=>e.target.style.color='#a1a1aa'}>{l}</span>
-              ))}
+            {/* Nav links — pill tab group */}
+            <div style={{
+              display:'flex', alignItems:'center', gap:4,
+              padding:5,
+              background:'rgba(255,255,255,0.04)',
+              border:'1px solid rgba(255,255,255,0.06)',
+              borderRadius:999,
+              backdropFilter:'blur(8px)',
+              boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04)',
+            }}>
+              {['Home','Features','Shift Stage','Transformation Journey','Available Course'].map(l => {
+                const isActive = activeTab === l;
+                const isHover = hoverTab === l;
+                return (
+                  <span
+                    key={l}
+                    onClick={() => {
+                      setActiveTab(l);
+                      if (l === 'Features' || l === 'Transformation Journey') handleEnter();
+                    }}
+                    onMouseEnter={() => setHoverTab(l)}
+                    onMouseLeave={() => setHoverTab(null)}
+                    style={{
+                      position:'relative',
+                      padding:'8px 16px',
+                      borderRadius:999,
+                      fontSize:'0.8125rem',
+                      fontWeight: isActive ? 600 : 500,
+                      cursor:'pointer',
+                      whiteSpace:'nowrap',
+                      color: isActive ? '#fff' : (isHover ? '#e4e4e7' : '#a1a1aa'),
+                      background: isActive
+                        ? 'linear-gradient(135deg,#3b82f6,#6366f1)'
+                        : (isHover ? 'rgba(255,255,255,0.06)' : 'transparent'),
+                      boxShadow: isActive ? '0 4px 14px rgba(99,102,241,0.35)' : 'none',
+                      transition:'all 0.22s cubic-bezier(0.4,0,0.2,1)',
+                      letterSpacing:'-0.005em',
+                    }}
+                  >{l}</span>
+                );
+              })}
             </div>
 
             <button onClick={handleEnter} className="btn-press" style={{
@@ -917,6 +1040,9 @@
       const [mlPlaying, setMlPlaying] = useState(false);
       const [mlChecked, setMlChecked] = useState(false);
 
+      // microlearning module overview
+      const [expandedModuleId, setExpandedModuleId] = useState(1);
+
       // mission video
       const [vdoPlaying, setVdoPlaying] = useState(false);
       const [vdoRipple,  setVdoRipple ] = useState(false);
@@ -925,38 +1051,6 @@
       const [hvStep,      setHvStep    ] = useState(0);
       const [hvAnswers,   setHvAnswers ] = useState({});   // stepIdx → answer
       const [hvRankOrder, setHvRankOrder] = useState([]);
-
-      // join class
-      const [joinOpen,   setJoinOpen  ] = useState(false);
-      const [joinDigits, setJoinDigits] = useState(['','','','']);
-      const [joinState,  setJoinState ] = useState('input'); // 'input' | 'success' | 'error'
-      const joinRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
-
-      const openJoin = () => { setJoinOpen(true); setJoinDigits(['','','','']); setJoinState('input'); };
-      const closeJoin = () => setJoinOpen(false);
-
-      const handleJoinDigit = (i, val) => {
-        if (!/^\d*$/.test(val)) return;
-        const next = [...joinDigits];
-        next[i] = val.slice(-1);
-        setJoinDigits(next);
-        if (val && i < 3) joinRefs[i+1].current?.focus();
-        if (next.every(d => d !== '')) {
-          setTimeout(() => setJoinState('success'), 350);
-        }
-      };
-
-      const handleJoinKey = (i, e) => {
-        if (e.key === 'Backspace' && !joinDigits[i] && i > 0) {
-          joinRefs[i-1].current?.focus();
-        }
-      };
-
-      useEffect(() => {
-        if (joinOpen && joinState === 'input') {
-          setTimeout(() => joinRefs[0].current?.focus(), 100);
-        }
-      }, [joinOpen]);
 
       const goBack = () => { setScreen(null); setScreenData(null); };
       const startHarvester = () => {
@@ -1052,43 +1146,64 @@
                 </div>
               </div>
 
-              {/* ── Video Player ── */}
-              <div className="mx-5 mb-2 rounded-2xl overflow-hidden relative"
-                style={{background:'#000',aspectRatio:'16/9',cursor:'pointer'}}
-                onClick={()=>setMlPlaying(p=>!p)}>
-                {/* Thumbnail gradient */}
-                {!mlPlaying && (
-                  <div className="absolute inset-0" style={{background:`linear-gradient(135deg,${ml.color}30,#000)`}}/>
-                )}
-                {/* Playing bars */}
-                {mlPlaying && (
-                  <div className="absolute inset-0 flex items-center justify-center"
-                    style={{background:`linear-gradient(135deg,${ml.color}18,#000)`}}>
-                    <div style={{display:'flex',gap:5,alignItems:'center',height:28}}>
-                      {[0,1,2,3,4].map(i=>(
-                        <div key={i} style={{width:4,borderRadius:3,background:'#fff',
-                          animation:`barPulse 0.8s ease-in-out ${i*0.12}s infinite alternate`,
-                          height:i===2?28:i===1||i===3?18:12,opacity:0.85}}/>
-                      ))}
+              {/* ── Video Player (only when youtubeId exists) ── */}
+              {ml.youtubeId && (
+                <>
+                  <a
+                    href={ml.isShort
+                      ? `https://www.youtube.com/shorts/${ml.youtubeId}`
+                      : `https://www.youtube.com/watch?v=${ml.youtubeId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${ml.isShort ? 'mx-auto' : 'mx-5'} mb-2 rounded-2xl overflow-hidden relative block btn-press`}
+                    style={{
+                      background:'#000',
+                      aspectRatio: ml.isShort ? '9/16' : '16/9',
+                      width: ml.isShort ? 'calc(60% )' : 'auto',
+                      maxWidth: ml.isShort ? 260 : 'none',
+                      cursor:'pointer',
+                      textDecoration:'none',
+                      backgroundImage:`url(https://img.youtube.com/vi/${ml.youtubeId}/hqdefault.jpg)`,
+                      backgroundSize:'cover',
+                      backgroundPosition:'center',
+                    }}>
+                    <div className="absolute inset-0" style={{
+                      background:'linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%)',
+                    }}/>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div style={{
+                        width:68, height:48, borderRadius:14,
+                        background:'rgba(239,68,68,0.95)',
+                        display:'flex', alignItems:'center', justifyContent:'center',
+                        boxShadow:'0 8px 24px rgba(0,0,0,0.5)',
+                      }}>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {/* Play button */}
-                {!mlPlaying && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center bounce-in"
-                      style={{background:'rgba(255,255,255,0.15)',backdropFilter:'blur(6px)',
-                        border:'2px solid rgba(255,255,255,0.35)'}}>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    {ml.isShort && (
+                      <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-md"
+                        style={{background:'rgba(0,0,0,0.7)', backdropFilter:'blur(6px)'}}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        <span style={{color:'#fff',fontSize:'0.6rem',fontWeight:700,letterSpacing:'0.04em'}}>SHORTS</span>
+                      </div>
+                    )}
+                    <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 rounded-md"
+                      style={{background:'rgba(0,0,0,0.7)', backdropFilter:'blur(6px)'}}>
+                      <span style={{color:'#fff',fontSize:'0.65rem',fontWeight:600}}>Watch on YouTube</span>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                        <path d="M7 17l10-10M7 7h10v10"/>
                       </svg>
                     </div>
-                  </div>
-                )}
-              </div>
-              <p className="text-zinc-600 text-[0.65rem] text-center mb-5">
-                วิดีโอ {ml.duration} · {mlPlaying ? 'กำลังเล่น...' : 'แตะเพื่อเล่น'}
-              </p>
+                  </a>
+                  <p className="text-zinc-600 text-[0.65rem] text-center mb-5">
+                    วิดีโอ {ml.duration} · {ml.isShort ? 'YouTube Shorts' : 'เปิดบน YouTube'}
+                  </p>
+                </>
+              )}
 
               {/* ── Article Section ── */}
               <div className="mx-5 rounded-2xl p-5 mb-4"
@@ -1112,6 +1227,30 @@
                   ))}
                 </div>
               </div>
+
+              {/* ── Full article ── */}
+              {ml.article && (
+                <div className="mx-5 rounded-2xl p-5 mb-4"
+                  style={{background:'#161618',border:'1px solid rgba(63,63,70,.5)'}}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <div style={{width:3,height:14,borderRadius:2,background:ml.color}}/>
+                    <div className="text-zinc-200 text-sm font-semibold">บทความฉบับเต็ม</div>
+                  </div>
+                  <div className="space-y-5">
+                    {ml.article.map((sec,i)=>(
+                      <div key={i}>
+                        <h4 style={{color:'#f4f4f5',fontSize:'0.92rem',fontWeight:700,
+                          margin:'0 0 8px',lineHeight:1.4,letterSpacing:'-0.01em'}}>
+                          {sec.h}
+                        </h4>
+                        <p style={{color:'#a1a1aa',fontSize:'0.82rem',lineHeight:1.75,margin:0}}>
+                          {sec.p}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* ── Checkbox ── */}
               <div className="mx-5 mb-4">
@@ -2348,10 +2487,6 @@
               <Bell className="text-zinc-500" size={18} fill="currentColor"/>
               <div className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-[#09090b] anim-pulse"></div>
             </button>
-            <button onClick={openJoin} className="bg-[#161618] hover:bg-zinc-800/80 rounded-full px-3 py-1.5 flex items-center gap-1.5 border border-zinc-800/80 transition-colors cursor-pointer">
-              <Plus className="text-zinc-400" size={14} strokeWidth={2.5}/>
-              <span className="text-zinc-300 text-xs font-medium">Join Class</span>
-            </button>
           </div>
 
           {/* Greeting & Gauge */}
@@ -2845,86 +2980,170 @@
         </div>
       );
 
-      const renderLessons = () => (
-        <div className="fade-in pb-8">
-          {/* Header */}
-          <div className="flex justify-between items-end pb-4 pt-2 px-1">
-            <div>
-              <h1 className="text-2xl font-semibold text-white">บทเรียน</h1>
-              <p className="text-zinc-500 text-xs mt-0.5">Micro Learning</p>
-            </div>
-            <div style={{background:'rgba(34,197,94,.12)',border:'1px solid rgba(34,197,94,.3)',borderRadius:999,padding:'4px 12px',display:'flex',alignItems:'center',gap:6}}>
-              <CheckCircle2 size={12} className="text-green-400"/>
-              <span style={{color:'#86efac',fontSize:'0.7rem',fontWeight:600}}>{microlearningData.filter(m=>m.watched).length}/{microlearningData.length} ดูแล้ว</span>
-            </div>
-          </div>
+      const renderLessons = () => {
+        const totalLessons   = microlearningData.length;
+        const watchedLessons = microlearningData.filter(m=>m.watched).length;
+        const overallPct     = totalLessons ? (watchedLessons/totalLessons)*100 : 0;
 
-          {/* Progress bar */}
-          <div className="mb-6 px-1">
-            <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
-              <div className="h-full rounded-full transition-all duration-700"
-                style={{width:`${(microlearningData.filter(m=>m.watched).length/microlearningData.length)*100}%`,
-                  background:'linear-gradient(to right,#22c55e,#4ade80)'}}/>
+        return (
+          <div className="fade-in pb-8">
+            {/* Header */}
+            <div className="flex justify-between items-end pb-4 pt-2 px-1">
+              <div>
+                <h1 className="text-2xl font-semibold text-white">บทเรียน</h1>
+                <p className="text-zinc-500 text-xs mt-0.5">Micro Learning · {moduleData.length} Modules</p>
+              </div>
+              <div style={{background:'rgba(34,197,94,.12)',border:'1px solid rgba(34,197,94,.3)',borderRadius:999,padding:'4px 12px',display:'flex',alignItems:'center',gap:6}}>
+                <CheckCircle2 size={12} className="text-green-400"/>
+                <span style={{color:'#86efac',fontSize:'0.7rem',fontWeight:600}}>{watchedLessons}/{totalLessons} ดูแล้ว</span>
+              </div>
             </div>
-          </div>
 
-          {/* Lesson cards */}
-          <div className="space-y-3">
-            {microlearningData.map((ml,i)=>(
-              <button key={ml.id}
-                onClick={()=>{ setScreen('mlPlayer'); setScreenData(ml); setMlPlaying(false); setMlChecked(false); }}
-                className="w-full text-left cursor-pointer btn-press stagger"
-                style={{animationDelay:`${i*70}ms`,background:'#161618',
-                  border:`1px solid rgba(63,63,70,.7)`,borderRadius:'1rem',
-                  padding:0,overflow:'hidden',display:'block',transform:'scale(1)',transition:'transform 0.15s'}}
-                onMouseDown={e=>e.currentTarget.style.transform='scale(0.98)'}
-                onMouseUp={e=>e.currentTarget.style.transform='scale(1)'}
-                onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}>
-                {/* Color band */}
-                <div style={{height:4,background:`linear-gradient(to right,${ml.color},${ml.color}40)`}}/>
-                <div style={{padding:'0.875rem 1rem',display:'flex',gap:12,alignItems:'center'}}>
-                  {/* Thumbnail icon */}
-                  <div style={{width:48,height:48,borderRadius:'0.75rem',background:`${ml.color}18`,
-                    border:`1px solid ${ml.color}35`,flexShrink:0,
-                    display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
-                    <Video size={20} style={{color:ml.color}}/>
-                    {ml.watched && (
-                      <div style={{position:'absolute',bottom:-4,right:-4,width:16,height:16,
-                        borderRadius:'50%',background:'#22c55e',border:'2px solid #161618',
-                        display:'flex',alignItems:'center',justifyContent:'center'}}>
-                        <CheckCircle2 size={10} style={{color:'#fff'}}/>
+            {/* Overall Progress bar */}
+            <div className="mb-6 px-1">
+              <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-all duration-700"
+                  style={{width:`${overallPct}%`,
+                    background:'linear-gradient(to right,#22c55e,#4ade80)'}}/>
+              </div>
+              <div className="text-zinc-500 text-[0.65rem] mt-1.5">ความก้าวหน้าโดยรวม {Math.round(overallPct)}%</div>
+            </div>
+
+            {/* Module list (accordion) */}
+            <div className="space-y-4">
+              {moduleData.map((mod, modIdx)=>{
+                const lessons = mod.lessonIds.map(id => microlearningData.find(m=>m.id===id)).filter(Boolean);
+                const doneInMod = lessons.filter(l=>l.watched).length;
+                const modPct = lessons.length ? (doneInMod/lessons.length)*100 : 0;
+                const expanded = expandedModuleId === mod.id;
+
+                return (
+                  <div key={mod.id} className="stagger"
+                    style={{animationDelay:`${modIdx*80}ms`,
+                      background:'#161618',
+                      border:`1px solid ${expanded ? `${mod.color}55` : 'rgba(63,63,70,.7)'}`,
+                      borderRadius:'1.1rem', overflow:'hidden', transition:'border-color 0.2s'}}>
+                    {/* Module header — clickable */}
+                    <button
+                      onClick={()=>setExpandedModuleId(expanded ? null : mod.id)}
+                      className="w-full text-left cursor-pointer btn-press"
+                      style={{background:'transparent',border:'none',padding:0,display:'block'}}>
+                      {/* Color band */}
+                      <div style={{height:4,background:`linear-gradient(to right,${mod.color},${mod.color}55)`}}/>
+                      <div style={{padding:'14px 14px 12px',display:'flex',gap:12,alignItems:'flex-start'}}>
+                        {/* Module emblem */}
+                        <div style={{width:46,height:46,borderRadius:12,background:`${mod.color}1e`,
+                          border:`1px solid ${mod.color}40`,flexShrink:0,
+                          display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.3rem'}}>
+                          {mod.icon}
+                        </div>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
+                            <span style={{color:mod.color,fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.08em',
+                              background:`${mod.color}1a`,border:`1px solid ${mod.color}33`,
+                              padding:'1px 7px',borderRadius:999}}>MODULE {mod.num}</span>
+                            <span style={{color:'#71717a',fontSize:'0.62rem'}}>{doneInMod}/{lessons.length} บทเรียน</span>
+                          </div>
+                          <div style={{color:'#f4f4f5',fontSize:'0.92rem',fontWeight:700,
+                            letterSpacing:'-0.005em',marginBottom:2,lineHeight:1.35}}>
+                            {mod.title}
+                          </div>
+                          <div style={{color:'#a1a1aa',fontSize:'0.72rem',lineHeight:1.5}}>
+                            {mod.subtitle}
+                          </div>
+                        </div>
+                        <div style={{flexShrink:0,marginTop:6,transform:expanded?'rotate(90deg)':'rotate(0)',
+                          transition:'transform 0.25s ease'}}>
+                          <ChevronRight size={16} style={{color:'#71717a'}}/>
+                        </div>
+                      </div>
+
+                      {/* Module progress bar */}
+                      <div style={{padding:'0 14px 14px'}}>
+                        <div style={{height:5,width:'100%',background:'rgba(255,255,255,0.06)',
+                          borderRadius:999,overflow:'hidden'}}>
+                          <div style={{height:'100%',borderRadius:999,
+                            width:`${modPct}%`, transition:'width 0.7s',
+                            background:`linear-gradient(to right, ${mod.color}, ${mod.color}aa)`}}/>
+                        </div>
+                      </div>
+                    </button>
+
+                    {/* Expanded content: description + lesson list */}
+                    {expanded && (
+                      <div className="fade-in" style={{padding:'0 14px 14px',
+                        borderTop:'1px solid rgba(255,255,255,0.04)'}}>
+                        <div style={{color:'#a1a1aa',fontSize:'0.74rem',lineHeight:1.6,
+                          margin:'12px 2px 14px'}}>
+                          {mod.desc}
+                        </div>
+
+                        <div className="space-y-2.5">
+                          {lessons.map((ml, lessonIdx)=>(
+                            <button key={ml.id}
+                              onClick={()=>{ setScreen('mlPlayer'); setScreenData(ml); setMlPlaying(false); setMlChecked(false); }}
+                              className="w-full text-left cursor-pointer btn-press"
+                              style={{background:'#0f0f11',
+                                border:`1px solid rgba(63,63,70,.55)`,borderRadius:'0.875rem',
+                                padding:'0.7rem 0.85rem',display:'flex',gap:11,alignItems:'center',
+                                transform:'scale(1)',transition:'transform 0.15s, border-color 0.15s'}}
+                              onMouseDown={e=>e.currentTarget.style.transform='scale(0.985)'}
+                              onMouseUp={e=>e.currentTarget.style.transform='scale(1)'}
+                              onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}>
+                              {/* Step number */}
+                              <div style={{width:22,height:22,borderRadius:'50%',flexShrink:0,
+                                background: ml.watched ? '#22c55e' : 'rgba(255,255,255,0.04)',
+                                border: ml.watched ? '1px solid #22c55e' : '1px solid rgba(255,255,255,0.1)',
+                                display:'flex',alignItems:'center',justifyContent:'center',
+                                color: ml.watched ? '#fff' : '#71717a', fontSize:'0.66rem', fontWeight:700}}>
+                                {ml.watched
+                                  ? <CheckCircle2 size={12} style={{color:'#fff'}}/>
+                                  : (lessonIdx+1)}
+                              </div>
+                              {/* Type icon */}
+                              <div style={{width:36,height:36,borderRadius:'0.625rem',background:`${ml.color}18`,
+                                border:`1px solid ${ml.color}35`,flexShrink:0,
+                                display:'flex',alignItems:'center',justifyContent:'center'}}>
+                                {!ml.youtubeId
+                                  ? <FileText size={16} style={{color:ml.color}}/>
+                                  : ml.isShort
+                                    ? <Smartphone size={16} style={{color:ml.color}}/>
+                                    : <Video size={16} style={{color:ml.color}}/>}
+                              </div>
+                              {/* Info */}
+                              <div style={{flex:1,minWidth:0}}>
+                                <div style={{color:'#e4e4e7',fontWeight:500,fontSize:'0.82rem',lineHeight:1.35,
+                                  marginBottom:3,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
+                                  {ml.title}
+                                </div>
+                                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                                  <span style={{color:'#a1a1aa',fontSize:'0.62rem'}}>
+                                    {!ml.youtubeId ? 'บทความ' : ml.isShort ? 'วิดีโอแนวตั้ง' : 'วิดีโอ'}
+                                  </span>
+                                  <span style={{color:'#52525b'}}>·</span>
+                                  <span style={{color:'#71717a',fontSize:'0.62rem',display:'flex',alignItems:'center',gap:3}}>
+                                    <Clock size={9}/> {ml.duration}
+                                  </span>
+                                </div>
+                              </div>
+                              <ChevronRight size={14} style={{color:'#52525b',flexShrink:0}}/>
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
-                  {/* Info */}
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{color:'#e4e4e7',fontWeight:500,fontSize:'0.875rem',lineHeight:1.35,
-                      marginBottom:4,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
-                      {ml.title}
-                    </div>
-                    <div style={{display:'flex',alignItems:'center',gap:8}}>
-                      <span style={{color:ml.color,fontSize:'0.65rem',fontWeight:600,
-                        background:`${ml.color}18`,padding:'1px 7px',borderRadius:999}}>
-                        {ml.category}
-                      </span>
-                      <span style={{color:'#71717a',fontSize:'0.65rem',display:'flex',alignItems:'center',gap:3}}>
-                        <Clock size={10}/> {ml.duration}
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronRight size={16} style={{color:'#52525b',flexShrink:0}}/>
-                </div>
-              </button>
-            ))}
+                );
+              })}
+            </div>
           </div>
-        </div>
-      );
+        );
+      };
 
       const tabs = [
         {id:'home',        label:'หน้าหลัก', Icon:Home     },
         {id:'challenges',  label:'ภารกิจ',   Icon:Target   },
         {id:'lessons',     label:'บทเรียน',  Icon:Video    },
-        {id:'stats',       label:'สถิติ',     Icon:BarChart2 },
         {id:'leaderboard', label:'อันดับ',    Icon:Trophy    },
       ];
 
@@ -2935,7 +3154,6 @@
             {activeTab==='home'        && renderHome()}
             {activeTab==='challenges'  && renderChallenges()}
             {activeTab==='lessons'     && renderLessons()}
-            {activeTab==='stats'       && renderStats()}
             {activeTab==='leaderboard' && renderLeaderboard()}
           </div>
 
@@ -3033,93 +3251,6 @@
               </div>
             );
           })()}
-
-          {/* ── Join Class Modal ── */}
-          {joinOpen && (
-            <div className="absolute inset-0 z-[100] flex flex-col justify-end">
-              {/* Backdrop */}
-              <div className="absolute inset-0 bg-black/60" style={{backdropFilter:'blur(4px)'}} onClick={closeJoin}/>
-
-              {/* Bottom Sheet */}
-              <div className="relative rounded-t-3xl px-6 pt-6 pb-10 slide-up" style={{background:'#111113',border:'1px solid rgba(63,63,70,0.6)',borderBottom:'none'}}>
-
-                {/* Handle */}
-                <div className="w-10 h-1 bg-zinc-700 rounded-full mx-auto mb-6"/>
-
-                {joinState === 'success' ? (
-                  /* ── Success State ── */
-                  <div className="flex flex-col items-center text-center pb-2 fade-in">
-                    <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4" style={{background:'rgba(34,197,94,0.15)'}}>
-                      <CheckCircle size={36} className="text-green-400"/>
-                    </div>
-                    <h2 className="text-white text-xl font-bold mb-1">เข้าคลาสสำเร็จ!</h2>
-                    <p className="text-zinc-400 text-sm mb-6">คุณได้เข้าร่วมคลาสแล้ว</p>
-
-                    {/* Class Card */}
-                    <div className="w-full rounded-2xl p-4 mb-6 text-left" style={{background:'rgba(59,130,246,0.08)',border:'1px solid rgba(59,130,246,0.2)'}}>
-                      <div className="text-blue-300 text-xs font-medium mb-2">คลาสที่เข้าร่วม</div>
-                      <div className="text-white font-semibold text-base mb-1">Leadership &amp; Trust Fundamentals</div>
-                      <div className="text-zinc-400 text-xs">ผู้สอน: อาจารย์ สมชาย · 24 คน</div>
-                      <div className="flex items-center gap-2 mt-3">
-                        <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-500 rounded-full" style={{width:'0%'}}/>
-                        </div>
-                        <span className="text-zinc-500 text-xs">0%</span>
-                      </div>
-                    </div>
-
-                    <button onClick={closeJoin} className="w-full bg-blue-500 text-white font-semibold py-3.5 rounded-full text-base cursor-pointer border-0">
-                      เริ่มเรียน
-                    </button>
-                  </div>
-                ) : (
-                  /* ── Input State ── */
-                  <>
-                    <h2 className="text-white text-xl font-bold mb-1">เข้าร่วมคลาส</h2>
-                    <p className="text-zinc-400 text-sm mb-8">ใส่รหัส 4 หลักที่ได้รับจากผู้สอน</p>
-
-                    {/* 4-digit OTP boxes */}
-                    <div className="flex justify-center gap-3 mb-8">
-                      {joinDigits.map((d, i) => (
-                        <input
-                          key={i}
-                          ref={joinRefs[i]}
-                          type="tel"
-                          inputMode="numeric"
-                          maxLength={1}
-                          value={d}
-                          onChange={e => handleJoinDigit(i, e.target.value)}
-                          onKeyDown={e => handleJoinKey(i, e)}
-                          className="text-center text-2xl font-bold text-white rounded-2xl outline-none transition-all"
-                          style={{
-                            width: 64, height: 72,
-                            background: d ? 'rgba(59,130,246,0.12)' : '#161618',
-                            border: `2px solid ${d ? 'rgba(59,130,246,0.6)' : 'rgba(63,63,70,0.8)'}`,
-                            caretColor: '#3b82f6',
-                          }}
-                        />
-                      ))}
-                    </div>
-
-                    <button
-                      onClick={() => joinDigits.every(d=>d) && setJoinState('success')}
-                      className="w-full font-semibold py-3.5 rounded-full text-base border-0 transition-all"
-                      style={{
-                        background: joinDigits.every(d=>d) ? '#3b82f6' : '#27272a',
-                        color:      joinDigits.every(d=>d) ? 'white'   : '#71717a',
-                        cursor:     joinDigits.every(d=>d) ? 'pointer' : 'not-allowed',
-                      }}>
-                      ยืนยัน
-                    </button>
-
-                    <button onClick={closeJoin} className="w-full text-zinc-500 text-sm mt-3 py-2 cursor-pointer border-0 bg-transparent">
-                      ยกเลิก
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
 
           {/* ── Bottom Nav: absolute bottom เหมือน original ── */}
           <div className="absolute bottom-0 w-full bg-zinc-900/95 backdrop-blur-md border-t border-zinc-800 pt-2 pb-6 px-2 z-50">
@@ -3642,7 +3773,7 @@
       const [screen, setScreen] = useState('checkin');
 
       // check-in
-      const [digits, setDigits] = useState(['','','','']);
+      const [digits, setDigits] = useState(['3','0','4','3']);
       const [joined,  setJoined ] = useState(false);
       const r0=useRef(null),r1=useRef(null),r2=useRef(null),r3=useRef(null);
       const dRefs=[r0,r1,r2,r3];
@@ -3673,16 +3804,10 @@
       const [rfText,   setRfText  ] = useState('');
       const [rfDone,   setRfDone  ] = useState(false);
 
-      useEffect(() => {
-        if (screen==='checkin' && !joined)
-          setTimeout(()=>dRefs[0].current?.focus(), 120);
-      }, [screen]);
-
       const onDigit = (i,v) => {
         if (!/^\d*$/.test(v)) return;
         const n=[...digits]; n[i]=v.slice(-1); setDigits(n);
         if (v && i<3) dRefs[i+1].current?.focus();
-        if (n.every(d=>d)) setTimeout(()=>setJoined(true),350);
       };
       const onKey = (i,e) => {
         if (e.key==='Backspace'&&!digits[i]&&i>0) dRefs[i-1].current?.focus();
@@ -3811,11 +3936,27 @@
                 ))}
               </div>
               <div style={{width:'100%',padding:'13px 16px',borderRadius:14,
-                background:'rgba(6,182,212,0.06)',border:'1px solid rgba(6,182,212,0.15)',marginBottom:24}}>
+                background:'rgba(6,182,212,0.06)',border:'1px solid rgba(6,182,212,0.15)',marginBottom:20}}>
                 <div style={{color:'#71717a',fontSize:'0.65rem',marginBottom:3}}>กำลังเข้าร่วม</div>
                 <div style={{color:'#e4e4e7',fontSize:'0.85rem',fontWeight:600}}>{SESSION.title}</div>
                 <div style={{color:'#06b6d4',fontSize:'0.72rem',marginTop:2}}>{SESSION.course} · Day {SESSION.day}/{SESSION.total}</div>
               </div>
+              <button
+                onClick={()=>digits.every(d=>d) && setJoined(true)}
+                disabled={!digits.every(d=>d)}
+                className="btn-press"
+                style={{
+                  width:'100%',padding:'14px 0',borderRadius:14,border:'none',
+                  background: digits.every(d=>d)
+                    ? 'linear-gradient(135deg,#06b6d4,#0891b2)'
+                    : 'rgba(255,255,255,0.06)',
+                  color: digits.every(d=>d) ? '#fff' : '#52525b',
+                  fontSize:'0.92rem',fontWeight:700,
+                  cursor: digits.every(d=>d) ? 'pointer' : 'not-allowed',
+                  boxShadow: digits.every(d=>d) ? '0 8px 24px rgba(6,182,212,0.3)' : 'none',
+                  marginBottom:18,
+                  transition:'all 0.2s',
+                }}>เข้าร่วม</button>
               <button onClick={onBack} style={{background:'none',border:'none',color:'#52525b',fontSize:'0.8rem',cursor:'pointer'}}>
                 ← กลับหน้าเลือก Phase
               </button>

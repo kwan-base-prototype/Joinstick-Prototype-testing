@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "Ruby WEBrick Server",
+      "runtimeExecutable": "/usr/bin/ruby",
+      "runtimeArgs": ["-run", "-e", "httpd", "--", "--port=3000", "/tmp/joinstick-preview"],
+      "port": 3000
+    },
+    {
       "name": "Static Server (serve)",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", ".", "--listen", "3000", "--no-clipboard"],
