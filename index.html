@@ -168,21 +168,15 @@
 
     const courseDetail = {
       1: {
-        title: 'Leadership 101',
-        description: 'พัฒนาทักษะการเป็นผู้นำที่มีประสิทธิภาพ สร้างความไว้วางใจในทีม และนำพาองค์กรสู่เป้าหมาย',
+        title: 'Essential Leadership: Lead with your heart',
+        description: 'พัฒนาทักษะการเป็นผู้นำที่นำด้วยหัวใจ สร้างความไว้วางใจในทีม และนำพาองค์กรสู่เป้าหมายด้วย 6 Module หลัก',
         lessons: [
-          { id:1,  title:'ความหมายของการเป็นผู้นำ',      done:true,  duration:'8 นาที'  },
-          { id:2,  title:'สร้างความไว้ใจในทีม',           done:true,  duration:'12 นาที' },
-          { id:3,  title:'การสื่อสารอย่างมีประสิทธิภาพ',  done:true,  duration:'10 นาที' },
-          { id:4,  title:'การตัดสินใจในสถานการณ์ยาก',    done:true,  duration:'15 นาที' },
-          { id:5,  title:'การ Delegate งานอย่างถูกต้อง',  done:true,  duration:'9 นาที'  },
-          { id:6,  title:'การให้ Feedback ที่สร้างสรรค์',  done:true,  duration:'11 นาที' },
-          { id:7,  title:'จัดการความขัดแย้งในทีม',        done:true,  duration:'14 นาที' },
-          { id:8,  title:'Emotional Intelligence',         done:true,  duration:'13 นาที' },
-          { id:9,  title:'การ Coach ทีมงาน',               done:false, duration:'16 นาที' },
-          { id:10, title:'สร้าง Culture ของทีม',           done:false, duration:'10 นาที' },
-          { id:11, title:'วัดผลและ KPI',                   done:false, duration:'12 นาที' },
-          { id:12, title:'Leadership ในยุคดิจิทัล',        done:false, duration:'8 นาที'  },
+          { id:1,  title:'The Foundation Of Trust',                 done:true,  duration:'12 นาที' },
+          { id:2,  title:'Team Diversity & Leveraging Strengths',   done:true,  duration:'14 นาที' },
+          { id:3,  title:'360 Degree Management Strategy',          done:true,  duration:'15 นาที' },
+          { id:4,  title:'Delivery A Meaningful ONE ON ONE Session',done:true,  duration:'12 นาที' },
+          { id:5,  title:'Effective team governance system',        done:false, duration:'13 นาที' },
+          { id:6,  title:'Situational Leadership Style',            done:false, duration:'14 นาที' },
         ],
       },
     };
@@ -288,15 +282,24 @@
        จัดกลุ่มบทเรียนเป็น Module เพื่อให้ผู้เรียน
        เห็นโครงสร้างหลักสูตรและลำดับการเรียนรู้ ─── */
     const moduleData = [
-      { id:1, num:'01', title:'Trust Fundamentals', subtitle:'รากฐานความไว้วางใจในทีม',
+      { id:1, num:'01', title:'The Foundation Of Trust', subtitle:'รากฐานความไว้วางใจในทีม',
         desc:'ปูพื้นฐานการสร้าง Trust ที่ทำให้ทีมกล้าเสี่ยง กล้าพูด และพร้อมเดินไปข้างหน้าด้วยกัน',
         color:'#3b82f6', icon:'🤝', lessonIds:[0, 1] },
-      { id:2, num:'02', title:'Understanding Team Diversity', subtitle:'เข้าใจและใช้ความหลากหลายของทีม',
+      { id:2, num:'02', title:'Team Diversity & Leveraging Strengths', subtitle:'เข้าใจและใช้ความหลากหลายของทีม',
         desc:'ใช้ MBTI เป็นเครื่องมือเข้าใจความแตกต่างของแต่ละคน เพื่อมอบหมายงานให้เหมาะกับจุดแข็งของแต่ละคน',
         color:'#8b5cf6', icon:'👥', lessonIds:[2] },
-      { id:3, num:'03', title:'Coaching Conversations', subtitle:'การสนทนาแบบ One-on-One ที่มีคุณค่า',
+      { id:3, num:'03', title:'360 Degree Management Strategy', subtitle:'บริหารทีมแบบรอบทิศ 360 องศา',
+        desc:'มองความสัมพันธ์และผลกระทบของบทบาทผู้นำในทุกทิศทาง ทั้งกับหัวหน้า เพื่อนร่วมงาน และลูกทีม เพื่อบริหารทีมได้อย่างรอบด้าน',
+        color:'#22c55e', icon:'🧭', lessonIds:[] },
+      { id:4, num:'04', title:'Delivery A Meaningful ONE ON ONE Session', subtitle:'การสนทนาแบบ One-on-One ที่มีคุณค่า',
         desc:'ฝึกใช้ STAR Model เปลี่ยน One-on-One จากเซสชันรายงานงานให้กลายเป็นพื้นที่พัฒนาคน',
         color:'#06b6d4', icon:'💬', lessonIds:[3, 4] },
+      { id:5, num:'05', title:'Effective team governance system', subtitle:'ระบบกำกับดูแลทีมที่มีประสิทธิภาพ',
+        desc:'วางโครงสร้าง กติกา และจังหวะการประชุมที่ทำให้ทีมเดินงานได้ต่อเนื่อง โปร่งใส และตัดสินใจร่วมกันได้รวดเร็ว',
+        color:'#f59e0b', icon:'📐', lessonIds:[] },
+      { id:6, num:'06', title:'Situational Leadership Style', subtitle:'ปรับสไตล์การนำตามสถานการณ์',
+        desc:'เรียนรู้การเลือกสไตล์การนำให้เหมาะกับระดับความพร้อมของสมาชิกทีมและบริบทของแต่ละสถานการณ์',
+        color:'#ec4899', icon:'🎯', lessonIds:[] },
     ];
 
     /* ── Harvester Data ─────────────────────────── */
@@ -882,7 +885,7 @@
                   {/* Progress bar area */}
                   <div style={{marginTop:12}}>
                     <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
-                      <span style={{color:'#a1a1aa',fontSize:'0.6rem'}}>Leadership 101</span>
+                      <span style={{color:'#a1a1aa',fontSize:'0.6rem'}}>Essential Leadership</span>
                       <span style={{color:'#3b82f6',fontSize:'0.6rem',fontWeight:600}}>75%</span>
                     </div>
                     <div style={{height:4,background:'rgba(255,255,255,0.08)',borderRadius:999}}>
@@ -3275,26 +3278,27 @@
     }
 
     /* ── PreClassApp ─────────────────────────────── */
-    function PreClassApp({ onBack }) {
+    function PreClassApp({ onBack, onNext }) {
       const [screen, setScreen] = useState('invite');
       const [ptStep, setPtStep] = useState(0);
       const [ptAnswers, setPtAnswers] = useState([]);
       const [ptSelected, setPtSelected] = useState(null);
 
       const classInfo = {
-        name: 'Leadership Excellence Program',
-        org: 'บริษัท ABC จำกัด',
+        name: 'Essential Leadership: Lead with your heart',
+        org: 'บริษัท BASE Playhouse จำกัด',
         sender: 'คุณวิไลวรรณ สุขสมบูรณ์',
         senderRole: 'HR Manager',
-        dates: '10–14 มิถุนายน 2568',
-        duration: '5 วัน · 30 ชั่วโมง',
+        dates: '10–11 มิถุนายน 2568',
+        duration: '2 วัน',
         participants: 24,
         sessions: [
-          { day:'วันที่ 1', title:'Foundation of Leadership',       time:'09:00–16:00' },
-          { day:'วันที่ 2', title:'Trust & Communication',          time:'09:00–16:00' },
-          { day:'วันที่ 3', title:'Decision Making & Conflict',     time:'09:00–16:00' },
-          { day:'วันที่ 4', title:'Coaching & Feedback',            time:'09:00–16:00' },
-          { day:'วันที่ 5', title:'Action Planning',                time:'09:00–15:00' },
+          { day:'วันที่ 1', title:'The Foundation Of Trust',                  time:'09:00–16:00' },
+          { day:'วันที่ 2', title:'Team Diversity & Leveraging Strengths',    time:'09:00–16:00' },
+          { day:'วันที่ 3', title:'360 Degree Management Strategy',           time:'09:00–16:00' },
+          { day:'วันที่ 4', title:'Delivery A Meaningful ONE ON ONE Session', time:'09:00–16:00' },
+          { day:'วันที่ 5', title:'Effective team governance system',         time:'09:00–16:00' },
+          { day:'วันที่ 6', title:'Situational Leadership Style',             time:'09:00–16:00' },
         ],
         instructor: {
           name: 'ดร. ศุภชัย มั่นคง',
@@ -3302,10 +3306,10 @@
           exp: '15+ ปีประสบการณ์',
         },
         outcomes: [
-          'เข้าใจ Leadership Style ของตัวเองอย่างลึกซึ้ง',
-          'สร้างความไว้วางใจและ Trust ในทีม',
-          'พัฒนาทักษะการสื่อสารและ Feedback',
-          'นำทีมในสถานการณ์ยากลำบากได้อย่างมีประสิทธิภาพ',
+          'นำทีมด้วยหัวใจและสร้าง Trust ที่เป็นรากฐานของทีม',
+          'เข้าใจความหลากหลายของทีมและใช้จุดแข็งของแต่ละคน',
+          'บริหารทีมแบบ 360 องศา และจัด One-on-One ที่มีคุณค่า',
+          'ปรับสไตล์การนำให้เหมาะกับสถานการณ์ของทีม',
         ],
       };
 
@@ -3417,7 +3421,7 @@
                 ].map(({icon,label,value})=>(
                   <div key={label} style={{display:'flex',alignItems:'center',gap:12,
                     padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
-                    <span style={{fontSize:'1rem',width:22,textAlign:'center'}}>{icon}</span>
+                    <span style={{fontSize:'1rem',width:22,textAlign:'center',filter:'grayscale(1) brightness(2.2) contrast(0.85)'}}>{icon}</span>
                     <div style={{flex:1}}>
                       <div style={{color:'#71717a',fontSize:'0.63rem'}}>{label}</div>
                       <div style={{color:'#e4e4e7',fontSize:'0.79rem',fontWeight:600,marginTop:1}}>{value}</div>
@@ -3570,7 +3574,7 @@
               boxShadow:'0 8px 32px rgba(99,102,241,0.2)',
             }}>📝</div>
 
-            <h2 style={{fontSize:'1.3rem',fontWeight:800,letterSpacing:'-0.02em',
+            <h2 style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,letterSpacing:'-0.02em',
               textAlign:'center',margin:'0 0 10px'}}>Pre-Test ก่อนเรียน</h2>
             <p style={{color:'#71717a',fontSize:'0.875rem',textAlign:'center',
               lineHeight:1.7,margin:'0 0 28px'}}>
@@ -3693,7 +3697,7 @@
         const score = ptAnswers.reduce((a,b)=>a+b,0);
         const levels = ['Emerging Leader','Developing Leader','Practitioner','Advanced Leader'];
         const level = levels[Math.min(3,Math.floor(score/3))];
-        const focusAreas = ['Trust & Psychological Safety','Communication & Feedback','Decision Making Under Pressure'];
+        const focusAreas = ['The Foundation Of Trust','Team Diversity & Leveraging Strengths','Situational Leadership Style'];
         return (
           <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflowY:'auto',paddingBottom:32}}>
             <div style={{background:'linear-gradient(135deg,#1e1b4b,#312e81)',
@@ -3746,12 +3750,13 @@
                 </div>
               </div>
 
-              <button onClick={onBack} className="btn-press" style={{
+              <button onClick={onNext} className="btn-press" style={{
                 width:'100%',marginTop:20,padding:'14px 0',borderRadius:16,
-                border:'1px solid rgba(255,255,255,0.08)',
-                background:'rgba(255,255,255,0.04)',
-                color:'#a1a1aa',fontSize:'0.875rem',fontWeight:600,cursor:'pointer',
-              }}>← กลับหน้าเลือก Phase</button>
+                border:'none',
+                background:'linear-gradient(135deg,#06b6d4,#0891b2)',
+                color:'#fff',fontSize:'0.95rem',fontWeight:700,cursor:'pointer',
+                boxShadow:'0 8px 24px rgba(6,182,212,0.3)',
+              }}>เข้าสู่ In-Class →</button>
             </div>
           </div>
         );
@@ -3814,19 +3819,19 @@
       };
 
       const SESSION={
-        day:2,total:5,title:'Trust & Communication',
-        course:'Leadership Excellence Program',
+        day:1,total:2,title:'Team Diversity & Leveraging Strengths',
+        course:'Essential Leadership: Lead with your heart',
         instructor:'ดร. ศุภชัย มั่นคง',
         participants:24, online:21,
       };
       const AGENDA=[
-        {time:'09:00',label:'Opening & Recap',done:true},
-        {time:'09:30',label:'Trust Frameworks Deep Dive',done:true},
-        {time:'10:30',label:'Live Poll: Trust in Your Team',active:true},
-        {time:'11:00',label:'Group Challenge',done:false},
-        {time:'13:00',label:'Communication Styles Workshop',done:false},
-        {time:'14:30',label:'Live Quiz',done:false},
-        {time:'15:30',label:'Reflection & Wrap-up',done:false},
+        {time:'09:00',label:'Opening & Recap จาก Day 1 — Foundation Of Trust',done:true},
+        {time:'09:30',label:'MBTI 16 Types & 4 มิติหลัก Deep Dive',done:true},
+        {time:'10:30',label:'Live Poll: ค้นหา Preference ของคุณ',active:true},
+        {time:'11:00',label:'Group Challenge: Leveraging Team Strengths',done:false},
+        {time:'13:00',label:'Workshop: ออกแบบงานตามจุดแข็งของทีม',done:false},
+        {time:'14:30',label:'Live Quiz: Team Diversity',done:false},
+        {time:'15:30',label:'Reflection & เตรียมตัวสู่ Day 3 — 360°',done:false},
       ];
       const ACTS=[
         {id:'poll', icon:'📊',label:'Live Poll',     sub:'กำลัง Live',  live:true, color:'#06b6d4'},
@@ -3835,36 +3840,41 @@
         {id:'qna',  icon:'💬',label:'Q&A',            sub:'21 คำถาม',   live:true, color:'#8b5cf6'},
       ];
       const POLL={
-        q:'ในทีมของคุณ Trust ด้านใดที่ท้าทายมากที่สุดในปัจจุบัน?',
-        opts:['Competence Trust','Integrity Trust','Benevolence Trust','Openness Trust'],
-        results:[34,28,22,16],
+        q:'เมื่อคุณต้องตัดสินใจเรื่องสำคัญในที่ทำงาน คุณมักจะให้น้ำหนักกับอะไรมากกว่ากัน?',
+        opts:[
+          'เหตุผลและข้อมูล (Thinking)',
+          'ผลกระทบต่อความรู้สึกของคน (Feeling)',
+          'รายละเอียดที่ชัดเจน (Sensing)',
+          'ภาพรวมและความเป็นไปได้ (iNtuition)',
+        ],
+        results:[38,27,21,14],
       };
       const GROUP={
-        q:'ทีมของคุณจะใช้ Trust Lens ใดแก้ปัญหาความขัดแย้ง?',
+        q:'ถ้าทีมคุณต้องเริ่มโปรเจกต์ใหม่ จะมอบหมายงานตามจุดแข็งของ MBTI Type อย่างไรให้ทีมเดินเร็วที่สุด?',
         opts:[
-          'Integrity Trust — พูดความจริงและโปร่งใส',
-          'Competence Trust — แสดงความสามารถให้เห็นจริง',
-          'Benevolence Trust — แสดงความห่วงใยที่แท้จริง',
-          'ผสมหลาย Trust Lens ตามสถานการณ์',
+          'ให้ N นำ Vision · S ลงรายละเอียด · T วิเคราะห์ · F ดูแลคน',
+          'ให้ทุกคนทำเหมือนกันหมด เน้นความเท่าเทียม',
+          'ให้คนที่ขยันที่สุดรับงานหลัก คนที่เหลือ Support',
+          'แบ่งงานตามตำแหน่งเดิมโดยไม่สนใจ Type',
         ],
         board:[
-          {name:'ทีมน้ำเงิน',pts:380},
-          {name:'ทีมของคุณ',pts:350,you:true},
-          {name:'ทีมเขียว',pts:320},
+          {name:'ทีมม่วง',pts:380},
+          {name:'ทีมของคุณ',pts:360,you:true},
+          {name:'ทีมเขียว',pts:310},
         ],
       };
       const QUIZ=[
-        {q:'Leadership Style ใดเน้นการสร้างวิสัยทัศน์ระยะยาว?',
-         opts:['Affiliative','Visionary','Commanding','Pacesetting'],c:1,pts:150},
-        {q:'Psychological Safety คือบรรยากาศแบบใด?',
-         opts:['ปลอดภัยจากอุบัติเหตุ','ไม่มีความขัดแย้ง','กล้าแสดงออกและยอมรับความผิดพลาด','ทำงาน Remote ได้'],c:2,pts:150},
-        {q:'Trust Lens ใดเกี่ยวข้องกับความซื่อสัตย์โดยตรง?',
-         opts:['Competence Trust','Benevolence Trust','Integrity Trust','Reliability Trust'],c:2,pts:150},
+        {q:'MBTI มิติ E/I บอกอะไรเกี่ยวกับสมาชิกในทีม?',
+         opts:['ระดับความฉลาดในการทำงาน','แหล่งที่ได้พลัง — จากคนอื่นหรือจากตัวเอง','ความสามารถในการเป็นผู้นำ','ระดับความรับผิดชอบในงาน'],c:1,pts:150},
+        {q:'ทีมที่มีทั้งคน S (Sensing) และ N (iNtuition) ทำงานร่วมกันได้ดีเพราะอะไร?',
+         opts:['S ทำงานเร็ว N ทำงานช้า เลยช่วยกันได้','S เห็นรายละเอียด N เห็นภาพรวม เสริมกันได้','S ฟัง N ดี ไม่มีความขัดแย้ง','ทั้งคู่คิดเหมือนกัน ลดเวลาประชุม'],c:1,pts:150},
+        {q:'เมื่อทีมของคุณมีคน J (Judging) เยอะ ควรระวังเรื่องอะไรมากที่สุด?',
+         opts:['ขาดวินัยและไม่ทำตามแผน','ปรับตัวยากเมื่อสถานการณ์เปลี่ยน','ตัดสินใจช้าและรอข้อมูลเยอะ','ไม่กล้าแสดงความเห็น'],c:1,pts:150},
       ];
       const QNA_LIST=[
-        {user:'สมหมาย ท.',av:'ส',q:'Visionary Leadership เหมาะกับทุก situation ไหมครับ?',time:'10:15'},
-        {user:'วิไลวรรณ ส.',av:'ว',q:'จะรู้ได้อย่างไรว่าทีมมี Trust ในระดับที่พอเพียงแล้ว?',time:'10:20'},
-        {user:'ประภาส ก.',av:'ป',q:'ถ้าทีมมี Trust ต่ำ ควรเริ่มจาก Trust Lens ไหนก่อน?',time:'10:28'},
+        {user:'สมหมาย ท.',av:'ส',q:'ถ้าทีมเป็น I (Introvert) เกือบทั้งหมด ควรจัดประชุมแบบไหนให้ทุกคนกล้าพูด?',time:'10:15'},
+        {user:'วิไลวรรณ ส.',av:'ว',q:'MBTI ของคน ๆ หนึ่งเปลี่ยนตามวัยหรือสถานการณ์ได้ไหมคะ?',time:'10:20'},
+        {user:'ประภาส ก.',av:'ป',q:'ถ้าหัวหน้าเป็น T แต่ลูกทีมส่วนใหญ่เป็น F จะปรับการให้ Feedback อย่างไรดีครับ?',time:'10:28'},
       ];
 
       const Hdr=({title,onBack:ob})=>(
@@ -3894,7 +3904,7 @@
                 fontSize:'2rem',marginBottom:20,
                 boxShadow:'0 8px 32px rgba(6,182,212,0.3)'}}>✓</div>
               <h2 style={{fontWeight:800,fontSize:'1.2rem',margin:'0 0 6px'}}>เข้าร่วมสำเร็จ!</h2>
-              <p style={{color:'#06b6d4',fontSize:'0.82rem',margin:'0 0 24px'}}>{SESSION.title} · Day {SESSION.day}/{SESSION.total}</p>
+              <p style={{color:'#06b6d4',fontSize:'0.82rem',margin:'0 0 24px'}}>{SESSION.course}</p>
               <div style={{display:'flex',gap:20,marginBottom:28}}>
                 {[['👥',`${SESSION.participants} คน`],['🟢',`${SESSION.online} Online`],['📅',`Day ${SESSION.day}/${SESSION.total}`]].map(([ic,v])=>(
                   <div key={v} style={{textAlign:'center'}}>
@@ -3919,8 +3929,7 @@
                 fontSize:'2.2rem',marginBottom:20}}>🏫</div>
               <h2 style={{fontWeight:800,fontSize:'1.2rem',letterSpacing:'-0.02em',margin:'0 0 6px'}}>เข้าร่วม Session</h2>
               <p style={{color:'#71717a',fontSize:'0.8rem',textAlign:'center',margin:'0 0 26px',lineHeight:1.6}}>
-                กรอกรหัส 4 หลักที่วิทยากรให้บนจอ<br/>
-                <span style={{color:'#4b5563'}}>Day {SESSION.day} · {SESSION.title}</span>
+                กรอกรหัส 4 หลักที่วิทยากรให้บนจอ
               </p>
               <div style={{display:'flex',gap:12,marginBottom:24}}>
                 {digits.map((d,i)=>(
@@ -3938,8 +3947,8 @@
               <div style={{width:'100%',padding:'13px 16px',borderRadius:14,
                 background:'rgba(6,182,212,0.06)',border:'1px solid rgba(6,182,212,0.15)',marginBottom:20}}>
                 <div style={{color:'#71717a',fontSize:'0.65rem',marginBottom:3}}>กำลังเข้าร่วม</div>
-                <div style={{color:'#e4e4e7',fontSize:'0.85rem',fontWeight:600}}>{SESSION.title}</div>
-                <div style={{color:'#06b6d4',fontSize:'0.72rem',marginTop:2}}>{SESSION.course} · Day {SESSION.day}/{SESSION.total}</div>
+                <div style={{color:'#e4e4e7',fontSize:'0.85rem',fontWeight:600}}>{SESSION.course}</div>
+                <div style={{color:'#06b6d4',fontSize:'0.72rem',marginTop:2}}>หลักสูตรพัฒนาผู้นำที่นำด้วยหัวใจ · 6 Module · 2 วัน</div>
               </div>
               <button
                 onClick={()=>digits.every(d=>d) && setJoined(true)}
@@ -3957,9 +3966,6 @@
                   marginBottom:18,
                   transition:'all 0.2s',
                 }}>เข้าร่วม</button>
-              <button onClick={onBack} style={{background:'none',border:'none',color:'#52525b',fontSize:'0.8rem',cursor:'pointer'}}>
-                ← กลับหน้าเลือก Phase
-              </button>
             </div>
           )}
         </div>
@@ -3976,7 +3982,7 @@
                   <span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>
                   <span style={{color:'#22c55e',fontSize:'0.68rem',fontWeight:600}}>LIVE · Day {SESSION.day}/{SESSION.total}</span>
                 </div>
-                <div style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:800,letterSpacing:'-0.02em'}}>{SESSION.title}</div>
+                <div style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:800,letterSpacing:'-0.02em'}}>{SESSION.course}</div>
               </div>
               <div style={{textAlign:'right'}}>
                 <div style={{color:'#71717a',fontSize:'0.65rem'}}>Online</div>
@@ -4006,7 +4012,10 @@
               ))}
             </div>
 
-            <h3 style={{color:'#f4f4f5',fontSize:'0.82rem',fontWeight:700,margin:'0 0 10px'}}>ตารางวันนี้</h3>
+            <button onClick={()=>setScreen('reflection')} className="btn-press" style={{
+              width:'100%',padding:'13px 0',borderRadius:14,border:'1px solid rgba(255,255,255,0.1)',
+              background:'rgba(255,255,255,0.04)',color:'#a1a1aa',
+              fontSize:'0.85rem',fontWeight:600,cursor:'pointer',marginBottom:10}}>🪞 Reflection</button>
             {AGENDA.map(({time,label,done,active},i)=>(
               <div key={i} style={{display:'flex',gap:12,padding:'8px 0',
                 borderBottom:'1px solid rgba(255,255,255,0.04)'}}>
@@ -4035,18 +4044,14 @@
               <div>
                 <div style={{color:'#71717a',fontSize:'0.65rem'}}>{SESSION.instructor}</div>
                 <div style={{color:'#d4d4d8',fontSize:'0.75rem',marginTop:1,lineHeight:1.4}}>
-                  "เชิญทำ Live Poll ก่อนเลยนะครับ เพื่อดูว่าทีมของพวกเรามี Trust ด้านใดที่ต้องพัฒนา"
+                  "เชิญทำ Live Poll ก่อนเลยนะครับ เพื่อดูว่าคนในห้องมี Preference แบบไหนกันบ้าง ก่อนเราจะลงลึก MBTI 4 มิติ"
                 </div>
               </div>
             </div>
 
-            <div style={{display:'flex',gap:10,marginTop:12}}>
-              <button onClick={()=>setScreen('reflection')} className="btn-press" style={{
-                flex:1,padding:'12px 0',borderRadius:14,border:'1px solid rgba(255,255,255,0.07)',
-                background:'rgba(255,255,255,0.03)',color:'#a1a1aa',
-                fontSize:'0.8rem',fontWeight:600,cursor:'pointer'}}>🪞 Reflection</button>
+            <div style={{marginTop:12}}>
               <button onClick={onBack} style={{
-                flex:1,padding:'12px 0',borderRadius:14,border:'1px solid rgba(255,255,255,0.06)',
+                width:'100%',padding:'12px 0',borderRadius:14,border:'1px solid rgba(255,255,255,0.06)',
                 background:'transparent',color:'#52525b',fontSize:'0.8rem',cursor:'pointer'}}>← Phase</button>
             </div>
           </div>
@@ -4062,18 +4067,7 @@
               <span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>
               <span style={{color:'#22c55e',fontSize:'0.72rem',fontWeight:600}}>LIVE · {SESSION.participants} คนกำลังตอบ</span>
             </div>
-            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16,
-              padding:'10px 12px',background:'rgba(6,182,212,0.06)',borderRadius:12,
-              border:'1px solid rgba(6,182,212,0.12)'}}>
-              <div style={{width:28,height:28,borderRadius:'50%',flexShrink:0,
-                background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
-                display:'flex',alignItems:'center',justifyContent:'center',
-                fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>ศ</div>
-              <div>
-                <div style={{color:'#71717a',fontSize:'0.62rem'}}>คำถามจาก {SESSION.instructor}</div>
-                <div style={{color:'#06b6d4',fontSize:'0.72rem',fontWeight:600}}>กำลัง Live อยู่</div>
-              </div>
-            </div>
+
             <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,lineHeight:1.5,margin:'0 0 18px'}}>{POLL.q}</h3>
             {!pollDone?(
               <div style={{display:'flex',flexDirection:'column',gap:10}}>
@@ -4121,7 +4115,7 @@
                 <div style={{marginTop:12,padding:'12px 14px',background:'rgba(6,182,212,0.06)',
                   border:'1px solid rgba(6,182,212,0.15)',borderRadius:12,
                   color:'#67e8f9',fontSize:'0.78rem',lineHeight:1.6}}>
-                  💡 ผลโหวตชี้ว่าทีมส่วนใหญ่ท้าทายใน <strong>Competence Trust</strong> — วิทยากรจะพูดถึงในช่วงถัดไป
+                  💡 ผลโหวตชี้ว่าคนส่วนใหญ่ในห้องโน้มไปทาง <strong>Thinking (T)</strong> — วิทยากรจะชวนคุยเรื่องการสมดุลกับ Feeling (F) ในช่วงถัดไป
                 </div>
               </div>
             )}
@@ -4499,7 +4493,7 @@
                   borderRadius:14,padding:'14px',marginBottom:20,textAlign:'left'}}>
                   <div style={{color:'#fbbf24',fontSize:'0.8rem',fontWeight:700,marginBottom:4}}>📅 พรุ่งนี้</div>
                   <div style={{color:'#92400e',fontSize:'0.78rem',lineHeight:1.6}}>
-                    Day 3 · Decision Making & Conflict<br/>09:00–16:00
+                    Day 3 · 360 Degree Management Strategy<br/>09:00–16:00
                   </div>
                 </div>
                 <button onClick={()=>setScreen('dashboard')} className="btn-press" style={{
@@ -4916,7 +4910,7 @@
               </div>
             </div>
             <div style={{display:'flex',alignItems:'center',gap:12}}>
-              <span style={{color:'#52525b',fontSize:'0.78rem',display:'none'}}>Leadership Excellence Program</span>
+              <span style={{color:'#52525b',fontSize:'0.78rem',display:'none'}}>Essential Leadership: Lead with your heart</span>
               <button onClick={onBack} style={{padding:'7px 14px',borderRadius:9,cursor:'pointer',
                 border:'1px solid rgba(255,255,255,0.1)',background:'rgba(255,255,255,0.04)',
                 color:'#a1a1aa',fontSize:'0.8rem'}}>← กลับ</button>
@@ -5118,22 +5112,6 @@
                         opacity: isLive ? 1 : 0.6,
                       }}>
 
-                      {/* Status badge */}
-                      <div style={{
-                        position:'absolute',top:20,right:20,
-                        display:'flex',alignItems:'center',gap:5,
-                        background: isLive ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.06)',
-                        border: `1px solid ${isLive ? 'rgba(99,102,241,0.35)' : 'rgba(255,255,255,0.1)'}`,
-                        borderRadius:999,padding:'4px 10px',
-                      }}>
-                        {isLive && <span style={{width:5,height:5,borderRadius:'50%',background:'#818cf8',
-                          display:'inline-block'}} className="anim-pulse"/>}
-                        <span style={{
-                          fontSize:'0.65rem',fontWeight:600,
-                          color: isLive ? '#a5b4fc' : '#52525b',
-                          letterSpacing:'0.04em',textTransform:'uppercase',
-                        }}>{isLive ? 'Live Prototype' : 'Coming Soon'}</span>
-                      </div>
 
                       {/* Phase number */}
                       <div style={{
@@ -5379,7 +5357,7 @@
               onBack={() => goTo('landing')}
             />
           )}
-          {scene === 'preclass' && <PreClassApp onBack={() => goTo('phases')} />}
+          {scene === 'preclass' && <PreClassApp onBack={() => goTo('phases')} onNext={() => goTo('inclass')} />}
           {scene === 'inclass'  && <InClassApp  onBack={() => goTo('phases')} />}
           {scene === 'hr'       && <HRDashboard onBack={() => goTo('phases')} />}
           {scene === 'learner'  && <LearnerApp />}
