@@ -69,6 +69,166 @@
       0%   { background-position: -200% center; }
       100% { background-position:  200% center; }
     }
+    /* ── Float (gentle vertical bob) ── */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-14px); }
+    }
+    .anim-float { animation: float 6s ease-in-out infinite; }
+
+    /* ── Float (slow, larger drift for blobs) ── */
+    @keyframes driftBlob {
+      0%   { transform: translate(0, 0)        scale(1); }
+      33%  { transform: translate(40px, -20px) scale(1.08); }
+      66%  { transform: translate(-30px, 30px) scale(0.95); }
+      100% { transform: translate(0, 0)        scale(1); }
+    }
+    .anim-drift { animation: driftBlob 18s ease-in-out infinite; }
+    .anim-drift-rev { animation: driftBlob 22s ease-in-out infinite reverse; }
+
+    /* ── Animated gradient text ── */
+    @keyframes textShimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200%  center; }
+    }
+    .anim-gradient-text {
+      background: linear-gradient(90deg, #ED4724 0%, #FB7C58 25%, #FFB39A 50%, #FB7C58 75%, #ED4724 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+              background-clip: text;
+      -webkit-text-fill-color: transparent;
+              text-fill-color: transparent;
+      animation: textShimmer 4s linear infinite;
+    }
+
+    /* ── Sparkle (small twinkle dots) ── */
+    @keyframes sparkleTwinkle {
+      0%, 100% { opacity: 0;   transform: scale(0)   rotate(0deg);   }
+      50%      { opacity: 1;   transform: scale(1.1) rotate(180deg); }
+    }
+    .anim-sparkle { animation: sparkleTwinkle 3.4s ease-in-out infinite; }
+
+    /* ── Wiggle (for emoji icons on hover) ── */
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg)   scale(1); }
+      20%      { transform: rotate(-10deg) scale(1.1); }
+      40%      { transform: rotate(8deg)   scale(1.12); }
+      60%      { transform: rotate(-6deg)  scale(1.08); }
+      80%      { transform: rotate(4deg)   scale(1.04); }
+    }
+    .anim-wiggle-hover:hover .anim-wiggle-target { animation: wiggle 0.7s ease-in-out; }
+
+    /* ── Glow ring pulse ── */
+    @keyframes glowRing {
+      0%   { box-shadow: 0 0 0 0   rgba(237,71,36,0.55); }
+      80%  { box-shadow: 0 0 0 30px rgba(237,71,36,0);   }
+      100% { box-shadow: 0 0 0 0   rgba(237,71,36,0);   }
+    }
+    .anim-glow-ring { animation: glowRing 2.4s ease-out infinite; }
+
+    /* ── Marquee horizontal scroll ── */
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .anim-marquee { animation: marquee 28s linear infinite; }
+
+    /* ── Animated grid background ── */
+    @keyframes gridShift {
+      0%   { background-position: 0 0; }
+      100% { background-position: 80px 80px; }
+    }
+    .anim-grid {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+      animation: gridShift 30s linear infinite;
+    }
+
+    /* ── Tilt phone slow ── */
+    @keyframes phoneTilt {
+      0%, 100% { transform: translateY(0)   rotate(-1.2deg); }
+      50%      { transform: translateY(-10px) rotate(1.2deg);  }
+    }
+    .anim-phone-tilt { animation: phoneTilt 7s ease-in-out infinite; transform-origin: center center; }
+
+    /* ── Slide in from sides ── */
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to   { opacity: 1; transform: translateX(0);     }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0);    }
+    }
+    .anim-slide-l { animation: slideInLeft 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .anim-slide-r { animation: slideInRight 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+    /* ── Phone screen cross-fade ── */
+    @keyframes screenFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0);   }
+    }
+    .anim-screen-fade { animation: screenFade 0.55s ease forwards; }
+
+    /* ── Feature card hover lift ── */
+    .feature-card { transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease, border-color 0.25s ease, background 0.25s ease; }
+    .feature-card:hover { transform: translateY(-6px); }
+
+    /* ── Card colored glow ring on hover ── */
+    .feature-card .feature-icon-wrap { transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease, box-shadow 0.4s ease; }
+    .feature-card:hover .feature-icon-wrap { transform: rotate(-6deg) scale(1.1); }
+
+    /* ── Underline grow ── */
+    @keyframes underlineGrow {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+
+    /* ── Responsive helpers (utility classes) ─────── */
+    /* Tablet (≤1024px) */
+    @media (max-width: 1024px) {
+      .lp-pills        { display: none !important; }
+      .lp-nav          { padding: 0 20px !important; }
+      .mr-preview-grid { grid-template-columns: 1fr !important; }
+      .hr-2col         { grid-template-columns: 1fr !important; }
+      .phase-card-grid { gap: 14px !important; }
+      .lp-hero         { padding-left: 24px !important; padding-right: 24px !important; gap: 32px !important; }
+      .lp-section      { padding-left: 24px !important; padding-right: 24px !important; }
+      .journey-nav-btn { top: 16px !important; padding: 8px 14px !important; font-size: 0.78rem !important; }
+      .journey-nav-btn.left  { left: 16px !important; }
+      .journey-nav-btn.right { right: 16px !important; }
+    }
+
+    /* Mobile (≤640px) */
+    @media (max-width: 640px) {
+      .lp-nav-cta      { padding: 7px 14px !important; font-size: 0.8rem !important; }
+      .lp-nav          { height: 56px !important; padding: 0 16px !important; }
+      .lp-hero         { padding: 40px 18px 56px !important; gap: 32px !important; }
+      .lp-section      { padding: 60px 18px !important; }
+      .lp-cta-card     { padding: 40px 24px 36px !important; border-radius: 22px !important; }
+      .lp-hero-stats   { gap: 16px !important; }
+      .lp-hero-buttons { width: 100% !important; flex-direction: column !important; align-items: stretch !important; }
+      .lp-hero-buttons > * { width: 100% !important; }
+      .lp-hero-buttons button { width: 100% !important; }
+      .phone-scale     { transform: scale(0.86) !important; transform-origin: top center !important; }
+      .mr-hero         { padding: 32px 18px !important; }
+      .mr-section      { padding-left: 18px !important; padding-right: 18px !important; }
+      .journey-nav-btn { top: 12px !important; padding: 6px 12px !important; font-size: 0.72rem !important; }
+      .journey-nav-btn.left  { left: 12px !important; }
+      .journey-nav-btn.right { right: 12px !important; }
+    }
+
+    /* Tiny phone (≤390px) — scale PhoneFrame down */
+    @media (max-width: 414px) {
+      .phone-frame-wrap   { transform: scale(0.92); transform-origin: center top; }
+      .phone-frame-outer  { padding: 0.75rem !important; }
+    }
+    @media (max-width: 360px) {
+      .phone-frame-wrap   { transform: scale(0.84); }
+    }
+
     /* ── Flash Card 3D flip ── */
     .fc-scene { perspective: 1200px; width: 100%; }
     .fc-card {
@@ -451,15 +611,16 @@
     function PhoneFrame({ children, statusBg }) {
       const sBar = statusBg || '#09090b';
       return (
-        <div style={{
+        <div className="phone-frame-outer" style={{
           minHeight: '100vh',
           background: '#0f0f10',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           padding: '1.5rem',
+          overflow: 'hidden',
         }}>
-          <div style={{
+          <div className="phone-frame-wrap" style={{
             width: 390,
             height: 844,
             background: '#09090b',
@@ -632,17 +793,56 @@
       const [exiting, setExiting] = useState(false);
       const [activeTab, setActiveTab] = useState('Home');
       const [hoverTab, setHoverTab] = useState(null);
+      const [phoneIdx, setPhoneIdx] = useState(0);
+      const [stats, setStats] = useState({ orgs:0, sat:0, rating:0 });
+      const [featuresInView, setFeaturesInView] = useState(false);
+      const featuresRef = useRef(null);
 
       const handleEnter = () => {
         setExiting(true);
         setTimeout(onEnter, 520);
       };
 
+      // Cycle phone screens
+      useEffect(() => {
+        const id = setInterval(() => setPhoneIdx(p => (p + 1) % 3), 3600);
+        return () => clearInterval(id);
+      }, []);
+
+      // Animate counters
+      useEffect(() => {
+        const start = performance.now();
+        const dur = 1700;
+        let raf;
+        const tick = (now) => {
+          const t = Math.min(1, (now - start) / dur);
+          const ease = 1 - Math.pow(1 - t, 3);
+          setStats({
+            orgs: Math.floor(500 * ease),
+            sat:  Math.floor(92  * ease),
+            rating: (4.8 * ease),
+          });
+          if (t < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+      }, []);
+
+      // Feature section observer (stagger reveal)
+      useEffect(() => {
+        if (!featuresRef.current || featuresInView) return;
+        const obs = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) { setFeaturesInView(true); obs.disconnect(); }
+        }, { threshold: 0.15 });
+        obs.observe(featuresRef.current);
+        return () => obs.disconnect();
+      }, [featuresInView]);
+
       const features = [
-        { icon:'🎯', title:'Mission-Based Learning', desc:'ภารกิจที่ออกแบบให้เหมาะกับคุณโดยเฉพาะ เรียนรู้ผ่านการลงมือทำจริง ไม่ใช่แค่อ่านทฤษฎี' },
-        { icon:'⚡', title:'Micro Learning', desc:'เนื้อหา 5–10 นาที เรียนได้ทุกที่ ทุกเวลา ไม่เสียเวลา ไม่ต้องจัดตาราง' },
-        { icon:'📊', title:'Real-time Progress', desc:'ติดตามพัฒนาการของตัวเอง เห็นชัดว่าเรียนได้มากแค่ไหน และต้องพัฒนาอะไรต่อไป' },
-        { icon:'🏆', title:'Leaderboard & Rewards', desc:'แข่งขันกับเพื่อนร่วมองค์กร สะสมคะแนน รับ Badge และสร้างแรงจูงใจในการเรียนรู้' },
+        { icon:'🎯', title:'Mission-Based Learning', desc:'ภารกิจที่ออกแบบให้เหมาะกับคุณโดยเฉพาะ เรียนรู้ผ่านการลงมือทำจริง ไม่ใช่แค่อ่านทฤษฎี', color:'#ED4724', tag:'PRACTICE' },
+        { icon:'⚡', title:'Micro Learning',         desc:'เนื้อหา 5–10 นาที เรียนได้ทุกที่ ทุกเวลา ไม่เสียเวลา ไม่ต้องจัดตาราง',           color:'#f59e0b', tag:'BITESIZE' },
+        { icon:'📊', title:'Real-time Progress',     desc:'ติดตามพัฒนาการของตัวเอง เห็นชัดว่าเรียนได้มากแค่ไหน และต้องพัฒนาอะไรต่อไป',     color:'#06b6d4', tag:'INSIGHT'  },
+        { icon:'🏆', title:'Leaderboard & Rewards',  desc:'แข่งขันกับเพื่อนร่วมองค์กร สะสมคะแนน รับ Badge และสร้างแรงจูงใจในการเรียนรู้',   color:'#a78bfa', tag:'REWARD'   },
       ];
 
       return (
@@ -658,23 +858,54 @@
         }}>
 
           {/* ── Ambient background ── */}
-          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
-            <div style={{
-              position:'absolute', top:'-20%', left:'-10%',
-              width:'60vw', height:'60vw', maxWidth:800, maxHeight:800,
-              background:'radial-gradient(circle, rgba(237,71,36,0.10) 0%, transparent 65%)',
-              borderRadius:'50%',
+          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0,overflow:'hidden'}}>
+            {/* Animated subtle grid */}
+            <div className="anim-grid" style={{position:'absolute',inset:0,opacity:0.55}}/>
+
+            {/* Drifting orange blob */}
+            <div className="anim-drift" style={{
+              position:'absolute', top:'-18%', left:'-8%',
+              width:'62vw', height:'62vw', maxWidth:880, maxHeight:880,
+              background:'radial-gradient(circle, rgba(237,71,36,0.14) 0%, transparent 62%)',
+              borderRadius:'50%', filter:'blur(20px)',
             }}/>
-            <div style={{
-              position:'absolute', bottom:'-15%', right:'-10%',
-              width:'55vw', height:'55vw', maxWidth:700, maxHeight:700,
-              background:'radial-gradient(circle, rgba(237,71,36,0.06) 0%, transparent 65%)',
-              borderRadius:'50%',
+            {/* Drifting warm secondary blob */}
+            <div className="anim-drift-rev" style={{
+              position:'absolute', bottom:'-22%', right:'-10%',
+              width:'58vw', height:'58vw', maxWidth:760, maxHeight:760,
+              background:'radial-gradient(circle, rgba(251,124,88,0.10) 0%, transparent 62%)',
+              borderRadius:'50%', filter:'blur(20px)',
             }}/>
+            {/* Cool accent blob */}
+            <div className="anim-drift" style={{
+              position:'absolute', top:'30%', right:'10%',
+              width:'30vw', height:'30vw', maxWidth:420, maxHeight:420,
+              background:'radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 65%)',
+              borderRadius:'50%', filter:'blur(30px)', animationDelay:'-6s',
+            }}/>
+
+            {/* Sparkle particles */}
+            {[
+              {top:'12%', left:'18%', size:6,  delay:'0s'},
+              {top:'24%', left:'78%', size:4,  delay:'1.2s'},
+              {top:'48%', left:'8%',  size:5,  delay:'2.4s'},
+              {top:'62%', left:'92%', size:6,  delay:'0.6s'},
+              {top:'82%', left:'30%', size:4,  delay:'1.8s'},
+              {top:'18%', left:'52%', size:3,  delay:'3.0s'},
+              {top:'72%', left:'62%', size:5,  delay:'2.1s'},
+            ].map((s,i)=>(
+              <div key={i} className="anim-sparkle" style={{
+                position:'absolute', top:s.top, left:s.left,
+                width:s.size, height:s.size, borderRadius:'50%',
+                background:'#ED4724',
+                boxShadow:`0 0 ${s.size*2}px rgba(237,71,36,0.7)`,
+                animationDelay:s.delay,
+              }}/>
+            ))}
           </div>
 
           {/* ── Navbar ── */}
-          <nav style={{
+          <nav className="lp-nav" style={{
             position:'sticky', top:0, zIndex:100,
             display:'flex', alignItems:'center', justifyContent:'space-between',
             padding:'0 max(24px, calc((100vw - 1200px)/2))',
@@ -682,15 +913,16 @@
             background:'rgba(22,20,18,0.85)',
             backdropFilter:'blur(12px)',
             borderBottom:'1px solid rgba(255,255,255,0.06)',
+            gap:12,
           }}>
             {/* Logo */}
-            <div style={{display:'flex',alignItems:'center',gap:10}}>
+            <div style={{display:'flex',alignItems:'center',gap:10,flexShrink:0}}>
               <JoinstickLogo size={38} variant="white" />
               <span className="bp-heading" style={{fontWeight:700,fontSize:'1.05rem',letterSpacing:'0.1em'}}>JOINSTICK</span>
             </div>
 
             {/* Nav links — pill tab group */}
-            <div style={{
+            <div className="lp-pills" style={{
               display:'flex', alignItems:'center', gap:4,
               padding:5,
               background:'rgba(255,255,255,0.04)',
@@ -732,16 +964,17 @@
               })}
             </div>
 
-            <button onClick={handleEnter} className="btn-press" style={{
+            <button onClick={handleEnter} className="btn-press lp-nav-cta" style={{
               padding:'9px 20px', borderRadius:10, border:'none',
               background:'#ED4724',
               color:'#fff', fontSize:'0.875rem', fontWeight:600,
               cursor:'pointer', boxShadow:'0 4px 16px rgba(237,71,36,0.35)',
+              flexShrink:0,
             }}>ดูตัวอย่าง</button>
           </nav>
 
           {/* ── Hero ── */}
-          <section style={{
+          <section className="lp-hero" style={{
             position:'relative', zIndex:1,
             display:'flex', alignItems:'center', justifyContent:'center',
             gap:'clamp(32px, 6vw, 80px)',
@@ -749,23 +982,42 @@
             flexWrap:'wrap',
           }}>
             {/* Left copy */}
-            <div className="fade-in" style={{flex:'1 1 340px', maxWidth:520}}>
+            <div className="anim-slide-l" style={{flex:'1 1 340px', maxWidth:540, position:'relative'}}>
+
+              {/* Decorative dots near badge */}
+              <div className="anim-sparkle" style={{position:'absolute',top:-14,left:-22,width:5,height:5,borderRadius:'50%',background:'#ED4724',boxShadow:'0 0 10px rgba(237,71,36,0.8)'}}/>
+              <div className="anim-sparkle" style={{position:'absolute',top:-6,left:240,width:4,height:4,borderRadius:'50%',background:'#fbbf24',boxShadow:'0 0 8px rgba(251,191,36,0.7)',animationDelay:'1.3s'}}/>
+
               <div style={{
                 display:'inline-flex', alignItems:'center', gap:8,
                 background:'rgba(237,71,36,0.10)', border:'1px solid rgba(237,71,36,0.25)',
                 borderRadius:999, padding:'5px 14px', marginBottom:24,
+                backdropFilter:'blur(8px)',
               }}>
-                <span style={{width:6,height:6,borderRadius:'50%',background:'#ED4724',display:'inline-block'}}/>
+                <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#ED4724',display:'inline-block',boxShadow:'0 0 8px rgba(237,71,36,0.7)'}}/>
                 <span className="bp-slogan" style={{color:'#ED4724',fontSize:'0.72rem',fontWeight:500}}>UPLIFTING HUMAN ABILITY</span>
               </div>
 
               <h1 className="bp-heading" style={{
-                fontSize:'clamp(2.2rem,5vw,3.4rem)', fontWeight:800,
-                lineHeight:1.1, letterSpacing:'0.02em',
-                margin:'0 0 20px',
+                fontSize:'clamp(2.4rem,5.5vw,3.8rem)', fontWeight:800,
+                lineHeight:1.05, letterSpacing:'0.01em',
+                margin:'0 0 22px',
+                position:'relative',
               }}>
                 เรียนรู้ที่<br/>
-                <span style={{color:'#ED4724'}}>ทรงพลังกว่าเดิม</span>
+                <span className="anim-gradient-text" style={{position:'relative',display:'inline-block'}}>
+                  ทรงพลังกว่าเดิม
+                  {/* Underline accent */}
+                  <span style={{
+                    position:'absolute', left:0, right:0, bottom:-6,
+                    height:4, borderRadius:4,
+                    background:'linear-gradient(90deg, transparent, #ED4724 30%, #fbbf24 70%, transparent)',
+                    opacity:0.6,
+                    transformOrigin:'left center',
+                    animation:'underlineGrow 1.2s 0.6s cubic-bezier(0.22,1,0.36,1) forwards',
+                    transform:'scaleX(0)',
+                  }}/>
+                </span>
               </h1>
 
               <p style={{
@@ -777,52 +1029,106 @@
                 ที่เชื่อมกับการทำงานจริงของคุณ
               </p>
 
-              <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
-                <button onClick={handleEnter} className="btn-press" style={{
-                  padding:'14px 28px', borderRadius:14, border:'none',
-                  background:'#ED4724',
-                  color:'#fff', fontSize:'1rem', fontWeight:700,
-                  cursor:'pointer', boxShadow:'0 8px 32px rgba(237,71,36,0.40)',
-                  letterSpacing:'-0.01em',
-                }}>ลองใช้ Prototype →</button>
+              <div className="lp-hero-buttons" style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'center'}}>
+                <div style={{position:'relative',display:'inline-block'}}>
+                  <span className="anim-glow-ring" style={{
+                    position:'absolute',inset:0,borderRadius:14,pointerEvents:'none',
+                  }}/>
+                  <button onClick={handleEnter} className="btn-press" style={{
+                    position:'relative',
+                    padding:'14px 28px', borderRadius:14, border:'none',
+                    background:'linear-gradient(135deg, #ED4724 0%, #F26B45 100%)',
+                    color:'#fff', fontSize:'1rem', fontWeight:700,
+                    cursor:'pointer', boxShadow:'0 8px 32px rgba(237,71,36,0.40)',
+                    letterSpacing:'-0.01em',
+                  }}>ลองใช้ Prototype →</button>
+                </div>
                 <button style={{
                   padding:'14px 28px', borderRadius:14,
                   border:'1px solid rgba(255,255,255,0.12)',
                   background:'rgba(255,255,255,0.04)',
                   color:'#d4d4d8', fontSize:'1rem', fontWeight:600,
-                  cursor:'pointer',
-                }}>ดูวิธีใช้งาน</button>
+                  cursor:'pointer', transition:'border-color 0.2s, background 0.2s',
+                }}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.25)';e.currentTarget.style.background='rgba(255,255,255,0.07)';}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.12)';e.currentTarget.style.background='rgba(255,255,255,0.04)';}}>
+                  ดูวิธีใช้งาน
+                </button>
               </div>
 
-              {/* Social proof */}
-              <div style={{
-                display:'flex', alignItems:'center', gap:16, marginTop:36,
+              {/* Social proof — animated counters */}
+              <div className="lp-hero-stats" style={{
+                display:'flex', alignItems:'center', gap:24, marginTop:36,
                 paddingTop:28, borderTop:'1px solid rgba(255,255,255,0.07)',
+                flexWrap:'wrap',
               }}>
-                {[['500+','องค์กรที่ใช้งาน'],['92%','ผู้ใช้รู้สึกพัฒนาขึ้น'],['4.8★','คะแนนจากผู้ใช้']].map(([val,label])=>(
+                {[
+                  { val:`${stats.orgs}+`, label:'องค์กรที่ใช้งาน', color:'#ED4724' },
+                  { val:`${stats.sat}%`,  label:'ผู้ใช้รู้สึกพัฒนาขึ้น', color:'#fbbf24' },
+                  { val:`${stats.rating.toFixed(1)}★`, label:'คะแนนจากผู้ใช้', color:'#fb923c' },
+                ].map(({val,label,color})=>(
                   <div key={label}>
-                    <div style={{fontWeight:700,fontSize:'1.1rem',letterSpacing:'-0.02em'}}>{val}</div>
+                    <div style={{
+                      fontWeight:800,fontSize:'1.35rem',letterSpacing:'-0.02em',
+                      color,
+                      fontVariantNumeric:'tabular-nums',
+                    }}>{val}</div>
                     <div style={{color:'#71717a',fontSize:'0.75rem',marginTop:2}}>{label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right — Phone mockup */}
-            <div className="fade-in" style={{
-              animationDelay:'0.15s', opacity:0,
+            {/* Right — Phone mockup (floating, live screens) */}
+            <div className="anim-slide-r" style={{
               flex:'0 0 auto', position:'relative',
             }}>
+              {/* Decorative orbiting ring behind phone */}
+              <div style={{
+                position:'absolute', top:'50%', left:'50%',
+                transform:'translate(-50%,-50%)',
+                width:380, height:380, borderRadius:'50%',
+                border:'1px dashed rgba(237,71,36,0.25)',
+                animation:'spin 28s linear infinite',
+              }}/>
+              <style>{`@keyframes spin { from {transform:translate(-50%,-50%) rotate(0)} to {transform:translate(-50%,-50%) rotate(360deg)}}`}</style>
+
               {/* Glow behind phone */}
               <div style={{
-                position:'absolute', top:'10%', left:'50%',
+                position:'absolute', top:'8%', left:'50%',
                 transform:'translateX(-50%)',
-                width:320, height:420,
-                background:'radial-gradient(ellipse, rgba(237,71,36,0.22) 0%, transparent 70%)',
-                pointerEvents:'none',
+                width:340, height:440,
+                background:'radial-gradient(ellipse, rgba(237,71,36,0.28) 0%, transparent 70%)',
+                pointerEvents:'none', filter:'blur(2px)',
               }}/>
-              {/* Phone shell */}
-              <div style={{
+
+              {/* Floating badge — top right */}
+              <div className="anim-float" style={{
+                position:'absolute', top:24, right:-8, zIndex:5,
+                background:'rgba(251,191,36,0.14)',
+                border:'1px solid rgba(251,191,36,0.42)',
+                color:'#fbbf24',
+                padding:'6px 12px', borderRadius:10,
+                fontSize:'0.7rem', fontWeight:700, letterSpacing:'0.04em',
+                backdropFilter:'blur(6px)',
+                boxShadow:'0 8px 24px rgba(251,191,36,0.18)',
+              }}>🔥 Live Streak</div>
+
+              {/* Floating badge — bottom left */}
+              <div className="anim-float" style={{
+                position:'absolute', bottom:60, left:-22, zIndex:5,
+                background:'rgba(99,102,241,0.14)',
+                border:'1px solid rgba(99,102,241,0.42)',
+                color:'#a5b4fc',
+                padding:'6px 12px', borderRadius:10,
+                fontSize:'0.7rem', fontWeight:700, letterSpacing:'0.04em',
+                backdropFilter:'blur(6px)',
+                boxShadow:'0 8px 24px rgba(99,102,241,0.18)',
+                animationDelay:'-2s',
+              }}>+50 pts ✨</div>
+
+              {/* Phone shell — floats & tilts */}
+              <div className="anim-phone-tilt" style={{
                 width:260, height:560,
                 background:'#161412',
                 borderRadius:44,
@@ -848,9 +1154,11 @@
                   </div>
                 </div>
 
-                {/* Mock app content */}
-                <div style={{padding:'12px 16px',overflowY:'hidden',height:'calc(100% - 32px)'}}>
-                  {/* Header */}
+                {/* Mock app content — cycles between 3 screens */}
+                <div key={phoneIdx} className="anim-screen-fade" style={{
+                  padding:'12px 16px',overflowY:'hidden',height:'calc(100% - 32px)',
+                }}>
+                  {/* Header (shared) */}
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
                     <div>
                       <div style={{color:'#a8a29e',fontSize:'0.6rem'}}>สวัสดี 👋</div>
@@ -859,57 +1167,135 @@
                     <div style={{width:30,height:30,borderRadius:'50%',background:'#ED4724',
                       display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.7rem',fontWeight:700}}>S</div>
                   </div>
-                  {/* Streak card */}
-                  <div style={{
-                    background:'rgba(237,71,36,0.12)',
-                    border:'1px solid rgba(237,71,36,0.28)',
-                    borderRadius:14, padding:'12px 14px', marginBottom:12,
-                    display:'flex',alignItems:'center',justifyContent:'space-between',
-                  }}>
-                    <div>
-                      <div style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600}}>🔥 Streak</div>
-                      <div style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,lineHeight:1}}>7 วัน</div>
-                    </div>
-                    <div style={{textAlign:'right'}}>
-                      <div style={{color:'#a8a29e',fontSize:'0.55rem'}}>คะแนนสะสม</div>
-                      <div style={{color:'#fbbf24',fontSize:'0.9rem',fontWeight:700}}>1,240 pts</div>
-                    </div>
-                  </div>
-                  {/* Mission card */}
-                  {[
-                    {type:'Quiz',title:"Trust Lenses",pts:30,time:'3 วัน',color:'#ED4724'},
-                    {type:'Mission',title:"Observe & report",pts:50,time:'2 วัน',color:'#F26B45'},
-                  ].map((c,i)=>(
-                    <div key={i} style={{
-                      background:'rgba(255,255,255,0.04)',
-                      border:'1px solid rgba(255,255,255,0.07)',
-                      borderRadius:12, padding:'10px 12px', marginBottom:8,
-                      display:'flex',alignItems:'center',gap:10,
-                    }}>
+
+                  {phoneIdx === 0 && (
+                    <>
+                      {/* Streak card */}
                       <div style={{
-                        width:34,height:34,borderRadius:9,flexShrink:0,
-                        background:`${c.color}22`,border:`1px solid ${c.color}44`,
-                        display:'flex',alignItems:'center',justifyContent:'center',
-                        fontSize:'0.65rem',fontWeight:700,color:c.color,
-                      }}>{c.type}</div>
-                      <div style={{flex:1,minWidth:0}}>
-                        <div style={{color:'#f4f4f5',fontSize:'0.65rem',fontWeight:600,
-                          overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{c.title}</div>
-                        <div style={{color:'#a8a29e',fontSize:'0.6rem'}}>+{c.pts} pts · {c.time}</div>
+                        background:'linear-gradient(135deg, rgba(237,71,36,0.18), rgba(251,191,36,0.10))',
+                        border:'1px solid rgba(237,71,36,0.32)',
+                        borderRadius:14, padding:'12px 14px', marginBottom:12,
+                        display:'flex',alignItems:'center',justifyContent:'space-between',
+                      }}>
+                        <div>
+                          <div style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600}}>🔥 Streak</div>
+                          <div style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,lineHeight:1}}>7 วัน</div>
+                        </div>
+                        <div style={{textAlign:'right'}}>
+                          <div style={{color:'#a8a29e',fontSize:'0.55rem'}}>คะแนนสะสม</div>
+                          <div style={{color:'#fbbf24',fontSize:'0.9rem',fontWeight:700}}>1,240 pts</div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                  {/* Progress bar area */}
-                  <div style={{marginTop:12}}>
-                    <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
-                      <span style={{color:'#a8a29e',fontSize:'0.6rem'}}>Essential Leadership</span>
-                      <span style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600}}>75%</span>
-                    </div>
-                    <div style={{height:4,background:'rgba(255,255,255,0.08)',borderRadius:999}}>
-                      <div style={{width:'75%',height:'100%',
-                        background:'#ED4724',borderRadius:999}}/>
-                    </div>
-                  </div>
+                      {[
+                        {type:'Quiz',title:"Trust Lenses",pts:30,time:'3 วัน',color:'#ED4724'},
+                        {type:'Mission',title:"Observe & report",pts:50,time:'2 วัน',color:'#F26B45'},
+                      ].map((c,i)=>(
+                        <div key={i} style={{
+                          background:'rgba(255,255,255,0.04)',
+                          border:'1px solid rgba(255,255,255,0.07)',
+                          borderRadius:12, padding:'10px 12px', marginBottom:8,
+                          display:'flex',alignItems:'center',gap:10,
+                        }}>
+                          <div style={{
+                            width:34,height:34,borderRadius:9,flexShrink:0,
+                            background:`${c.color}22`,border:`1px solid ${c.color}44`,
+                            display:'flex',alignItems:'center',justifyContent:'center',
+                            fontSize:'0.65rem',fontWeight:700,color:c.color,
+                          }}>{c.type}</div>
+                          <div style={{flex:1,minWidth:0}}>
+                            <div style={{color:'#f4f4f5',fontSize:'0.65rem',fontWeight:600,
+                              overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{c.title}</div>
+                            <div style={{color:'#a8a29e',fontSize:'0.6rem'}}>+{c.pts} pts · {c.time}</div>
+                          </div>
+                        </div>
+                      ))}
+                      <div style={{marginTop:12}}>
+                        <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
+                          <span style={{color:'#a8a29e',fontSize:'0.6rem'}}>Essential Leadership</span>
+                          <span style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600}}>75%</span>
+                        </div>
+                        <div style={{height:4,background:'rgba(255,255,255,0.08)',borderRadius:999,overflow:'hidden'}}>
+                          <div style={{width:'75%',height:'100%',
+                            background:'linear-gradient(90deg, #ED4724, #fbbf24)',borderRadius:999}}/>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {phoneIdx === 1 && (
+                    <>
+                      <div style={{
+                        background:'rgba(237,71,36,0.10)',
+                        border:'1px solid rgba(237,71,36,0.28)',
+                        borderRadius:14, padding:14, marginBottom:12,
+                      }}>
+                        <div style={{fontSize:'0.55rem',color:'#ED4724',fontWeight:700,letterSpacing:'0.08em',marginBottom:6}}>QUIZ · ข้อ 2/5</div>
+                        <div style={{color:'#fff',fontSize:'0.78rem',fontWeight:700,lineHeight:1.35,marginBottom:10}}>"Trust Lenses" คืออะไร?</div>
+                        {[
+                          {t:'มุมมองที่หัวหน้ามอง',ok:true},
+                          {t:'แว่นตาของผู้นำ',ok:false},
+                          {t:'เครื่องมือ HR',ok:false},
+                        ].map((o,i)=>(
+                          <div key={i} style={{
+                            background: o.ok ? 'rgba(16,185,129,0.18)' : 'rgba(255,255,255,0.04)',
+                            border: `1px solid ${o.ok ? 'rgba(16,185,129,0.45)' : 'rgba(255,255,255,0.08)'}`,
+                            color: o.ok ? '#86efac' : '#d4d4d8',
+                            borderRadius:9, padding:'7px 10px', marginBottom:5,
+                            fontSize:'0.65rem', fontWeight: o.ok ? 700 : 500,
+                            display:'flex',alignItems:'center',gap:7,
+                          }}>
+                            <span style={{width:14,height:14,borderRadius:'50%',
+                              border:'1.5px solid currentColor',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.55rem',fontWeight:800}}>{o.ok ? '✓' : ['A','B','C'][i]}</span>
+                            {o.t}
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{display:'flex',gap:6}}>
+                        {[1,2,3,4,5].map(n=>(
+                          <div key={n} style={{flex:1,height:4,borderRadius:2,
+                            background: n<=2 ? '#ED4724' : 'rgba(255,255,255,0.1)'}}/>
+                        ))}
+                      </div>
+                      <div style={{marginTop:14,padding:'10px 12px',borderRadius:12,
+                        background:'#ED4724',color:'#fff',
+                        fontSize:'0.72rem',fontWeight:700,textAlign:'center'}}>ส่งคำตอบ →</div>
+                    </>
+                  )}
+
+                  {phoneIdx === 2 && (
+                    <>
+                      <div style={{
+                        background:'linear-gradient(135deg, rgba(99,102,241,0.18), rgba(167,139,250,0.10))',
+                        border:'1px solid rgba(99,102,241,0.32)',
+                        borderRadius:14, padding:14, marginBottom:12, textAlign:'center',
+                      }}>
+                        <div style={{fontSize:'0.55rem',color:'#a5b4fc',fontWeight:700,letterSpacing:'0.08em',marginBottom:8}}>🏆 LEADERBOARD</div>
+                        <div style={{color:'#fff',fontSize:'1.7rem',fontWeight:800,lineHeight:1}}>#3</div>
+                        <div style={{color:'#c4b5fd',fontSize:'0.6rem',marginTop:3}}>จาก 124 คน</div>
+                      </div>
+                      {[
+                        {r:1,n:'มาลี ปั้นเก่ง',p:1820,me:false,color:'#fbbf24'},
+                        {r:2,n:'สมศักดิ์ มุ่งมั่น',p:1560,me:false,color:'#94a3b8'},
+                        {r:3,n:'คุณ (สมชาย)',p:1240,me:true,color:'#ED4724'},
+                        {r:4,n:'อรุณ พรหมศรี',p:1080,me:false,color:'#71717a'},
+                      ].map(u=>(
+                        <div key={u.r} style={{
+                          background: u.me ? 'rgba(237,71,36,0.14)' : 'rgba(255,255,255,0.03)',
+                          border: `1px solid ${u.me ? 'rgba(237,71,36,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                          borderRadius:10, padding:'7px 10px', marginBottom:5,
+                          display:'flex',alignItems:'center',gap:8,
+                        }}>
+                          <div style={{width:18,height:18,borderRadius:'50%',
+                            background:`${u.color}22`,color:u.color,
+                            display:'flex',alignItems:'center',justifyContent:'center',
+                            fontSize:'0.55rem',fontWeight:800}}>{u.r}</div>
+                          <div style={{flex:1,color:u.me?'#fff':'#d4d4d8',fontSize:'0.62rem',fontWeight: u.me?700:500,
+                            overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{u.n}</div>
+                          <div style={{color:'#fbbf24',fontSize:'0.6rem',fontWeight:700}}>{u.p.toLocaleString()}</div>
+                        </div>
+                      ))}
+                    </>
+                  )}
                 </div>
 
                 {/* Bottom nav */}
@@ -922,28 +1308,51 @@
                 }}>
                   {['🏠','🎯','📺','📊','🏆'].map((ic,i)=>(
                     <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2}}>
-                      <span style={{fontSize:'0.85rem'}}>{ic}</span>
-                      {i===0 && <div style={{width:4,height:4,borderRadius:'50%',background:'#ED4724'}}/>}
+                      <span style={{fontSize:'0.85rem',opacity:i===phoneIdx?1:0.55,transition:'opacity 0.3s'}}>{ic}</span>
+                      {i===phoneIdx && <div style={{width:4,height:4,borderRadius:'50%',background:'#ED4724'}}/>}
                     </div>
                   ))}
                 </div>
               </div>
+
+              {/* Screen indicator dots */}
+              <div style={{
+                position:'absolute', bottom:-32, left:'50%',
+                transform:'translateX(-50%)',
+                display:'flex', gap:6,
+              }}>
+                {[0,1,2].map(i=>(
+                  <div key={i} style={{
+                    width: i===phoneIdx ? 18 : 6, height:6, borderRadius:3,
+                    background: i===phoneIdx ? '#ED4724' : 'rgba(255,255,255,0.18)',
+                    transition:'all 0.4s ease',
+                  }}/>
+                ))}
+              </div>
             </div>
           </section>
 
+
           {/* ── Features ── */}
-          <section style={{
+          <section ref={featuresRef} className="lp-section" style={{
             position:'relative', zIndex:1,
-            padding:'80px max(24px,calc((100vw - 1200px)/2))',
-            borderTop:'1px solid rgba(255,255,255,0.05)',
+            padding:'90px max(24px,calc((100vw - 1200px)/2))',
           }}>
             <div style={{textAlign:'center',marginBottom:56}}>
+              <div style={{
+                display:'inline-flex',alignItems:'center',gap:8,
+                background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',
+                borderRadius:999,padding:'5px 14px',marginBottom:18,
+              }}>
+                <span style={{width:5,height:5,borderRadius:'50%',background:'#fbbf24'}}/>
+                <span style={{color:'#fbbf24',fontSize:'0.7rem',fontWeight:600,letterSpacing:'0.12em'}}>FEATURES</span>
+              </div>
               <h2 className="bp-heading" style={{
-                fontSize:'clamp(1.6rem,3.5vw,2.4rem)',fontWeight:800,
-                letterSpacing:'0.02em',margin:'0 0 12px',
-              }}>ทำไมต้อง Joinstick?</h2>
-              <p style={{color:'#a8a29e',fontSize:'1rem',margin:0}}>
-                เพราะการเรียนรู้ที่ดีที่สุดคือการเรียนรู้ที่เกิดขึ้นจริงในชีวิตการทำงาน
+                fontSize:'clamp(1.8rem,3.8vw,2.6rem)',fontWeight:800,
+                letterSpacing:'-0.01em',margin:'0 0 14px',
+              }}>ทำไมต้อง <span className="anim-gradient-text">Joinstick</span>?</h2>
+              <p style={{color:'#a8a29e',fontSize:'1.05rem',margin:0,lineHeight:1.6,maxWidth:560,marginLeft:'auto',marginRight:'auto'}}>
+                เพราะการเรียนรู้ที่ดีที่สุดคือการเรียนรู้ที่เกิดขึ้นจริง<br/>ในชีวิตการทำงาน
               </p>
             </div>
             <div style={{
@@ -951,50 +1360,150 @@
               gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))',
               gap:20,
             }}>
-              {features.map(({icon,title,desc})=>(
-                <div key={title} style={{
-                  background:'rgba(255,255,255,0.03)',
-                  border:'1px solid rgba(255,255,255,0.07)',
-                  borderRadius:20, padding:'28px 24px',
-                  transition:'border-color 0.2s, background 0.2s',
-                }}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(237,71,36,0.4)';e.currentTarget.style.background='rgba(237,71,36,0.06)'}}
-                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.07)';e.currentTarget.style.background='rgba(255,255,255,0.03)'}}>
-                  <div style={{fontSize:'2rem',marginBottom:16}}>{icon}</div>
-                  <h3 style={{fontWeight:700,fontSize:'1rem',margin:'0 0 8px',letterSpacing:'-0.01em',color:'#fff'}}>{title}</h3>
+              {features.map(({icon,title,desc,color,tag},i)=>(
+                <div key={title}
+                  className="feature-card anim-wiggle-hover"
+                  style={{
+                    position:'relative',
+                    background:'rgba(255,255,255,0.03)',
+                    border:'1px solid rgba(255,255,255,0.07)',
+                    borderRadius:20, padding:'28px 24px 26px',
+                    overflow:'hidden',
+                    opacity: featuresInView ? 1 : 0,
+                    transform: featuresInView ? 'translateY(0)' : 'translateY(24px)',
+                    transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${i*0.12}s, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${i*0.12}s, border-color 0.25s, background 0.25s, box-shadow 0.35s`,
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.borderColor = `${color}66`;
+                    e.currentTarget.style.background  = `${color}0d`;
+                    e.currentTarget.style.boxShadow   = `0 24px 60px ${color}26`;
+                  }}
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)';
+                    e.currentTarget.style.background  = 'rgba(255,255,255,0.03)';
+                    e.currentTarget.style.boxShadow   = 'none';
+                  }}>
+                  {/* Corner accent gradient */}
+                  <div style={{
+                    position:'absolute', top:-40, right:-40,
+                    width:140, height:140, borderRadius:'50%',
+                    background:`radial-gradient(circle, ${color}20 0%, transparent 70%)`,
+                    pointerEvents:'none',
+                  }}/>
+
+                  {/* Tag chip */}
+                  <span style={{
+                    position:'absolute', top:18, right:18,
+                    background:`${color}14`,
+                    color, border:`1px solid ${color}40`,
+                    fontSize:'0.6rem', fontWeight:700, letterSpacing:'0.08em',
+                    padding:'3px 8px', borderRadius:6,
+                  }}>{tag}</span>
+
+                  {/* Icon wrapper with colored glow */}
+                  <div className="feature-icon-wrap" style={{
+                    width:54, height:54, borderRadius:14,
+                    background:`${color}1a`,
+                    border:`1px solid ${color}40`,
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    fontSize:'1.7rem', marginBottom:18,
+                    boxShadow:`0 8px 24px ${color}22`,
+                  }}>
+                    <span className="anim-wiggle-target" style={{display:'inline-block'}}>{icon}</span>
+                  </div>
+
+                  <h3 style={{fontWeight:700,fontSize:'1.05rem',margin:'0 0 8px',letterSpacing:'-0.01em',color:'#fff'}}>{title}</h3>
                   <p style={{color:'#a8a29e',fontSize:'0.875rem',lineHeight:1.65,margin:0}}>{desc}</p>
+
+                  {/* Read more link */}
+                  <div style={{
+                    marginTop:16, paddingTop:14,
+                    borderTop:'1px solid rgba(255,255,255,0.06)',
+                    color, fontSize:'0.78rem', fontWeight:600,
+                    display:'flex',alignItems:'center',gap:6,
+                    opacity:0.85,
+                  }}>เรียนรู้เพิ่มเติม
+                    <span style={{transition:'transform 0.3s'}}>→</span>
+                  </div>
                 </div>
               ))}
             </div>
           </section>
 
           {/* ── Bottom CTA ── */}
-          <section style={{
+          <section className="lp-section" style={{
             position:'relative', zIndex:1,
-            padding:'80px max(24px,calc((100vw - 1200px)/2))',
-            borderTop:'1px solid rgba(255,255,255,0.05)',
+            padding:'90px max(24px,calc((100vw - 1200px)/2))',
             textAlign:'center',
           }}>
-            <div style={{
-              maxWidth:560, margin:'0 auto',
-              background:'rgba(237,71,36,0.08)',
-              border:'1px solid rgba(237,71,36,0.28)',
-              borderRadius:28, padding:'56px 40px',
+            <div className="lp-cta-card" style={{
+              position:'relative',
+              maxWidth:640, margin:'0 auto',
+              background:'linear-gradient(135deg, rgba(237,71,36,0.12) 0%, rgba(251,191,36,0.06) 100%)',
+              border:'1px solid rgba(237,71,36,0.32)',
+              borderRadius:28, padding:'64px 40px 56px',
+              overflow:'hidden',
             }}>
-              <h2 className="bp-heading" style={{
-                fontSize:'clamp(1.6rem,3vw,2.2rem)',fontWeight:800,
-                letterSpacing:'0.02em',margin:'0 0 12px',
-              }}>พร้อมลองใช้งานแล้วหรือยัง?</h2>
-              <p style={{color:'#a8a29e',marginBottom:32,lineHeight:1.6}}>
-                ดู Prototype ของ Joinstick Learner App<br/>และสัมผัสประสบการณ์การเรียนรู้รูปแบบใหม่
-              </p>
-              <button onClick={handleEnter} className="btn-press" style={{
-                padding:'16px 40px', borderRadius:14, border:'none',
-                background:'#ED4724',
-                color:'#fff', fontSize:'1rem', fontWeight:700,
-                cursor:'pointer', boxShadow:'0 8px 32px rgba(237,71,36,0.40)',
-                letterSpacing:'-0.01em',
-              }}>เข้าสู่ Prototype →</button>
+              {/* Decorative floating orbs */}
+              <div className="anim-float" style={{
+                position:'absolute', top:-30, left:-30,
+                width:120, height:120, borderRadius:'50%',
+                background:'radial-gradient(circle, rgba(237,71,36,0.32) 0%, transparent 70%)',
+                filter:'blur(2px)', animationDelay:'-1s',
+              }}/>
+              <div className="anim-float" style={{
+                position:'absolute', bottom:-30, right:-30,
+                width:160, height:160, borderRadius:'50%',
+                background:'radial-gradient(circle, rgba(251,191,36,0.22) 0%, transparent 70%)',
+                filter:'blur(2px)', animationDelay:'-3s',
+              }}/>
+
+              {/* Sparkles */}
+              {[
+                {top:'18%',left:'10%',d:'0s'},
+                {top:'12%',right:'14%',d:'1.2s'},
+                {bottom:'22%',left:'18%',d:'2.0s'},
+                {bottom:'28%',right:'12%',d:'0.8s'},
+              ].map((s,i)=>(
+                <div key={i} className="anim-sparkle" style={{
+                  position:'absolute', ...s,
+                  width:5, height:5, borderRadius:'50%',
+                  background:'#ED4724',
+                  boxShadow:'0 0 10px rgba(237,71,36,0.7)',
+                  animationDelay:s.d,
+                }}/>
+              ))}
+
+              <div style={{position:'relative',zIndex:1}}>
+                <div style={{
+                  display:'inline-flex',alignItems:'center',gap:8,
+                  background:'rgba(237,71,36,0.18)',border:'1px solid rgba(237,71,36,0.4)',
+                  borderRadius:999,padding:'5px 14px',marginBottom:18,
+                }}>
+                  <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#ED4724',boxShadow:'0 0 8px rgba(237,71,36,0.8)'}}/>
+                  <span style={{color:'#fda4af',fontSize:'0.7rem',fontWeight:600,letterSpacing:'0.12em'}}>READY TO START</span>
+                </div>
+                <h2 className="bp-heading" style={{
+                  fontSize:'clamp(1.8rem,3.2vw,2.4rem)',fontWeight:800,
+                  letterSpacing:'-0.01em',margin:'0 0 14px',lineHeight:1.15,
+                }}>พร้อมลองใช้งานแล้วหรือยัง?</h2>
+                <p style={{color:'#d4d4d8',marginBottom:32,lineHeight:1.65,fontSize:'1rem'}}>
+                  ดู Prototype ของ Joinstick Learner App<br/>และสัมผัสประสบการณ์การเรียนรู้รูปแบบใหม่
+                </p>
+                <div style={{position:'relative',display:'inline-block'}}>
+                  <span className="anim-glow-ring" style={{
+                    position:'absolute',inset:0,borderRadius:14,pointerEvents:'none',
+                  }}/>
+                  <button onClick={handleEnter} className="btn-press" style={{
+                    position:'relative',
+                    padding:'16px 44px', borderRadius:14, border:'none',
+                    background:'linear-gradient(135deg, #ED4724 0%, #F26B45 100%)',
+                    color:'#fff', fontSize:'1.02rem', fontWeight:700,
+                    cursor:'pointer', boxShadow:'0 10px 36px rgba(237,71,36,0.45)',
+                    letterSpacing:'-0.01em',
+                  }}>เข้าสู่ Prototype →</button>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -4602,7 +5111,7 @@
             ))}
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
+          <div className="hr-2col" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
             {/* Challenge completion bars */}
             <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',
               boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
@@ -4811,7 +5320,7 @@
             ))}
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
+          <div className="hr-2col" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
             <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',
               boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
               <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>
@@ -4912,8 +5421,16 @@
             <div style={{display:'flex',alignItems:'center',gap:12}}>
               <span style={{color:'#78716c',fontSize:'0.78rem',display:'none'}}>Essential Leadership: Lead with your heart</span>
               <button onClick={onBack} style={{padding:'7px 14px',borderRadius:9,cursor:'pointer',
-                border:'1px solid #e7e5e4',background:'#ffffff',
-                color:'#57534e',fontSize:'0.8rem'}}>← กลับ</button>
+                border:'1px solid rgba(20,184,166,0.32)',
+                background:'rgba(20,184,166,0.08)',
+                color:'#0d9488',fontSize:'0.8rem',fontWeight:600,
+                display:'flex',alignItems:'center',gap:6,
+                transition:'background 0.15s, border-color 0.15s',
+              }}
+                onMouseEnter={e=>{e.currentTarget.style.background='rgba(20,184,166,0.16)';e.currentTarget.style.borderColor='rgba(20,184,166,0.55)';}}
+                onMouseLeave={e=>{e.currentTarget.style.background='rgba(20,184,166,0.08)';e.currentTarget.style.borderColor='rgba(20,184,166,0.32)';}}>
+                ถัดไป →
+              </button>
             </div>
           </nav>
 
@@ -5243,6 +5760,52 @@
                 }}>เปิด Dashboard →</div>
               </div>
             </div>
+
+            {/* Manager Review entry */}
+            <div className="fade-in" style={{
+              animationDelay:'0.55s',opacity:0,
+              marginTop:16,width:'100%',maxWidth:1100,
+            }}>
+              <div
+                onClick={()=>go('manager')}
+                style={{
+                  background:'rgba(20,184,166,0.06)',
+                  border:'1px solid rgba(20,184,166,0.20)',
+                  borderRadius:18,padding:'18px 28px',
+                  display:'flex',alignItems:'center',justifyContent:'space-between',
+                  cursor:'pointer',transition:'all 0.2s ease',
+                }}
+                onMouseEnter={e=>{e.currentTarget.style.background='rgba(20,184,166,0.12)';e.currentTarget.style.borderColor='rgba(20,184,166,0.40)';e.currentTarget.style.transform='translateY(-2px)';}}
+                onMouseLeave={e=>{e.currentTarget.style.background='rgba(20,184,166,0.06)';e.currentTarget.style.borderColor='rgba(20,184,166,0.20)';e.currentTarget.style.transform='none';}}>
+                <div style={{display:'flex',alignItems:'center',gap:14}}>
+                  <div style={{
+                    width:46,height:46,borderRadius:13,flexShrink:0,
+                    background:'rgba(20,184,166,0.15)',border:'1px solid rgba(20,184,166,0.32)',
+                    display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.4rem',
+                  }}>📩</div>
+                  <div>
+                    <div style={{fontWeight:700,fontSize:'0.95rem',letterSpacing:'-0.01em'}}>
+                      Manager Review
+                      <span style={{marginLeft:8,display:'inline-flex',alignItems:'center',gap:4,
+                        background:'rgba(20,184,166,0.14)',border:'1px solid rgba(20,184,166,0.30)',
+                        borderRadius:999,padding:'2px 8px',verticalAlign:'middle'}}>
+                        <span style={{width:4,height:4,borderRadius:'50%',background:'#2dd4bf',display:'inline-block'}} className="anim-pulse"/>
+                        <span style={{color:'#5eead4',fontSize:'0.62rem',fontWeight:600,letterSpacing:'0.03em'}}>FEATURE BRIEF</span>
+                      </span>
+                    </div>
+                    <div style={{color:'#71717a',fontSize:'0.8rem',marginTop:3}}>
+                      ให้หัวหน้างานตรวจ Mission ผ่านลิงก์ใน E-mail · One-page Summary
+                    </div>
+                  </div>
+                </div>
+                <div style={{
+                  display:'flex',alignItems:'center',gap:6,flexShrink:0,
+                  background:'rgba(20,184,166,0.18)',border:'1px solid rgba(20,184,166,0.36)',
+                  borderRadius:10,padding:'8px 16px',
+                  color:'#99f6e4',fontSize:'0.82rem',fontWeight:600,
+                }}>ดู Summary →</div>
+              </div>
+            </div>
           </div>
 
           {/* Footer */}
@@ -5259,6 +5822,481 @@
       );
     }
 
+    /* ── Manager Review · One-page Feature Summary ── */
+    function ManagerReview({ onBack }) {
+      const TEAL = '#14b8a6';
+      const TEAL_SOFT = 'rgba(20,184,166,0.12)';
+      const TEAL_BORDER = 'rgba(20,184,166,0.28)';
+
+      const steps = [
+        { num:'01', icon:'⚙️', actor:'HR',      title:'Set Up Manager Email',       desc:'HR กรอกอีเมลของหัวหน้างานให้กับ Learner แต่ละคนในระบบ ก่อนเปิดคอร์ส' },
+        { num:'02', icon:'📧', actor:'System',  title:'Auto E-mail Notification',    desc:'ระบบส่งอีเมลแจ้ง Manager พร้อมลิงก์เข้าหน้า Review โดยอัตโนมัติ' },
+        { num:'03', icon:'🔗', actor:'Manager', title:'Open Review Link',            desc:'Manager คลิกลิงก์ในอีเมล → เข้าหน้า Manager Review โดยไม่ต้องล็อกอิน' },
+      ];
+
+      const actorColor = {
+        HR:      '#818cf8',
+        Speaker: '#f59e0b',
+        Learner: '#ED4724',
+        System:  '#94a3b8',
+        Manager: TEAL,
+      };
+
+      return (
+        <div style={{
+          minHeight:'100vh', background:'#161412', color:'#fff',
+          fontFamily:"'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        }}>
+          {/* Ambient blobs */}
+          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+            <div style={{position:'absolute',top:'-15%',left:'15%',width:'45vw',height:'45vw',
+              background:`radial-gradient(circle, ${TEAL_SOFT} 0%, transparent 65%)`,borderRadius:'50%'}}/>
+            <div style={{position:'absolute',bottom:'-20%',right:'5%',width:'45vw',height:'45vw',
+              background:'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 65%)',borderRadius:'50%'}}/>
+          </div>
+
+          {/* Navbar */}
+          <nav style={{
+            position:'sticky',top:0,zIndex:100,
+            display:'flex',alignItems:'center',justifyContent:'space-between',
+            padding:'0 max(24px,calc((100vw - 1200px)/2))',
+            height:64,
+            background:'rgba(22,20,18,0.85)',
+            backdropFilter:'blur(12px)',
+            borderBottom:'1px solid rgba(255,255,255,0.06)',
+          }}>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <JoinstickLogo size={38} variant="white" />
+              <span className="bp-heading" style={{fontWeight:700,fontSize:'1.05rem',letterSpacing:'0.1em'}}>JOINSTICK</span>
+            </div>
+            <button onClick={onBack} style={{
+              display:'flex',alignItems:'center',gap:6,
+              background:'rgba(255,255,255,0.05)',
+              border:'1px solid rgba(255,255,255,0.08)',
+              borderRadius:10,padding:'8px 16px',
+              color:'#a8a29e',fontSize:'0.875rem',cursor:'pointer',
+              transition:'color 0.15s,background 0.15s',
+            }}
+              onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.background='rgba(255,255,255,0.08)'}}
+              onMouseLeave={e=>{e.currentTarget.style.color='#a8a29e';e.currentTarget.style.background='rgba(255,255,255,0.05)'}}>
+              ← กลับ Journey
+            </button>
+          </nav>
+
+          {/* Content */}
+          <div className="mr-section" style={{
+            position:'relative',zIndex:1,
+            padding:'48px max(24px,calc((100vw - 1180px)/2)) 80px',
+            maxWidth:1180,margin:'0 auto',
+          }}>
+
+            {/* HERO */}
+            <section className="fade-in" style={{marginBottom:48}}>
+              <div style={{
+                display:'inline-flex',alignItems:'center',gap:8,
+                background:TEAL_SOFT,border:`1px solid ${TEAL_BORDER}`,
+                borderRadius:999,padding:'5px 14px',marginBottom:18,
+              }}>
+                <span style={{width:6,height:6,borderRadius:'50%',background:TEAL,display:'inline-block'}}/>
+                <span className="bp-slogan" style={{color:'#5eead4',fontSize:'0.72rem',fontWeight:500}}>FEATURE · MANAGER REVIEW</span>
+              </div>
+              <h1 className="bp-heading" style={{
+                fontSize:'clamp(2rem, 4.4vw, 3rem)',fontWeight:800,
+                letterSpacing:'-0.01em',margin:'0 0 16px',lineHeight:1.1,
+              }}>
+                Manager Review
+              </h1>
+              <p style={{
+                color:'#a8a29e',fontSize:'1.05rem',lineHeight:1.65,
+                margin:0,maxWidth:780,
+              }}>
+                ให้ <strong style={{color:'#fff'}}>หัวหน้างาน (Manager)</strong> ของผู้เรียน เป็นผู้ตรวจ
+                Mission Submission โดยตรงผ่าน <strong style={{color:'#fff'}}>ลิงก์ในอีเมล</strong> —
+                ไม่ต้องล็อกอิน ไม่ต้องติดตั้งแอป ใช้เวลาตรวจไม่กี่นาที
+                เพิ่ม Engagement ของหัวหน้างาน
+              </p>
+
+              {/* Chips */}
+              <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:22}}>
+                {[
+                  ['Web App · Manager Side', TEAL],
+                  ['Activator: Mission', '#f59e0b'],
+                  ['Async Review', '#94a3b8'],
+                  ['No Login Required', '#a78bfa'],
+                ].map(([label,c])=>(
+                  <span key={label} style={{
+                    display:'inline-flex',alignItems:'center',gap:6,
+                    background:`${c}14`, border:`1px solid ${c}40`,
+                    color:c, borderRadius:8, padding:'5px 12px',
+                    fontSize:'0.78rem',fontWeight:600,letterSpacing:'-0.01em',
+                  }}>
+                    <span style={{width:5,height:5,borderRadius:'50%',background:c}}/>
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </section>
+
+            {/* WHY (3 value props) */}
+            <section className="fade-in" style={{animationDelay:'0.08s',opacity:0,marginBottom:56}}>
+              <div style={{
+                display:'grid', gap:16,
+                gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',
+              }}>
+                {[
+                  { title:'หัวหน้างานมีส่วนร่วม',  desc:'Manager ได้เห็นงาน Learner ของตัวเอง และเป็นผู้ประเมินจริง' },
+                  { title:'Feedback ตรงกับงานจริง', desc:'คนที่เห็น Learner ทำงานทุกวัน คือคนที่ให้ Feedback ได้แม่นที่สุด' },
+                ].map(({title,desc})=>(
+                  <div key={title} style={{
+                    background:'rgba(255,255,255,0.03)',
+                    border:'1px solid rgba(255,255,255,0.07)',
+                    borderRadius:18, padding:'22px 22px 20px',
+                  }}>
+                    <div style={{fontWeight:700,fontSize:'0.98rem',marginBottom:6,letterSpacing:'-0.01em'}}>{title}</div>
+                    <div style={{color:'#a1a1aa',fontSize:'0.85rem',lineHeight:1.6}}>{desc}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* HOW IT WORKS */}
+            <section className="fade-in" style={{animationDelay:'0.16s',opacity:0,marginBottom:64}}>
+              <div style={{marginBottom:24}}>
+                <div style={{
+                  fontSize:'0.72rem',color:TEAL,fontWeight:700,
+                  letterSpacing:'0.12em',marginBottom:8,
+                }}>HOW IT WORKS</div>
+                <h2 className="bp-heading" style={{
+                  fontSize:'1.55rem',fontWeight:800,margin:0,letterSpacing:'-0.01em',
+                }}>การใช้งานเบื้องต้น · 3 ขั้นตอน</h2>
+              </div>
+              <div style={{
+                display:'grid', gap:14,
+                gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))',
+              }}>
+                {steps.map(({num,icon,actor,title,desc},i)=>{
+                  const ac = actorColor[actor];
+                  return (
+                    <div key={num} style={{
+                      position:'relative',
+                      background:'rgba(255,255,255,0.03)',
+                      border:'1px solid rgba(255,255,255,0.07)',
+                      borderRadius:16, padding:'20px 20px 18px',
+                    }}>
+                      <div style={{
+                        display:'flex',alignItems:'center',justifyContent:'space-between',
+                        marginBottom:12,
+                      }}>
+                        <div style={{
+                          fontSize:'0.7rem',fontWeight:700,color:TEAL,
+                          letterSpacing:'0.1em',opacity:0.7,
+                        }}>STEP {num}</div>
+                        <span style={{
+                          background:`${ac}14`, border:`1px solid ${ac}40`,
+                          color:ac, borderRadius:6, padding:'3px 8px',
+                          fontSize:'0.66rem',fontWeight:700,letterSpacing:'0.04em',
+                        }}>{actor.toUpperCase()}</span>
+                      </div>
+                      <div style={{display:'flex',gap:12,alignItems:'flex-start'}}>
+                        <div style={{
+                          width:38,height:38,borderRadius:10,flexShrink:0,
+                          background:TEAL_SOFT,border:`1px solid ${TEAL_BORDER}`,
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'1.05rem',
+                        }}>{icon}</div>
+                        <div>
+                          <div style={{fontWeight:700,fontSize:'0.93rem',marginBottom:4,letterSpacing:'-0.01em'}}>{title}</div>
+                          <div style={{color:'#a1a1aa',fontSize:'0.8rem',lineHeight:1.55}}>{desc}</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* MOCKUP / PREVIEW */}
+            <section className="fade-in" style={{animationDelay:'0.24s',opacity:0,marginBottom:56}}>
+              <div style={{marginBottom:20}}>
+                <div style={{
+                  fontSize:'0.72rem',color:TEAL,fontWeight:700,
+                  letterSpacing:'0.12em',marginBottom:8,
+                }}>UI PREVIEW</div>
+                <h2 className="bp-heading" style={{
+                  fontSize:'1.55rem',fontWeight:800,margin:'0 0 6px',letterSpacing:'-0.01em',
+                }}>หน้าตาการใช้งาน</h2>
+                <p style={{color:'#a1a1aa',fontSize:'0.9rem',margin:0,lineHeight:1.6}}>
+                  Manager ได้รับ E-mail → คลิกลิงก์ → เข้าหน้า Manager Review เพื่อตรวจ Mission
+                </p>
+              </div>
+
+              <div className="mr-preview-grid" style={{
+                display:'grid', gap:18,
+                gridTemplateColumns:'minmax(280px, 0.85fr) minmax(380px, 1.15fr)',
+              }}>
+
+                {/* ── E-mail mockup ── */}
+                <div style={{
+                  background:'#fff', color:'#111',
+                  borderRadius:18, overflow:'hidden',
+                  border:'1px solid rgba(255,255,255,0.08)',
+                  boxShadow:'0 30px 70px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04)',
+                  display:'flex', flexDirection:'column',
+                }}>
+                  {/* Mail header */}
+                  <div style={{
+                    background:'#f6f5f3', padding:'10px 16px',
+                    borderBottom:'1px solid #e5e7eb',
+                    display:'flex',alignItems:'center',gap:8,
+                  }}>
+                    <div style={{display:'flex',gap:6}}>
+                      <span style={{width:10,height:10,borderRadius:'50%',background:'#ef4444'}}/>
+                      <span style={{width:10,height:10,borderRadius:'50%',background:'#f59e0b'}}/>
+                      <span style={{width:10,height:10,borderRadius:'50%',background:'#10b981'}}/>
+                    </div>
+                    <div style={{marginLeft:8,fontSize:'0.72rem',color:'#71717a',fontWeight:500}}>Inbox · Manager E-mail</div>
+                  </div>
+                  {/* Mail body */}
+                  <div style={{padding:'20px 22px 22px',flex:1,display:'flex',flexDirection:'column'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:14}}>
+                      <div style={{
+                        width:34,height:34,borderRadius:'50%',
+                        background:'#231F20',color:'#fff',
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        fontWeight:700,fontSize:'0.78rem',
+                      }}>J</div>
+                      <div style={{lineHeight:1.2}}>
+                        <div style={{fontWeight:700,fontSize:'0.82rem'}}>Joinstick <span style={{color:'#9ca3af',fontWeight:400}}>&lt;noreply@joinstick.app&gt;</span></div>
+                        <div style={{color:'#9ca3af',fontSize:'0.7rem',marginTop:2}}>ถึง: คุณ (Manager) · เมื่อ 10 นาทีที่แล้ว</div>
+                      </div>
+                    </div>
+                    <div style={{
+                      fontWeight:700,fontSize:'1rem',marginBottom:10,
+                      color:'#111',letterSpacing:'-0.01em',
+                    }}>มี Mission รอให้คุณตรวจ — สมชาย ใจดี</div>
+                    <div style={{
+                      color:'#4b5563',fontSize:'0.82rem',lineHeight:1.6,marginBottom:18,
+                    }}>
+                      Learner ในทีมของคุณส่ง Mission <strong style={{color:'#111'}}>"Observe & report trust behaviors"</strong> เสร็จแล้ว
+                      กรุณาคลิกปุ่มด้านล่างเพื่อตรวจและให้ Feedback
+                    </div>
+                    <div style={{
+                      background:'#fafaf9',border:'1px dashed #e7e5e4',
+                      borderRadius:10,padding:'10px 12px',marginBottom:18,
+                      fontSize:'0.74rem',color:'#52525b',
+                    }}>
+                      📋 <strong>Module:</strong> Trust & Communication<br/>
+                      ⏰ <strong>Submitted:</strong> 22 พ.ค. 2569 · 14:32
+                    </div>
+                    <button style={{
+                      background:TEAL,color:'#fff',border:'none',
+                      padding:'12px 16px',borderRadius:10,
+                      fontWeight:700,fontSize:'0.85rem',
+                      cursor:'pointer',letterSpacing:'-0.01em',
+                      boxShadow:'0 6px 16px rgba(20,184,166,0.32)',
+                    }}>
+                      เปิดหน้า Review →
+                    </button>
+                    <div style={{
+                      marginTop:14,fontSize:'0.68rem',color:'#9ca3af',lineHeight:1.5,
+                    }}>
+                      ลิงก์นี้เฉพาะตัวสำหรับคุณ — ไม่ต้องล็อกอินก็เข้าได้ทันที
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Manager Review Page mockup ── */}
+                <div style={{
+                  background:'#fff', color:'#111',
+                  borderRadius:18, overflow:'hidden',
+                  border:'1px solid rgba(255,255,255,0.08)',
+                  boxShadow:'0 30px 70px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04)',
+                  display:'flex', flexDirection:'column',
+                }}>
+                  {/* Browser bar */}
+                  <div style={{
+                    background:'#f6f5f3',padding:'8px 14px',
+                    borderBottom:'1px solid #e5e7eb',
+                    display:'flex',alignItems:'center',gap:10,
+                  }}>
+                    <div style={{display:'flex',gap:6}}>
+                      <span style={{width:10,height:10,borderRadius:'50%',background:'#ef4444'}}/>
+                      <span style={{width:10,height:10,borderRadius:'50%',background:'#f59e0b'}}/>
+                      <span style={{width:10,height:10,borderRadius:'50%',background:'#10b981'}}/>
+                    </div>
+                    <div style={{
+                      flex:1,background:'#fff',border:'1px solid #e5e7eb',
+                      borderRadius:6,padding:'4px 10px',
+                      fontSize:'0.7rem',color:'#71717a',
+                      overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',
+                    }}>🔒 joinstick.app/review/mgr/3f8a-2c9b...</div>
+                  </div>
+
+                  {/* Page header */}
+                  <div style={{
+                    padding:'18px 22px',
+                    borderBottom:'1px solid #f1f0ee',
+                    display:'flex',alignItems:'center',justifyContent:'space-between',
+                  }}>
+                    <div>
+                      <div style={{
+                        fontSize:'0.66rem',color:TEAL,fontWeight:700,
+                        letterSpacing:'0.1em',marginBottom:3,
+                      }}>MANAGER REVIEW</div>
+                      <div style={{fontWeight:800,fontSize:'1.05rem',color:'#111',letterSpacing:'-0.01em'}}>
+                        Observe & report trust behaviors
+                      </div>
+                    </div>
+                    <span style={{
+                      background:'#fef2f2',border:'1px solid #fecaca',color:'#b91c1c',
+                      borderRadius:6,padding:'3px 8px',
+                      fontSize:'0.66rem',fontWeight:700,letterSpacing:'0.04em',
+                    }}>LATE · 6 ชม.</span>
+                  </div>
+
+                  {/* Learner info */}
+                  <div style={{padding:'14px 22px 0', display:'flex',alignItems:'center',gap:10}}>
+                    <div style={{
+                      width:32,height:32,borderRadius:'50%',
+                      background:'#ED4724',color:'#fff',
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      fontWeight:700,fontSize:'0.78rem',
+                    }}>ส</div>
+                    <div style={{lineHeight:1.2}}>
+                      <div style={{fontWeight:700,fontSize:'0.82rem',color:'#111'}}>สมชาย ใจดี</div>
+                      <div style={{color:'#71717a',fontSize:'0.7rem',marginTop:2}}>Trust & Communication · Submitted 22 พ.ค. 14:32</div>
+                    </div>
+                  </div>
+
+                  {/* Submission detail */}
+                  <div style={{padding:'14px 22px'}}>
+                    <div style={{
+                      fontSize:'0.7rem',color:'#71717a',fontWeight:700,
+                      letterSpacing:'0.08em',marginBottom:8,
+                    }}>SUBMISSION</div>
+                    <div style={{
+                      background:'#fafaf9',border:'1px solid #f1f0ee',
+                      borderRadius:10,padding:'12px 14px',
+                      fontSize:'0.82rem',color:'#374151',lineHeight:1.6,
+                    }}>
+                      สัปดาห์นี้ผมสังเกตเห็นว่า น้องในทีมยังขาดความมั่นใจในการเสนอ idea ใน meeting
+                      จึงลองชวนคุยแบบ 1-on-1 ก่อน meeting ทุกครั้ง พบว่าเริ่มพูดเยอะขึ้น...
+                    </div>
+                    <div style={{
+                      marginTop:10,display:'flex',gap:8,flexWrap:'wrap',
+                    }}>
+                      <span style={{
+                        background:'#fff',border:'1px solid #e5e7eb',color:'#52525b',
+                        borderRadius:6,padding:'4px 10px',fontSize:'0.7rem',fontWeight:600,
+                      }}>📝 Text</span>
+                      <span style={{
+                        background:'#fff',border:'1px solid #e5e7eb',color:'#52525b',
+                        borderRadius:6,padding:'4px 10px',fontSize:'0.7rem',fontWeight:600,
+                      }}>📷 photo_evidence.jpg</span>
+                    </div>
+                  </div>
+
+                  {/* Decision */}
+                  <div style={{padding:'8px 22px 14px'}}>
+                    <div style={{
+                      fontSize:'0.7rem',color:'#71717a',fontWeight:700,
+                      letterSpacing:'0.08em',marginBottom:8,
+                    }}>DECISION</div>
+                    <div style={{display:'flex',gap:8,marginBottom:12}}>
+                      <button style={{
+                        flex:1,background:'#10b981',color:'#fff',border:'none',
+                        padding:'10px',borderRadius:9,fontWeight:700,fontSize:'0.82rem',
+                        cursor:'pointer',boxShadow:'0 4px 12px rgba(16,185,129,0.3)',
+                      }}>✓ Pass</button>
+                      <button style={{
+                        flex:1,background:'#fff',color:'#dc2626',
+                        border:'1px solid #fecaca',
+                        padding:'10px',borderRadius:9,fontWeight:700,fontSize:'0.82rem',
+                        cursor:'pointer',
+                      }}>✕ Fail</button>
+                    </div>
+                    <textarea readOnly value="ทำได้ดีมากที่ลองชวนคุยแบบ 1-on-1 ก่อน meeting — ลองสรุปสิ่งที่เห็นเป็น pattern หลังจาก 3 สัปดาห์ดูครับ"
+                      style={{
+                        width:'100%',minHeight:62,resize:'none',
+                        background:'#fafaf9',border:'1px solid #f1f0ee',
+                        borderRadius:10,padding:'10px 12px',
+                        fontSize:'0.78rem',color:'#374151',lineHeight:1.55,
+                        fontFamily:'inherit',outline:'none',
+                      }}/>
+                    <button style={{
+                      marginTop:10,width:'100%',
+                      background:'#231F20',color:'#fff',border:'none',
+                      padding:'12px',borderRadius:10,
+                      fontWeight:700,fontSize:'0.85rem',cursor:'pointer',letterSpacing:'-0.01em',
+                    }}>ส่ง Review →</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* SPEC STRIP */}
+            <section className="fade-in" style={{animationDelay:'0.32s',opacity:0}}>
+              <div style={{
+                background:'rgba(255,255,255,0.025)',
+                border:'1px solid rgba(255,255,255,0.06)',
+                borderRadius:18,
+                padding:'22px 24px',
+                display:'grid',gap:18,
+                gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',
+              }}>
+                {[
+                  {
+                    label:'PREREQUISITES',
+                    items:['HR Set Manager Email ให้ Learner','Speaker เลือก "Manager Review" ตอนสร้าง Challenge','Activator: Mission เท่านั้น'],
+                  },
+                  {
+                    label:'MANAGER ACTIONS',
+                    items:['ดู Submission (Text / Photo / Video)','เห็น Late badge หากเกินกำหนด','Set Pass / Fail + Comment'],
+                  },
+                  {
+                    label:'SYSTEM BEHAVIOR',
+                    items:['Auto E-mail เมื่อ Learner Submit','ลิงก์ Token เฉพาะตัว — ไม่ต้องล็อกอิน','ผลส่งกลับเข้า Learner App ทันที'],
+                  },
+                ].map(({label,items})=>(
+                  <div key={label}>
+                    <div style={{
+                      fontSize:'0.66rem',color:TEAL,fontWeight:700,
+                      letterSpacing:'0.12em',marginBottom:10,
+                    }}>{label}</div>
+                    <ul style={{margin:0,padding:0,listStyle:'none',display:'flex',flexDirection:'column',gap:6}}>
+                      {items.map(it=>(
+                        <li key={it} style={{
+                          display:'flex',gap:8,alignItems:'flex-start',
+                          color:'#d4d4d8',fontSize:'0.8rem',lineHeight:1.5,
+                        }}>
+                          <span style={{
+                            width:4,height:4,borderRadius:'50%',background:TEAL,
+                            flexShrink:0,marginTop:7,
+                          }}/>
+                          <span>{it}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* Footer */}
+          <footer style={{
+            position:'relative',zIndex:1,
+            padding:'20px max(24px,calc((100vw - 1200px)/2))',
+            borderTop:'1px solid rgba(255,255,255,0.05)',
+            display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8,
+          }}>
+            <span style={{color:'#3f3f46',fontSize:'0.78rem'}}>Joinstick · Manager Review Feature Brief</span>
+            <span style={{color:'#3f3f46',fontSize:'0.78rem'}}>Prototype Demo · 2025</span>
+          </footer>
+        </div>
+      );
+    }
+
     /* ── JourneyNav ─ fixed overlay outside phone ── */
     function JourneyNav({ onJourney, onNext, nextLabel, nextColor }) {
       const font = "'Inter', system-ui, sans-serif";
@@ -5267,6 +6305,7 @@
           {/* ← Back to Journey Timeline */}
           <button
             onClick={onJourney}
+            className="journey-nav-btn left"
             style={{
               position:'fixed', top:28, left:28, zIndex:9999,
               display:'flex', alignItems:'center', gap:8,
@@ -5290,6 +6329,7 @@
           {onNext && (
             <button
               onClick={onNext}
+              className="journey-nav-btn right"
               style={{
                 position:'fixed', top:28, right:28, zIndex:9999,
                 display:'flex', alignItems:'center', gap:8,
@@ -5344,14 +6384,16 @@
               onSelect={(phase) =>
                 goTo(phase === 'preclass' ? 'preclass' :
                      phase === 'inclass'  ? 'inclass'  :
-                     phase === 'hr'       ? 'hr'       : 'learner')
+                     phase === 'hr'       ? 'hr'       :
+                     phase === 'manager'  ? 'manager'  : 'learner')
               }
               onBack={() => goTo('landing')}
             />
           )}
           {scene === 'preclass' && <PreClassApp onBack={() => goTo('phases')} onNext={() => goTo('inclass')} />}
           {scene === 'inclass'  && <InClassApp  onBack={() => goTo('phases')} onNext={() => goTo('learner')} />}
-          {scene === 'hr'       && <HRDashboard onBack={() => goTo('phases')} />}
+          {scene === 'hr'       && <HRDashboard onBack={() => goTo('manager')} />}
+          {scene === 'manager'  && <ManagerReview onBack={() => goTo('phases')} />}
           {scene === 'learner'  && <LearnerApp />}
         </>
       );
