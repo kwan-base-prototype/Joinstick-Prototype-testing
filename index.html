@@ -6,9 +6,11 @@
   <title>Joinstick — Learner App Demo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-    body { font-family: 'Inter', system-ui, sans-serif; margin: 0; background: #09090b; }
+    body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #161412; }
+    .bp-heading { font-family: 'Poppins', sans-serif; letter-spacing: 0.04em; }
+    .bp-slogan { font-family: 'Poppins', sans-serif; letter-spacing: 0.4em; font-weight: 500; }
     ::-webkit-scrollbar { display: none; }
     /* ── Fade in (tab content, general) ── */
     .fade-in { animation: fadeIn 0.35s ease forwards; }
@@ -140,6 +142,35 @@
     const Lock         = p => <Svg {...p}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Svg>;
     const FlashCard    = p => <Svg {...p}><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></Svg>;
     const Send         = p => <Svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></Svg>;
+
+    /* ── Joinstick brand mark (product logo) ─────── */
+    const JoinstickLogo = ({ size = 36, variant = 'white', style }) => {
+      const fill = variant === 'white' ? '#ffffff' : '#231F20';
+      return (
+        <svg width={size} height={size} viewBox="0 0 1024 1024" fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{flexShrink:0, ...(style||{})}}>
+          <path fill={fill} d="M386.175 147.012H271.91C268.085 146.902 264.273 147.55 260.717 148.943C257.149 150.336 253.898 152.425 251.149 155.101C248.4 157.777 246.225 160.979 244.734 164.51C243.243 168.042 242.473 171.842 242.473 175.691C242.473 179.54 243.243 183.329 244.734 186.872C246.225 190.404 248.412 193.605 251.149 196.281C253.898 198.957 257.149 201.047 260.717 202.44C264.285 203.833 268.098 204.481 271.91 204.371H386.175C393.605 204.151 400.655 201.022 405.824 195.67C411.005 190.318 413.889 183.157 413.889 175.691C413.889 168.225 410.993 161.064 405.824 155.712C400.643 150.36 393.605 147.244 386.175 147.012ZM751.834 147.012H637.568C633.744 146.902 629.931 147.55 626.375 148.943C622.807 150.336 619.557 152.425 616.807 155.101C614.058 157.777 611.883 160.979 610.392 164.51C608.901 168.042 608.132 171.842 608.132 175.691C608.132 179.54 608.901 183.329 610.392 186.872C611.883 190.404 614.07 193.605 616.807 196.281C619.557 198.957 622.807 201.047 626.375 202.44C629.943 203.833 633.756 204.481 637.568 204.371H751.834C759.263 204.151 766.314 201.022 771.483 195.67C776.664 190.318 779.548 183.157 779.548 175.691C779.548 168.225 776.652 161.064 771.483 155.712C766.302 150.36 759.263 147.244 751.834 147.012Z"/>
+          <path fill={fill} d="M861.602 876.093C837.163 876.129 813.029 870.545 791.071 859.755C769.112 848.965 749.927 833.263 734.971 813.846L733.492 814.335L646.256 670.511C643.959 666.759 640.745 663.668 636.909 661.517C633.084 659.366 628.77 658.218 624.396 658.193H399.58C395.193 658.218 390.88 659.354 387.067 661.517C383.242 663.668 380.029 666.771 377.719 670.511L290.398 814.396L288.92 813.907C273.963 833.312 254.778 849.026 232.819 859.816C210.861 870.606 186.739 876.19 162.288 876.154C74.7105 876.154 3.33594 805.696 2.06511 718.631L0 717.935L2.2484 702.819C2.63943 700.229 41.0089 440.551 45.9945 408.548C67.3176 270.515 129.931 199.996 242.546 188.094V186.176H781.344V188.253C831.737 194.424 874.371 216.187 907.963 253.09C942.508 290.983 966.03 343.136 977.896 408.12C983.737 440.221 1020.18 692.2 1021.82 702.905L1024 717.996L1021.98 718.668C1020.57 805.732 949.192 876.08 861.614 876.08L861.602 876.093ZM749.634 770.699L757.259 782.576C768.477 800.16 783.934 814.616 802.19 824.612C820.446 834.607 840.926 839.825 861.736 839.776C930.117 839.776 985.777 784.385 985.777 716.31C985.777 713.536 985.545 710.554 985.313 707.414L984.714 699.447C978.152 654.039 947.506 442.701 942.361 414.535C929.824 345.812 889.768 229.58 762.477 222.932L752.371 222.419H271.568L261.487 222.932C155.274 228.455 101.508 285.619 81.6756 414.034C77.2521 442.555 45.8112 655.212 39.1882 699.85L38.6138 707.34C38.3817 710.505 38.1739 713.487 38.1739 716.285C38.3572 743.119 47.192 769.184 63.334 790.568C79.4761 811.964 102.082 827.544 127.78 834.998C153.478 842.452 180.874 841.365 205.9 831.919C230.925 822.461 252.249 805.146 266.668 782.552L274.293 770.674H274.476L346.828 651.558C352.376 642.503 360.123 635.013 369.361 629.807C378.599 624.602 388.998 621.852 399.592 621.816H624.408C635.002 621.852 645.401 624.602 654.627 629.807C663.853 635.013 671.612 642.503 677.148 651.558L749.5 770.674H749.597L749.634 770.699Z"/>
+          <path fill="url(#jl-grad)" d="M520.089 270.014L755.842 273.851C755.842 273.851 810.5 273.851 846.462 319.234C865.634 343.404 883.829 411.553 883.829 411.553C883.829 411.553 932.671 671.414 932.671 705.544C932.671 739.673 912.435 778.152 872.844 780.755C833.253 783.346 798.292 729.091 798.292 729.091L520.089 270.014Z"/>
+          <path fill={fill} d="M280.561 362.969H256.159C244.774 362.969 235.544 372.198 235.544 383.583V502.883C235.544 514.268 244.774 523.497 256.159 523.497H280.561C291.946 523.497 301.176 514.268 301.176 502.883V383.583C301.176 372.198 291.946 362.969 280.561 362.969Z"/>
+          <path fill={fill} d="M348.625 455.435V431.032C348.625 419.647 339.395 410.418 328.01 410.418H208.71C197.325 410.418 188.096 419.647 188.096 431.032V455.435C188.096 466.82 197.325 476.049 208.71 476.049H328.01C339.395 476.049 348.625 466.82 348.625 455.435Z"/>
+          <defs>
+            <linearGradient id="jl-grad" x1="628.514" y1="220.219" x2="987.964" y2="783.248" gradientUnits="userSpaceOnUse">
+              <stop offset="0.15" stopColor="#ED4724"/>
+              <stop offset="0.26" stopColor="#E94523"/>
+              <stop offset="0.37" stopColor="#DD4221"/>
+              <stop offset="0.48" stopColor="#C93C1E"/>
+              <stop offset="0.59" stopColor="#AD331A"/>
+              <stop offset="0.7"  stopColor="#882914"/>
+              <stop offset="0.81" stopColor="#5C1B0E"/>
+              <stop offset="0.92" stopColor="#290C06"/>
+              <stop offset="1"    stopColor="#000000"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      );
+    };
 
     /* ── Mock Data ───────────────────────────────── */
     const suggestedChallenges = [
@@ -617,9 +648,9 @@
       return (
         <div style={{
           minHeight: '100vh',
-          background: '#09090b',
+          background: '#161412',
           color: '#fff',
-          fontFamily: "'Inter', system-ui, sans-serif",
+          fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
           overflowX: 'hidden',
           opacity: exiting ? 0 : 1,
           transform: exiting ? 'scale(0.98)' : 'scale(1)',
@@ -631,13 +662,13 @@
             <div style={{
               position:'absolute', top:'-20%', left:'-10%',
               width:'60vw', height:'60vw', maxWidth:800, maxHeight:800,
-              background:'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 65%)',
+              background:'radial-gradient(circle, rgba(237,71,36,0.10) 0%, transparent 65%)',
               borderRadius:'50%',
             }}/>
             <div style={{
               position:'absolute', bottom:'-15%', right:'-10%',
               width:'55vw', height:'55vw', maxWidth:700, maxHeight:700,
-              background:'radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 65%)',
+              background:'radial-gradient(circle, rgba(237,71,36,0.06) 0%, transparent 65%)',
               borderRadius:'50%',
             }}/>
           </div>
@@ -648,25 +679,14 @@
             display:'flex', alignItems:'center', justifyContent:'space-between',
             padding:'0 max(24px, calc((100vw - 1200px)/2))',
             height:64,
-            background:'rgba(9,9,11,0.8)',
+            background:'rgba(22,20,18,0.85)',
             backdropFilter:'blur(12px)',
             borderBottom:'1px solid rgba(255,255,255,0.06)',
           }}>
             {/* Logo */}
             <div style={{display:'flex',alignItems:'center',gap:10}}>
-              <div style={{
-                width:36, height:36, borderRadius:10,
-                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
-                display:'flex', alignItems:'center', justifyContent:'center',
-                flexShrink:0,
-              }}>
-                <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
-                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
-                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
-                  <rect x="13" y="34" width="18" height="4" rx="2" fill="white" fillOpacity="0.45"/>
-                </svg>
-              </div>
-              <span style={{fontWeight:700,fontSize:'1.1rem',letterSpacing:'-0.02em'}}>Joinstick</span>
+              <JoinstickLogo size={38} variant="white" />
+              <span className="bp-heading" style={{fontWeight:700,fontSize:'1.05rem',letterSpacing:'0.1em'}}>JOINSTICK</span>
             </div>
 
             {/* Nav links — pill tab group */}
@@ -701,9 +721,9 @@
                       whiteSpace:'nowrap',
                       color: isActive ? '#fff' : (isHover ? '#e4e4e7' : '#a1a1aa'),
                       background: isActive
-                        ? 'linear-gradient(135deg,#3b82f6,#6366f1)'
+                        ? '#ED4724'
                         : (isHover ? 'rgba(255,255,255,0.06)' : 'transparent'),
-                      boxShadow: isActive ? '0 4px 14px rgba(99,102,241,0.35)' : 'none',
+                      boxShadow: isActive ? '0 4px 14px rgba(237,71,36,0.4)' : 'none',
                       transition:'all 0.22s cubic-bezier(0.4,0,0.2,1)',
                       letterSpacing:'-0.005em',
                     }}
@@ -714,9 +734,9 @@
 
             <button onClick={handleEnter} className="btn-press" style={{
               padding:'9px 20px', borderRadius:10, border:'none',
-              background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+              background:'#ED4724',
               color:'#fff', fontSize:'0.875rem', fontWeight:600,
-              cursor:'pointer', boxShadow:'0 4px 16px rgba(99,102,241,0.3)',
+              cursor:'pointer', boxShadow:'0 4px 16px rgba(237,71,36,0.35)',
             }}>ดูตัวอย่าง</button>
           </nav>
 
@@ -732,27 +752,24 @@
             <div className="fade-in" style={{flex:'1 1 340px', maxWidth:520}}>
               <div style={{
                 display:'inline-flex', alignItems:'center', gap:8,
-                background:'rgba(59,130,246,0.1)', border:'1px solid rgba(59,130,246,0.2)',
+                background:'rgba(237,71,36,0.10)', border:'1px solid rgba(237,71,36,0.25)',
                 borderRadius:999, padding:'5px 14px', marginBottom:24,
               }}>
-                <span style={{width:6,height:6,borderRadius:'50%',background:'#3b82f6',display:'inline-block'}}/>
-                <span style={{color:'#93c5fd',fontSize:'0.8rem',fontWeight:500}}>Prototype Demo · 2025</span>
+                <span style={{width:6,height:6,borderRadius:'50%',background:'#ED4724',display:'inline-block'}}/>
+                <span className="bp-slogan" style={{color:'#ED4724',fontSize:'0.72rem',fontWeight:500}}>UPLIFTING HUMAN ABILITY</span>
               </div>
 
-              <h1 style={{
+              <h1 className="bp-heading" style={{
                 fontSize:'clamp(2.2rem,5vw,3.4rem)', fontWeight:800,
-                lineHeight:1.1, letterSpacing:'-0.04em',
+                lineHeight:1.1, letterSpacing:'0.02em',
                 margin:'0 0 20px',
               }}>
                 เรียนรู้ที่<br/>
-                <span style={{
-                  background:'linear-gradient(135deg,#60a5fa,#a78bfa)',
-                  WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
-                }}>ทรงพลังกว่าเดิม</span>
+                <span style={{color:'#ED4724'}}>ทรงพลังกว่าเดิม</span>
               </h1>
 
               <p style={{
-                color:'#a1a1aa', fontSize:'clamp(1rem,2vw,1.125rem)',
+                color:'#a8a29e', fontSize:'clamp(1rem,2vw,1.125rem)',
                 lineHeight:1.7, margin:'0 0 36px', fontWeight:400,
               }}>
                 แพลตฟอร์ม Learning & Development ที่ออกแบบมาสำหรับคนทำงาน
@@ -763,14 +780,14 @@
               <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
                 <button onClick={handleEnter} className="btn-press" style={{
                   padding:'14px 28px', borderRadius:14, border:'none',
-                  background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+                  background:'#ED4724',
                   color:'#fff', fontSize:'1rem', fontWeight:700,
-                  cursor:'pointer', boxShadow:'0 8px 32px rgba(99,102,241,0.35)',
+                  cursor:'pointer', boxShadow:'0 8px 32px rgba(237,71,36,0.40)',
                   letterSpacing:'-0.01em',
                 }}>ลองใช้ Prototype →</button>
                 <button style={{
                   padding:'14px 28px', borderRadius:14,
-                  border:'1px solid rgba(255,255,255,0.1)',
+                  border:'1px solid rgba(255,255,255,0.12)',
                   background:'rgba(255,255,255,0.04)',
                   color:'#d4d4d8', fontSize:'1rem', fontWeight:600,
                   cursor:'pointer',
@@ -801,25 +818,25 @@
                 position:'absolute', top:'10%', left:'50%',
                 transform:'translateX(-50%)',
                 width:320, height:420,
-                background:'radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, transparent 70%)',
+                background:'radial-gradient(ellipse, rgba(237,71,36,0.22) 0%, transparent 70%)',
                 pointerEvents:'none',
               }}/>
               {/* Phone shell */}
               <div style={{
                 width:260, height:560,
-                background:'#09090b',
+                background:'#161412',
                 borderRadius:44,
                 boxShadow:'0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.04)',
                 position:'relative', overflow:'hidden',
                 flexShrink:0,
               }}>
                 {/* Status bar */}
-                <div style={{height:32,background:'#09090b',display:'flex',alignItems:'center',
+                <div style={{height:32,background:'#161412',display:'flex',alignItems:'center',
                   justifyContent:'space-between',padding:'0 20px',position:'relative'}}>
                   <span style={{color:'#fff',fontSize:'0.65rem',fontWeight:600}}>9:41</span>
                   <div style={{
                     position:'absolute',top:0,left:'50%',transform:'translateX(-50%)',
-                    width:80,height:24,background:'#09090b',borderRadius:'0 0 14px 14px',
+                    width:80,height:24,background:'#161412',borderRadius:'0 0 14px 14px',
                   }}/>
                   <div style={{display:'flex',gap:4,alignItems:'center'}}>
                     <div style={{width:10,height:7,borderRadius:1,background:'rgba(255,255,255,0.5)'}}/>
@@ -836,32 +853,32 @@
                   {/* Header */}
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
                     <div>
-                      <div style={{color:'#71717a',fontSize:'0.6rem'}}>สวัสดี 👋</div>
+                      <div style={{color:'#a8a29e',fontSize:'0.6rem'}}>สวัสดี 👋</div>
                       <div style={{color:'#fff',fontSize:'0.8rem',fontWeight:700}}>คุณสมชาย</div>
                     </div>
-                    <div style={{width:30,height:30,borderRadius:'50%',background:'linear-gradient(135deg,#3b82f6,#8b5cf6)',
+                    <div style={{width:30,height:30,borderRadius:'50%',background:'#ED4724',
                       display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.7rem',fontWeight:700}}>S</div>
                   </div>
                   {/* Streak card */}
                   <div style={{
-                    background:'linear-gradient(135deg,rgba(59,130,246,0.15),rgba(99,102,241,0.1))',
-                    border:'1px solid rgba(59,130,246,0.2)',
+                    background:'rgba(237,71,36,0.12)',
+                    border:'1px solid rgba(237,71,36,0.28)',
                     borderRadius:14, padding:'12px 14px', marginBottom:12,
                     display:'flex',alignItems:'center',justifyContent:'space-between',
                   }}>
                     <div>
-                      <div style={{color:'#93c5fd',fontSize:'0.6rem',fontWeight:600}}>🔥 Streak</div>
+                      <div style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600}}>🔥 Streak</div>
                       <div style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,lineHeight:1}}>7 วัน</div>
                     </div>
                     <div style={{textAlign:'right'}}>
-                      <div style={{color:'#71717a',fontSize:'0.55rem'}}>คะแนนสะสม</div>
+                      <div style={{color:'#a8a29e',fontSize:'0.55rem'}}>คะแนนสะสม</div>
                       <div style={{color:'#fbbf24',fontSize:'0.9rem',fontWeight:700}}>1,240 pts</div>
                     </div>
                   </div>
                   {/* Mission card */}
                   {[
-                    {type:'Quiz',title:"Trust Lenses",pts:30,time:'3 วัน',color:'#3b82f6'},
-                    {type:'Mission',title:"Observe & report",pts:50,time:'2 วัน',color:'#8b5cf6'},
+                    {type:'Quiz',title:"Trust Lenses",pts:30,time:'3 วัน',color:'#ED4724'},
+                    {type:'Mission',title:"Observe & report",pts:50,time:'2 วัน',color:'#F26B45'},
                   ].map((c,i)=>(
                     <div key={i} style={{
                       background:'rgba(255,255,255,0.04)',
@@ -878,19 +895,19 @@
                       <div style={{flex:1,minWidth:0}}>
                         <div style={{color:'#f4f4f5',fontSize:'0.65rem',fontWeight:600,
                           overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{c.title}</div>
-                        <div style={{color:'#71717a',fontSize:'0.6rem'}}>+{c.pts} pts · {c.time}</div>
+                        <div style={{color:'#a8a29e',fontSize:'0.6rem'}}>+{c.pts} pts · {c.time}</div>
                       </div>
                     </div>
                   ))}
                   {/* Progress bar area */}
                   <div style={{marginTop:12}}>
                     <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
-                      <span style={{color:'#a1a1aa',fontSize:'0.6rem'}}>Essential Leadership</span>
-                      <span style={{color:'#3b82f6',fontSize:'0.6rem',fontWeight:600}}>75%</span>
+                      <span style={{color:'#a8a29e',fontSize:'0.6rem'}}>Essential Leadership</span>
+                      <span style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600}}>75%</span>
                     </div>
                     <div style={{height:4,background:'rgba(255,255,255,0.08)',borderRadius:999}}>
                       <div style={{width:'75%',height:'100%',
-                        background:'linear-gradient(90deg,#3b82f6,#6366f1)',borderRadius:999}}/>
+                        background:'#ED4724',borderRadius:999}}/>
                     </div>
                   </div>
                 </div>
@@ -898,7 +915,7 @@
                 {/* Bottom nav */}
                 <div style={{
                   position:'absolute',bottom:0,left:0,right:0,
-                  height:52, background:'rgba(9,9,11,0.95)',
+                  height:52, background:'rgba(22,20,18,0.95)',
                   borderTop:'1px solid rgba(255,255,255,0.07)',
                   display:'flex', alignItems:'center', justifyContent:'space-around',
                   paddingBottom:6,
@@ -906,7 +923,7 @@
                   {['🏠','🎯','📺','📊','🏆'].map((ic,i)=>(
                     <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2}}>
                       <span style={{fontSize:'0.85rem'}}>{ic}</span>
-                      {i===0 && <div style={{width:4,height:4,borderRadius:'50%',background:'#3b82f6'}}/>}
+                      {i===0 && <div style={{width:4,height:4,borderRadius:'50%',background:'#ED4724'}}/>}
                     </div>
                   ))}
                 </div>
@@ -921,11 +938,11 @@
             borderTop:'1px solid rgba(255,255,255,0.05)',
           }}>
             <div style={{textAlign:'center',marginBottom:56}}>
-              <h2 style={{
+              <h2 className="bp-heading" style={{
                 fontSize:'clamp(1.6rem,3.5vw,2.4rem)',fontWeight:800,
-                letterSpacing:'-0.03em',margin:'0 0 12px',
+                letterSpacing:'0.02em',margin:'0 0 12px',
               }}>ทำไมต้อง Joinstick?</h2>
-              <p style={{color:'#71717a',fontSize:'1rem',margin:0}}>
+              <p style={{color:'#a8a29e',fontSize:'1rem',margin:0}}>
                 เพราะการเรียนรู้ที่ดีที่สุดคือการเรียนรู้ที่เกิดขึ้นจริงในชีวิตการทำงาน
               </p>
             </div>
@@ -941,11 +958,11 @@
                   borderRadius:20, padding:'28px 24px',
                   transition:'border-color 0.2s, background 0.2s',
                 }}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(99,102,241,0.3)';e.currentTarget.style.background='rgba(99,102,241,0.05)'}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(237,71,36,0.4)';e.currentTarget.style.background='rgba(237,71,36,0.06)'}}
                   onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.07)';e.currentTarget.style.background='rgba(255,255,255,0.03)'}}>
                   <div style={{fontSize:'2rem',marginBottom:16}}>{icon}</div>
-                  <h3 style={{fontWeight:700,fontSize:'1rem',margin:'0 0 8px',letterSpacing:'-0.01em'}}>{title}</h3>
-                  <p style={{color:'#71717a',fontSize:'0.875rem',lineHeight:1.65,margin:0}}>{desc}</p>
+                  <h3 style={{fontWeight:700,fontSize:'1rem',margin:'0 0 8px',letterSpacing:'-0.01em',color:'#fff'}}>{title}</h3>
+                  <p style={{color:'#a8a29e',fontSize:'0.875rem',lineHeight:1.65,margin:0}}>{desc}</p>
                 </div>
               ))}
             </div>
@@ -960,22 +977,22 @@
           }}>
             <div style={{
               maxWidth:560, margin:'0 auto',
-              background:'linear-gradient(135deg,rgba(59,130,246,0.08),rgba(139,92,246,0.08))',
-              border:'1px solid rgba(99,102,241,0.2)',
+              background:'rgba(237,71,36,0.08)',
+              border:'1px solid rgba(237,71,36,0.28)',
               borderRadius:28, padding:'56px 40px',
             }}>
-              <h2 style={{
+              <h2 className="bp-heading" style={{
                 fontSize:'clamp(1.6rem,3vw,2.2rem)',fontWeight:800,
-                letterSpacing:'-0.03em',margin:'0 0 12px',
+                letterSpacing:'0.02em',margin:'0 0 12px',
               }}>พร้อมลองใช้งานแล้วหรือยัง?</h2>
-              <p style={{color:'#a1a1aa',marginBottom:32,lineHeight:1.6}}>
+              <p style={{color:'#a8a29e',marginBottom:32,lineHeight:1.6}}>
                 ดู Prototype ของ Joinstick Learner App<br/>และสัมผัสประสบการณ์การเรียนรู้รูปแบบใหม่
               </p>
               <button onClick={handleEnter} className="btn-press" style={{
                 padding:'16px 40px', borderRadius:14, border:'none',
-                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
+                background:'#ED4724',
                 color:'#fff', fontSize:'1rem', fontWeight:700,
-                cursor:'pointer', boxShadow:'0 8px 32px rgba(99,102,241,0.35)',
+                cursor:'pointer', boxShadow:'0 8px 32px rgba(237,71,36,0.40)',
                 letterSpacing:'-0.01em',
               }}>เข้าสู่ Prototype →</button>
             </div>
@@ -990,19 +1007,10 @@
             flexWrap:'wrap', gap:12,
           }}>
             <div style={{display:'flex',alignItems:'center',gap:8}}>
-              <div style={{
-                width:26,height:26,borderRadius:7,
-                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
-                display:'flex',alignItems:'center',justifyContent:'center',
-              }}>
-                <svg width="14" height="14" viewBox="0 0 44 44" fill="none">
-                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
-                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
-                </svg>
-              </div>
-              <span style={{fontWeight:700,fontSize:'0.875rem'}}>Joinstick</span>
+              <JoinstickLogo size={26} variant="white" />
+              <span className="bp-heading" style={{fontWeight:700,fontSize:'0.85rem',letterSpacing:'0.1em'}}>JOINSTICK</span>
             </div>
-            <span style={{color:'#52525b',fontSize:'0.8rem'}}>© 2025 Joinstick · Prototype Demo</span>
+            <span style={{color:'#78716c',fontSize:'0.8rem'}}>© 2025 Joinstick · Prototype Demo</span>
           </footer>
         </div>
       );
@@ -3344,36 +3352,28 @@
       /* ── Invite ── */
       const renderInvite = () => (
         <div style={{flex:1,display:'flex',flexDirection:'column',
-          background:'linear-gradient(160deg,#0c0c0f 0%,#111827 50%,#0c0c0f 100%)',
+          background:'linear-gradient(160deg,#161412 0%,#1f1814 50%,#161412 100%)',
           position:'relative',overflow:'hidden'}}>
           <div style={{position:'absolute',top:-80,left:-80,width:260,height:260,
-            background:'radial-gradient(circle,rgba(245,158,11,0.12) 0%,transparent 65%)',
+            background:'radial-gradient(circle,rgba(237,71,36,0.18) 0%,transparent 65%)',
             borderRadius:'50%',pointerEvents:'none'}}/>
           <div style={{position:'absolute',bottom:60,right:-60,width:220,height:220,
-            background:'radial-gradient(circle,rgba(99,102,241,0.1) 0%,transparent 65%)',
+            background:'radial-gradient(circle,rgba(237,71,36,0.10) 0%,transparent 65%)',
             borderRadius:'50%',pointerEvents:'none'}}/>
 
           <div style={{flex:1,display:'flex',flexDirection:'column',
             alignItems:'center',justifyContent:'center',padding:'24px 24px 0'}}>
             {/* Brand */}
             <div className="fade-in" style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
-              <div style={{width:32,height:32,borderRadius:9,
-                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
-                display:'flex',alignItems:'center',justifyContent:'center'}}>
-                <svg width="17" height="17" viewBox="0 0 44 44" fill="none">
-                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
-                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
-                  <rect x="13" y="34" width="18" height="4" rx="2" fill="white" fillOpacity="0.45"/>
-                </svg>
-              </div>
-              <span style={{fontWeight:700,fontSize:'0.9rem',color:'#d4d4d8'}}>Joinstick</span>
+              <JoinstickLogo size={32} variant="white" />
+              <span className="bp-heading" style={{fontWeight:700,fontSize:'0.85rem',color:'#d4d4d8',letterSpacing:'0.1em'}}>JOINSTICK</span>
             </div>
 
             <div className="fade-in" style={{animationDelay:'0.06s',opacity:0,textAlign:'center',marginBottom:24}}>
-              <div style={{color:'#71717a',fontSize:'0.78rem',marginBottom:8}}>คุณได้รับคำเชิญจาก</div>
+              <div style={{color:'#a8a29e',fontSize:'0.78rem',marginBottom:8}}>คุณได้รับคำเชิญจาก</div>
               <div style={{display:'flex',alignItems:'center',gap:8,justifyContent:'center'}}>
                 <div style={{width:28,height:28,borderRadius:'50%',
-                  background:'linear-gradient(135deg,#f59e0b,#ef4444)',
+                  background:'#ED4724',
                   display:'flex',alignItems:'center',justifyContent:'center',
                   fontSize:'0.75rem',fontWeight:700,color:'#fff'}}>ว</div>
                 <span style={{color:'#e4e4e7',fontSize:'0.875rem',fontWeight:600}}>
@@ -3386,31 +3386,31 @@
             <div className="scale-in" style={{
               animationDelay:'0.12s',opacity:0,width:'100%',
               background:'rgba(255,255,255,0.04)',
-              border:'1px solid rgba(245,158,11,0.2)',
+              border:'1px solid rgba(237,71,36,0.25)',
               borderRadius:24,overflow:'hidden',
               boxShadow:'0 24px 60px rgba(0,0,0,0.4)',
             }}>
               <div style={{
-                background:'linear-gradient(135deg,#1e1b4b,#312e81,#1e3a5f)',
+                background:'linear-gradient(135deg,#1f1814,#2a1d14,#1a1310)',
                 padding:'22px 22px 18px',
                 borderBottom:'1px solid rgba(255,255,255,0.06)',
                 position:'relative',overflow:'hidden',
               }}>
                 <div style={{position:'absolute',top:-30,right:-30,width:120,height:120,
-                  borderRadius:'50%',background:'rgba(255,255,255,0.04)'}}/>
+                  borderRadius:'50%',background:'rgba(237,71,36,0.06)'}}/>
                 <div style={{
                   display:'inline-flex',alignItems:'center',gap:6,
-                  background:'rgba(245,158,11,0.15)',border:'1px solid rgba(245,158,11,0.3)',
+                  background:'rgba(237,71,36,0.16)',border:'1px solid rgba(237,71,36,0.35)',
                   borderRadius:999,padding:'3px 10px',marginBottom:10,position:'relative',
                 }}>
-                  <span style={{width:5,height:5,borderRadius:'50%',background:'#f59e0b',display:'inline-block'}}/>
-                  <span style={{color:'#fbbf24',fontSize:'0.65rem',fontWeight:600,letterSpacing:'0.05em'}}>คำเชิญเข้าร่วมคอร์ส</span>
+                  <span style={{width:5,height:5,borderRadius:'50%',background:'#ED4724',display:'inline-block'}}/>
+                  <span style={{color:'#ED4724',fontSize:'0.65rem',fontWeight:600,letterSpacing:'0.05em'}}>คำเชิญเข้าร่วมคอร์ส</span>
                 </div>
-                <h2 style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,
-                  margin:'0 0 4px',letterSpacing:'-0.02em',lineHeight:1.3,position:'relative'}}>
+                <h2 className="bp-heading" style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,
+                  margin:'0 0 4px',letterSpacing:'0',lineHeight:1.3,position:'relative'}}>
                   {classInfo.name}
                 </h2>
-                <p style={{color:'#93c5fd',fontSize:'0.73rem',margin:0,position:'relative'}}>{classInfo.org}</p>
+                <p style={{color:'#F26B45',fontSize:'0.73rem',margin:0,position:'relative'}}>{classInfo.org}</p>
               </div>
               <div style={{padding:'16px 22px'}}>
                 {[
@@ -3423,7 +3423,7 @@
                     padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
                     <span style={{fontSize:'1rem',width:22,textAlign:'center',filter:'grayscale(1) brightness(2.2) contrast(0.85)'}}>{icon}</span>
                     <div style={{flex:1}}>
-                      <div style={{color:'#71717a',fontSize:'0.63rem'}}>{label}</div>
+                      <div style={{color:'#a8a29e',fontSize:'0.63rem'}}>{label}</div>
                       <div style={{color:'#e4e4e7',fontSize:'0.79rem',fontWeight:600,marginTop:1}}>{value}</div>
                     </div>
                   </div>
@@ -3436,14 +3436,14 @@
             padding:'20px 24px 32px',display:'flex',flexDirection:'column',gap:10}}>
             <button onClick={()=>setScreen('overview')} className="btn-press" style={{
               width:'100%',padding:'15px 0',borderRadius:16,border:'none',
-              background:'linear-gradient(135deg,#f59e0b,#d97706)',
+              background:'#ED4724',
               color:'#fff',fontSize:'0.95rem',fontWeight:700,
-              cursor:'pointer',boxShadow:'0 8px 24px rgba(245,158,11,0.3)',
+              cursor:'pointer',boxShadow:'0 8px 24px rgba(237,71,36,0.40)',
             }}>ยอมรับคำเชิญ ✓</button>
             <button style={{
               width:'100%',padding:'11px 0',borderRadius:16,
               border:'1px solid rgba(255,255,255,0.07)',background:'transparent',
-              color:'#52525b',fontSize:'0.82rem',cursor:'pointer',
+              color:'#78716c',fontSize:'0.82rem',cursor:'pointer',
             }}>ปฏิเสธ</button>
           </div>
         </div>
@@ -3451,7 +3451,7 @@
 
       /* ── Class Overview ── */
       const renderOverview = () => (
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
           <div style={{display:'flex',alignItems:'center',gap:12,padding:'12px 20px',
             borderBottom:'1px solid rgba(255,255,255,0.06)',flexShrink:0}}>
             <button onClick={()=>setScreen('invite')} style={{
@@ -3464,23 +3464,23 @@
 
           <div style={{flex:1,overflowY:'auto',paddingBottom:100}}>
             {/* Banner */}
-            <div style={{background:'linear-gradient(135deg,#1e1b4b,#312e81,#1e3a5f)',
+            <div style={{background:'linear-gradient(135deg,#1f1814,#2a1d14,#1a1310)',
               padding:'22px 20px',position:'relative',overflow:'hidden'}}>
               <div style={{position:'absolute',top:-40,right:-40,width:160,height:160,
-                borderRadius:'50%',background:'rgba(255,255,255,0.04)'}}/>
+                borderRadius:'50%',background:'rgba(237,71,36,0.08)'}}/>
               <div style={{display:'inline-flex',alignItems:'center',gap:5,
-                background:'rgba(245,158,11,0.2)',border:'1px solid rgba(245,158,11,0.3)',
+                background:'rgba(237,71,36,0.18)',border:'1px solid rgba(237,71,36,0.35)',
                 borderRadius:999,padding:'3px 10px',marginBottom:10}}>
-                <span style={{color:'#fbbf24',fontSize:'0.65rem',fontWeight:600}}>✓ ยืนยันแล้ว</span>
+                <span style={{color:'#ED4724',fontSize:'0.65rem',fontWeight:600}}>✓ ยืนยันแล้ว</span>
               </div>
-              <h2 style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,
-                margin:'0 0 4px',letterSpacing:'-0.02em',lineHeight:1.3}}>{classInfo.name}</h2>
-              <p style={{color:'#93c5fd',fontSize:'0.73rem',margin:'0 0 14px'}}>{classInfo.org}</p>
+              <h2 className="bp-heading" style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,
+                margin:'0 0 4px',letterSpacing:'0',lineHeight:1.3}}>{classInfo.name}</h2>
+              <p style={{color:'#F26B45',fontSize:'0.73rem',margin:'0 0 14px'}}>{classInfo.org}</p>
               <div style={{display:'flex',gap:14,flexWrap:'wrap'}}>
                 {[['📅',classInfo.dates],['⏱',classInfo.duration],['👥',`${classInfo.participants} คน`]].map(([ic,v])=>(
                   <div key={v} style={{display:'flex',alignItems:'center',gap:4}}>
                     <span style={{fontSize:'0.73rem'}}>{ic}</span>
-                    <span style={{color:'#c7d2fe',fontSize:'0.7rem',fontWeight:500}}>{v}</span>
+                    <span style={{color:'#e7c3b1',fontSize:'0.7rem',fontWeight:500}}>{v}</span>
                   </div>
                 ))}
               </div>
@@ -3492,10 +3492,10 @@
               {classInfo.outcomes.map((o,i)=>(
                 <div key={i} style={{display:'flex',alignItems:'flex-start',gap:10,marginBottom:10}}>
                   <div style={{width:20,height:20,borderRadius:'50%',flexShrink:0,
-                    background:'rgba(99,102,241,0.15)',border:'1px solid rgba(99,102,241,0.3)',
+                    background:'rgba(237,71,36,0.15)',border:'1px solid rgba(237,71,36,0.35)',
                     display:'flex',alignItems:'center',justifyContent:'center',
-                    fontSize:'0.6rem',color:'#818cf8',fontWeight:700,marginTop:1}}>{i+1}</div>
-                  <span style={{color:'#a1a1aa',fontSize:'0.8rem',lineHeight:1.5}}>{o}</span>
+                    fontSize:'0.6rem',color:'#ED4724',fontWeight:700,marginTop:1}}>{i+1}</div>
+                  <span style={{color:'#a8a29e',fontSize:'0.8rem',lineHeight:1.5}}>{o}</span>
                 </div>
               ))}
 
@@ -3506,12 +3506,12 @@
                   background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
                   borderRadius:12,marginBottom:8,alignItems:'center'}}>
                   <div style={{width:34,height:34,borderRadius:10,flexShrink:0,
-                    background:'rgba(99,102,241,0.12)',
+                    background:'rgba(237,71,36,0.12)',
                     display:'flex',alignItems:'center',justifyContent:'center',
-                    fontSize:'0.65rem',fontWeight:700,color:'#818cf8'}}>D{i+1}</div>
+                    fontSize:'0.65rem',fontWeight:700,color:'#ED4724'}}>D{i+1}</div>
                   <div style={{flex:1}}>
                     <div style={{color:'#e4e4e7',fontSize:'0.79rem',fontWeight:600}}>{s.title}</div>
-                    <div style={{color:'#52525b',fontSize:'0.68rem',marginTop:2}}>{s.day} · {s.time}</div>
+                    <div style={{color:'#78716c',fontSize:'0.68rem',marginTop:2}}>{s.day} · {s.time}</div>
                   </div>
                 </div>
               ))}
@@ -3522,13 +3522,13 @@
                 background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
                 borderRadius:16,padding:'16px 14px',marginBottom:8}}>
                 <div style={{width:46,height:46,borderRadius:'50%',flexShrink:0,
-                  background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                  background:'#ED4724',
                   display:'flex',alignItems:'center',justifyContent:'center',
                   fontSize:'1.1rem',fontWeight:800,color:'#fff'}}>ศ</div>
                 <div>
                   <div style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:700}}>{classInfo.instructor.name}</div>
-                  <div style={{color:'#71717a',fontSize:'0.7rem',marginTop:2}}>{classInfo.instructor.title}</div>
-                  <div style={{color:'#6366f1',fontSize:'0.68rem',marginTop:3}}>{classInfo.instructor.exp}</div>
+                  <div style={{color:'#a8a29e',fontSize:'0.7rem',marginTop:2}}>{classInfo.instructor.title}</div>
+                  <div style={{color:'#ED4724',fontSize:'0.68rem',marginTop:3}}>{classInfo.instructor.exp}</div>
                 </div>
               </div>
             </div>
@@ -3536,12 +3536,12 @@
 
           <div style={{position:'absolute',bottom:0,left:0,right:0,
             padding:'16px 20px 28px',
-            background:'linear-gradient(to top,#09090b 70%,transparent)'}}>
+            background:'linear-gradient(to top,#161412 70%,transparent)'}}>
             <button onClick={()=>setScreen('pretest-intro')} className="btn-press" style={{
               width:'100%',padding:'15px 0',borderRadius:16,border:'none',
-              background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+              background:'#ED4724',
               color:'#fff',fontSize:'0.95rem',fontWeight:700,
-              cursor:'pointer',boxShadow:'0 8px 24px rgba(99,102,241,0.35)',
+              cursor:'pointer',boxShadow:'0 8px 24px rgba(237,71,36,0.40)',
             }}>เริ่มทำ Pre-Test →</button>
           </div>
         </div>
@@ -3549,10 +3549,10 @@
 
       /* ── Pre-Test Intro ── */
       const renderPreTestIntro = () => (
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',
           position:'relative',overflow:'hidden'}}>
           <div style={{position:'absolute',top:-60,right:-60,width:200,height:200,
-            background:'radial-gradient(circle,rgba(99,102,241,0.1) 0%,transparent 65%)',
+            background:'radial-gradient(circle,rgba(237,71,36,0.12) 0%,transparent 65%)',
             borderRadius:'50%',pointerEvents:'none'}}/>
           <div style={{display:'flex',alignItems:'center',gap:12,padding:'12px 20px',
             borderBottom:'1px solid rgba(255,255,255,0.06)',flexShrink:0}}>
@@ -3567,19 +3567,19 @@
             justifyContent:'center',padding:'32px 24px'}}>
             <div className="bounce-in" style={{
               width:80,height:80,borderRadius:24,
-              background:'linear-gradient(135deg,rgba(99,102,241,0.2),rgba(139,92,246,0.2))',
-              border:'1px solid rgba(99,102,241,0.3)',
+              background:'rgba(237,71,36,0.18)',
+              border:'1px solid rgba(237,71,36,0.35)',
               display:'flex',alignItems:'center',justifyContent:'center',
               fontSize:'2rem',marginBottom:24,
-              boxShadow:'0 8px 32px rgba(99,102,241,0.2)',
+              boxShadow:'0 8px 32px rgba(237,71,36,0.25)',
             }}>📝</div>
 
-            <h2 style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,letterSpacing:'-0.02em',
+            <h2 className="bp-heading" style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,letterSpacing:'0',
               textAlign:'center',margin:'0 0 10px'}}>Pre-Test ก่อนเรียน</h2>
-            <p style={{color:'#71717a',fontSize:'0.875rem',textAlign:'center',
+            <p style={{color:'#a8a29e',fontSize:'0.875rem',textAlign:'center',
               lineHeight:1.7,margin:'0 0 28px'}}>
               แบบทดสอบนี้ช่วยให้เราปรับ<br/>การเรียนรู้ให้เหมาะกับคุณโดยเฉพาะ<br/>
-              <span style={{color:'#4b5563'}}>ไม่มีคะแนน · ไม่มีผิดถูก</span>
+              <span style={{color:'#78716c'}}>ไม่มีคะแนน · ไม่มีผิดถูก</span>
             </p>
 
             <div style={{width:'100%',display:'flex',flexDirection:'column',gap:10,marginBottom:28}}>
@@ -3593,7 +3593,7 @@
                   borderRadius:14,padding:'12px 16px'}}>
                   <span style={{fontSize:'1.1rem'}}>{icon}</span>
                   <div>
-                    <div style={{color:'#71717a',fontSize:'0.65rem'}}>{label}</div>
+                    <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>{label}</div>
                     <div style={{color:'#e4e4e7',fontSize:'0.8rem',fontWeight:600,marginTop:1}}>{value}</div>
                   </div>
                 </div>
@@ -3603,9 +3603,9 @@
             <button onClick={()=>{setPtStep(0);setPtSelected(null);setPtAnswers([]);setScreen('pretest');}}
               className="btn-press" style={{
                 width:'100%',padding:'15px 0',borderRadius:16,border:'none',
-                background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                background:'#ED4724',
                 color:'#fff',fontSize:'0.95rem',fontWeight:700,
-                cursor:'pointer',boxShadow:'0 8px 24px rgba(99,102,241,0.35)',
+                cursor:'pointer',boxShadow:'0 8px 24px rgba(237,71,36,0.40)',
               }}>เริ่มทำเลย →</button>
           </div>
         </div>
@@ -3615,7 +3615,7 @@
       const renderPreTest = () => {
         const q = preTestQuestions[ptStep];
         return (
-          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412'}}>
             <div style={{padding:'16px 20px 0',flexShrink:0}}>
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
                 <button onClick={()=>{
@@ -3624,7 +3624,7 @@
                 }} style={{width:32,height:32,borderRadius:'50%',background:'rgba(255,255,255,0.06)',
                   border:'none',display:'flex',alignItems:'center',justifyContent:'center',
                   cursor:'pointer',color:'#fff',fontSize:'1rem'}}>←</button>
-                <span style={{color:'#71717a',fontSize:'0.8rem',fontWeight:500}}>
+                <span style={{color:'#a8a29e',fontSize:'0.8rem',fontWeight:500}}>
                   {ptStep+1} / {preTestQuestions.length}
                 </span>
                 <div style={{width:32}}/>
@@ -3632,7 +3632,7 @@
               <div style={{height:3,background:'rgba(255,255,255,0.07)',borderRadius:999,marginBottom:24}}>
                 <div style={{
                   width:`${((ptStep+1)/preTestQuestions.length)*100}%`,
-                  height:'100%',background:'linear-gradient(90deg,#6366f1,#8b5cf6)',
+                  height:'100%',background:'#ED4724',
                   borderRadius:999,transition:'width 0.35s ease',
                 }}/>
               </div>
@@ -3641,31 +3641,31 @@
             <div style={{flex:1,padding:'0 20px',overflowY:'auto'}}>
               <div className="fade-in" key={ptStep}>
                 <div style={{display:'inline-flex',alignItems:'center',
-                  background:'rgba(99,102,241,0.1)',border:'1px solid rgba(99,102,241,0.2)',
+                  background:'rgba(237,71,36,0.12)',border:'1px solid rgba(237,71,36,0.3)',
                   borderRadius:999,padding:'3px 10px',marginBottom:14}}>
-                  <span style={{color:'#a5b4fc',fontSize:'0.68rem',fontWeight:600}}>{q.category}</span>
+                  <span style={{color:'#ED4724',fontSize:'0.68rem',fontWeight:600}}>{q.category}</span>
                 </div>
-                <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,
-                  lineHeight:1.5,margin:'0 0 22px',letterSpacing:'-0.01em'}}>{q.question}</h3>
+                <h3 className="bp-heading" style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,
+                  lineHeight:1.5,margin:'0 0 22px',letterSpacing:'0'}}>{q.question}</h3>
                 <div style={{display:'flex',flexDirection:'column',gap:10}}>
                   {q.options.map((opt,i)=>{
                     const sel = ptSelected===i;
                     return (
                       <button key={i} onClick={()=>setPtSelected(i)} className="btn-press" style={{
                         width:'100%',textAlign:'left',padding:'13px 16px',borderRadius:14,
-                        background: sel?'rgba(99,102,241,0.15)':'rgba(255,255,255,0.03)',
-                        border: sel?'1px solid rgba(99,102,241,0.5)':'1px solid rgba(255,255,255,0.07)',
-                        color: sel?'#c7d2fe':'#a1a1aa',
+                        background: sel?'rgba(237,71,36,0.15)':'rgba(255,255,255,0.03)',
+                        border: sel?'1px solid rgba(237,71,36,0.55)':'1px solid rgba(255,255,255,0.07)',
+                        color: sel?'#fff':'#a8a29e',
                         fontSize:'0.875rem',fontWeight:sel?600:400,
                         cursor:'pointer',transition:'all 0.15s',
                         display:'flex',alignItems:'center',gap:12,
                       }}>
                         <div style={{
                           width:22,height:22,borderRadius:'50%',flexShrink:0,
-                          background:sel?'#6366f1':'rgba(255,255,255,0.06)',
+                          background:sel?'#ED4724':'rgba(255,255,255,0.06)',
                           border:sel?'none':'1px solid rgba(255,255,255,0.1)',
                           display:'flex',alignItems:'center',justifyContent:'center',
-                          fontSize:'0.65rem',fontWeight:700,color:sel?'#fff':'#52525b',
+                          fontSize:'0.65rem',fontWeight:700,color:sel?'#fff':'#78716c',
                         }}>{String.fromCharCode(65+i)}</div>
                         {opt}
                       </button>
@@ -3678,11 +3678,11 @@
             <div style={{padding:'16px 20px 32px',flexShrink:0}}>
               <button onClick={goNextPT} className="btn-press" style={{
                 width:'100%',padding:'15px 0',borderRadius:16,border:'none',
-                background:ptSelected!==null?'linear-gradient(135deg,#6366f1,#8b5cf6)':'rgba(255,255,255,0.05)',
+                background:ptSelected!==null?'#ED4724':'rgba(255,255,255,0.05)',
                 color:ptSelected!==null?'#fff':'#3f3f46',
                 fontSize:'0.95rem',fontWeight:700,
                 cursor:ptSelected!==null?'pointer':'default',
-                boxShadow:ptSelected!==null?'0 8px 24px rgba(99,102,241,0.3)':'none',
+                boxShadow:ptSelected!==null?'0 8px 24px rgba(237,71,36,0.35)':'none',
                 transition:'all 0.2s',
               }}>
                 {ptStep<preTestQuestions.length-1?'ถัดไป →':'ส่งคำตอบ ✓'}
@@ -3699,25 +3699,25 @@
         const level = levels[Math.min(3,Math.floor(score/3))];
         const focusAreas = ['The Foundation Of Trust','Team Diversity & Leveraging Strengths','Situational Leadership Style'];
         return (
-          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflowY:'auto',paddingBottom:32}}>
-            <div style={{background:'linear-gradient(135deg,#1e1b4b,#312e81)',
+          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflowY:'auto',paddingBottom:32}}>
+            <div style={{background:'linear-gradient(135deg,#2a1d14,#3a2418)',
               padding:'32px 20px',textAlign:'center',position:'relative',overflow:'hidden'}}>
               <div style={{position:'absolute',top:-30,left:-30,width:120,height:120,
-                borderRadius:'50%',background:'rgba(255,255,255,0.04)'}}/>
+                borderRadius:'50%',background:'rgba(237,71,36,0.10)'}}/>
               <div className="bounce-in" style={{fontSize:'2.5rem',marginBottom:12}}>🎉</div>
-              <h2 style={{color:'#fff',fontSize:'1.2rem',fontWeight:800,margin:'0 0 6px'}}>ทำ Pre-Test เสร็จแล้ว!</h2>
-              <p style={{color:'#a5b4fc',fontSize:'0.8rem',margin:0}}>
+              <h2 className="bp-heading" style={{color:'#fff',fontSize:'1.2rem',fontWeight:800,margin:'0 0 6px',letterSpacing:'0'}}>ทำ Pre-Test เสร็จแล้ว!</h2>
+              <p style={{color:'#F26B45',fontSize:'0.8rem',margin:0}}>
                 เราจะปรับ Learning Path ให้เหมาะกับคุณโดยเฉพาะ
               </p>
             </div>
 
             <div style={{padding:'20px'}}>
-              <div style={{background:'rgba(99,102,241,0.08)',border:'1px solid rgba(99,102,241,0.2)',
+              <div style={{background:'rgba(237,71,36,0.08)',border:'1px solid rgba(237,71,36,0.25)',
                 borderRadius:18,padding:'20px',marginBottom:16,textAlign:'center'}}>
-                <div style={{color:'#71717a',fontSize:'0.72rem',marginBottom:6}}>ระดับเริ่มต้นของคุณ</div>
-                <div style={{fontSize:'1.2rem',fontWeight:800,color:'#a5b4fc',
+                <div style={{color:'#a8a29e',fontSize:'0.72rem',marginBottom:6}}>ระดับเริ่มต้นของคุณ</div>
+                <div style={{fontSize:'1.2rem',fontWeight:800,color:'#ED4724',
                   letterSpacing:'-0.02em',marginBottom:4}}>{level}</div>
-                <div style={{color:'#4b5563',fontSize:'0.7rem'}}>จะประเมินใหม่หลังจบคอร์ส</div>
+                <div style={{color:'#78716c',fontSize:'0.7rem'}}>จะประเมินใหม่หลังจบคอร์ส</div>
               </div>
 
               <h3 style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:700,margin:'0 0 12px'}}>
@@ -3728,22 +3728,22 @@
                   background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
                   borderRadius:12,padding:'12px 14px',marginBottom:8}}>
                   <div style={{width:28,height:28,borderRadius:8,flexShrink:0,
-                    background:'rgba(99,102,241,0.12)',
+                    background:'rgba(237,71,36,0.12)',
                     display:'flex',alignItems:'center',justifyContent:'center',
-                    fontSize:'0.7rem',fontWeight:700,color:'#818cf8'}}>{i+1}</div>
+                    fontSize:'0.7rem',fontWeight:700,color:'#ED4724'}}>{i+1}</div>
                   <span style={{color:'#d4d4d8',fontSize:'0.82rem',fontWeight:500}}>{f}</span>
                 </div>
               ))}
 
-              <div style={{marginTop:16,background:'rgba(245,158,11,0.08)',
-                border:'1px solid rgba(245,158,11,0.2)',borderRadius:16,padding:'18px'}}>
+              <div style={{marginTop:16,background:'rgba(237,71,36,0.08)',
+                border:'1px solid rgba(237,71,36,0.25)',borderRadius:16,padding:'18px'}}>
                 <div style={{display:'flex',gap:10,alignItems:'flex-start'}}>
                   <span style={{fontSize:'1.2rem'}}>📅</span>
                   <div>
-                    <div style={{color:'#fbbf24',fontSize:'0.82rem',fontWeight:700,marginBottom:4}}>ขั้นตอนต่อไป</div>
-                    <div style={{color:'#78350f',fontSize:'0.78rem',lineHeight:1.65}}>
+                    <div style={{color:'#ED4724',fontSize:'0.82rem',fontWeight:700,marginBottom:4}}>ขั้นตอนต่อไป</div>
+                    <div style={{color:'#d4d4d8',fontSize:'0.78rem',lineHeight:1.65}}>
                       รอพบกันในวันอบรม<br/>
-                      <strong style={{color:'#fbbf24'}}>{classInfo.dates}</strong><br/>
+                      <strong style={{color:'#F26B45'}}>{classInfo.dates}</strong><br/>
                       ระบบจะแจ้งเตือนคุณก่อนวันเรียน 1 วัน
                     </div>
                   </div>
@@ -3753,9 +3753,9 @@
               <button onClick={onNext} className="btn-press" style={{
                 width:'100%',marginTop:20,padding:'14px 0',borderRadius:16,
                 border:'none',
-                background:'linear-gradient(135deg,#06b6d4,#0891b2)',
+                background:'#ED4724',
                 color:'#fff',fontSize:'0.95rem',fontWeight:700,cursor:'pointer',
-                boxShadow:'0 8px 24px rgba(6,182,212,0.3)',
+                boxShadow:'0 8px 24px rgba(237,71,36,0.40)',
               }}>เข้าสู่ In-Class →</button>
             </div>
           </div>
@@ -3774,7 +3774,7 @@
     }
 
     /* ── InClassApp ─────────────────────────────── */
-    function InClassApp({ onBack }) {
+    function InClassApp({ onBack, onNext }) {
       const [screen, setScreen] = useState('checkin');
 
       // check-in
@@ -3890,45 +3890,41 @@
 
       /* ── 1. Check-in ── */
       const renderCheckin=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',
           position:'relative',overflow:'hidden'}}>
           <div style={{position:'absolute',top:-60,left:-60,width:200,height:200,
-            background:'radial-gradient(circle,rgba(6,182,212,0.12) 0%,transparent 65%)',
+            background:'radial-gradient(circle,rgba(237,71,36,0.14) 0%,transparent 65%)',
             borderRadius:'50%',pointerEvents:'none'}}/>
           {joined?(
             <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',
               justifyContent:'center',padding:'32px 24px',textAlign:'center'}}>
               <div className="bounce-in" style={{width:72,height:72,borderRadius:'50%',
-                background:'linear-gradient(135deg,#06b6d4,#0891b2)',
+                background:'#ED4724',
                 display:'flex',alignItems:'center',justifyContent:'center',
                 fontSize:'2rem',marginBottom:20,
-                boxShadow:'0 8px 32px rgba(6,182,212,0.3)'}}>✓</div>
-              <h2 style={{fontWeight:800,fontSize:'1.2rem',margin:'0 0 6px'}}>เข้าร่วมสำเร็จ!</h2>
-              <p style={{color:'#06b6d4',fontSize:'0.82rem',margin:'0 0 24px'}}>{SESSION.course}</p>
+                boxShadow:'0 8px 32px rgba(237,71,36,0.35)'}}>✓</div>
+              <h2 className="bp-heading" style={{fontWeight:800,fontSize:'1.2rem',margin:'0 0 6px',letterSpacing:'0'}}>เข้าร่วมสำเร็จ!</h2>
+              <p style={{color:'#ED4724',fontSize:'0.82rem',margin:'0 0 24px'}}>{SESSION.course}</p>
               <div style={{display:'flex',gap:20,marginBottom:28}}>
                 {[['👥',`${SESSION.participants} คน`],['🟢',`${SESSION.online} Online`],['📅',`Day ${SESSION.day}/${SESSION.total}`]].map(([ic,v])=>(
                   <div key={v} style={{textAlign:'center'}}>
                     <div style={{fontSize:'1.1rem'}}>{ic}</div>
-                    <div style={{color:'#a1a1aa',fontSize:'0.7rem',marginTop:2}}>{v}</div>
+                    <div style={{color:'#a8a29e',fontSize:'0.7rem',marginTop:2}}>{v}</div>
                   </div>
                 ))}
               </div>
               <button onClick={()=>setScreen('dashboard')} className="btn-press" style={{
                 width:'100%',padding:'15px 0',borderRadius:16,border:'none',
-                background:'linear-gradient(135deg,#06b6d4,#0891b2)',
+                background:'#ED4724',
                 color:'#fff',fontSize:'0.95rem',fontWeight:700,cursor:'pointer',
-                boxShadow:'0 8px 24px rgba(6,182,212,0.3)'}}>เข้าสู่ Session →</button>
+                boxShadow:'0 8px 24px rgba(237,71,36,0.40)'}}>เข้าสู่ Session →</button>
             </div>
           ):(
             <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',
               justifyContent:'center',padding:'32px 24px'}}>
-              <div style={{width:72,height:72,borderRadius:22,
-                background:'linear-gradient(135deg,rgba(6,182,212,0.2),rgba(8,145,178,0.15))',
-                border:'1px solid rgba(6,182,212,0.3)',
-                display:'flex',alignItems:'center',justifyContent:'center',
-                fontSize:'2.2rem',marginBottom:20}}>🏫</div>
-              <h2 style={{fontWeight:800,fontSize:'1.2rem',letterSpacing:'-0.02em',margin:'0 0 6px'}}>เข้าร่วม Session</h2>
-              <p style={{color:'#71717a',fontSize:'0.8rem',textAlign:'center',margin:'0 0 26px',lineHeight:1.6}}>
+              <JoinstickLogo size={84} variant="white" style={{marginBottom:20}} />
+              <h2 className="bp-heading" style={{fontWeight:800,fontSize:'1.2rem',letterSpacing:'0',margin:'0 0 6px'}}>เข้าร่วม Session</h2>
+              <p style={{color:'#a8a29e',fontSize:'0.8rem',textAlign:'center',margin:'0 0 26px',lineHeight:1.6}}>
                 กรอกรหัส 4 หลักที่วิทยากรให้บนจอ
               </p>
               <div style={{display:'flex',gap:12,marginBottom:24}}>
@@ -3939,16 +3935,16 @@
                     onKeyDown={e=>onKey(i,e)}
                     style={{width:56,height:64,borderRadius:16,
                       background:'rgba(255,255,255,0.05)',
-                      border:`1.5px solid ${d?'rgba(6,182,212,0.5)':'rgba(255,255,255,0.1)'}`,
+                      border:`1.5px solid ${d?'rgba(237,71,36,0.55)':'rgba(255,255,255,0.1)'}`,
                       color:'#fff',fontSize:'1.6rem',fontWeight:700,
                       textAlign:'center',outline:'none',transition:'border-color 0.15s'}}/>
                 ))}
               </div>
               <div style={{width:'100%',padding:'13px 16px',borderRadius:14,
-                background:'rgba(6,182,212,0.06)',border:'1px solid rgba(6,182,212,0.15)',marginBottom:20}}>
-                <div style={{color:'#71717a',fontSize:'0.65rem',marginBottom:3}}>กำลังเข้าร่วม</div>
+                background:'rgba(237,71,36,0.06)',border:'1px solid rgba(237,71,36,0.20)',marginBottom:20}}>
+                <div style={{color:'#a8a29e',fontSize:'0.65rem',marginBottom:3}}>กำลังเข้าร่วม</div>
                 <div style={{color:'#e4e4e7',fontSize:'0.85rem',fontWeight:600}}>{SESSION.course}</div>
-                <div style={{color:'#06b6d4',fontSize:'0.72rem',marginTop:2}}>หลักสูตรพัฒนาผู้นำที่นำด้วยหัวใจ · 6 Module · 2 วัน</div>
+                <div style={{color:'#ED4724',fontSize:'0.72rem',marginTop:2}}>หลักสูตรพัฒนาผู้นำที่นำด้วยหัวใจ · 6 Module · 2 วัน</div>
               </div>
               <button
                 onClick={()=>digits.every(d=>d) && setJoined(true)}
@@ -3957,12 +3953,12 @@
                 style={{
                   width:'100%',padding:'14px 0',borderRadius:14,border:'none',
                   background: digits.every(d=>d)
-                    ? 'linear-gradient(135deg,#06b6d4,#0891b2)'
+                    ? '#ED4724'
                     : 'rgba(255,255,255,0.06)',
-                  color: digits.every(d=>d) ? '#fff' : '#52525b',
+                  color: digits.every(d=>d) ? '#fff' : '#78716c',
                   fontSize:'0.92rem',fontWeight:700,
                   cursor: digits.every(d=>d) ? 'pointer' : 'not-allowed',
-                  boxShadow: digits.every(d=>d) ? '0 8px 24px rgba(6,182,212,0.3)' : 'none',
+                  boxShadow: digits.every(d=>d) ? '0 8px 24px rgba(237,71,36,0.40)' : 'none',
                   marginBottom:18,
                   transition:'all 0.2s',
                 }}>เข้าร่วม</button>
@@ -3973,23 +3969,23 @@
 
       /* ── 2. Dashboard ── */
       const renderDashboard=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
           <div style={{padding:'14px 20px',borderBottom:'1px solid rgba(255,255,255,0.06)',
-            background:'rgba(6,182,212,0.04)',flexShrink:0}}>
+            background:'rgba(237,71,36,0.05)',flexShrink:0}}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:6}}>
               <div>
                 <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
                   <span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>
                   <span style={{color:'#22c55e',fontSize:'0.68rem',fontWeight:600}}>LIVE · Day {SESSION.day}/{SESSION.total}</span>
                 </div>
-                <div style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:800,letterSpacing:'-0.02em'}}>{SESSION.course}</div>
+                <div className="bp-heading" style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:800,letterSpacing:'0'}}>{SESSION.course}</div>
               </div>
               <div style={{textAlign:'right'}}>
-                <div style={{color:'#71717a',fontSize:'0.65rem'}}>Online</div>
-                <div style={{color:'#06b6d4',fontSize:'0.9rem',fontWeight:700}}>{SESSION.online}/{SESSION.participants}</div>
+                <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>Online</div>
+                <div style={{color:'#ED4724',fontSize:'0.9rem',fontWeight:700}}>{SESSION.online}/{SESSION.participants}</div>
               </div>
             </div>
-            <div style={{color:'#52525b',fontSize:'0.7rem'}}>{SESSION.instructor} · {SESSION.course}</div>
+            <div style={{color:'#78716c',fontSize:'0.7rem'}}>{SESSION.instructor} · {SESSION.course}</div>
           </div>
 
           <div style={{flex:1,overflowY:'auto',padding:'16px 20px 20px'}}>
@@ -4007,29 +4003,29 @@
                     {live&&<span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>}
                   </div>
                   <div style={{color:'#f4f4f5',fontSize:'0.8rem',fontWeight:700,marginBottom:2}}>{label}</div>
-                  <div style={{color:live?color:'#52525b',fontSize:'0.65rem',fontWeight:live?600:400}}>{sub}</div>
+                  <div style={{color:live?color:'#78716c',fontSize:'0.65rem',fontWeight:live?600:400}}>{sub}</div>
                 </button>
               ))}
             </div>
 
             <button onClick={()=>setScreen('reflection')} className="btn-press" style={{
               width:'100%',padding:'13px 0',borderRadius:14,border:'1px solid rgba(255,255,255,0.1)',
-              background:'rgba(255,255,255,0.04)',color:'#a1a1aa',
+              background:'rgba(255,255,255,0.04)',color:'#a8a29e',
               fontSize:'0.85rem',fontWeight:600,cursor:'pointer',marginBottom:10}}>🪞 Reflection</button>
             {AGENDA.map(({time,label,done,active},i)=>(
               <div key={i} style={{display:'flex',gap:12,padding:'8px 0',
                 borderBottom:'1px solid rgba(255,255,255,0.04)'}}>
                 <span style={{width:36,flexShrink:0,textAlign:'right',paddingTop:1,
-                  color:active?'#06b6d4':done?'#3f3f46':'#52525b',fontSize:'0.67rem',fontWeight:600}}>{time}</span>
+                  color:active?'#ED4724':done?'#3f3f46':'#78716c',fontSize:'0.67rem',fontWeight:600}}>{time}</span>
                 <div style={{display:'flex',gap:8,alignItems:'center',flex:1}}>
                   <div style={{width:8,height:8,borderRadius:'50%',flexShrink:0,marginTop:1,
-                    background:active?'#06b6d4':done?'#22c55e':'rgba(255,255,255,0.1)',
-                    boxShadow:active?'0 0 0 3px rgba(6,182,212,0.15)':done?'0 0 0 3px rgba(34,197,94,0.1)':'none'}}/>
+                    background:active?'#ED4724':done?'#22c55e':'rgba(255,255,255,0.1)',
+                    boxShadow:active?'0 0 0 3px rgba(237,71,36,0.20)':done?'0 0 0 3px rgba(34,197,94,0.1)':'none'}}/>
                   <span style={{fontSize:'0.78rem',lineHeight:1.3,fontWeight:active?600:400,
-                    color:active?'#f4f4f5':done?'#52525b':'#71717a',
+                    color:active?'#f4f4f5':done?'#78716c':'#a8a29e',
                     textDecoration:done?'line-through':'none'}}>{label}</span>
-                  {active&&<span style={{fontSize:'0.6rem',fontWeight:700,color:'#06b6d4',
-                    background:'rgba(6,182,212,0.1)',borderRadius:999,padding:'1px 6px'}}>LIVE</span>}
+                  {active&&<span style={{fontSize:'0.6rem',fontWeight:700,color:'#ED4724',
+                    background:'rgba(237,71,36,0.12)',borderRadius:999,padding:'1px 6px'}}>LIVE</span>}
                 </div>
               </div>
             ))}
@@ -4038,11 +4034,11 @@
               border:'1px solid rgba(255,255,255,0.05)',borderRadius:12,
               padding:'12px 14px',display:'flex',alignItems:'center',gap:10}}>
               <div style={{width:32,height:32,borderRadius:'50%',flexShrink:0,
-                background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                background:'#ED4724',
                 display:'flex',alignItems:'center',justifyContent:'center',
                 fontSize:'0.75rem',fontWeight:700,color:'#fff'}}>ศ</div>
               <div>
-                <div style={{color:'#71717a',fontSize:'0.65rem'}}>{SESSION.instructor}</div>
+                <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>{SESSION.instructor}</div>
                 <div style={{color:'#d4d4d8',fontSize:'0.75rem',marginTop:1,lineHeight:1.4}}>
                   "เชิญทำ Live Poll ก่อนเลยนะครับ เพื่อดูว่าคนในห้องมี Preference แบบไหนกันบ้าง ก่อนเราจะลงลึก MBTI 4 มิติ"
                 </div>
@@ -4050,9 +4046,10 @@
             </div>
 
             <div style={{marginTop:12}}>
-              <button onClick={onBack} style={{
-                width:'100%',padding:'12px 0',borderRadius:14,border:'1px solid rgba(255,255,255,0.06)',
-                background:'transparent',color:'#52525b',fontSize:'0.8rem',cursor:'pointer'}}>← Phase</button>
+              <button onClick={onNext} className="btn-press" style={{
+                width:'100%',padding:'13px 0',borderRadius:14,border:'none',
+                background:'#ED4724',color:'#fff',fontSize:'0.88rem',fontWeight:700,
+                cursor:'pointer',boxShadow:'0 8px 24px rgba(237,71,36,0.40)'}}>ไป Phase ต่อไป →</button>
             </div>
           </div>
         </div>
@@ -4060,7 +4057,7 @@
 
       /* ── 3. Live Poll ── */
       const renderPoll=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
           <Hdr title="Live Poll" onBack={()=>setScreen('dashboard')}/>
           <div style={{flex:1,overflowY:'auto',padding:'20px'}}>
             <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:14}}>
@@ -4068,7 +4065,7 @@
               <span style={{color:'#22c55e',fontSize:'0.72rem',fontWeight:600}}>LIVE · {SESSION.participants} คนกำลังตอบ</span>
             </div>
 
-            <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,lineHeight:1.5,margin:'0 0 18px'}}>{POLL.q}</h3>
+            <h3 className="bp-heading" style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,lineHeight:1.5,margin:'0 0 18px',letterSpacing:'0'}}>{POLL.q}</h3>
             {!pollDone?(
               <div style={{display:'flex',flexDirection:'column',gap:10}}>
                 {POLL.opts.map((opt,i)=>{
@@ -4076,16 +4073,16 @@
                   return(
                     <button key={i} onClick={()=>setPollSel(i)} className="btn-press" style={{
                       width:'100%',textAlign:'left',padding:'13px 16px',borderRadius:14,
-                      background:sel?'rgba(6,182,212,0.15)':'rgba(255,255,255,0.03)',
-                      border:sel?'1px solid rgba(6,182,212,0.5)':'1px solid rgba(255,255,255,0.07)',
-                      color:sel?'#a5f3fc':'#a1a1aa',fontSize:'0.875rem',fontWeight:sel?600:400,
+                      background:sel?'rgba(237,71,36,0.15)':'rgba(255,255,255,0.03)',
+                      border:sel?'1px solid rgba(237,71,36,0.55)':'1px solid rgba(255,255,255,0.07)',
+                      color:sel?'#fff':'#a8a29e',fontSize:'0.875rem',fontWeight:sel?600:400,
                       cursor:'pointer',transition:'all 0.15s',
                       display:'flex',alignItems:'center',gap:12}}>
                       <div style={{width:22,height:22,borderRadius:'50%',flexShrink:0,
-                        background:sel?'#06b6d4':'rgba(255,255,255,0.06)',
+                        background:sel?'#ED4724':'rgba(255,255,255,0.06)',
                         border:sel?'none':'1px solid rgba(255,255,255,0.1)',
                         display:'flex',alignItems:'center',justifyContent:'center',
-                        fontSize:'0.65rem',fontWeight:700,color:sel?'#fff':'#52525b'}}>{String.fromCharCode(65+i)}</div>
+                        fontSize:'0.65rem',fontWeight:700,color:sel?'#fff':'#78716c'}}>{String.fromCharCode(65+i)}</div>
                       {opt}
                     </button>
                   );
@@ -4093,28 +4090,28 @@
               </div>
             ):(
               <div>
-                <div style={{color:'#71717a',fontSize:'0.75rem',marginBottom:12}}>ผลโหวตสด</div>
+                <div style={{color:'#a8a29e',fontSize:'0.75rem',marginBottom:12}}>ผลโหวตสด</div>
                 {POLL.opts.map((opt,i)=>{
                   const pct=POLL.results[i]; const isMe=pollSel===i;
                   return(
                     <div key={i} style={{marginBottom:14}}>
                       <div style={{display:'flex',justifyContent:'space-between',marginBottom:5}}>
-                        <span style={{color:isMe?'#a5f3fc':'#a1a1aa',fontSize:'0.8rem',fontWeight:isMe?600:400}}>
+                        <span style={{color:isMe?'#fff':'#a8a29e',fontSize:'0.8rem',fontWeight:isMe?600:400}}>
                           {opt}{isMe?' (คุณ)':''}
                         </span>
-                        <span style={{color:i===0?'#06b6d4':'#71717a',fontSize:'0.8rem',fontWeight:600}}>{pct}%</span>
+                        <span style={{color:i===0?'#ED4724':'#78716c',fontSize:'0.8rem',fontWeight:600}}>{pct}%</span>
                       </div>
                       <div style={{height:8,background:'rgba(255,255,255,0.07)',borderRadius:999}}>
                         <div style={{width:`${pct}%`,height:'100%',borderRadius:999,
-                          background:isMe?'linear-gradient(90deg,#06b6d4,#0891b2)':'rgba(255,255,255,0.15)',
+                          background:isMe?'#ED4724':'rgba(255,255,255,0.15)',
                           transition:'width 0.6s ease'}}/>
                       </div>
                     </div>
                   );
                 })}
-                <div style={{marginTop:12,padding:'12px 14px',background:'rgba(6,182,212,0.06)',
-                  border:'1px solid rgba(6,182,212,0.15)',borderRadius:12,
-                  color:'#67e8f9',fontSize:'0.78rem',lineHeight:1.6}}>
+                <div style={{marginTop:12,padding:'12px 14px',background:'rgba(237,71,36,0.06)',
+                  border:'1px solid rgba(237,71,36,0.20)',borderRadius:12,
+                  color:'#F26B45',fontSize:'0.78rem',lineHeight:1.6}}>
                   💡 ผลโหวตชี้ว่าคนส่วนใหญ่ในห้องโน้มไปทาง <strong>Thinking (T)</strong> — วิทยากรจะชวนคุยเรื่องการสมดุลกับ Feeling (F) ในช่วงถัดไป
                 </div>
               </div>
@@ -4124,9 +4121,10 @@
             <div style={{padding:'16px 20px 32px',flexShrink:0}}>
               <button onClick={()=>{if(pollSel!==null) setPollDone(true);}} className="btn-press" style={{
                 width:'100%',padding:'15px 0',borderRadius:16,border:'none',
-                background:pollSel!==null?'linear-gradient(135deg,#06b6d4,#0891b2)':'rgba(255,255,255,0.05)',
+                background:pollSel!==null?'#ED4724':'rgba(255,255,255,0.05)',
                 color:pollSel!==null?'#fff':'#3f3f46',fontSize:'0.95rem',fontWeight:700,
-                cursor:pollSel!==null?'pointer':'default',transition:'all 0.2s'}}>ส่งคำตอบ ✓</button>
+                cursor:pollSel!==null?'pointer':'default',transition:'all 0.2s',
+                boxShadow:pollSel!==null?'0 8px 24px rgba(237,71,36,0.40)':'none'}}>ส่งคำตอบ ✓</button>
             </div>
           )}
         </div>
@@ -4134,7 +4132,7 @@
 
       /* ── 4. Group Challenge ── */
       const renderGroup=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
           <Hdr title="Group Challenge" onBack={()=>setScreen('dashboard')}/>
           <div style={{flex:1,overflowY:'auto',padding:'20px'}}>
             <div style={{display:'inline-flex',alignItems:'center',gap:6,
@@ -4232,7 +4230,7 @@
             {name:'คุณวิไลวรรณ',pts:300},{name:'คุณประภาส',pts:200},
           ].sort((a,b)=>b.pts-a.pts);
           return(
-            <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+            <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
               <Hdr title="Live Quiz · จบแล้ว!" onBack={()=>setScreen('dashboard')}/>
               <div style={{flex:1,overflowY:'auto',padding:'20px'}}>
                 <div style={{textAlign:'center',marginBottom:20,
@@ -4264,7 +4262,7 @@
         }
         const q=QUIZ[qStep];
         return(
-          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412'}}>
             <div style={{padding:'16px 20px 0',flexShrink:0}}>
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
                 <button onClick={()=>setScreen('dashboard')} style={{width:32,height:32,borderRadius:'50%',
@@ -4354,7 +4352,7 @@
 
       /* ── 6. Q&A ── */
       const renderQnA=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
           <Hdr title="Q&A" onBack={()=>setScreen('dashboard')}/>
           <div style={{flex:1,overflowY:'auto',padding:'16px 20px'}}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
@@ -4382,25 +4380,25 @@
                   setQaLiked(l); setQaCount(c);
                 }} style={{
                   display:'flex',alignItems:'center',gap:4,
-                  background:qaLiked[i]?'rgba(99,102,241,0.12)':'rgba(255,255,255,0.04)',
-                  border:`1px solid ${qaLiked[i]?'rgba(99,102,241,0.3)':'rgba(255,255,255,0.07)'}`,
+                  background:qaLiked[i]?'rgba(237,71,36,0.14)':'rgba(255,255,255,0.04)',
+                  border:`1px solid ${qaLiked[i]?'rgba(237,71,36,0.35)':'rgba(255,255,255,0.07)'}`,
                   borderRadius:999,padding:'4px 10px',cursor:'pointer',
-                  color:qaLiked[i]?'#a5b4fc':'#71717a',fontSize:'0.72rem',fontWeight:600}}>
+                  color:qaLiked[i]?'#ED4724':'#a8a29e',fontSize:'0.72rem',fontWeight:600}}>
                   👍 {qaCount[i]}
                 </button>
               </div>
             ))}
             {qaSent&&(
-              <div style={{padding:'14px',background:'rgba(99,102,241,0.06)',
-                border:'1px solid rgba(99,102,241,0.2)',borderRadius:14,marginBottom:10}}>
+              <div style={{padding:'14px',background:'rgba(237,71,36,0.08)',
+                border:'1px solid rgba(237,71,36,0.25)',borderRadius:14,marginBottom:10}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
                   <div style={{width:26,height:26,borderRadius:'50%',flexShrink:0,
-                    background:'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                    background:'#ED4724',
                     display:'flex',alignItems:'center',justifyContent:'center',
                     fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>คุ</div>
-                  <span style={{color:'#a5b4fc',fontSize:'0.72rem',fontWeight:600}}>คุณ</span>
-                  <span style={{color:'#6366f1',fontSize:'0.65rem',marginLeft:'auto',
-                    background:'rgba(99,102,241,0.15)',borderRadius:999,padding:'1px 6px'}}>ส่งแล้ว</span>
+                  <span style={{color:'#ED4724',fontSize:'0.72rem',fontWeight:600}}>คุณ</span>
+                  <span style={{color:'#fff',fontSize:'0.65rem',marginLeft:'auto',
+                    background:'rgba(237,71,36,0.20)',borderRadius:999,padding:'1px 6px'}}>ส่งแล้ว</span>
                 </div>
                 <p style={{color:'#e4e4e7',fontSize:'0.82rem',lineHeight:1.5,margin:0}}>{qaText}</p>
               </div>
@@ -4408,7 +4406,7 @@
           </div>
           {!qaSent&&(
             <div style={{padding:'12px 20px 28px',borderTop:'1px solid rgba(255,255,255,0.06)',
-              flexShrink:0,background:'rgba(9,9,11,0.95)'}}>
+              flexShrink:0,background:'rgba(22,20,18,0.95)'}}>
               <div style={{display:'flex',gap:8}}>
                 <input value={qaText} onChange={e=>setQaText(e.target.value)}
                   placeholder="ถามวิทยากร…"
@@ -4417,7 +4415,7 @@
                     padding:'10px 14px',color:'#fff',fontSize:'0.875rem',outline:'none'}}/>
                 <button onClick={()=>{if(qaText.trim())setQaSent(true);}} style={{
                   padding:'10px 16px',borderRadius:12,
-                  background:qaText.trim()?'linear-gradient(135deg,#6366f1,#8b5cf6)':'rgba(255,255,255,0.05)',
+                  background:qaText.trim()?'#ED4724':'rgba(255,255,255,0.05)',
                   border:'none',color:qaText.trim()?'#fff':'#3f3f46',
                   fontWeight:700,cursor:qaText.trim()?'pointer':'default',fontSize:'0.875rem'}}>ส่ง</button>
               </div>
@@ -4428,7 +4426,7 @@
 
       /* ── 7. Reflection ── */
       const renderReflection=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#09090b',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
           <Hdr title="Reflection" onBack={()=>setScreen('dashboard')}/>
           <div style={{flex:1,overflowY:'auto',padding:'24px 20px'}}>
             {!rfDone?(
@@ -4439,13 +4437,13 @@
                   <p style={{color:'#71717a',fontSize:'0.8rem',margin:0}}>Day {SESSION.day} · {SESSION.title}</p>
                 </div>
                 <div style={{marginBottom:22}}>
-                  <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginBottom:10}}>วันนี้คุณได้เรียนรู้สิ่งใหม่มากแค่ไหน?</div>
+                  <div style={{color:'#a8a29e',fontSize:'0.82rem',marginBottom:10}}>วันนี้คุณได้เรียนรู้สิ่งใหม่มากแค่ไหน?</div>
                   <div style={{display:'flex',gap:8}}>
                     {['😕','😐','🙂','😊','🤩'].map((e,i)=>(
                       <button key={i} onClick={()=>setRfRate(i)} style={{
                         flex:1,padding:'10px 0',borderRadius:12,
-                        background:rfRate===i?'rgba(99,102,241,0.15)':'rgba(255,255,255,0.04)',
-                        border:`1px solid ${rfRate===i?'rgba(99,102,241,0.35)':'rgba(255,255,255,0.07)'}`,
+                        background:rfRate===i?'rgba(237,71,36,0.15)':'rgba(255,255,255,0.04)',
+                        border:`1px solid ${rfRate===i?'rgba(237,71,36,0.40)':'rgba(255,255,255,0.07)'}`,
                         cursor:'pointer',fontSize:'1.3rem',transition:'all 0.15s',
                         transform:rfRate===i?'scale(1.08)':'scale(1)'}}>
                         {e}
@@ -4454,7 +4452,7 @@
                   </div>
                 </div>
                 <div style={{marginBottom:20}}>
-                  <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginBottom:8}}>สิ่งที่จะนำไปใช้จริงในการทำงาน</div>
+                  <div style={{color:'#a8a29e',fontSize:'0.82rem',marginBottom:8}}>สิ่งที่จะนำไปใช้จริงในการทำงาน</div>
                   <textarea value={rfText} onChange={e=>setRfText(e.target.value)}
                     placeholder="เขียนอย่างน้อย 1 สิ่งที่จะนำไปลองทำ…"
                     rows={4}
@@ -4465,34 +4463,35 @@
                 </div>
                 <button onClick={()=>{if(rfRate!==null&&rfText.trim())setRfDone(true);}} className="btn-press" style={{
                   width:'100%',padding:'15px 0',borderRadius:16,border:'none',
-                  background:(rfRate!==null&&rfText.trim())?'linear-gradient(135deg,#6366f1,#8b5cf6)':'rgba(255,255,255,0.05)',
+                  background:(rfRate!==null&&rfText.trim())?'#ED4724':'rgba(255,255,255,0.05)',
                   color:(rfRate!==null&&rfText.trim())?'#fff':'#3f3f46',
                   fontSize:'0.95rem',fontWeight:700,
-                  cursor:(rfRate!==null&&rfText.trim())?'pointer':'default',transition:'all 0.2s'}}>
+                  cursor:(rfRate!==null&&rfText.trim())?'pointer':'default',transition:'all 0.2s',
+                  boxShadow:(rfRate!==null&&rfText.trim())?'0 8px 24px rgba(237,71,36,0.40)':'none'}}>
                   ส่ง Reflection ✓
                 </button>
               </>
             ):(
               <div style={{textAlign:'center',paddingTop:12}}>
                 <div className="bounce-in" style={{fontSize:'3rem',marginBottom:16}}>🌟</div>
-                <h2 style={{fontSize:'1.3rem',fontWeight:800,margin:'0 0 8px'}}>ยอดเยี่ยม!</h2>
-                <p style={{color:'#71717a',fontSize:'0.875rem',lineHeight:1.7,margin:'0 0 24px'}}>
+                <h2 className="bp-heading" style={{fontSize:'1.3rem',fontWeight:800,margin:'0 0 8px',letterSpacing:'0'}}>ยอดเยี่ยม!</h2>
+                <p style={{color:'#a8a29e',fontSize:'0.875rem',lineHeight:1.7,margin:'0 0 24px'}}>
                   คุณทำกิจกรรม Day {SESSION.day} ครบทุกขั้นตอนแล้ว
                 </p>
-                <div style={{background:'rgba(99,102,241,0.08)',border:'1px solid rgba(99,102,241,0.2)',
+                <div style={{background:'rgba(237,71,36,0.08)',border:'1px solid rgba(237,71,36,0.25)',
                   borderRadius:18,padding:'20px',marginBottom:16}}>
-                  <div style={{color:'#71717a',fontSize:'0.72rem',marginBottom:6}}>คะแนนวันนี้</div>
-                  <div style={{fontSize:'1.6rem',fontWeight:800,color:'#a5b4fc'}}>
+                  <div style={{color:'#a8a29e',fontSize:'0.72rem',marginBottom:6}}>คะแนนวันนี้</div>
+                  <div style={{fontSize:'1.6rem',fontWeight:800,color:'#ED4724'}}>
                     {qScore+(pollDone?30:0)+(grpDone?100:0)+50} pts
                   </div>
-                  <div style={{color:'#4b5563',fontSize:'0.7rem',marginTop:4}}>
+                  <div style={{color:'#78716c',fontSize:'0.7rem',marginTop:4}}>
                     Quiz: {qScore} · Poll: {pollDone?30:0} · Group: {grpDone?100:0} · Reflection: 50
                   </div>
                 </div>
-                <div style={{background:'rgba(245,158,11,0.08)',border:'1px solid rgba(245,158,11,0.2)',
+                <div style={{background:'rgba(237,71,36,0.05)',border:'1px solid rgba(237,71,36,0.18)',
                   borderRadius:14,padding:'14px',marginBottom:20,textAlign:'left'}}>
-                  <div style={{color:'#fbbf24',fontSize:'0.8rem',fontWeight:700,marginBottom:4}}>📅 พรุ่งนี้</div>
-                  <div style={{color:'#92400e',fontSize:'0.78rem',lineHeight:1.6}}>
+                  <div style={{color:'#ED4724',fontSize:'0.8rem',fontWeight:700,marginBottom:4}}>📅 พรุ่งนี้</div>
+                  <div style={{color:'#d4d4d8',fontSize:'0.78rem',lineHeight:1.6}}>
                     Day 3 · 360 Degree Management Strategy<br/>09:00–16:00
                   </div>
                 </div>
@@ -4500,7 +4499,7 @@
                   width:'100%',padding:'14px 0',borderRadius:16,
                   border:'1px solid rgba(255,255,255,0.08)',
                   background:'rgba(255,255,255,0.04)',
-                  color:'#a1a1aa',fontSize:'0.875rem',fontWeight:600,cursor:'pointer'}}>
+                  color:'#a8a29e',fontSize:'0.875rem',fontWeight:600,cursor:'pointer'}}>
                   ← กลับ Dashboard
                 </button>
               </div>
@@ -4538,11 +4537,11 @@
         {id:8,name:'กัญญา ศิริวงศ์',       role:'Finance Lead',      av:'ก',bg:'#ef4444',progress:35,done:4, pts:620, last:'1 สัปดาห์',streak:0,status:'inactive'},
       ];
       const CHDATA = [
-        {type:'Flash Card',    icon:'🃏',pct:91,done:3.6,total:4, color:'#8b5cf6'},
-        {type:'Quiz',          icon:'❓',pct:85,done:6.8,total:8, color:'#3b82f6'},
-        {type:'Micro Learning',icon:'⚡',pct:79,done:7.9,total:10,color:'#06b6d4'},
+        {type:'Flash Card',    icon:'🃏',pct:91,done:3.6,total:4, color:'#ED4724'},
+        {type:'Quiz',          icon:'❓',pct:85,done:6.8,total:8, color:'#F26B45'},
+        {type:'Micro Learning',icon:'⚡',pct:79,done:7.9,total:10,color:'#F59E0B'},
         {type:'Recall Quiz',   icon:'🔄',pct:72,done:2.9,total:4, color:'#10b981'},
-        {type:'Mission',       icon:'🎯',pct:68,done:4.1,total:6, color:'#6366f1'},
+        {type:'Mission',       icon:'🎯',pct:68,done:4.1,total:6, color:'#C53A1A'},
       ];
       const TREND = [42,58,51,74,67,82,78];
       const DAYS  = ['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'];
@@ -4553,8 +4552,8 @@
       const avgProg  = Math.round(LEARNERS.reduce((a,l)=>a+l.progress,0)/LEARNERS.length);
       const avgPts   = Math.round(LEARNERS.reduce((a,l)=>a+l.pts,0)/LEARNERS.length).toLocaleString();
 
-      const sBg    = s=>s==='active'?'rgba(16,185,129,0.12)':s==='at-risk'?'rgba(245,158,11,0.12)':'rgba(239,68,68,0.12)';
-      const sTxt   = s=>s==='active'?'#6ee7b7':s==='at-risk'?'#fde68a':'#fca5a5';
+      const sBg    = s=>s==='active'?'rgba(16,185,129,0.10)':s==='at-risk'?'rgba(245,158,11,0.12)':'rgba(239,68,68,0.10)';
+      const sTxt   = s=>s==='active'?'#047857':s==='at-risk'?'#b45309':'#b91c1c';
       const sLabel = s=>s==='active'?'Active':s==='at-risk'?'At Risk':'Inactive';
 
       const SparkLine = () => {
@@ -4565,15 +4564,15 @@
           <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{overflow:'visible'}}>
             <defs>
               <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25"/>
-                <stop offset="100%" stopColor="#6366f1" stopOpacity="0"/>
+                <stop offset="0%" stopColor="#ED4724" stopOpacity="0.30"/>
+                <stop offset="100%" stopColor="#ED4724" stopOpacity="0"/>
               </linearGradient>
             </defs>
             <polygon points={area} fill="url(#tg)"/>
-            <polyline points={pts} fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <polyline points={pts} fill="none" stroke="#ED4724" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             {TREND.map((v,i)=>(
               <circle key={i} cx={(i/(TREND.length-1))*W}
-                cy={H-((v-min)/range)*(H-6)-3} r="3.5" fill="#6366f1"/>
+                cy={H-((v-min)/range)*(H-6)-3} r="3.5" fill="#ED4724"/>
             ))}
           </svg>
         );
@@ -4585,18 +4584,19 @@
           {/* KPI cards */}
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:16,marginBottom:24}}>
             {[
-              {icon:'👥',label:'ผู้เรียนทั้งหมด',    value:'24',        sub:'คน',  color:'#3b82f6'},
-              {icon:'🟢',label:'Active 7 วันล่าสุด',  value:`${active}`, sub:'คน',  color:'#10b981'},
-              {icon:'📊',label:'Avg Completion',       value:`${avgProg}%`,sub:'',   color:'#6366f1'},
-              {icon:'⭐',label:'Avg คะแนน',            value:avgPts,      sub:'pts', color:'#f59e0b'},
+              {icon:'👥',label:'ผู้เรียนทั้งหมด',    value:'24',        sub:'คน',  color:'#ED4724'},
+              {icon:'🟢',label:'Active 7 วันล่าสุด',  value:`${active}`, sub:'คน',  color:'#047857'},
+              {icon:'📊',label:'Avg Completion',       value:`${avgProg}%`,sub:'',   color:'#F26B45'},
+              {icon:'⭐',label:'Avg คะแนน',            value:avgPts,      sub:'pts', color:'#B45309'},
             ].map(({icon,label,value,sub,color})=>(
-              <div key={label} style={{background:'rgba(255,255,255,0.03)',
-                border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'20px 22px'}}>
+              <div key={label} style={{background:'#ffffff',
+                border:'1px solid #e7e5e4',borderRadius:18,padding:'20px 22px',
+                boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
                 <div style={{fontSize:'1.3rem',marginBottom:10}}>{icon}</div>
-                <div style={{color:'#71717a',fontSize:'0.72rem',marginBottom:4}}>{label}</div>
+                <div style={{color:'#78716c',fontSize:'0.72rem',marginBottom:4}}>{label}</div>
                 <div style={{display:'flex',alignItems:'baseline',gap:4}}>
-                  <span style={{fontSize:'1.8rem',fontWeight:800,letterSpacing:'-0.04em',color}}>{value}</span>
-                  {sub&&<span style={{color:'#71717a',fontSize:'0.8rem'}}>{sub}</span>}
+                  <span className="bp-heading" style={{fontSize:'1.8rem',fontWeight:800,letterSpacing:'0',color}}>{value}</span>
+                  {sub&&<span style={{color:'#a8a29e',fontSize:'0.8rem'}}>{sub}</span>}
                 </div>
               </div>
             ))}
@@ -4604,8 +4604,9 @@
 
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
             {/* Challenge completion bars */}
-            <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'22px'}}>
-              <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>
+            <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',
+              boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
+              <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>
                 Completion ตามประเภทภารกิจ
               </h3>
               {CHDATA.map(({type,icon,pct,color})=>(
@@ -4613,11 +4614,11 @@
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:5}}>
                     <div style={{display:'flex',alignItems:'center',gap:6}}>
                       <span style={{fontSize:'0.9rem'}}>{icon}</span>
-                      <span style={{color:'#d4d4d8',fontSize:'0.8rem',fontWeight:500}}>{type}</span>
+                      <span style={{color:'#44403c',fontSize:'0.8rem',fontWeight:500}}>{type}</span>
                     </div>
                     <span style={{color,fontSize:'0.82rem',fontWeight:700}}>{pct}%</span>
                   </div>
-                  <div style={{height:6,background:'rgba(255,255,255,0.07)',borderRadius:999}}>
+                  <div style={{height:6,background:'#f5f5f4',borderRadius:999}}>
                     <div style={{width:`${pct}%`,height:'100%',borderRadius:999,background:color}}/>
                   </div>
                 </div>
@@ -4627,34 +4628,36 @@
             {/* Right column */}
             <div style={{display:'flex',flexDirection:'column',gap:16}}>
               {/* Sparkline */}
-              <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'22px',flex:1}}>
+              <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',flex:1,
+                boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:14}}>
                   <div>
-                    <h3 style={{margin:'0 0 3px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>Activity 7 วันล่าสุด</h3>
-                    <p style={{margin:0,color:'#71717a',fontSize:'0.7rem'}}>% ผู้เรียนที่ Active ในแต่ละวัน</p>
+                    <h3 style={{margin:'0 0 3px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>Activity 7 วันล่าสุด</h3>
+                    <p style={{margin:0,color:'#78716c',fontSize:'0.7rem'}}>% ผู้เรียนที่ Active ในแต่ละวัน</p>
                   </div>
-                  <span style={{color:'#10b981',fontSize:'0.73rem',fontWeight:600,
-                    background:'rgba(16,185,129,0.1)',border:'1px solid rgba(16,185,129,0.2)',
+                  <span style={{color:'#047857',fontSize:'0.73rem',fontWeight:600,
+                    background:'rgba(16,185,129,0.10)',border:'1px solid rgba(16,185,129,0.25)',
                     borderRadius:999,padding:'2px 8px'}}>↑ 14%</span>
                 </div>
                 <SparkLine/>
                 <div style={{display:'flex',justifyContent:'space-between',marginTop:6}}>
-                  {DAYS.map(d=><span key={d} style={{color:'#52525b',fontSize:'0.6rem'}}>{d}</span>)}
+                  {DAYS.map(d=><span key={d} style={{color:'#a8a29e',fontSize:'0.6rem'}}>{d}</span>)}
                 </div>
               </div>
               {/* Status distribution */}
-              <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'18px 22px'}}>
-                <h3 style={{margin:'0 0 12px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>สถานะผู้เรียน</h3>
+              <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'18px 22px',
+                boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
+                <h3 style={{margin:'0 0 12px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>สถานะผู้เรียน</h3>
                 <div style={{display:'flex',gap:10,marginBottom:12}}>
-                  {[['Active',active,'#10b981'],['At Risk',atRisk,'#f59e0b'],['Inactive',inactive,'#ef4444']].map(([l,v,c])=>(
+                  {[['Active',active,'#10b981','#047857'],['At Risk',atRisk,'#f59e0b','#b45309'],['Inactive',inactive,'#ef4444','#b91c1c']].map(([l,v,c,tc])=>(
                     <div key={l} style={{flex:1,textAlign:'center',
-                      background:`${c}12`,border:`1px solid ${c}30`,borderRadius:12,padding:'10px 0'}}>
-                      <div style={{color:c,fontSize:'1.3rem',fontWeight:800}}>{v}</div>
-                      <div style={{color:'#71717a',fontSize:'0.68rem',marginTop:2}}>{l}</div>
+                      background:`${c}14`,border:`1px solid ${c}33`,borderRadius:12,padding:'10px 0'}}>
+                      <div style={{color:tc,fontSize:'1.3rem',fontWeight:800}}>{v}</div>
+                      <div style={{color:'#78716c',fontSize:'0.68rem',marginTop:2}}>{l}</div>
                     </div>
                   ))}
                 </div>
-                <div style={{display:'flex',height:6,borderRadius:999,overflow:'hidden'}}>
+                <div style={{display:'flex',height:6,borderRadius:999,overflow:'hidden',background:'#f5f5f4'}}>
                   <div style={{width:`${(active/LEARNERS.length)*100}%`,background:'#10b981'}}/>
                   <div style={{width:`${(atRisk/LEARNERS.length)*100}%`,background:'#f59e0b'}}/>
                   <div style={{flex:1,background:'#ef4444'}}/>
@@ -4665,24 +4668,24 @@
 
           {/* At-risk alert */}
           {atRisk>0&&(
-            <div style={{background:'rgba(245,158,11,0.06)',border:'1px solid rgba(245,158,11,0.2)',
+            <div style={{background:'rgba(245,158,11,0.08)',border:'1px solid rgba(245,158,11,0.30)',
               borderRadius:16,padding:'16px 20px',
               display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}>
               <div style={{display:'flex',alignItems:'center',gap:10}}>
                 <span style={{fontSize:'1.1rem'}}>⚠️</span>
                 <div>
-                  <div style={{color:'#fbbf24',fontWeight:600,fontSize:'0.875rem'}}>
+                  <div style={{color:'#b45309',fontWeight:700,fontSize:'0.875rem'}}>
                     พบผู้เรียน {atRisk} คนที่อาจต้องการความช่วยเหลือ
                   </div>
-                  <div style={{color:'#92400e',fontSize:'0.78rem',marginTop:2}}>
+                  <div style={{color:'#78716c',fontSize:'0.78rem',marginTop:2}}>
                     ไม่มีกิจกรรมมากกว่า 2 วัน หรือ Streak เหลือน้อยมาก
                   </div>
                 </div>
               </div>
               <button onClick={()=>setTab('learners')} style={{
                 padding:'8px 16px',borderRadius:10,cursor:'pointer',flexShrink:0,
-                border:'1px solid rgba(245,158,11,0.3)',background:'rgba(245,158,11,0.1)',
-                color:'#fbbf24',fontSize:'0.8rem',fontWeight:600}}>ดูรายชื่อ →</button>
+                border:'1px solid rgba(245,158,11,0.45)',background:'rgba(245,158,11,0.14)',
+                color:'#b45309',fontSize:'0.8rem',fontWeight:600}}>ดูรายชื่อ →</button>
             </div>
           )}
         </div>
@@ -4695,11 +4698,11 @@
             <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
               {[`ทั้งหมด (${LEARNERS.length})`,`Active (${active})`,`At Risk (${atRisk})`,`Inactive (${inactive})`].map(l=>(
                 <span key={l} style={{padding:'4px 12px',borderRadius:999,fontSize:'0.78rem',
-                  background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',
-                  color:'#a1a1aa'}}>{l}</span>
+                  background:'#ffffff',border:'1px solid #e7e5e4',
+                  color:'#57534e'}}>{l}</span>
               ))}
             </div>
-            <span style={{color:'#52525b',fontSize:'0.78rem'}}>จัดเรียง: คะแนนสูงสุด</span>
+            <span style={{color:'#78716c',fontSize:'0.78rem'}}>จัดเรียง: คะแนนสูงสุด</span>
           </div>
 
           <div style={{display:'flex',flexDirection:'column',gap:8}}>
@@ -4707,10 +4710,11 @@
               <div key={l.id}
                 onClick={()=>setExpanded(expanded===l.id?null:l.id)}
                 style={{
-                  background:'rgba(255,255,255,0.03)',
-                  border:`1px solid ${expanded===l.id?'rgba(99,102,241,0.35)':'rgba(255,255,255,0.07)'}`,
+                  background:'#ffffff',
+                  border:`1px solid ${expanded===l.id?'rgba(237,71,36,0.45)':'#e7e5e4'}`,
                   borderRadius:16,padding:'16px 20px',cursor:'pointer',
-                  transition:'border-color 0.2s',
+                  transition:'border-color 0.2s, box-shadow 0.2s',
+                  boxShadow: expanded===l.id?'0 4px 12px rgba(237,71,36,0.10)':'0 1px 2px rgba(0,0,0,0.04)',
                 }}>
                 <div style={{display:'flex',alignItems:'center',gap:14,flexWrap:'wrap'}}>
                   <div style={{width:40,height:40,borderRadius:'50%',flexShrink:0,
@@ -4718,29 +4722,29 @@
                     display:'flex',alignItems:'center',justifyContent:'center',
                     fontSize:'0.9rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
                   <div style={{flex:'1 1 140px',minWidth:0}}>
-                    <div style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:600,
+                    <div style={{color:'#161412',fontSize:'0.875rem',fontWeight:600,
                       overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</div>
-                    <div style={{color:'#71717a',fontSize:'0.72rem',marginTop:1}}>{l.role}</div>
+                    <div style={{color:'#78716c',fontSize:'0.72rem',marginTop:1}}>{l.role}</div>
                   </div>
                   <div style={{flex:'1 1 120px',minWidth:80}}>
                     <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
-                      <span style={{color:'#71717a',fontSize:'0.65rem'}}>Completion</span>
-                      <span style={{color:'#d4d4d8',fontSize:'0.7rem',fontWeight:600}}>{l.progress}%</span>
+                      <span style={{color:'#a8a29e',fontSize:'0.65rem'}}>Completion</span>
+                      <span style={{color:'#44403c',fontSize:'0.7rem',fontWeight:600}}>{l.progress}%</span>
                     </div>
-                    <div style={{height:4,background:'rgba(255,255,255,0.08)',borderRadius:999}}>
+                    <div style={{height:4,background:'#f5f5f4',borderRadius:999}}>
                       <div style={{width:`${l.progress}%`,height:'100%',borderRadius:999,
                         background:l.progress>=75?'#10b981':l.progress>=50?'#f59e0b':'#ef4444'}}/>
                     </div>
                   </div>
                   <div style={{flex:'0 0 80px',textAlign:'center'}}>
-                    <div style={{color:'#fbbf24',fontSize:'0.95rem',fontWeight:700}}>{l.pts.toLocaleString()}</div>
-                    <div style={{color:'#71717a',fontSize:'0.65rem'}}>pts</div>
+                    <div style={{color:'#b45309',fontSize:'0.95rem',fontWeight:700}}>{l.pts.toLocaleString()}</div>
+                    <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>pts</div>
                   </div>
                   <div style={{flex:'0 0 56px',textAlign:'center'}}>
-                    <div style={{color:l.streak>0?'#fb923c':'#52525b',fontSize:'0.875rem',fontWeight:700}}>
+                    <div style={{color:l.streak>0?'#ea580c':'#a8a29e',fontSize:'0.875rem',fontWeight:700}}>
                       {l.streak>0?`🔥${l.streak}`:'—'}
                     </div>
-                    <div style={{color:'#71717a',fontSize:'0.65rem'}}>streak</div>
+                    <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>streak</div>
                   </div>
                   <div style={{flex:'0 0 72px',textAlign:'right'}}>
                     <span style={{background:sBg(l.status),borderRadius:999,
@@ -4752,7 +4756,7 @@
 
                 {expanded===l.id&&(
                   <div className="fade-in" style={{marginTop:16,paddingTop:16,
-                    borderTop:'1px solid rgba(255,255,255,0.06)',
+                    borderTop:'1px solid #e7e5e4',
                     display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))',gap:10}}>
                     {[
                       {label:'ภารกิจเสร็จ',    value:`${l.done} ภารกิจ`},
@@ -4760,16 +4764,16 @@
                       {label:'Streak ปัจจุบัน', value:l.streak>0?`${l.streak} วัน`:'หมดแล้ว'},
                       {label:'คะแนนรวม',        value:`${l.pts.toLocaleString()} pts`},
                     ].map(({label,value})=>(
-                      <div key={label} style={{background:'rgba(255,255,255,0.03)',borderRadius:12,padding:'12px 14px'}}>
-                        <div style={{color:'#71717a',fontSize:'0.67rem'}}>{label}</div>
-                        <div style={{color:'#e4e4e7',fontSize:'0.88rem',fontWeight:700,marginTop:3}}>{value}</div>
+                      <div key={label} style={{background:'#fafaf9',border:'1px solid #f0eeec',borderRadius:12,padding:'12px 14px'}}>
+                        <div style={{color:'#a8a29e',fontSize:'0.67rem'}}>{label}</div>
+                        <div style={{color:'#161412',fontSize:'0.88rem',fontWeight:700,marginTop:3}}>{value}</div>
                       </div>
                     ))}
                     {l.status!=='active'&&(
-                      <div style={{background:'rgba(245,158,11,0.08)',border:'1px solid rgba(245,158,11,0.2)',
+                      <div style={{background:'rgba(245,158,11,0.10)',border:'1px solid rgba(245,158,11,0.30)',
                         borderRadius:12,padding:'12px 14px',cursor:'pointer'}}>
-                        <div style={{color:'#71717a',fontSize:'0.67rem'}}>การดำเนินการ</div>
-                        <div style={{color:'#fbbf24',fontSize:'0.82rem',fontWeight:600,marginTop:3}}>
+                        <div style={{color:'#a8a29e',fontSize:'0.67rem'}}>การดำเนินการ</div>
+                        <div style={{color:'#b45309',fontSize:'0.82rem',fontWeight:600,marginTop:3}}>
                           📩 ส่ง Reminder
                         </div>
                       </div>
@@ -4792,14 +4796,15 @@
               {icon:'📊',label:'Avg Completion',    value:`${avgProg}%`,sub:''},
               {icon:'🏆',label:'ยอดนิยมสูงสุด',    value:'Flash Card', sub:''},
             ].map(({icon,label,value,sub})=>(
-              <div key={label} style={{background:'rgba(255,255,255,0.03)',
-                border:'1px solid rgba(255,255,255,0.07)',borderRadius:16,
-                padding:'18px 20px',display:'flex',alignItems:'center',gap:14}}>
+              <div key={label} style={{background:'#ffffff',
+                border:'1px solid #e7e5e4',borderRadius:16,
+                padding:'18px 20px',display:'flex',alignItems:'center',gap:14,
+                boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
                 <div style={{fontSize:'1.5rem'}}>{icon}</div>
                 <div>
-                  <div style={{color:'#71717a',fontSize:'0.72rem'}}>{label}</div>
-                  <div style={{color:'#f4f4f5',fontSize:'1.2rem',fontWeight:800,letterSpacing:'-0.02em'}}>
-                    {value}{sub&&<span style={{color:'#71717a',fontSize:'0.75rem',fontWeight:400}}> {sub}</span>}
+                  <div style={{color:'#78716c',fontSize:'0.72rem'}}>{label}</div>
+                  <div style={{color:'#161412',fontSize:'1.2rem',fontWeight:800,letterSpacing:'-0.02em'}}>
+                    {value}{sub&&<span style={{color:'#a8a29e',fontSize:'0.75rem',fontWeight:400}}> {sub}</span>}
                   </div>
                 </div>
               </div>
@@ -4807,8 +4812,9 @@
           </div>
 
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
-            <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'22px'}}>
-              <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>
+            <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',
+              boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
+              <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>
                 Completion Rate ตามประเภทภารกิจ
               </h3>
               {CHDATA.map(({type,icon,pct,done,total,color})=>(
@@ -4816,17 +4822,17 @@
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
                     <div style={{display:'flex',alignItems:'center',gap:8}}>
                       <div style={{width:32,height:32,borderRadius:9,flexShrink:0,
-                        background:`${color}18`,border:`1px solid ${color}30`,
+                        background:`${color}18`,border:`1px solid ${color}40`,
                         display:'flex',alignItems:'center',justifyContent:'center',
                         fontSize:'0.9rem'}}>{icon}</div>
                       <div>
-                        <div style={{color:'#e4e4e7',fontSize:'0.82rem',fontWeight:600}}>{type}</div>
-                        <div style={{color:'#71717a',fontSize:'0.67rem'}}>เฉลี่ย {done.toFixed(1)}/{total} ต่อคน</div>
+                        <div style={{color:'#161412',fontSize:'0.82rem',fontWeight:600}}>{type}</div>
+                        <div style={{color:'#78716c',fontSize:'0.67rem'}}>เฉลี่ย {done.toFixed(1)}/{total} ต่อคน</div>
                       </div>
                     </div>
                     <span style={{color,fontSize:'0.95rem',fontWeight:800}}>{pct}%</span>
                   </div>
-                  <div style={{height:6,background:'rgba(255,255,255,0.07)',borderRadius:999}}>
+                  <div style={{height:6,background:'#f5f5f4',borderRadius:999}}>
                     <div style={{width:`${pct}%`,height:'100%',borderRadius:999,background:color}}/>
                   </div>
                 </div>
@@ -4834,39 +4840,40 @@
             </div>
 
             <div style={{display:'flex',flexDirection:'column',gap:16}}>
-              <div style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:18,padding:'22px'}}>
-                <h3 style={{margin:'0 0 16px',fontWeight:700,fontSize:'0.9rem',color:'#f4f4f5'}}>🏆 Top Learners</h3>
+              <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',
+                boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
+                <h3 style={{margin:'0 0 16px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>🏆 Top Learners</h3>
                 {LEARNERS.slice(0,5).map((l,i)=>(
                   <div key={l.id} style={{display:'flex',alignItems:'center',gap:10,
-                    padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.04)'}}>
+                    padding:'8px 0',borderBottom:'1px solid #f0eeec'}}>
                     <span style={{width:22,height:22,flexShrink:0,borderRadius:'50%',
                       display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.65rem',fontWeight:800,
-                      background:i<3?['rgba(251,191,36,0.2)','rgba(203,213,225,0.15)','rgba(180,83,9,0.15)'][i]:'transparent',
-                      color:i<3?['#fbbf24','#94a3b8','#b45309'][i]:'#52525b'}}>{i+1}</span>
+                      background:i<3?['rgba(251,191,36,0.20)','rgba(148,163,184,0.18)','rgba(180,83,9,0.18)'][i]:'transparent',
+                      color:i<3?['#b45309','#64748b','#b45309'][i]:'#a8a29e'}}>{i+1}</span>
                     <div style={{width:26,height:26,borderRadius:'50%',flexShrink:0,
                       background:`linear-gradient(135deg,${l.bg},${l.bg}88)`,
                       display:'flex',alignItems:'center',justifyContent:'center',
                       fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
-                    <span style={{flex:1,color:'#d4d4d8',fontSize:'0.8rem',fontWeight:500,
+                    <span style={{flex:1,color:'#161412',fontSize:'0.8rem',fontWeight:500,
                       overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</span>
-                    <span style={{color:'#fbbf24',fontSize:'0.82rem',fontWeight:700}}>{l.pts.toLocaleString()}</span>
+                    <span style={{color:'#b45309',fontSize:'0.82rem',fontWeight:700}}>{l.pts.toLocaleString()}</span>
                   </div>
                 ))}
               </div>
 
-              <div style={{background:'rgba(239,68,68,0.06)',border:'1px solid rgba(239,68,68,0.15)',borderRadius:18,padding:'18px 22px'}}>
-                <h3 style={{margin:'0 0 14px',fontWeight:700,fontSize:'0.875rem',color:'#fca5a5'}}>⚠️ ต้องการความสนใจ</h3>
+              <div style={{background:'rgba(239,68,68,0.08)',border:'1px solid rgba(239,68,68,0.25)',borderRadius:18,padding:'18px 22px'}}>
+                <h3 style={{margin:'0 0 14px',fontWeight:700,fontSize:'0.875rem',color:'#b91c1c'}}>⚠️ ต้องการความสนใจ</h3>
                 {LEARNERS.filter(l=>l.status!=='active').map(l=>(
                   <div key={l.id} style={{display:'flex',alignItems:'center',gap:10,
-                    padding:'7px 0',borderBottom:'1px solid rgba(255,255,255,0.04)'}}>
+                    padding:'7px 0',borderBottom:'1px solid rgba(239,68,68,0.10)'}}>
                     <div style={{width:26,height:26,borderRadius:'50%',flexShrink:0,
                       background:`linear-gradient(135deg,${l.bg},${l.bg}88)`,
                       display:'flex',alignItems:'center',justifyContent:'center',
                       fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
                     <div style={{flex:1,minWidth:0}}>
-                      <div style={{color:'#e4e4e7',fontSize:'0.78rem',fontWeight:500,
+                      <div style={{color:'#161412',fontSize:'0.78rem',fontWeight:500,
                         overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</div>
-                      <div style={{color:'#71717a',fontSize:'0.65rem'}}>{l.last}ที่แล้ว</div>
+                      <div style={{color:'#78716c',fontSize:'0.65rem'}}>{l.last}ที่แล้ว</div>
                     </div>
                     <span style={{color:sTxt(l.status),fontSize:'0.68rem',fontWeight:600,
                       background:sBg(l.status),borderRadius:999,padding:'2px 8px',flexShrink:0}}>
@@ -4881,52 +4888,45 @@
       );
 
       return (
-        <div style={{minHeight:'100vh',background:'#09090b',color:'#fff',
-          fontFamily:"'Inter',system-ui,sans-serif",overflowX:'hidden'}}>
+        <div style={{minHeight:'100vh',background:'#fafaf9',color:'#161412',
+          fontFamily:"'Inter',system-ui,-apple-system,BlinkMacSystemFont,sans-serif",overflowX:'hidden'}}>
 
           {/* Navbar */}
           <nav style={{position:'sticky',top:0,zIndex:100,height:60,
             display:'flex',alignItems:'center',justifyContent:'space-between',
             padding:'0 max(24px,calc((100vw - 1400px)/2))',
-            background:'rgba(9,9,11,0.9)',backdropFilter:'blur(12px)',
-            borderBottom:'1px solid rgba(255,255,255,0.06)'}}>
+            background:'rgba(255,255,255,0.92)',backdropFilter:'blur(12px)',
+            borderBottom:'1px solid #e7e5e4'}}>
             <div style={{display:'flex',alignItems:'center',gap:10}}>
-              <div style={{width:30,height:30,borderRadius:8,
-                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
-                display:'flex',alignItems:'center',justifyContent:'center'}}>
-                <svg width="16" height="16" viewBox="0 0 44 44" fill="none">
-                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
-                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
-                </svg>
-              </div>
-              <span style={{fontWeight:700,fontSize:'0.95rem',letterSpacing:'-0.02em'}}>Joinstick</span>
-              <div style={{width:1,height:16,background:'rgba(255,255,255,0.1)'}}/>
-              <span style={{color:'#71717a',fontSize:'0.82rem'}}>HR Dashboard</span>
+              <JoinstickLogo size={32} variant="black" />
+              <span className="bp-heading" style={{fontWeight:700,fontSize:'0.9rem',letterSpacing:'0.1em',color:'#161412'}}>JOINSTICK</span>
+              <div style={{width:1,height:16,background:'#e7e5e4'}}/>
+              <span style={{color:'#78716c',fontSize:'0.82rem'}}>HR Dashboard</span>
               <div style={{display:'inline-flex',alignItems:'center',gap:4,
-                background:'rgba(99,102,241,0.1)',border:'1px solid rgba(99,102,241,0.2)',
+                background:'rgba(99,102,241,0.10)',border:'1px solid rgba(99,102,241,0.30)',
                 borderRadius:999,padding:'2px 8px'}}>
-                <span style={{width:5,height:5,borderRadius:'50%',background:'#818cf8',display:'inline-block'}}/>
-                <span style={{color:'#a5b4fc',fontSize:'0.67rem',fontWeight:600}}>Out of Class</span>
+                <span style={{width:5,height:5,borderRadius:'50%',background:'#6366f1',display:'inline-block'}}/>
+                <span style={{color:'#4338ca',fontSize:'0.67rem',fontWeight:600}}>Out of Class</span>
               </div>
             </div>
             <div style={{display:'flex',alignItems:'center',gap:12}}>
-              <span style={{color:'#52525b',fontSize:'0.78rem',display:'none'}}>Essential Leadership: Lead with your heart</span>
+              <span style={{color:'#78716c',fontSize:'0.78rem',display:'none'}}>Essential Leadership: Lead with your heart</span>
               <button onClick={onBack} style={{padding:'7px 14px',borderRadius:9,cursor:'pointer',
-                border:'1px solid rgba(255,255,255,0.1)',background:'rgba(255,255,255,0.04)',
-                color:'#a1a1aa',fontSize:'0.8rem'}}>← กลับ</button>
+                border:'1px solid #e7e5e4',background:'#ffffff',
+                color:'#57534e',fontSize:'0.8rem'}}>← กลับ</button>
             </div>
           </nav>
 
           {/* Tab bar */}
-          <div style={{borderBottom:'1px solid rgba(255,255,255,0.06)',
+          <div style={{borderBottom:'1px solid #e7e5e4',background:'#ffffff',
             padding:'0 max(24px,calc((100vw - 1400px)/2))'}}>
             <div style={{display:'flex'}}>
               {[['overview','📊 Overview'],['learners','👥 ผู้เรียน'],['challenges','🎯 ภารกิจ']].map(([id,label])=>(
                 <button key={id} onClick={()=>setTab(id)} style={{
                   padding:'13px 20px',border:'none',background:'transparent',
-                  color:tab===id?'#fff':'#71717a',fontSize:'0.875rem',fontWeight:tab===id?600:400,
+                  color:tab===id?'#161412':'#78716c',fontSize:'0.875rem',fontWeight:tab===id?600:400,
                   cursor:'pointer',
-                  borderBottom:tab===id?'2px solid #6366f1':'2px solid transparent',
+                  borderBottom:tab===id?'2px solid #ED4724':'2px solid transparent',
                   transition:'color 0.15s'}}>
                   {label}
                 </button>
@@ -4961,9 +4961,9 @@
           label: 'Pre-Class',
           thai: 'ก่อนเรียน',
           status: 'live',
-          color: '#f59e0b',
-          glow: 'rgba(245,158,11,0.15)',
-          border: 'rgba(245,158,11,0.25)',
+          color: '#F59E0B',
+          glow: 'rgba(245,158,11,0.18)',
+          border: 'rgba(245,158,11,0.32)',
           icon: '📋',
           desc: 'เตรียมความพร้อมก่อนเข้าคอร์ส ประเมินตัวเอง และตั้งเป้าหมายการเรียนรู้',
           features: ['Pre-Assessment', 'Goal Setting', 'Onboarding Journey', 'Learning Path'],
@@ -4974,9 +4974,9 @@
           label: 'In-Class',
           thai: 'ระหว่างเรียน',
           status: 'live',
-          color: '#06b6d4',
-          glow: 'rgba(6,182,212,0.15)',
-          border: 'rgba(6,182,212,0.25)',
+          color: '#ED4724',
+          glow: 'rgba(237,71,36,0.18)',
+          border: 'rgba(237,71,36,0.32)',
           icon: '🎓',
           desc: 'กิจกรรม Live ระหว่างการเรียน Harvester และ Real-time Engagement',
           features: ['Live Activities', 'Harvester', 'Real-time Poll', 'Group Challenge'],
@@ -4999,9 +4999,9 @@
       return (
         <div style={{
           minHeight: '100vh',
-          background: '#09090b',
+          background: '#161412',
           color: '#fff',
-          fontFamily: "'Inter', system-ui, sans-serif",
+          fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
           opacity: exiting ? 0 : 1,
           transform: exiting ? 'scale(0.98)' : 'scale(1)',
           transition: 'opacity 0.48s ease, transform 0.48s ease',
@@ -5011,9 +5011,9 @@
           {/* Ambient */}
           <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
             <div style={{position:'absolute',top:'-15%',left:'20%',width:'50vw',height:'50vw',
-              background:'radial-gradient(circle,rgba(99,102,241,0.07) 0%,transparent 65%)',borderRadius:'50%'}}/>
+              background:'radial-gradient(circle,rgba(237,71,36,0.10) 0%,transparent 65%)',borderRadius:'50%'}}/>
             <div style={{position:'absolute',bottom:'-15%',right:'10%',width:'45vw',height:'45vw',
-              background:'radial-gradient(circle,rgba(245,158,11,0.05) 0%,transparent 65%)',borderRadius:'50%'}}/>
+              background:'radial-gradient(circle,rgba(245,158,11,0.06) 0%,transparent 65%)',borderRadius:'50%'}}/>
           </div>
 
           {/* Navbar */}
@@ -5022,32 +5022,24 @@
             display:'flex',alignItems:'center',justifyContent:'space-between',
             padding:'0 max(24px,calc((100vw - 1200px)/2))',
             height:64,
-            background:'rgba(9,9,11,0.85)',
+            background:'rgba(22,20,18,0.85)',
             backdropFilter:'blur(12px)',
             borderBottom:'1px solid rgba(255,255,255,0.06)',
           }}>
             <div style={{display:'flex',alignItems:'center',gap:10}}>
-              <div style={{width:36,height:36,borderRadius:10,
-                background:'linear-gradient(135deg,#3b82f6,#6366f1)',
-                display:'flex',alignItems:'center',justifyContent:'center'}}>
-                <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
-                  <circle cx="22" cy="14" r="7" fill="white" fillOpacity="0.95"/>
-                  <rect x="8" y="26" width="28" height="5" rx="2.5" fill="white" fillOpacity="0.75"/>
-                  <rect x="13" y="34" width="18" height="4" rx="2" fill="white" fillOpacity="0.45"/>
-                </svg>
-              </div>
-              <span style={{fontWeight:700,fontSize:'1.1rem',letterSpacing:'-0.02em'}}>Joinstick</span>
+              <JoinstickLogo size={38} variant="white" />
+              <span className="bp-heading" style={{fontWeight:700,fontSize:'1.05rem',letterSpacing:'0.1em'}}>JOINSTICK</span>
             </div>
             <button onClick={onBack} style={{
               display:'flex',alignItems:'center',gap:6,
               background:'rgba(255,255,255,0.05)',
               border:'1px solid rgba(255,255,255,0.08)',
               borderRadius:10,padding:'8px 16px',
-              color:'#a1a1aa',fontSize:'0.875rem',cursor:'pointer',
+              color:'#a8a29e',fontSize:'0.875rem',cursor:'pointer',
               transition:'color 0.15s,background 0.15s',
             }}
               onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.background='rgba(255,255,255,0.08)'}}
-              onMouseLeave={e=>{e.currentTarget.style.color='#a1a1aa';e.currentTarget.style.background='rgba(255,255,255,0.05)'}}>
+              onMouseLeave={e=>{e.currentTarget.style.color='#a8a29e';e.currentTarget.style.background='rgba(255,255,255,0.05)'}}>
               ← กลับหน้าหลัก
             </button>
           </nav>
@@ -5062,19 +5054,19 @@
             <div className="fade-in" style={{textAlign:'center',marginBottom:56}}>
               <div style={{
                 display:'inline-flex',alignItems:'center',gap:8,
-                background:'rgba(99,102,241,0.1)',border:'1px solid rgba(99,102,241,0.2)',
+                background:'rgba(237,71,36,0.10)',border:'1px solid rgba(237,71,36,0.28)',
                 borderRadius:999,padding:'5px 14px',marginBottom:20,
               }}>
-                <span style={{width:6,height:6,borderRadius:'50%',background:'#6366f1',display:'inline-block'}}/>
-                <span style={{color:'#a5b4fc',fontSize:'0.8rem',fontWeight:500}}>เลือก Phase การเรียนรู้</span>
+                <span style={{width:6,height:6,borderRadius:'50%',background:'#ED4724',display:'inline-block'}}/>
+                <span className="bp-slogan" style={{color:'#ED4724',fontSize:'0.72rem',fontWeight:500}}>UPLIFTING HUMAN ABILITY</span>
               </div>
-              <h1 style={{
+              <h1 className="bp-heading" style={{
                 fontSize:'clamp(1.8rem,4vw,2.8rem)',fontWeight:800,
-                letterSpacing:'-0.04em',margin:'0 0 14px',lineHeight:1.1,
+                letterSpacing:'0.02em',margin:'0 0 14px',lineHeight:1.1,
               }}>Learning Journey ของคุณ</h1>
-              <p style={{color:'#71717a',fontSize:'1rem',margin:0,lineHeight:1.6}}>
+              <p style={{color:'#a8a29e',fontSize:'1rem',margin:0,lineHeight:1.6}}>
                 เลือก Phase ที่ต้องการดู Prototype<br/>
-                <span style={{color:'#4b5563',fontSize:'0.875rem'}}>Out of Class พร้อมใช้งาน · Phase อื่นกำลังพัฒนา</span>
+                <span style={{color:'#78716c',fontSize:'0.875rem'}}>Out of Class พร้อมใช้งาน · Phase อื่นกำลังพัฒนา</span>
               </p>
             </div>
 
@@ -5159,7 +5151,7 @@
                         display:'flex',alignItems:'center',justifyContent:'center',
                         padding:'13px 0',borderRadius:14,
                         background: isLive
-                          ? (isHov ? `linear-gradient(135deg,${color},#8b5cf6)` : `linear-gradient(135deg,${color}cc,#8b5cf640)`)
+                          ? (isHov ? color : `${color}cc`)
                           : 'rgba(255,255,255,0.04)',
                         border: isLive ? 'none' : '1px solid rgba(255,255,255,0.08)',
                         transition:'background 0.25s',
@@ -5328,7 +5320,7 @@
       const goTo = (s) => setScene(s);
 
       const NEXT = {
-        preclass: { scene:'inclass',  label:'In-Class',      color:'#06b6d4' },
+        preclass: { scene:'inclass',  label:'In-Class',      color:'#ED4724' },
         inclass:  { scene:'learner',  label:'Out of Class',  color:'#6366f1' },
         learner:  { scene:'hr',       label:'HR Dashboard',  color:'#818cf8' },
       };
@@ -5358,7 +5350,7 @@
             />
           )}
           {scene === 'preclass' && <PreClassApp onBack={() => goTo('phases')} onNext={() => goTo('inclass')} />}
-          {scene === 'inclass'  && <InClassApp  onBack={() => goTo('phases')} />}
+          {scene === 'inclass'  && <InClassApp  onBack={() => goTo('phases')} onNext={() => goTo('learner')} />}
           {scene === 'hr'       && <HRDashboard onBack={() => goTo('phases')} />}
           {scene === 'learner'  && <LearnerApp />}
         </>
