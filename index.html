@@ -186,6 +186,101 @@
       to   { transform: scaleX(1); }
     }
 
+    /* ── Journey path: dot traveling left → right ── */
+    @keyframes journeyDot {
+      0%   { offset-distance: 0%;   opacity: 0; }
+      8%   { opacity: 1; }
+      92%  { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+    .journey-dot {
+      offset-rotate: 0deg;
+      animation: journeyDot 6s cubic-bezier(0.45,0,0.55,1) infinite;
+    }
+
+    /* ── CTA button shimmer sweep ── */
+    @keyframes ctaShimmer {
+      0%   { transform: translateX(-120%); }
+      100% { transform: translateX(220%); }
+    }
+    .anim-cta-shimmer {
+      position: absolute; inset: 0;
+      background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.32) 50%, transparent 70%);
+      transform: translateX(-120%);
+      animation: ctaShimmer 3.6s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    /* ── CTA arrow nudge (every few seconds) ── */
+    @keyframes arrowNudge {
+      0%, 60%, 100% { transform: translateX(0); }
+      70%, 80%      { transform: translateX(4px); }
+    }
+    .anim-arrow-nudge { animation: arrowNudge 3.2s ease-in-out infinite; display: inline-block; }
+
+    /* ── Particle field (slow rising dots) ── */
+    @keyframes particleRise {
+      0%   { transform: translate3d(0, 100vh, 0) scale(0.6); opacity: 0; }
+      8%   { opacity: 0.5; }
+      92%  { opacity: 0.5; }
+      100% { transform: translate3d(0, -10vh, 0) scale(1);   opacity: 0; }
+    }
+    .journey-particle {
+      position: absolute;
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: particleRise linear infinite;
+    }
+
+    /* ── Mini mockup floating bob ── */
+    @keyframes mockupBob {
+      0%, 100% { transform: translateY(0)    rotate(var(--mockup-tilt, -6deg)); }
+      50%      { transform: translateY(-6px) rotate(var(--mockup-tilt, -6deg)); }
+    }
+    .anim-mockup-bob { animation: mockupBob 5.5s ease-in-out infinite; }
+
+    /* ── Multi-color gradient text for Learning Journey hero ── */
+    @keyframes journeyTitleGradient {
+      0%   { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+    .journey-title-gradient {
+      background: linear-gradient(90deg,
+        #F59E0B 0%, #FB7C58 18%, #ED4724 36%,
+        #818cf8 60%, #6366f1 78%, #06b6d4 100%,
+        #F59E0B 120%);
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+              background-clip: text;
+      -webkit-text-fill-color: transparent;
+              text-fill-color: transparent;
+      animation: journeyTitleGradient 9s linear infinite;
+    }
+
+    /* ── Pulsing ring on active phase icon ── */
+    @keyframes phaseActivePulse {
+      0%   { box-shadow: 0 0 0 0   rgba(99,102,241,0.45); }
+      70%  { box-shadow: 0 0 0 18px rgba(99,102,241,0);   }
+      100% { box-shadow: 0 0 0 0   rgba(99,102,241,0);   }
+    }
+    .anim-phase-active { animation: phaseActivePulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite; }
+
+    /* ── Scroll indicator (mouse with bouncing dot) ── */
+    @keyframes scrollDot {
+      0%   { transform: translateY(0);    opacity: 0; }
+      30%  { opacity: 1; }
+      80%  { opacity: 0.4; }
+      100% { transform: translateY(10px); opacity: 0; }
+    }
+    .anim-scroll-dot { animation: scrollDot 1.8s ease-out infinite; }
+
+    /* ── Phase card hover lift specifically for journey cards ── */
+    .journey-phase-card {
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+    .journey-phase-card:hover { transform: translateY(-8px); }
+
     /* ── Responsive helpers (utility classes) ─────── */
     /* Tablet (≤1024px) */
     @media (max-width: 1024px) {
@@ -193,7 +288,11 @@
       .lp-nav          { padding: 0 20px !important; }
       .mr-preview-grid { grid-template-columns: 1fr !important; }
       .hr-2col         { grid-template-columns: 1fr !important; }
-      .phase-card-grid { gap: 14px !important; }
+      .phase-card-grid          { grid-template-columns: 1fr !important; gap: 18px !important; }
+      .journey-path-svg         { display: none !important; }
+      .journey-card-stagger     { margin-top: 0 !important; }
+      .phase-mockup             { width: 64px !important; height: 50px !important; }
+      .journey-transform-label  { display: none !important; }
       .lp-hero         { padding-left: 24px !important; padding-right: 24px !important; gap: 32px !important; }
       .lp-section      { padding-left: 24px !important; padding-right: 24px !important; }
       .journey-nav-btn { top: 16px !important; padding: 8px 14px !important; font-size: 0.78rem !important; }
@@ -230,7 +329,7 @@
     }
 
     /* ── Flash Card 3D flip ── */
-    .fc-scene { perspective: 1200px; width: 100%; }
+    .fc-scene { perspective: 1400px; width: 100%; height: 100%; }
     .fc-card {
       position: relative;
       transform-style: preserve-3d;
@@ -238,6 +337,7 @@
       cursor: pointer;
       width: 100%;
       height: 100%;
+      will-change: transform;
     }
     .fc-card.is-flipped { transform: rotateY(180deg); }
     .fc-face {
@@ -254,6 +354,18 @@
       overflow: hidden;
     }
     .fc-back { transform: rotateY(180deg); }
+
+    /* ── Flash Card next-card slide transition ── */
+    @keyframes fcSlideExit {
+      from { transform: translateX(0)     scale(1);    opacity: 1; }
+      to   { transform: translateX(-40px) scale(0.94); opacity: 0; }
+    }
+    @keyframes fcSlideEnter {
+      from { transform: translateX(40px)  scale(0.96); opacity: 0; }
+      to   { transform: translateX(0)     scale(1);    opacity: 1; }
+    }
+    .fc-scene.fc-exit  { animation: fcSlideExit  0.28s cubic-bezier(0.4,0,0.2,1) forwards; }
+    .fc-scene.fc-enter { animation: fcSlideEnter 0.36s cubic-bezier(0.22,1,0.36,1) forwards; }
   </style>
 </head>
 <body>
@@ -1542,6 +1654,7 @@
       const [fcStep,    setFcStep   ] = useState(0);
       const [fcFlipped, setFcFlipped] = useState(false);
       const [fcRating,  setFcRating ] = useState(null);
+      const [fcExiting, setFcExiting] = useState(false);
 
       // recall quiz
       const [rcStep,       setRcStep      ] = useState(0);
@@ -1582,7 +1695,7 @@
 
       const startChallenge = ch => {
         if (ch.type === 'Flash Card') {
-          setFcStep(0); setFcFlipped(false); setFcRating(null);
+          setFcStep(0); setFcFlipped(false); setFcRating(null); setFcExiting(false);
           setScreen('flashCard');
         } else if (ch.type === 'Recall Quiz') {
           setRcStep(0); setRcSelections([]); setRcRevealed(false); setRcInspect(null);
@@ -1772,26 +1885,6 @@
                 </div>
               )}
 
-              {/* ── Checkbox ── */}
-              <div className="mx-5 mb-4">
-                <button onClick={()=>setMlChecked(c=>!c)}
-                  className="flex items-center gap-3 cursor-pointer btn-press w-full"
-                  style={{background:'none',border:'none',padding:0}}>
-                  <div style={{width:22,height:22,borderRadius:6,flexShrink:0,
-                    background: mlChecked ? ml.color : 'transparent',
-                    border: `2px solid ${mlChecked ? ml.color : 'rgba(113,113,122,0.6)'}`,
-                    display:'flex',alignItems:'center',justifyContent:'center',
-                    transition:'all 0.2s'}}>
-                    {mlChecked && (
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                        stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12"/>
-                      </svg>
-                    )}
-                  </div>
-                  <span className="text-zinc-400 text-sm">อ่านและเรียนรู้ครบแล้ว</span>
-                </button>
-              </div>
             </div>
 
             {/* ── Fixed bottom CTA ── */}
@@ -1803,10 +1896,9 @@
                   else { setMlPlaying(false); setMlChecked(false); goBack(); }
                 }}
                 className="w-full font-semibold py-4 rounded-2xl text-base btn-press"
-                style={{background: mlChecked ? ml.color : '#27272a',
-                  color: mlChecked ? '#fff' : '#71717a',
+                style={{background: ml.color, color:'#fff',
                   border:'none',cursor:'pointer',transition:'all 0.25s',
-                  boxShadow: mlChecked ? `0 8px 24px ${ml.color}50` : 'none'}}>
+                  boxShadow: `0 8px 24px ${ml.color}50`}}>
                 {nextMl ? 'ถัดไป →' : 'เสร็จสิ้น'}
               </button>
             </div>
@@ -1836,9 +1928,18 @@
         const card = fc[fcStep];
 
         const goNextCard = () => {
-          setFcFlipped(false);
-          setFcRating(null);
-          setTimeout(() => setFcStep(s => s + 1), 320);
+          if (fcExiting) return; // prevent double-trigger
+          // 1) Flip back to front first if currently flipped (smooth 3D rotate)
+          if (fcFlipped) setFcFlipped(false);
+          // 2) Start exit slide
+          setFcExiting(true);
+          // 3) After exit animation completes, swap card and trigger enter
+          setTimeout(() => {
+            setFcStep(s => s + 1);
+            setFcRating(null);
+            setFcFlipped(false);
+            setFcExiting(false);
+          }, 280); // matches fcSlideExit duration
         };
 
         return (
@@ -1869,41 +1970,37 @@
                 </div>
               </div>
 
-              {/* ── Flip Card ── */}
+              {/* ── Flip Card (proper 3D flip + slide transition) ── */}
               <div style={{flex:1, display:'flex', flexDirection:'column', padding:'0 20px', minHeight:0}}>
                 <div style={{height:320, flexShrink:0, cursor:'pointer'}}
-                  onClick={() => setFcFlipped(f => !f)}>
-                  {!fcFlipped ? (
-                    /* FRONT */
-                    <div key={`front-${fcStep}`} className="scale-in" style={{
-                      height:'100%', borderRadius:22, overflow:'hidden', position:'relative',
-                      background:'linear-gradient(135deg,#7f1d1d 0%,#450a0a 55%,#1a0404 100%)',
-                      boxShadow:'0 20px 50px rgba(127,29,29,0.4)',
-                      display:'flex', alignItems:'center', justifyContent:'center', padding:28,
-                    }}>
-                      <div style={{position:'absolute',top:'-20%',right:'-10%',width:200,height:200,borderRadius:'50%',background:'rgba(239,68,68,0.15)',filter:'blur(40px)'}}/>
-                      <div style={{position:'absolute',bottom:'-20%',left:'-10%',width:180,height:180,borderRadius:'50%',background:'rgba(120,20,20,0.3)',filter:'blur(50px)'}}/>
-                      <p style={{color:'#ffffff',fontSize:'1.25rem',fontWeight:600,lineHeight:1.65,textAlign:'center',position:'relative',zIndex:1}}>
-                        {renderFlashText(card.frontText, '#fca5a5')}
-                      </p>
-                    </div>
-                  ) : (
-                    /* BACK */
-                    <div key={`back-${fcStep}`} className="scale-in" style={{
-                      height:'100%', borderRadius:22, overflow:'hidden',
-                      background:'#f5f5f5',
-                      boxShadow:'0 20px 50px rgba(0,0,0,0.35)',
-                      display:'flex', flexDirection:'column', alignItems:'center',
-                      justifyContent:'center', padding:28,
-                    }}>
-                      <div style={{fontSize:'0.7rem',fontWeight:600,color:'#9ca3af',marginBottom:14,letterSpacing:'0.06em'}}>
-                        {card.backTag}
+                  onClick={() => !fcExiting && setFcFlipped(f => !f)}>
+                  <div key={`scene-${fcStep}`} className={`fc-scene ${fcExiting ? 'fc-exit' : 'fc-enter'}`}>
+                    <div className={`fc-card ${fcFlipped ? 'is-flipped' : ''}`}>
+                      {/* FRONT face */}
+                      <div className="fc-face fc-front" style={{
+                        background:'linear-gradient(135deg,#7f1d1d 0%,#450a0a 55%,#1a0404 100%)',
+                        boxShadow:'0 20px 50px rgba(127,29,29,0.4)',
+                      }}>
+                        <div style={{position:'absolute',top:'-20%',right:'-10%',width:200,height:200,borderRadius:'50%',background:'rgba(239,68,68,0.15)',filter:'blur(40px)'}}/>
+                        <div style={{position:'absolute',bottom:'-20%',left:'-10%',width:180,height:180,borderRadius:'50%',background:'rgba(120,20,20,0.3)',filter:'blur(50px)'}}/>
+                        <p style={{color:'#ffffff',fontSize:'1.25rem',fontWeight:600,lineHeight:1.65,textAlign:'center',position:'relative',zIndex:1, margin:0}}>
+                          {renderFlashText(card.frontText, '#fca5a5')}
+                        </p>
                       </div>
-                      <p style={{color:'#111111',fontSize:'1.05rem',fontWeight:500,lineHeight:1.8,textAlign:'center',margin:0}}>
-                        {renderFlashText(card.backText, '#dc2626')}
-                      </p>
+                      {/* BACK face */}
+                      <div className="fc-face fc-back" style={{
+                        background:'#f5f5f5',
+                        boxShadow:'0 20px 50px rgba(0,0,0,0.35)',
+                      }}>
+                        <div style={{fontSize:'0.7rem',fontWeight:600,color:'#9ca3af',marginBottom:14,letterSpacing:'0.06em'}}>
+                          {card.backTag}
+                        </div>
+                        <p style={{color:'#111111',fontSize:'1.05rem',fontWeight:500,lineHeight:1.8,textAlign:'center',margin:0}}>
+                          {renderFlashText(card.backText, '#dc2626')}
+                        </p>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
 
                 {/* ── Hint / Star rating ── */}
@@ -1912,30 +2009,39 @@
                     Tap to Flip card
                   </div>
                 ) : (
-                  <div className="fade-in" style={{marginTop:18, textAlign:'center'}}>
-                    <p style={{color:'#a1a1aa', fontSize:'0.8rem', marginBottom:12}}>
-                      ตอบถูกแค่ไหน ลองให้คะแนนตัวเองหน่อย
-                    </p>
-                    <div style={{display:'flex', justifyContent:'center', gap:10}}>
-                      {[1,2,3,4,5].map(n => (
-                        <button key={n} onClick={() => setFcRating(n)}
-                          className="btn-press"
-                          style={{
-                            width:40, height:40, borderRadius:'50%', border:'none',
-                            cursor:'pointer', fontSize:'1.1rem',
-                            background: fcRating !== null && n <= fcRating
-                              ? 'linear-gradient(135deg,#f59e0b,#ef4444)'
-                              : '#27272a',
-                            display:'flex', alignItems:'center', justifyContent:'center',
-                            transition:'all 0.2s',
-                            boxShadow: fcRating !== null && n <= fcRating
-                              ? '0 4px 14px rgba(245,158,11,0.4)' : 'none',
-                          }}>
-                          <span style={{fontSize:'1.1rem'}}>
-                            {fcRating !== null && n <= fcRating ? '★' : '☆'}
-                          </span>
-                        </button>
-                      ))}
+                  <div className="fade-in" style={{marginTop:22}}>
+                    <div style={{
+                      color:'#a1a1aa', fontSize:'0.74rem', fontWeight:500,
+                      letterSpacing:'-0.005em', marginBottom:10, paddingLeft:2,
+                    }}>
+                      จำได้แค่ไหน?
+                    </div>
+                    {/* Minimal difficulty pills */}
+                    <div style={{display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:6}}>
+                      {[
+                        {value:1, label:'ยังไม่จำ',  color:'#ef4444'},
+                        {value:2, label:'ยาก',       color:'#f97316'},
+                        {value:3, label:'พอได้',     color:'#eab308'},
+                        {value:4, label:'ง่ายมาก',   color:'#22c55e'},
+                      ].map(({value, label, color}) => {
+                        const isSelected = fcRating === value;
+                        return (
+                          <button key={value} onClick={() => setFcRating(value)}
+                            className="btn-press"
+                            style={{
+                              padding:'11px 4px', borderRadius:10,
+                              background: isSelected ? `${color}14` : 'transparent',
+                              border: `1px solid ${isSelected ? color : 'rgba(255,255,255,0.10)'}`,
+                              color: isSelected ? color : '#a1a1aa',
+                              fontSize:'0.76rem',
+                              fontWeight: isSelected ? 700 : 500,
+                              letterSpacing:'-0.01em', whiteSpace:'nowrap',
+                              cursor:'pointer', transition:'all 0.18s ease',
+                            }}>
+                            {label}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -3818,9 +3924,9 @@
           { day:'วันที่ 6', title:'Situational Leadership Style',             time:'09:00–16:00' },
         ],
         instructor: {
-          name: 'ดร. ศุภชัย มั่นคง',
-          title: 'Executive Coach & Leadership Consultant',
-          exp: '15+ ปีประสบการณ์',
+          name: 'เมธวิน ปิติพรวิวัฒน์',
+          title: 'CEO & Co-Founder of BASE Playhouse | Speaker of Leadership',
+          exp: 'Gallup®-Certified Strengths Coach · Learning Designer · Behavioral & Gamification Expert',
         },
         outcomes: [
           'นำทีมด้วยหัวใจและสร้าง Trust ที่เป็นรากฐานของทีม',
@@ -4031,9 +4137,15 @@
                 background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
                 borderRadius:16,padding:'16px 14px',marginBottom:8}}>
                 <div style={{width:46,height:46,borderRadius:'50%',flexShrink:0,
-                  background:'#ED4724',
+                  background:'#ED4724', overflow:'hidden', position:'relative',
                   display:'flex',alignItems:'center',justifyContent:'center',
-                  fontSize:'1.1rem',fontWeight:800,color:'#fff'}}>ศ</div>
+                  fontSize:'1.1rem',fontWeight:800,color:'#fff'}}>
+                  <span>ม</span>
+                  <img src="assets/methavin.png" alt="เมธวิน ปิติพรวิวัฒน์"
+                    style={{position:'absolute', inset:0, width:'100%', height:'100%',
+                      objectFit:'cover', objectPosition:'center 20%'}}
+                    onError={e => { e.target.style.display='none'; }}/>
+                </div>
                 <div>
                   <div style={{color:'#f4f4f5',fontSize:'0.875rem',fontWeight:700}}>{classInfo.instructor.name}</div>
                   <div style={{color:'#a8a29e',fontSize:'0.7rem',marginTop:2}}>{classInfo.instructor.title}</div>
@@ -4330,7 +4442,7 @@
       const SESSION={
         day:1,total:2,title:'Team Diversity & Leveraging Strengths',
         course:'Essential Leadership: Lead with your heart',
-        instructor:'ดร. ศุภชัย มั่นคง',
+        instructor:'เมธวิน ปิติพรวิวัฒน์',
         participants:24, online:21,
       };
       const AGENDA=[
@@ -4543,9 +4655,15 @@
               border:'1px solid rgba(255,255,255,0.05)',borderRadius:12,
               padding:'12px 14px',display:'flex',alignItems:'center',gap:10}}>
               <div style={{width:32,height:32,borderRadius:'50%',flexShrink:0,
-                background:'#ED4724',
+                background:'#ED4724', overflow:'hidden', position:'relative',
                 display:'flex',alignItems:'center',justifyContent:'center',
-                fontSize:'0.75rem',fontWeight:700,color:'#fff'}}>ศ</div>
+                fontSize:'0.75rem',fontWeight:700,color:'#fff'}}>
+                <span>ม</span>
+                <img src="assets/methavin.png" alt="เมธวิน ปิติพรวิวัฒน์"
+                  style={{position:'absolute', inset:0, width:'100%', height:'100%',
+                    objectFit:'cover', objectPosition:'center 20%'}}
+                  onError={e => { e.target.style.display='none'; }}/>
+              </div>
               <div>
                 <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>{SESSION.instructor}</div>
                 <div style={{color:'#d4d4d8',fontSize:'0.75rem',marginTop:1,lineHeight:1.4}}>
@@ -5461,6 +5579,100 @@
       );
     }
 
+    /* ── Mini Mockup components (for Learning Journey cards) ── */
+    function ChecklistMockup({ color }) {
+      return (
+        <div style={{
+          width:'100%', height:'100%', borderRadius:8,
+          background:'rgba(0,0,0,0.55)', border:`1px solid ${color}40`,
+          padding:7, boxShadow:`0 8px 22px ${color}30, inset 0 0 0 1px rgba(255,255,255,0.04)`,
+          display:'flex', flexDirection:'column', justifyContent:'center', gap:4,
+        }}>
+          {[true, true, false].map((checked, i) => (
+            <div key={i} style={{display:'flex', alignItems:'center', gap:5}}>
+              <span style={{
+                width:8, height:8, borderRadius:2,
+                background: checked ? color : 'transparent',
+                border: `1.2px solid ${checked ? color : '#52525b'}`,
+                flexShrink:0,
+                display:'flex', alignItems:'center', justifyContent:'center',
+                fontSize:6, color:'#fff', fontWeight:900,
+              }}>{checked ? '✓' : ''}</span>
+              <span style={{
+                height:3, borderRadius:1, flex:1,
+                background: checked ? 'rgba(255,255,255,0.42)' : 'rgba(255,255,255,0.16)',
+              }}/>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    function LiveMockup({ color }) {
+      return (
+        <div style={{
+          width:'100%', height:'100%', borderRadius:8,
+          background:'rgba(0,0,0,0.55)', border:`1px solid ${color}40`,
+          padding:7, boxShadow:`0 8px 22px ${color}30, inset 0 0 0 1px rgba(255,255,255,0.04)`,
+          display:'flex', flexDirection:'column', gap:4,
+        }}>
+          {/* Avatars row */}
+          <div style={{display:'flex', alignItems:'center'}}>
+            {['#fbbf24','#ED4724','#8b5cf6','#06b6d4'].map((c,i)=>(
+              <span key={i} style={{
+                width:10, height:10, borderRadius:'50%', background:c,
+                marginLeft: i ? -3 : 0, border:'1px solid rgba(0,0,0,0.55)',
+              }}/>
+            ))}
+            <span style={{marginLeft:'auto', display:'flex', alignItems:'center', gap:3,
+              fontSize:5.5, color:color, fontWeight:700, letterSpacing:'0.06em'}}>
+              <span className="anim-pulse" style={{width:4, height:4, borderRadius:'50%', background:color, display:'inline-block'}}/>
+              LIVE
+            </span>
+          </div>
+          {/* Poll bars */}
+          {[68, 44, 28].map((w, i)=>(
+            <div key={i} style={{height:4, borderRadius:1.5,
+              background:'rgba(255,255,255,0.08)', overflow:'hidden'}}>
+              <div style={{width:`${w}%`, height:'100%',
+                background: i===0 ? color : 'rgba(255,255,255,0.32)'}}/>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    function MobileMockup({ color }) {
+      return (
+        <div style={{
+          width:'100%', height:'100%', borderRadius:8,
+          background:'rgba(0,0,0,0.6)', border:`1px solid ${color}55`,
+          padding:6, boxShadow:`0 10px 26px ${color}40, inset 0 0 0 1px rgba(255,255,255,0.04)`,
+          display:'flex', flexDirection:'column', justifyContent:'space-between',
+        }}>
+          {/* Header line */}
+          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+            <span style={{fontSize:6.5, color:'#fff', fontWeight:700}}>🔥 7d</span>
+            <span style={{fontSize:6.5, color:color, fontWeight:800, letterSpacing:'0.02em'}}>1,240 pts</span>
+          </div>
+          {/* Mission card */}
+          <div style={{
+            background:`${color}28`, border:`1px solid ${color}55`,
+            borderRadius:5, padding:'4px 5px',
+          }}>
+            <div style={{width:'72%', height:3, background:'rgba(255,255,255,0.55)',
+              borderRadius:1.5, marginBottom:2.5}}/>
+            <div style={{width:'42%', height:2, background:'rgba(255,255,255,0.25)',
+              borderRadius:1.5}}/>
+          </div>
+          {/* Tab indicators */}
+          <div style={{display:'flex', gap:3, justifyContent:'center'}}>
+            <span style={{width:10, height:3, borderRadius:1.5, background:color}}/>
+            <span style={{width:3, height:3, borderRadius:1.5, background:'rgba(255,255,255,0.22)'}}/>
+            <span style={{width:3, height:3, borderRadius:1.5, background:'rgba(255,255,255,0.22)'}}/>
+          </div>
+        </div>
+      );
+    }
+
     /* ── PhaseSelect ─────────────────────────────── */
     function PhaseSelect({ onSelect, onBack }) {
       const [exiting, setExiting] = useState(false);
@@ -5484,6 +5696,9 @@
           icon: '📋',
           desc: 'เตรียมความพร้อมก่อนเข้าคอร์ส ประเมินตัวเอง และตั้งเป้าหมายการเรียนรู้',
           features: ['Pre-Assessment', 'Goal Setting', 'Onboarding Journey', 'Learning Path'],
+          mockup: 'checklist',
+          stagger: 0,
+          active: false,
         },
         {
           id: 'inclass',
@@ -5497,6 +5712,9 @@
           icon: '🎓',
           desc: 'กิจกรรม Live ระหว่างการเรียน Harvester และ Real-time Engagement',
           features: ['Live Activities', 'Harvester', 'Real-time Poll', 'Group Challenge'],
+          mockup: 'live',
+          stagger: 40,
+          active: false,
         },
         {
           id: 'outofclass',
@@ -5510,7 +5728,25 @@
           icon: '🚀',
           desc: 'ฝึกฝนต่อเนื่องหลังห้องเรียน ทำภารกิจ ทบทวนเนื้อหา และติดตามความก้าวหน้า',
           features: ['Mission & Quiz', 'Micro Learning', 'Flash Card', 'Progress & Leaderboard'],
+          mockup: 'mobile',
+          stagger: 0,
+          active: true,
         },
+      ];
+
+      const particles = [
+        {x:'6%',  d:24, c:'#F59E0B', delay:0},
+        {x:'14%', d:19, c:'#ED4724', delay:6},
+        {x:'22%', d:27, c:'#F59E0B', delay:10},
+        {x:'31%', d:21, c:'#6366f1', delay:3},
+        {x:'42%', d:25, c:'#ED4724', delay:14},
+        {x:'52%', d:23, c:'#6366f1', delay:8},
+        {x:'63%', d:20, c:'#F59E0B', delay:2},
+        {x:'72%', d:26, c:'#6366f1', delay:11},
+        {x:'82%', d:22, c:'#ED4724', delay:5},
+        {x:'91%', d:18, c:'#F59E0B', delay:13},
+        {x:'48%', d:30, c:'#6366f1', delay:17},
+        {x:'77%', d:28, c:'#F59E0B', delay:9},
       ];
 
       return (
@@ -5525,12 +5761,22 @@
           display: 'flex',
           flexDirection: 'column',
         }}>
-          {/* Ambient */}
-          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
-            <div style={{position:'absolute',top:'-15%',left:'20%',width:'50vw',height:'50vw',
+          {/* Ambient + Particles */}
+          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0,overflow:'hidden'}}>
+            <div className="anim-drift" style={{position:'absolute',top:'-12%',left:'18%',width:'48vw',height:'48vw',
               background:'radial-gradient(circle,rgba(237,71,36,0.10) 0%,transparent 65%)',borderRadius:'50%'}}/>
-            <div style={{position:'absolute',bottom:'-15%',right:'10%',width:'45vw',height:'45vw',
-              background:'radial-gradient(circle,rgba(245,158,11,0.06) 0%,transparent 65%)',borderRadius:'50%'}}/>
+            <div className="anim-drift-rev" style={{position:'absolute',bottom:'-18%',right:'8%',width:'42vw',height:'42vw',
+              background:'radial-gradient(circle,rgba(99,102,241,0.09) 0%,transparent 65%)',borderRadius:'50%'}}/>
+            <div className="anim-drift" style={{position:'absolute',top:'42%',right:'28%',width:'32vw',height:'32vw',
+              background:'radial-gradient(circle,rgba(245,158,11,0.07) 0%,transparent 65%)',borderRadius:'50%',animationDelay:'-7s'}}/>
+            <div className="anim-grid" style={{position:'absolute',inset:0,opacity:0.35}}/>
+            {/* Rising particles */}
+            {particles.map((p,i)=>(
+              <span key={i} className="journey-particle" style={{
+                left:p.x, bottom:0, background:p.c, boxShadow:`0 0 8px ${p.c}`,
+                animationDuration:`${p.d}s`, animationDelay:`-${p.delay}s`, opacity:0.5,
+              }}/>
+            ))}
           </div>
 
           {/* Navbar */}
@@ -5565,245 +5811,557 @@
           <div style={{
             flex:1,position:'relative',zIndex:1,
             display:'flex',flexDirection:'column',alignItems:'center',
-            padding:'64px max(24px,calc((100vw - 1200px)/2)) 80px',
+            padding:'56px max(24px,calc((100vw - 1200px)/2)) 80px',
           }}>
             {/* Header */}
-            <div className="fade-in" style={{textAlign:'center',marginBottom:56}}>
+            <div className="fade-in" style={{textAlign:'center',marginBottom:64, position:'relative'}}>
+              {/* Sparkles around title */}
+              <span className="anim-sparkle" style={{position:'absolute', top:8, left:'12%', width:14, height:14,
+                background:'radial-gradient(circle, #fff 0%, transparent 70%)', borderRadius:'50%', animationDelay:'-0.4s'}}/>
+              <span className="anim-sparkle" style={{position:'absolute', top:40, right:'10%', width:10, height:10,
+                background:'radial-gradient(circle, #F59E0B 0%, transparent 70%)', borderRadius:'50%', animationDelay:'-1.4s'}}/>
+              <span className="anim-sparkle" style={{position:'absolute', bottom:-10, right:'22%', width:11, height:11,
+                background:'radial-gradient(circle, #6366f1 0%, transparent 70%)', borderRadius:'50%', animationDelay:'-2.2s'}}/>
+              <span className="anim-sparkle" style={{position:'absolute', bottom:12, left:'20%', width:8, height:8,
+                background:'radial-gradient(circle, #ED4724 0%, transparent 70%)', borderRadius:'50%', animationDelay:'-1.8s'}}/>
+
               <div style={{
                 display:'inline-flex',alignItems:'center',gap:8,
                 background:'rgba(237,71,36,0.10)',border:'1px solid rgba(237,71,36,0.28)',
-                borderRadius:999,padding:'5px 14px',marginBottom:20,
+                borderRadius:999,padding:'5px 14px',marginBottom:22,
               }}>
-                <span style={{width:6,height:6,borderRadius:'50%',background:'#ED4724',display:'inline-block'}}/>
+                <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#ED4724',display:'inline-block',boxShadow:'0 0 8px rgba(237,71,36,0.7)'}}/>
                 <span className="bp-slogan" style={{color:'#ED4724',fontSize:'0.72rem',fontWeight:500}}>UPLIFTING HUMAN ABILITY</span>
               </div>
               <h1 className="bp-heading" style={{
-                fontSize:'clamp(1.8rem,4vw,2.8rem)',fontWeight:800,
-                letterSpacing:'0.02em',margin:'0 0 14px',lineHeight:1.1,
-              }}>Learning Journey ของคุณ</h1>
-              <p style={{color:'#a8a29e',fontSize:'1rem',margin:0,lineHeight:1.6}}>
-                เลือก Phase ที่ต้องการดู Prototype<br/>
-                <span style={{color:'#78716c',fontSize:'0.875rem'}}>Out of Class พร้อมใช้งาน · Phase อื่นกำลังพัฒนา</span>
+                fontSize:'clamp(2rem,4.4vw,3.2rem)',fontWeight:800,
+                letterSpacing:'0.01em',margin:'0 0 14px',lineHeight:1.1,
+              }}>
+                <span className="journey-title-gradient">Learning Journey</span>
+                <span style={{color:'#fff'}}> ของคุณ</span>
+              </h1>
+              <p style={{color:'#a8a29e',fontSize:'1.05rem',margin:'0 auto',lineHeight:1.6, maxWidth:540}}>
+                สำรวจ Learning Platform ทั้ง 3 ช่วงเวลา · เลือก Phase ที่คุณสนใจ
               </p>
-            </div>
 
-            {/* Phase cards */}
-            <div style={{
-              display:'grid',
-              gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))',
-              gap:20,width:'100%',maxWidth:1100,
-            }}>
-              {phases.map(({id,num,label,thai,status,color,glow,border,icon,desc,features},i)=>{
-                const isLive = status==='live';
-                const isHov = hovered===id;
-                return (
-                  <div key={id}
-                    className="fade-in"
-                    style={{animationDelay:`${i*0.1}s`,opacity:0}}
-                    onMouseEnter={()=>setHovered(id)}
-                    onMouseLeave={()=>setHovered(null)}>
-                    <div
-                      onClick={()=>go(id)}
-                      style={{
-                        position:'relative',
-                        background: isHov
-                          ? `linear-gradient(145deg, rgba(255,255,255,0.05), ${glow})`
-                          : 'rgba(255,255,255,0.03)',
-                        border:`1px solid ${isHov ? border : 'rgba(255,255,255,0.07)'}`,
-                        borderRadius:24,
-                        padding:'32px 28px',
-                        cursor: isLive ? 'pointer' : 'default',
-                        transition:'all 0.25s ease',
-                        transform: isHov && isLive ? 'translateY(-4px)' : 'none',
-                        boxShadow: isHov && isLive ? `0 20px 60px ${glow}` : 'none',
-                        height:'100%',
-                        display:'flex',flexDirection:'column',
-                        opacity: isLive ? 1 : 0.6,
-                      }}>
-
-
-                      {/* Phase number */}
-                      <div style={{
-                        fontSize:'0.7rem',fontWeight:700,color,
-                        letterSpacing:'0.1em',marginBottom:14,
-                        opacity:0.7,
-                      }}>PHASE {num}</div>
-
-                      {/* Icon + Title */}
-                      <div style={{display:'flex',alignItems:'center',gap:14,marginBottom:16}}>
-                        <div style={{
-                          width:52,height:52,borderRadius:16,flexShrink:0,
-                          background:`${color}18`,
-                          border:`1px solid ${color}33`,
-                          display:'flex',alignItems:'center',justifyContent:'center',
-                          fontSize:'1.5rem',
-                          boxShadow: isHov ? `0 0 24px ${color}30` : 'none',
-                          transition:'box-shadow 0.25s',
-                        }}>{icon}</div>
-                        <div>
-                          <div style={{fontWeight:800,fontSize:'1.25rem',
-                            letterSpacing:'-0.02em',lineHeight:1}}>{label}</div>
-                          <div style={{color:'#71717a',fontSize:'0.8rem',marginTop:3}}>{thai}</div>
-                        </div>
-                      </div>
-
-                      {/* Description */}
-                      <p style={{color:'#a1a1aa',fontSize:'0.875rem',lineHeight:1.65,
-                        margin:'0 0 24px',flex:1}}>{desc}</p>
-
-                      {/* Feature list */}
-                      <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:28}}>
-                        {features.map(f=>(
-                          <div key={f} style={{display:'flex',alignItems:'center',gap:8}}>
-                            <div style={{width:5,height:5,borderRadius:'50%',
-                              background: isLive ? color : '#3f3f46',flexShrink:0}}/>
-                            <span style={{fontSize:'0.8rem',
-                              color: isLive ? '#d4d4d8' : '#52525b'}}>{f}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* CTA */}
-                      <div style={{
-                        display:'flex',alignItems:'center',justifyContent:'center',
-                        padding:'13px 0',borderRadius:14,
-                        background: isLive
-                          ? (isHov ? color : `${color}cc`)
-                          : 'rgba(255,255,255,0.04)',
-                        border: isLive ? 'none' : '1px solid rgba(255,255,255,0.08)',
-                        transition:'background 0.25s',
-                      }}>
-                        <span style={{
-                          fontWeight:700,fontSize:'0.9rem',
-                          color: isLive ? '#fff' : '#3f3f46',
-                          letterSpacing:'-0.01em',
-                        }}>
-                          {isLive ? 'เข้าใช้งาน Prototype →' : 'กำลังพัฒนา…'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Journey timeline hint */}
-            <div className="fade-in" style={{
-              animationDelay:'0.35s',opacity:0,
-              marginTop:56, display:'flex',alignItems:'center',gap:0,
-            }}>
-              {[['Pre-Class','#f59e0b'],['In-Class','#06b6d4'],['Out of Class','#6366f1']].map(([l,c],i)=>(
-                <React.Fragment key={l}>
-                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:6}}>
-                    <div style={{
-                      width:36,height:36,borderRadius:'50%',
-                      background:`linear-gradient(135deg,${c},${c}99)`,
-                      display:'flex',alignItems:'center',justifyContent:'center',
-                      fontSize:'0.75rem',fontWeight:700,color:'#fff',
-                      boxShadow:`0 0 14px ${c}55`,
-                    }}>{i+1}</div>
-                    <span style={{fontSize:'0.7rem',color:c,fontWeight:600,opacity:0.85}}>{l}</span>
-                  </div>
-                  {i<2 && (
-                    <div style={{
-                      width:80,height:1,margin:'0 4px',marginBottom:22,
-                      background:`linear-gradient(90deg,${[['#f59e0b','#06b6d4'],['#06b6d4','#6366f1']][i].join(',')})`,
-                      opacity:0.4,
-                    }}/>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-
-            {/* HR Dashboard entry */}
-            <div className="fade-in" style={{
-              animationDelay:'0.45s',opacity:0,
-              marginTop:40,width:'100%',maxWidth:1100,
-            }}>
-              <div
-                onClick={()=>go('hr')}
-                style={{
-                  background:'rgba(99,102,241,0.06)',
-                  border:'1px solid rgba(99,102,241,0.18)',
-                  borderRadius:18,padding:'18px 28px',
-                  display:'flex',alignItems:'center',justifyContent:'space-between',
-                  cursor:'pointer',transition:'all 0.2s ease',
-                }}
-                onMouseEnter={e=>{e.currentTarget.style.background='rgba(99,102,241,0.12)';e.currentTarget.style.borderColor='rgba(99,102,241,0.38)';e.currentTarget.style.transform='translateY(-2px)';}}
-                onMouseLeave={e=>{e.currentTarget.style.background='rgba(99,102,241,0.06)';e.currentTarget.style.borderColor='rgba(99,102,241,0.18)';e.currentTarget.style.transform='none';}}>
-                <div style={{display:'flex',alignItems:'center',gap:14}}>
-                  <div style={{
-                    width:46,height:46,borderRadius:13,flexShrink:0,
-                    background:'rgba(99,102,241,0.15)',border:'1px solid rgba(99,102,241,0.3)',
-                    display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.4rem',
-                  }}>👩‍💼</div>
-                  <div>
-                    <div style={{fontWeight:700,fontSize:'0.95rem',letterSpacing:'-0.01em'}}>
-                      HR Dashboard
-                      <span style={{marginLeft:8,display:'inline-flex',alignItems:'center',gap:4,
-                        background:'rgba(99,102,241,0.12)',border:'1px solid rgba(99,102,241,0.25)',
-                        borderRadius:999,padding:'2px 8px',verticalAlign:'middle'}}>
-                        <span style={{width:4,height:4,borderRadius:'50%',background:'#818cf8',display:'inline-block'}} className="anim-pulse"/>
-                        <span style={{color:'#a5b4fc',fontSize:'0.62rem',fontWeight:600,letterSpacing:'0.03em'}}>OUT OF CLASS</span>
-                      </span>
-                    </div>
-                    <div style={{color:'#71717a',fontSize:'0.8rem',marginTop:3}}>
-                      ดูภาพรวมผู้เรียน · ติดตามความก้าวหน้า · ข้อมูลสำหรับ HR & Admin
-                    </div>
-                  </div>
-                </div>
-                <div style={{
-                  display:'flex',alignItems:'center',gap:6,flexShrink:0,
-                  background:'rgba(99,102,241,0.18)',border:'1px solid rgba(99,102,241,0.35)',
-                  borderRadius:10,padding:'8px 16px',
-                  color:'#c7d2fe',fontSize:'0.82rem',fontWeight:600,
-                }}>เปิด Dashboard →</div>
+              {/* Stat chips */}
+              <div style={{
+                display:'flex',flexWrap:'wrap',gap:10,justifyContent:'center',
+                marginTop:24,
+              }}>
+                {[
+                  {label:'3 Phases',  icon:'🎯', c:'#F59E0B'},
+                  {label:'Mobile + Web', icon:'📱', c:'#06b6d4'},
+                  {label:'Live Demo',   icon:'⚡', c:'#6366f1'},
+                ].map(s=>(
+                  <span key={s.label} style={{
+                    display:'inline-flex',alignItems:'center',gap:6,
+                    background:`${s.c}14`, border:`1px solid ${s.c}40`,
+                    color:s.c, borderRadius:999, padding:'5px 13px',
+                    fontSize:'0.78rem',fontWeight:600,letterSpacing:'-0.01em',
+                  }}>
+                    <span>{s.icon}</span>
+                    {s.label}
+                  </span>
+                ))}
               </div>
             </div>
 
-            {/* Manager Review entry */}
-            <div className="fade-in" style={{
-              animationDelay:'0.55s',opacity:0,
-              marginTop:16,width:'100%',maxWidth:1100,
-            }}>
-              <div
-                onClick={()=>go('manager')}
+            {/* Phase cards section with journey path */}
+            <div style={{position:'relative', width:'100%', maxWidth:1180}}>
+              {/* SVG Journey Path (desktop only) */}
+              <svg className="journey-path-svg"
+                viewBox="0 0 1180 200" preserveAspectRatio="none"
                 style={{
-                  background:'rgba(20,184,166,0.06)',
-                  border:'1px solid rgba(20,184,166,0.20)',
-                  borderRadius:18,padding:'18px 28px',
-                  display:'flex',alignItems:'center',justifyContent:'space-between',
-                  cursor:'pointer',transition:'all 0.2s ease',
-                }}
-                onMouseEnter={e=>{e.currentTarget.style.background='rgba(20,184,166,0.12)';e.currentTarget.style.borderColor='rgba(20,184,166,0.40)';e.currentTarget.style.transform='translateY(-2px)';}}
-                onMouseLeave={e=>{e.currentTarget.style.background='rgba(20,184,166,0.06)';e.currentTarget.style.borderColor='rgba(20,184,166,0.20)';e.currentTarget.style.transform='none';}}>
-                <div style={{display:'flex',alignItems:'center',gap:14}}>
-                  <div style={{
-                    width:46,height:46,borderRadius:13,flexShrink:0,
-                    background:'rgba(20,184,166,0.15)',border:'1px solid rgba(20,184,166,0.32)',
-                    display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.4rem',
-                  }}>📩</div>
-                  <div>
-                    <div style={{fontWeight:700,fontSize:'0.95rem',letterSpacing:'-0.01em'}}>
-                      Manager Review
-                      <span style={{marginLeft:8,display:'inline-flex',alignItems:'center',gap:4,
-                        background:'rgba(20,184,166,0.14)',border:'1px solid rgba(20,184,166,0.30)',
-                        borderRadius:999,padding:'2px 8px',verticalAlign:'middle'}}>
-                        <span style={{width:4,height:4,borderRadius:'50%',background:'#2dd4bf',display:'inline-block'}} className="anim-pulse"/>
-                        <span style={{color:'#5eead4',fontSize:'0.62rem',fontWeight:600,letterSpacing:'0.03em'}}>FEATURE BRIEF</span>
-                      </span>
+                  position:'absolute', top:-10, left:0,
+                  width:'100%', height:160,
+                  pointerEvents:'none', overflow:'visible', zIndex:0,
+                }}>
+                <defs>
+                  <linearGradient id="pathGradA" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"  stopColor="#F59E0B" stopOpacity="0.6"/>
+                    <stop offset="100%" stopColor="#ED4724" stopOpacity="0.6"/>
+                  </linearGradient>
+                  <linearGradient id="pathGradB" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"  stopColor="#ED4724" stopOpacity="0.6"/>
+                    <stop offset="100%" stopColor="#6366f1" stopOpacity="0.6"/>
+                  </linearGradient>
+                  <linearGradient id="pathGradC" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"  stopColor="#6366f1" stopOpacity="0.55"/>
+                    <stop offset="55%" stopColor="#F59E0B" stopOpacity="0.75"/>
+                    <stop offset="100%" stopColor="#ED4724" stopOpacity="0.9"/>
+                  </linearGradient>
+                  <filter id="dotGlow" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur stdDeviation="3" result="blur"/>
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                </defs>
+                {/* Curve 1: Pre-Class → In-Class (arcs up) */}
+                <path d="M 200 110 C 320 30, 460 30, 580 150"
+                  stroke="url(#pathGradA)" strokeWidth="2"
+                  strokeDasharray="6 6" fill="none" strokeLinecap="round"/>
+                {/* Curve 2: In-Class → Out-of-Class (arcs up) */}
+                <path d="M 600 150 C 720 240, 860 30, 980 110"
+                  stroke="url(#pathGradB)" strokeWidth="2"
+                  strokeDasharray="6 6" fill="none" strokeLinecap="round"/>
+                {/* Curve 3: Out-of-Class → Transformation (arcs up & right) */}
+                <path d="M 980 110 C 1060 30, 1130 18, 1180 30"
+                  stroke="url(#pathGradC)" strokeWidth="2"
+                  strokeDasharray="6 6" fill="none" strokeLinecap="round"/>
+                {/* Anchor circles at icon centers */}
+                <circle cx="200" cy="110" r="4" fill="#F59E0B" opacity="0.85"/>
+                <circle cx="590" cy="150" r="4" fill="#ED4724" opacity="0.85"/>
+                <circle cx="980" cy="110" r="4" fill="#6366f1" opacity="0.85"/>
+                <circle cx="1180" cy="30" r="5" fill="#ED4724" opacity="0.95" filter="url(#dotGlow)"/>
+                {/* Animated dot 1 */}
+                <circle r="5" fill="#FBBF24" filter="url(#dotGlow)">
+                  <animateMotion dur="3.4s" repeatCount="indefinite"
+                    path="M 200 110 C 320 30, 460 30, 580 150"/>
+                  <animate attributeName="opacity"
+                    values="0;1;1;0" keyTimes="0;0.1;0.9;1"
+                    dur="3.4s" repeatCount="indefinite"/>
+                </circle>
+                {/* Animated dot 2 */}
+                <circle r="5" fill="#818cf8" filter="url(#dotGlow)">
+                  <animateMotion dur="3.4s" begin="1.7s" repeatCount="indefinite"
+                    path="M 600 150 C 720 240, 860 30, 980 110"/>
+                  <animate attributeName="opacity"
+                    values="0;1;1;0" keyTimes="0;0.1;0.9;1"
+                    dur="3.4s" begin="1.7s" repeatCount="indefinite"/>
+                </circle>
+                {/* Animated dot 3 */}
+                <circle r="5" fill="#F59E0B" filter="url(#dotGlow)">
+                  <animateMotion dur="3.4s" begin="3.4s" repeatCount="indefinite"
+                    path="M 980 110 C 1060 30, 1130 18, 1180 30"/>
+                  <animate attributeName="opacity"
+                    values="0;1;1;0" keyTimes="0;0.1;0.9;1"
+                    dur="3.4s" begin="3.4s" repeatCount="indefinite"/>
+                </circle>
+              </svg>
+
+              {/* Transformation outcome label — brand-aligned, static */}
+              <div className="journey-transform-label" style={{
+                position:'absolute', top:-16, right:0, zIndex:5,
+                display:'flex', alignItems:'center', gap:14,
+                pointerEvents:'none',
+              }}>
+                {/* Endpoint marker — same vocabulary as journey dots */}
+                <div style={{position:'relative', width:14, height:14, flexShrink:0}}>
+                  <span style={{
+                    position:'absolute', inset:0, borderRadius:'50%',
+                    background:'rgba(237,71,36,0.25)',
+                  }}/>
+                  <span style={{
+                    position:'absolute', inset:3, borderRadius:'50%',
+                    background:'linear-gradient(135deg, #FBBF24, #ED4724)',
+                    boxShadow:'0 0 10px rgba(237,71,36,0.9)',
+                  }}/>
+                </div>
+                <span className="bp-heading" style={{
+                  fontSize:'1.35rem', fontWeight:800,
+                  letterSpacing:'0.06em', textTransform:'uppercase',
+                  background:'linear-gradient(95deg, #F59E0B 0%, #FB7C58 45%, #ED4724 100%)',
+                  WebkitBackgroundClip:'text', backgroundClip:'text',
+                  WebkitTextFillColor:'transparent',
+                  whiteSpace:'nowrap', lineHeight:1,
+                  filter:'drop-shadow(0 2px 14px rgba(237,71,36,0.35))',
+                }}>Transformation</span>
+              </div>
+
+              {/* Cards grid */}
+              <div className="phase-card-grid" style={{
+                display:'grid',
+                gridTemplateColumns:'repeat(3, 1fr)',
+                gap:24, width:'100%',
+                position:'relative', zIndex:1,
+              }}>
+                {phases.map(({id,num,label,thai,status,color,glow,border,icon,desc,features,mockup,stagger,active},i)=>{
+                  const isLive = status==='live';
+                  const isHov = hovered===id;
+                  return (
+                    <div key={id}
+                      className="fade-in journey-card-stagger"
+                      style={{animationDelay:`${i*0.12}s`,opacity:0, marginTop:stagger}}
+                      onMouseEnter={()=>setHovered(id)}
+                      onMouseLeave={()=>setHovered(null)}>
+                      <div
+                        onClick={()=>go(id)}
+                        className="journey-phase-card"
+                        style={{
+                          position:'relative', overflow:'hidden',
+                          background: isHov
+                            ? `linear-gradient(145deg, rgba(255,255,255,0.05), ${glow})`
+                            : 'rgba(255,255,255,0.03)',
+                          border:`1px solid ${isHov ? border : 'rgba(255,255,255,0.07)'}`,
+                          borderRadius:24,
+                          padding:'32px 28px 28px',
+                          cursor: isLive ? 'pointer' : 'default',
+                          boxShadow: isHov && isLive ? `0 24px 70px ${glow}` : 'none',
+                          height:'100%',
+                          display:'flex',flexDirection:'column',
+                          opacity: isLive ? 1 : 0.6,
+                        }}>
+
+                        {/* Background pattern layer */}
+                        <div aria-hidden="true" style={{
+                          position:'absolute', inset:0, pointerEvents:'none', opacity: isHov ? 0.7 : 0.5,
+                          transition:'opacity 0.3s ease',
+                          backgroundImage:
+                            mockup==='checklist' ? `radial-gradient(${color}22 1px, transparent 1px)` :
+                            mockup==='live'      ? `repeating-linear-gradient(45deg, ${color}10 0, ${color}10 1px, transparent 1px, transparent 14px)` :
+                                                   `radial-gradient(circle at 85% 15%, ${color}1f 0%, transparent 50%), radial-gradient(${color}18 1px, transparent 1.2px)`,
+                          backgroundSize:
+                            mockup==='checklist' ? '14px 14px' :
+                            mockup==='live'      ? 'auto' :
+                                                   '100% 100%, 22px 22px',
+                        }}/>
+
+                        {/* Active badge (only on Out-of-Class) */}
+                        {active && (
+                          <div style={{
+                            position:'absolute', top:14, left:18,
+                            display:'inline-flex', alignItems:'center', gap:5,
+                            background:'rgba(34,197,94,0.14)', border:'1px solid rgba(34,197,94,0.42)',
+                            borderRadius:999, padding:'3px 10px', zIndex:3,
+                          }}>
+                            <span className="anim-pulse" style={{width:5,height:5,borderRadius:'50%',background:'#22c55e',display:'inline-block',boxShadow:'0 0 6px rgba(34,197,94,0.7)'}}/>
+                            <span style={{color:'#86efac',fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.06em'}}>LIVE</span>
+                          </div>
+                        )}
+
+                        {/* Floating mini mockup (top-right) */}
+                        <div className="phase-mockup anim-mockup-bob" style={{
+                          position:'absolute', top:16, right:16,
+                          width:78, height:60, zIndex:2,
+                          '--mockup-tilt': mockup==='live' ? '6deg' : '-6deg',
+                        }}>
+                          {mockup==='checklist' && <ChecklistMockup color={color}/>}
+                          {mockup==='live'      && <LiveMockup      color={color}/>}
+                          {mockup==='mobile'    && <MobileMockup    color={color}/>}
+                        </div>
+
+                        {/* Phase number */}
+                        <div style={{
+                          fontSize:'0.7rem',fontWeight:700,color,
+                          letterSpacing:'0.1em',marginBottom:14, marginTop: active ? 28 : 0,
+                          opacity:0.75, position:'relative', zIndex:1,
+                        }}>PHASE {num}</div>
+
+                        {/* Icon + Title */}
+                        <div style={{display:'flex',alignItems:'center',gap:14,marginBottom:16, position:'relative', zIndex:1}}>
+                          <div className={active ? 'anim-phase-active' : ''} style={{
+                            width:52,height:52,borderRadius:16,flexShrink:0,
+                            background:`${color}1a`,
+                            border:`1px solid ${color}40`,
+                            display:'flex',alignItems:'center',justifyContent:'center',
+                            fontSize:'1.5rem',
+                            boxShadow: isHov ? `0 0 28px ${color}50` : 'none',
+                            transition:'box-shadow 0.25s',
+                          }}>{icon}</div>
+                          <div>
+                            <div style={{fontWeight:800,fontSize:'1.25rem',
+                              letterSpacing:'-0.02em',lineHeight:1}}>{label}</div>
+                            <div style={{color:'#71717a',fontSize:'0.8rem',marginTop:3}}>{thai}</div>
+                          </div>
+                        </div>
+
+                        {/* Description */}
+                        <p style={{color:'#a1a1aa',fontSize:'0.875rem',lineHeight:1.65,
+                          margin:'0 0 22px',flex:1, position:'relative', zIndex:1}}>{desc}</p>
+
+                        {/* Feature list */}
+                        <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:24, position:'relative', zIndex:1}}>
+                          {features.map(f=>(
+                            <div key={f} style={{display:'flex',alignItems:'center',gap:8}}>
+                              <div style={{width:5,height:5,borderRadius:'50%',
+                                background: isLive ? color : '#3f3f46',flexShrink:0,
+                                boxShadow: isLive ? `0 0 6px ${color}90` : 'none'}}/>
+                              <span style={{fontSize:'0.8rem',
+                                color: isLive ? '#d4d4d8' : '#52525b'}}>{f}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* CTA */}
+                        <div style={{
+                          position:'relative', overflow:'hidden',
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          padding:'13px 0',borderRadius:14,
+                          background: isLive
+                            ? (isHov ? color : `${color}cc`)
+                            : 'rgba(255,255,255,0.04)',
+                          border: isLive ? 'none' : '1px solid rgba(255,255,255,0.08)',
+                          transition:'background 0.25s',
+                          zIndex:1,
+                          boxShadow: active ? `0 8px 22px ${color}40` : 'none',
+                        }}>
+                          {isLive && active && <span className="anim-cta-shimmer"/>}
+                          <span style={{
+                            fontWeight:700,fontSize:'0.9rem',
+                            color: isLive ? '#fff' : '#3f3f46',
+                            letterSpacing:'-0.01em',
+                            position:'relative', zIndex:1,
+                            display:'inline-flex', alignItems:'center', gap:6,
+                          }}>
+                            {isLive ? <>เข้าใช้งาน Prototype <span className={active ? 'anim-arrow-nudge' : ''}>→</span></> : 'กำลังพัฒนา…'}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div style={{color:'#71717a',fontSize:'0.8rem',marginTop:3}}>
-                      ให้หัวหน้างานตรวจ Mission ผ่านลิงก์ใน E-mail · One-page Summary
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* For HR & Managers section */}
+            <div className="fade-in" style={{
+              animationDelay:'0.65s', opacity:0,
+              marginTop:80, width:'100%', maxWidth:1180,
+            }}>
+              {/* Section Header — bold confident */}
+              <div style={{textAlign:'center', marginBottom:44}}>
+                <div style={{
+                  display:'inline-flex', alignItems:'center', gap:8,
+                  background:'rgba(99,102,241,0.10)', border:'1px solid rgba(99,102,241,0.28)',
+                  borderRadius:999, padding:'5px 14px', marginBottom:18,
+                }}>
+                  <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#818cf8',boxShadow:'0 0 8px rgba(129,140,248,0.7)',display:'inline-block'}}/>
+                  <span className="bp-slogan" style={{color:'#a5b4fc',fontSize:'0.72rem',fontWeight:500}}>FOR HR &amp; MANAGERS</span>
+                </div>
+                <h2 className="bp-heading" style={{
+                  fontSize:'clamp(1.5rem,2.8vw,2.1rem)', fontWeight:800,
+                  letterSpacing:'0.01em', margin:'0 0 12px', lineHeight:1.2,
+                  color:'#fff',
+                }}>
+                  เครื่องมือสำหรับ <span style={{color:'#a5b4fc'}}>ผู้ดูแล</span> และ <span style={{color:'#5eead4'}}>หัวหน้างาน</span>
+                </h2>
+                <p style={{color:'#a8a29e',fontSize:'0.98rem',margin:'0 auto',lineHeight:1.65, maxWidth:560}}>
+                  ดูภาพรวมผู้เรียน · ติดตามความก้าวหน้า · ให้ Manager ตรวจ Mission โดยตรง
+                </p>
+              </div>
+
+              {/* 2-column grid */}
+              <div className="hr-2col" style={{
+                display:'grid', gridTemplateColumns:'1fr 1fr', gap:20,
+              }}>
+                {/* ─── HR Dashboard Card ─── */}
+                <div onClick={()=>go('hr')}
+                  className="journey-phase-card"
+                  style={{
+                    background:'linear-gradient(160deg, rgba(99,102,241,0.12), rgba(99,102,241,0.04))',
+                    border:'1px solid rgba(99,102,241,0.32)',
+                    borderRadius:24, padding:28,
+                    cursor:'pointer', position:'relative', overflow:'hidden',
+                    boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.25)',
+                  }}
+                  onMouseEnter={e=>{e.currentTarget.style.background='linear-gradient(160deg, rgba(99,102,241,0.22), rgba(99,102,241,0.10))';e.currentTarget.style.borderColor='rgba(99,102,241,0.55)';e.currentTarget.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 60px rgba(99,102,241,0.25)';}}
+                  onMouseLeave={e=>{e.currentTarget.style.background='linear-gradient(160deg, rgba(99,102,241,0.12), rgba(99,102,241,0.04))';e.currentTarget.style.borderColor='rgba(99,102,241,0.32)';e.currentTarget.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.25)';}}>
+
+                  {/* Dotted pattern */}
+                  <div aria-hidden="true" style={{
+                    position:'absolute', inset:0, pointerEvents:'none', opacity:0.55,
+                    backgroundImage:'radial-gradient(rgba(99,102,241,0.18) 1px, transparent 1.2px)',
+                    backgroundSize:'18px 18px',
+                  }}/>
+                  {/* Corner blob */}
+                  <div aria-hidden="true" style={{
+                    position:'absolute', top:-60, right:-60, width:200, height:200,
+                    background:'radial-gradient(circle, rgba(99,102,241,0.26) 0%, transparent 65%)',
+                    borderRadius:'50%', pointerEvents:'none',
+                  }}/>
+
+                  {/* Header */}
+                  <div style={{display:'flex',alignItems:'center',gap:14, marginBottom:20, position:'relative'}}>
+                    <div style={{
+                      width:56, height:56, borderRadius:16, flexShrink:0,
+                      background:'rgba(99,102,241,0.18)', border:'1px solid rgba(99,102,241,0.42)',
+                      display:'flex',alignItems:'center',justifyContent:'center', fontSize:'1.6rem',
+                      boxShadow:'0 0 26px rgba(99,102,241,0.30)',
+                    }}>👩‍💼</div>
+                    <div style={{flex:1}}>
+                      <div style={{display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
+                        <span style={{fontWeight:800,fontSize:'1.18rem',letterSpacing:'-0.01em'}}>HR Dashboard</span>
+                        <span style={{display:'inline-flex',alignItems:'center',gap:4,
+                          background:'rgba(34,197,94,0.14)',border:'1px solid rgba(34,197,94,0.42)',
+                          borderRadius:999,padding:'2px 9px'}}>
+                          <span className="anim-pulse" style={{width:5,height:5,borderRadius:'50%',background:'#22c55e',boxShadow:'0 0 6px rgba(34,197,94,0.7)',display:'inline-block'}}/>
+                          <span style={{color:'#86efac',fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.06em'}}>LIVE</span>
+                        </span>
+                      </div>
+                      <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginTop:4, lineHeight:1.5}}>
+                        ภาพรวมผู้เรียน · ติดตามความก้าวหน้า · Export รายงาน
+                      </div>
                     </div>
                   </div>
+
+                  {/* Mini dashboard mockup */}
+                  <div style={{
+                    background:'rgba(0,0,0,0.34)', borderRadius:14,
+                    padding:18, marginBottom:18, position:'relative',
+                    border:'1px solid rgba(255,255,255,0.05)',
+                  }}>
+                    {/* Top stat row */}
+                    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16}}>
+                      <div>
+                        <div style={{color:'#71717a',fontSize:'0.6rem',fontWeight:700,letterSpacing:'0.1em'}}>TOTAL LEARNERS</div>
+                        <div style={{display:'flex', alignItems:'baseline', gap:7, marginTop:3}}>
+                          <span style={{color:'#fff',fontSize:'1.75rem',fontWeight:800,letterSpacing:'-0.02em',lineHeight:1}}>24</span>
+                          <span style={{color:'#86efac',fontSize:'0.72rem',fontWeight:700}}>+3 ใหม่</span>
+                        </div>
+                      </div>
+                      {/* Avatar stack */}
+                      <div style={{display:'flex', alignItems:'center'}}>
+                        {[['M','#ED4724'],['S','#fbbf24'],['T','#8b5cf6'],['K','#06b6d4'],['N','#10b981']].map(([init,c],i)=>(
+                          <span key={i} style={{
+                            width:26, height:26, borderRadius:'50%', background:c,
+                            marginLeft: i ? -8 : 0, border:'2px solid #0a0a0a',
+                            display:'flex',alignItems:'center',justifyContent:'center',
+                            fontSize:'0.6rem',fontWeight:800,color:'#fff',
+                          }}>{init}</span>
+                        ))}
+                        <span style={{marginLeft:-8, width:26, height:26, borderRadius:'50%',
+                          background:'rgba(255,255,255,0.08)', border:'2px solid #0a0a0a',
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'0.55rem',fontWeight:700,color:'#a1a1aa'}}>+19</span>
+                      </div>
+                    </div>
+                    {/* Progress breakdown */}
+                    {[['Active','82%','#22c55e'],['On-track','65%','#818cf8'],['At-risk','12%','#f97316']].map(([l,v,c])=>(
+                      <div key={l} style={{display:'flex',alignItems:'center',gap:10,
+                        margin:'7px 0', fontSize:'0.72rem'}}>
+                        <span style={{color:'#a1a1aa', minWidth:64}}>{l}</span>
+                        <div style={{flex:1, height:5, background:'rgba(255,255,255,0.06)', borderRadius:3, overflow:'hidden'}}>
+                          <div style={{width:v, height:'100%', background:c, borderRadius:3,
+                            boxShadow:`0 0 8px ${c}90`}}/>
+                        </div>
+                        <span style={{color:c, fontWeight:800, minWidth:34, textAlign:'right'}}>{v}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* CTA */}
+                  <div style={{
+                    position:'relative',
+                    display:'flex',alignItems:'center',justifyContent:'center',gap:8,
+                    padding:'13px 0', borderRadius:14,
+                    background:'#6366f1', color:'#fff',
+                    fontSize:'0.92rem', fontWeight:700, letterSpacing:'-0.01em',
+                    boxShadow:'0 8px 22px rgba(99,102,241,0.40)',
+                  }}>
+                    เปิด HR Dashboard <span>→</span>
+                  </div>
                 </div>
-                <div style={{
-                  display:'flex',alignItems:'center',gap:6,flexShrink:0,
-                  background:'rgba(20,184,166,0.18)',border:'1px solid rgba(20,184,166,0.36)',
-                  borderRadius:10,padding:'8px 16px',
-                  color:'#99f6e4',fontSize:'0.82rem',fontWeight:600,
-                }}>ดู Summary →</div>
+
+                {/* ─── Manager Review Card ─── */}
+                <div onClick={()=>go('manager')}
+                  className="journey-phase-card"
+                  style={{
+                    background:'linear-gradient(160deg, rgba(20,184,166,0.12), rgba(20,184,166,0.04))',
+                    border:'1px solid rgba(20,184,166,0.32)',
+                    borderRadius:24, padding:28,
+                    cursor:'pointer', position:'relative', overflow:'hidden',
+                    boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.25)',
+                  }}
+                  onMouseEnter={e=>{e.currentTarget.style.background='linear-gradient(160deg, rgba(20,184,166,0.22), rgba(20,184,166,0.10))';e.currentTarget.style.borderColor='rgba(20,184,166,0.55)';e.currentTarget.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 60px rgba(20,184,166,0.25)';}}
+                  onMouseLeave={e=>{e.currentTarget.style.background='linear-gradient(160deg, rgba(20,184,166,0.12), rgba(20,184,166,0.04))';e.currentTarget.style.borderColor='rgba(20,184,166,0.32)';e.currentTarget.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.25)';}}>
+
+                  {/* Diagonal stripes pattern */}
+                  <div aria-hidden="true" style={{
+                    position:'absolute', inset:0, pointerEvents:'none', opacity:0.5,
+                    backgroundImage:'repeating-linear-gradient(45deg, rgba(20,184,166,0.08) 0, rgba(20,184,166,0.08) 1px, transparent 1px, transparent 16px)',
+                  }}/>
+                  {/* Corner blob */}
+                  <div aria-hidden="true" style={{
+                    position:'absolute', top:-60, right:-60, width:200, height:200,
+                    background:'radial-gradient(circle, rgba(20,184,166,0.26) 0%, transparent 65%)',
+                    borderRadius:'50%', pointerEvents:'none',
+                  }}/>
+
+                  {/* Header */}
+                  <div style={{display:'flex',alignItems:'center',gap:14, marginBottom:20, position:'relative'}}>
+                    <div style={{
+                      width:56, height:56, borderRadius:16, flexShrink:0,
+                      background:'rgba(20,184,166,0.18)', border:'1px solid rgba(20,184,166,0.42)',
+                      display:'flex',alignItems:'center',justifyContent:'center', fontSize:'1.6rem',
+                      boxShadow:'0 0 26px rgba(20,184,166,0.30)',
+                    }}>📩</div>
+                    <div style={{flex:1}}>
+                      <div style={{display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
+                        <span style={{fontWeight:800,fontSize:'1.18rem',letterSpacing:'-0.01em'}}>Manager Review</span>
+                        <span style={{display:'inline-flex',alignItems:'center',gap:4,
+                          background:'rgba(20,184,166,0.14)',border:'1px solid rgba(20,184,166,0.36)',
+                          borderRadius:999,padding:'2px 9px'}}>
+                          <span className="anim-pulse" style={{width:5,height:5,borderRadius:'50%',background:'#2dd4bf',boxShadow:'0 0 6px rgba(45,212,191,0.7)',display:'inline-block'}}/>
+                          <span style={{color:'#5eead4',fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.06em'}}>FEATURE</span>
+                        </span>
+                      </div>
+                      <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginTop:4, lineHeight:1.5}}>
+                        Manager ตรวจ Mission · ลิงก์ใน E-mail · ไม่ต้องล็อกอิน
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mini email + 3-step mockup */}
+                  <div style={{
+                    background:'rgba(0,0,0,0.34)', borderRadius:14,
+                    padding:18, marginBottom:18, position:'relative',
+                    border:'1px solid rgba(255,255,255,0.05)',
+                  }}>
+                    {/* Email preview */}
+                    <div style={{
+                      background:'rgba(20,184,166,0.08)', borderRadius:10,
+                      padding:'11px 12px', marginBottom:14,
+                      border:'1px solid rgba(20,184,166,0.22)',
+                      display:'flex', alignItems:'center', gap:11,
+                    }}>
+                      <div style={{
+                        width:32, height:32, borderRadius:9, flexShrink:0,
+                        background:'rgba(20,184,166,0.22)', border:'1px solid rgba(20,184,166,0.42)',
+                        display:'flex',alignItems:'center',justifyContent:'center', fontSize:'1rem',
+                      }}>📧</div>
+                      <div style={{flex:1, minWidth:0}}>
+                        <div style={{color:'#fff',fontSize:'0.76rem',fontWeight:700, marginBottom:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>
+                          Submission ใหม่จากทีม
+                        </div>
+                        <div style={{color:'#71717a',fontSize:'0.64rem'}}>
+                          joinstick@base-playhouse.com · เพิ่งถึง
+                        </div>
+                      </div>
+                      <span style={{color:'#5eead4',fontSize:'0.62rem',fontWeight:800,letterSpacing:'0.04em',
+                        background:'rgba(20,184,166,0.22)', padding:'4px 9px', borderRadius:6,
+                        border:'1px solid rgba(20,184,166,0.40)'}}>OPEN</span>
+                    </div>
+                    {/* 3 steps as cards */}
+                    <div style={{display:'flex', gap:8}}>
+                      {[
+                        ['📧','Auto-send'],
+                        ['🔗','No login'],
+                        ['✍️','1-page'],
+                      ].map(([emoji,text])=>(
+                        <div key={text} style={{
+                          flex:1, textAlign:'center',
+                          padding:'11px 6px', borderRadius:10,
+                          background:'rgba(20,184,166,0.06)', border:'1px solid rgba(20,184,166,0.20)',
+                        }}>
+                          <div style={{fontSize:'1.05rem', marginBottom:4, lineHeight:1}}>{emoji}</div>
+                          <div style={{color:'#a1a1aa',fontSize:'0.66rem',fontWeight:600,letterSpacing:'-0.01em'}}>{text}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CTA */}
+                  <div style={{
+                    position:'relative',
+                    display:'flex',alignItems:'center',justifyContent:'center',gap:8,
+                    padding:'13px 0', borderRadius:14,
+                    background:'#14b8a6', color:'#fff',
+                    fontSize:'0.92rem', fontWeight:700, letterSpacing:'-0.01em',
+                    boxShadow:'0 8px 22px rgba(20,184,166,0.40)',
+                  }}>
+                    ดู Manager Review <span>→</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
