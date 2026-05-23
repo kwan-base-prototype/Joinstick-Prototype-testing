@@ -282,16 +282,22 @@
       100% { background-position: 200% center; }
     }
     .journey-title-gradient {
-      background: linear-gradient(90deg,
-        #F59E0B 0%, #FB7C58 18%, #ED4724 36%,
-        #818cf8 60%, #6366f1 78%, #06b6d4 100%,
-        #F59E0B 120%);
-      background-size: 220% auto;
+      background: linear-gradient(100deg,
+        #FFC971   0%,
+        #F59E0B  12.5%,
+        #FB7C58  25%,
+        #ED4724  37.5%,
+        #C53A1A  50%,
+        #ED4724  62.5%,
+        #FB7C58  75%,
+        #F59E0B  87.5%,
+        #FFC971 100%);
+      background-size: 200% 100%;
       -webkit-background-clip: text;
               background-clip: text;
       -webkit-text-fill-color: transparent;
               text-fill-color: transparent;
-      animation: journeyTitleGradient 9s linear infinite;
+      animation: journeyTitleGradient 13s linear infinite;
     }
 
     /* ── Pulsing ring on active phase icon ── */
@@ -454,6 +460,32 @@
     const Lock         = p => <Svg {...p}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Svg>;
     const FlashCard    = p => <Svg {...p}><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></Svg>;
     const Send         = p => <Svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></Svg>;
+    const AlertTriangle  = p => <Svg {...p}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></Svg>;
+    const Settings       = p => <Svg {...p}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="3"/></Svg>;
+    const Lightbulb      = p => <Svg {...p}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></Svg>;
+    const Compass        = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></Svg>;
+    const ThumbsUp       = p => <Svg {...p}><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H7a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L15 1a3.13 3.13 0 0 1 0 4.88Z"/></Svg>;
+    const GraduationCap  = p => <Svg {...p}><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></Svg>;
+    const Rocket         = p => <Svg {...p}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></Svg>;
+    const Handshake      = p => <Svg {...p}><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></Svg>;
+    const Link           = p => <Svg {...p}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></Svg>;
+    const Camera         = p => <Svg {...p}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></Svg>;
+    const Mail           = p => <Svg {...p}><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></Svg>;
+    const PenSquare      = p => <Svg {...p}><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.375-9.375z"/></Svg>;
+    const Briefcase      = p => <Svg {...p}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></Svg>;
+
+    /* ── Semantic color tokens for icon accents ──── */
+    const IconAccent = {
+      success:   '#22c55e',
+      celebrate: '#f59e0b',
+      warning:   '#f59e0b',
+      danger:    '#ef4444',
+      streak:    '#f97316',
+      energy:    '#eab308',
+      award:     '#facc15',
+      info:      '#3b82f6',
+      neutral:   'currentColor',
+    };
 
     /* ── Joinstick brand mark (product logo) ─────── */
     const JoinstickLogo = ({ size = 36, variant = 'white', style }) => {
@@ -627,22 +659,22 @@
     const moduleData = [
       { id:1, num:'01', title:'The Foundation Of Trust', subtitle:'รากฐานความไว้วางใจในทีม',
         desc:'ปูพื้นฐานการสร้าง Trust ที่ทำให้ทีมกล้าเสี่ยง กล้าพูด และพร้อมเดินไปข้างหน้าด้วยกัน',
-        color:'#3b82f6', icon:'🤝', lessonIds:[0, 1] },
+        color:'#3b82f6', Icon:Handshake, lessonIds:[0, 1] },
       { id:2, num:'02', title:'Team Diversity & Leveraging Strengths', subtitle:'เข้าใจและใช้ความหลากหลายของทีม',
         desc:'ใช้ MBTI เป็นเครื่องมือเข้าใจความแตกต่างของแต่ละคน เพื่อมอบหมายงานให้เหมาะกับจุดแข็งของแต่ละคน',
-        color:'#8b5cf6', icon:'👥', lessonIds:[2] },
+        color:'#8b5cf6', Icon:Users, lessonIds:[2] },
       { id:3, num:'03', title:'360 Degree Management Strategy', subtitle:'บริหารทีมแบบรอบทิศ 360 องศา',
         desc:'มองความสัมพันธ์และผลกระทบของบทบาทผู้นำในทุกทิศทาง ทั้งกับหัวหน้า เพื่อนร่วมงาน และลูกทีม เพื่อบริหารทีมได้อย่างรอบด้าน',
-        color:'#22c55e', icon:'🧭', lessonIds:[] },
+        color:'#22c55e', Icon:Compass, lessonIds:[] },
       { id:4, num:'04', title:'Delivery A Meaningful ONE ON ONE Session', subtitle:'การสนทนาแบบ One-on-One ที่มีคุณค่า',
         desc:'ฝึกใช้ STAR Model เปลี่ยน One-on-One จากเซสชันรายงานงานให้กลายเป็นพื้นที่พัฒนาคน',
-        color:'#06b6d4', icon:'💬', lessonIds:[3, 4] },
+        color:'#06b6d4', Icon:MessageCircle, lessonIds:[3, 4] },
       { id:5, num:'05', title:'Effective team governance system', subtitle:'ระบบกำกับดูแลทีมที่มีประสิทธิภาพ',
         desc:'วางโครงสร้าง กติกา และจังหวะการประชุมที่ทำให้ทีมเดินงานได้ต่อเนื่อง โปร่งใส และตัดสินใจร่วมกันได้รวดเร็ว',
-        color:'#f59e0b', icon:'📐', lessonIds:[] },
+        color:'#f59e0b', Icon:Settings, lessonIds:[] },
       { id:6, num:'06', title:'Situational Leadership Style', subtitle:'ปรับสไตล์การนำตามสถานการณ์',
         desc:'เรียนรู้การเลือกสไตล์การนำให้เหมาะกับระดับความพร้อมของสมาชิกทีมและบริบทของแต่ละสถานการณ์',
-        color:'#ec4899', icon:'🎯', lessonIds:[] },
+        color:'#ec4899', Icon:Target, lessonIds:[] },
     ];
 
     /* ── Harvester Data ─────────────────────────── */
@@ -2794,7 +2826,10 @@
               </div>
               {/* Content */}
               <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'24px 28px',textAlign:'center'}}>
-                <div className="bounce-in" style={{fontSize:'3.5rem',marginBottom:16}}>🎉</div>
+                <div className="bounce-in" style={{marginBottom:16,color:IconAccent.celebrate,
+                  display:'flex',justifyContent:'center'}}>
+                  <Sparkles size={64}/>
+                </div>
                 <h2 style={{color:'white',fontSize:'1.7rem',fontWeight:800,lineHeight:1.2,margin:'0 0 12px'}}>ยอดเยี่ยมไปเลย!</h2>
                 <p style={{color:'rgba(255,255,255,0.6)',fontSize:'0.95rem',lineHeight:1.6,margin:0}}>
                   เราผ่านสิ่งสำคัญ<br/>การเรียนรู้ด้วยกันสมบูรณ์แล้ว
@@ -4274,9 +4309,9 @@
               background:'rgba(237,71,36,0.18)',
               border:'1px solid rgba(237,71,36,0.35)',
               display:'flex',alignItems:'center',justifyContent:'center',
-              fontSize:'2rem',marginBottom:24,
+              marginBottom:24,color:'#ED4724',
               boxShadow:'0 8px 32px rgba(237,71,36,0.25)',
-            }}>📝</div>
+            }}><FileText size={32}/></div>
 
             <h2 className="bp-heading" style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,letterSpacing:'0',
               textAlign:'center',margin:'0 0 10px'}}>Pre-Test ก่อนเรียน</h2>
@@ -4416,7 +4451,10 @@
               padding:'32px 20px',textAlign:'center',position:'relative',overflow:'hidden'}}>
               <div style={{position:'absolute',top:-30,left:-30,width:120,height:120,
                 borderRadius:'50%',background:'rgba(237,71,36,0.10)'}}/>
-              <div className="bounce-in" style={{fontSize:'2.5rem',marginBottom:12}}>🎉</div>
+              <div className="bounce-in" style={{marginBottom:12,color:IconAccent.celebrate,
+                display:'flex',justifyContent:'center'}}>
+                <Sparkles size={44}/>
+              </div>
               <h2 className="bp-heading" style={{color:'#fff',fontSize:'1.2rem',fontWeight:800,margin:'0 0 6px',letterSpacing:'0'}}>ทำ Pre-Test เสร็จแล้ว!</h2>
               <p style={{color:'#F26B45',fontSize:'0.8rem',margin:0}}>
                 เราจะปรับ Learning Path ให้เหมาะกับคุณโดยเฉพาะ
@@ -4764,7 +4802,7 @@
           </div>
 
           {/* ── Body ── */}
-          <div style={{flex:1,overflowY:'auto',padding:'14px 18px 18px',display:'flex',flexDirection:'column',gap:14}}>
+          <div style={{flex:1,overflowY:'auto',padding:'14px 18px 88px',display:'flex',flexDirection:'column',gap:14}}>
 
             {/* ── FEATURED LIVE ACTIVITY ── */}
             {liveAct && (
@@ -5007,8 +5045,10 @@
                 })}
                 <div style={{marginTop:12,padding:'12px 14px',background:'rgba(237,71,36,0.06)',
                   border:'1px solid rgba(237,71,36,0.20)',borderRadius:12,
-                  color:'#F26B45',fontSize:'0.78rem',lineHeight:1.6}}>
-                  💡 ผลโหวตชี้ว่าคนส่วนใหญ่ในห้องโน้มไปทาง <strong>Thinking (T)</strong> — วิทยากรจะชวนคุยเรื่องการสมดุลกับ Feeling (F) ในช่วงถัดไป
+                  color:'#F26B45',fontSize:'0.78rem',lineHeight:1.6,
+                  display:'flex',alignItems:'flex-start',gap:8}}>
+                  <Lightbulb size={16} style={{flexShrink:0,marginTop:2,color:'#F26B45'}}/>
+                  <span>ผลโหวตชี้ว่าคนส่วนใหญ่ในห้องโน้มไปทาง <strong>Thinking (T)</strong> — วิทยากรจะชวนคุยเรื่องการสมดุลกับ Feeling (F) ในช่วงถัดไป</span>
                 </div>
               </div>
             )}
@@ -5082,7 +5122,9 @@
               <div>
                 <div style={{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.2)',
                   borderRadius:16,padding:'16px',marginBottom:16,textAlign:'center'}}>
-                  <div style={{fontSize:'1.8rem',marginBottom:6}}>🎉</div>
+                  <div style={{marginBottom:6,display:'flex',justifyContent:'center',color:IconAccent.success}}>
+                    <Sparkles size={30}/>
+                  </div>
                   <div style={{color:'#6ee7b7',fontWeight:700,fontSize:'0.9rem'}}>ทีมของคุณส่งคำตอบแล้ว!</div>
                   <div style={{color:'#71717a',fontSize:'0.75rem',marginTop:4}}>{GROUP.opts[grpSel]}</div>
                 </div>
@@ -5132,13 +5174,18 @@
                 <div style={{textAlign:'center',marginBottom:20,
                   background:'linear-gradient(135deg,rgba(245,158,11,0.1),rgba(234,179,8,0.05))',
                   border:'1px solid rgba(245,158,11,0.2)',borderRadius:20,padding:'22px 20px'}}>
-                  <div style={{fontSize:'2rem',marginBottom:8}}>⚡</div>
+                  <div style={{marginBottom:8,display:'flex',justifyContent:'center',color:IconAccent.energy}}>
+                    <Zap size={32}/>
+                  </div>
                   <div style={{color:'#fbbf24',fontSize:'1.4rem',fontWeight:800}}>{qScore} pts</div>
                   <div style={{color:'#71717a',fontSize:'0.8rem',marginTop:4}}>
                     ตอบถูก {Math.round(qScore/150)}/{QUIZ.length} ข้อ
                   </div>
                 </div>
-                <h4 style={{color:'#f4f4f5',fontSize:'0.85rem',fontWeight:700,margin:'0 0 12px'}}>🏆 Leaderboard</h4>
+                <h4 style={{color:'#f4f4f5',fontSize:'0.85rem',fontWeight:700,margin:'0 0 12px',
+                  display:'inline-flex',alignItems:'center',gap:6}}>
+                  <Trophy size={16} style={{color:IconAccent.award}}/> Leaderboard
+                </h4>
                 {board.map(({name,pts,you},i)=>(
                   <div key={i} style={{display:'flex',alignItems:'center',gap:12,padding:'11px 14px',
                     background:you?'rgba(245,158,11,0.08)':'rgba(255,255,255,0.02)',
@@ -5179,10 +5226,11 @@
             </div>
             <div style={{flex:1,padding:'0 20px',overflowY:'auto'}}>
               <div className="fade-in" key={qStep}>
-                <div style={{display:'inline-flex',alignItems:'center',
+                <div style={{display:'inline-flex',alignItems:'center',gap:5,
                   background:'rgba(245,158,11,0.1)',border:'1px solid rgba(245,158,11,0.2)',
                   borderRadius:999,padding:'3px 10px',marginBottom:14}}>
-                  <span style={{color:'#fbbf24',fontSize:'0.68rem',fontWeight:700}}>⚡ LIVE QUIZ · +{q.pts} pts</span>
+                  <Zap size={11} style={{color:'#fbbf24'}}/>
+                  <span style={{color:'#fbbf24',fontSize:'0.68rem',fontWeight:700}}>LIVE QUIZ · +{q.pts} pts</span>
                 </div>
                 <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:700,lineHeight:1.5,margin:'0 0 18px'}}>{q.q}</h3>
                 <div style={{display:'flex',flexDirection:'column',gap:10}}>
@@ -5212,8 +5260,11 @@
                 {qShown&&(
                   <div className="fade-in" style={{marginTop:14,padding:'12px 14px',
                     background:'rgba(34,197,94,0.08)',border:'1px solid rgba(34,197,94,0.15)',borderRadius:12}}>
-                    <div style={{color:'#86efac',fontSize:'0.8rem',fontWeight:600}}>
-                      {qSel===q.c?`+${q.pts} pts! ถูกต้อง 🎉`:'ยังไม่ใช่ ไปต่อกันเลย! 💪'}
+                    <div style={{color:'#86efac',fontSize:'0.8rem',fontWeight:600,
+                      display:'inline-flex',alignItems:'center',gap:6}}>
+                      {qSel===q.c
+                        ? <><span>+{q.pts} pts! ถูกต้อง</span><Sparkles size={14} style={{color:IconAccent.celebrate}}/></>
+                        : <><span>ยังไม่ใช่ ไปต่อกันเลย!</span><Award size={14} style={{color:IconAccent.energy}}/></>}
                     </div>
                   </div>
                 )}
@@ -5275,12 +5326,12 @@
                   l[i]=!l[i]; c[i]+=l[i]?1:-1;
                   setQaLiked(l); setQaCount(c);
                 }} style={{
-                  display:'flex',alignItems:'center',gap:4,
+                  display:'flex',alignItems:'center',gap:5,
                   background:qaLiked[i]?'rgba(237,71,36,0.14)':'rgba(255,255,255,0.04)',
                   border:`1px solid ${qaLiked[i]?'rgba(237,71,36,0.35)':'rgba(255,255,255,0.07)'}`,
                   borderRadius:999,padding:'4px 10px',cursor:'pointer',
                   color:qaLiked[i]?'#ED4724':'#a8a29e',fontSize:'0.72rem',fontWeight:600}}>
-                  👍 {qaCount[i]}
+                  <ThumbsUp size={12}/> {qaCount[i]}
                 </button>
               </div>
             ))}
@@ -5328,23 +5379,30 @@
             {!rfDone?(
               <>
                 <div style={{textAlign:'center',marginBottom:24}}>
-                  <div style={{fontSize:'2rem',marginBottom:10}}>🪞</div>
+                  <div style={{marginBottom:10,display:'flex',justifyContent:'center',color:IconAccent.celebrate}}>
+                    <Sparkles size={32}/>
+                  </div>
                   <h3 style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:800,margin:'0 0 6px'}}>สรุปสิ่งที่ได้วันนี้</h3>
                   <p style={{color:'#71717a',fontSize:'0.8rem',margin:0}}>Day {SESSION.day} · {SESSION.title}</p>
                 </div>
                 <div style={{marginBottom:22}}>
                   <div style={{color:'#a8a29e',fontSize:'0.82rem',marginBottom:10}}>วันนี้คุณได้เรียนรู้สิ่งใหม่มากแค่ไหน?</div>
-                  <div style={{display:'flex',gap:8}}>
-                    {['😕','😐','🙂','😊','🤩'].map((e,i)=>(
-                      <button key={i} onClick={()=>setRfRate(i)} style={{
+                  <div style={{display:'flex',gap:6}}>
+                    {[0,1,2,3,4,5].map(n=>(
+                      <button key={n} onClick={()=>setRfRate(n)} style={{
                         flex:1,padding:'10px 0',borderRadius:12,
-                        background:rfRate===i?'rgba(237,71,36,0.15)':'rgba(255,255,255,0.04)',
-                        border:`1px solid ${rfRate===i?'rgba(237,71,36,0.40)':'rgba(255,255,255,0.07)'}`,
-                        cursor:'pointer',fontSize:'1.3rem',transition:'all 0.15s',
-                        transform:rfRate===i?'scale(1.08)':'scale(1)'}}>
-                        {e}
+                        background:rfRate===n?'rgba(237,71,36,0.15)':'rgba(255,255,255,0.04)',
+                        border:`1px solid ${rfRate===n?'rgba(237,71,36,0.40)':'rgba(255,255,255,0.07)'}`,
+                        color:rfRate===n?'#ED4724':'#a8a29e',
+                        cursor:'pointer',fontSize:'1rem',fontWeight:700,transition:'all 0.15s',
+                        transform:rfRate===n?'scale(1.08)':'scale(1)'}}>
+                        {n}
                       </button>
                     ))}
+                  </div>
+                  <div style={{display:'flex',justifyContent:'space-between',marginTop:6}}>
+                    <span style={{color:'#52525b',fontSize:'0.65rem'}}>น้อยที่สุด</span>
+                    <span style={{color:'#52525b',fontSize:'0.65rem'}}>มากที่สุด</span>
                   </div>
                 </div>
                 <div style={{marginBottom:20}}>
@@ -5369,7 +5427,9 @@
               </>
             ):(
               <div style={{textAlign:'center',paddingTop:12}}>
-                <div className="bounce-in" style={{fontSize:'3rem',marginBottom:16}}>🌟</div>
+                <div className="bounce-in" style={{marginBottom:16,display:'flex',justifyContent:'center',color:IconAccent.celebrate}}>
+                  <Sparkles size={56}/>
+                </div>
                 <h2 className="bp-heading" style={{fontSize:'1.3rem',fontWeight:800,margin:'0 0 8px',letterSpacing:'0'}}>ยอดเยี่ยม!</h2>
                 <p style={{color:'#a8a29e',fontSize:'0.875rem',lineHeight:1.7,margin:'0 0 24px'}}>
                   คุณทำกิจกรรม Day {SESSION.day} ครบทุกขั้นตอนแล้ว
@@ -5386,7 +5446,10 @@
                 </div>
                 <div style={{background:'rgba(237,71,36,0.05)',border:'1px solid rgba(237,71,36,0.18)',
                   borderRadius:14,padding:'14px',marginBottom:20,textAlign:'left'}}>
-                  <div style={{color:'#ED4724',fontSize:'0.8rem',fontWeight:700,marginBottom:4}}>📅 พรุ่งนี้</div>
+                  <div style={{color:'#ED4724',fontSize:'0.8rem',fontWeight:700,marginBottom:4,
+                    display:'inline-flex',alignItems:'center',gap:5}}>
+                    <Calendar size={13}/> พรุ่งนี้
+                  </div>
                   <div style={{color:'#d4d4d8',fontSize:'0.78rem',lineHeight:1.6}}>
                     Day 3 · 360 Degree Management Strategy<br/>09:00–16:00
                   </div>
@@ -5404,6 +5467,13 @@
         </div>
       );
 
+      const inClassTabs = [
+        {id:'home',        label:'หน้าหลัก', Icon:Home  },
+        {id:'challenges',  label:'ภารกิจ',   Icon:Target},
+        {id:'lessons',     label:'บทเรียน',  Icon:Video },
+        {id:'leaderboard', label:'อันดับ',    Icon:Trophy},
+      ];
+
       return (
         <PhoneFrame>
           {screen==='checkin'    && renderCheckin()}
@@ -5413,6 +5483,33 @@
           {screen==='quiz'       && renderQuiz()}
           {screen==='qna'        && renderQnA()}
           {screen==='reflection' && renderReflection()}
+
+          {/* ── Bottom Nav — visible only on dashboard ── */}
+          {screen==='dashboard' && (
+            <div style={{
+              position:'absolute',bottom:0,left:0,right:0,
+              background:'rgba(24,24,27,0.95)',backdropFilter:'blur(12px)',
+              borderTop:'1px solid #27272a',
+              paddingTop:8,paddingBottom:24,paddingLeft:8,paddingRight:8,zIndex:50,
+            }}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 0'}}>
+                {inClassTabs.map(({id,label,Icon:I})=>{
+                  const active = id==='home';
+                  return (
+                    <button key={id}
+                      style={{flex:1,display:'flex',flexDirection:'column',
+                        alignItems:'center',justifyContent:'center',gap:2,
+                        background:'transparent',border:'none',cursor:'pointer',padding:0}}>
+                      <I size={20} strokeWidth={active?2.5:2} style={{color:active?'#fff':'#52525b'}}/>
+                      <span style={{fontSize:'0.6rem',fontWeight:500,color:active?'#fff':'#52525b'}}>{label}</span>
+                      <div style={{height:4,width:4,borderRadius:'50%',marginTop:2,
+                        background:active?'#3b82f6':'transparent'}}/>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </PhoneFrame>
       );
     }
@@ -5433,11 +5530,11 @@
         {id:8,name:'กัญญา ศิริวงศ์',       role:'Finance Lead',      av:'ก',bg:'#ef4444',progress:35,done:4, pts:620, last:'1 สัปดาห์',streak:0,status:'inactive'},
       ];
       const CHDATA = [
-        {type:'Flash Card',    icon:'🃏',pct:91,done:3.6,total:4, color:'#ED4724'},
-        {type:'Quiz',          icon:'❓',pct:85,done:6.8,total:8, color:'#F26B45'},
-        {type:'Micro Learning',icon:'⚡',pct:79,done:7.9,total:10,color:'#F59E0B'},
-        {type:'Recall Quiz',   icon:'🔄',pct:72,done:2.9,total:4, color:'#10b981'},
-        {type:'Mission',       icon:'🎯',pct:68,done:4.1,total:6, color:'#C53A1A'},
+        {type:'Flash Card',    Icon:FlashCard,    pct:91,done:3.6,total:4, color:'#ED4724'},
+        {type:'Quiz',          Icon:Info,         pct:85,done:6.8,total:8, color:'#F26B45'},
+        {type:'Micro Learning',Icon:Zap,          pct:79,done:7.9,total:10,color:'#F59E0B'},
+        {type:'Recall Quiz',   Icon:Activity,     pct:72,done:2.9,total:4, color:'#10b981'},
+        {type:'Mission',       Icon:Target,       pct:68,done:4.1,total:6, color:'#C53A1A'},
       ];
       const TREND = [42,58,51,74,67,82,78];
       const DAYS  = ['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'];
@@ -5480,15 +5577,15 @@
           {/* KPI cards */}
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:16,marginBottom:24}}>
             {[
-              {icon:'👥',label:'ผู้เรียนทั้งหมด',    value:'24',        sub:'คน',  color:'#ED4724'},
-              {icon:'🟢',label:'Active 7 วันล่าสุด',  value:`${active}`, sub:'คน',  color:'#047857'},
-              {icon:'📊',label:'Avg Completion',       value:`${avgProg}%`,sub:'',   color:'#F26B45'},
-              {icon:'⭐',label:'Avg คะแนน',            value:avgPts,      sub:'pts', color:'#B45309'},
-            ].map(({icon,label,value,sub,color})=>(
+              {Icon:Users,        label:'ผู้เรียนทั้งหมด',    value:'24',        sub:'คน',  color:'#ED4724'},
+              {Icon:CheckCircle2, label:'Active 7 วันล่าสุด',  value:`${active}`, sub:'คน',  color:'#047857'},
+              {Icon:BarChart2,    label:'Avg Completion',       value:`${avgProg}%`,sub:'',   color:'#F26B45'},
+              {Icon:Star,         label:'Avg คะแนน',            value:avgPts,      sub:'pts', color:'#B45309'},
+            ].map(({Icon,label,value,sub,color})=>(
               <div key={label} style={{background:'#ffffff',
                 border:'1px solid #e7e5e4',borderRadius:18,padding:'20px 22px',
                 boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-                <div style={{fontSize:'1.3rem',marginBottom:10}}>{icon}</div>
+                <div style={{marginBottom:10,color}}><Icon size={22}/></div>
                 <div style={{color:'#78716c',fontSize:'0.72rem',marginBottom:4}}>{label}</div>
                 <div style={{display:'flex',alignItems:'baseline',gap:4}}>
                   <span className="bp-heading" style={{fontSize:'1.8rem',fontWeight:800,letterSpacing:'0',color}}>{value}</span>
@@ -5505,11 +5602,11 @@
               <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>
                 Completion ตามประเภทภารกิจ
               </h3>
-              {CHDATA.map(({type,icon,pct,color})=>(
+              {CHDATA.map(({type,Icon,pct,color})=>(
                 <div key={type} style={{marginBottom:14}}>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:5}}>
                     <div style={{display:'flex',alignItems:'center',gap:6}}>
-                      <span style={{fontSize:'0.9rem'}}>{icon}</span>
+                      <span style={{color,display:'inline-flex'}}><Icon size={14}/></span>
                       <span style={{color:'#44403c',fontSize:'0.8rem',fontWeight:500}}>{type}</span>
                     </div>
                     <span style={{color,fontSize:'0.82rem',fontWeight:700}}>{pct}%</span>
@@ -5568,7 +5665,7 @@
               borderRadius:16,padding:'16px 20px',
               display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}>
               <div style={{display:'flex',alignItems:'center',gap:10}}>
-                <span style={{fontSize:'1.1rem'}}>⚠️</span>
+                <span style={{color:IconAccent.warning,display:'inline-flex'}}><AlertTriangle size={20}/></span>
                 <div>
                   <div style={{color:'#b45309',fontWeight:700,fontSize:'0.875rem'}}>
                     พบผู้เรียน {atRisk} คนที่อาจต้องการความช่วยเหลือ
@@ -5637,8 +5734,9 @@
                     <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>pts</div>
                   </div>
                   <div style={{flex:'0 0 56px',textAlign:'center'}}>
-                    <div style={{color:l.streak>0?'#ea580c':'#a8a29e',fontSize:'0.875rem',fontWeight:700}}>
-                      {l.streak>0?`🔥${l.streak}`:'—'}
+                    <div style={{color:l.streak>0?'#ea580c':'#a8a29e',fontSize:'0.875rem',fontWeight:700,
+                      display:'inline-flex',alignItems:'center',gap:3,justifyContent:'center'}}>
+                      {l.streak>0?<><Flame size={14}/>{l.streak}</>:'—'}
                     </div>
                     <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>streak</div>
                   </div>
@@ -5669,8 +5767,9 @@
                       <div style={{background:'rgba(245,158,11,0.10)',border:'1px solid rgba(245,158,11,0.30)',
                         borderRadius:12,padding:'12px 14px',cursor:'pointer'}}>
                         <div style={{color:'#a8a29e',fontSize:'0.67rem'}}>การดำเนินการ</div>
-                        <div style={{color:'#b45309',fontSize:'0.82rem',fontWeight:600,marginTop:3}}>
-                          📩 ส่ง Reminder
+                        <div style={{color:'#b45309',fontSize:'0.82rem',fontWeight:600,marginTop:3,
+                          display:'inline-flex',alignItems:'center',gap:5}}>
+                          <Send size={14}/> ส่ง Reminder
                         </div>
                       </div>
                     )}
@@ -5687,16 +5786,16 @@
         <div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:14,marginBottom:24}}>
             {[
-              {icon:'📋',label:'ภารกิจทั้งหมด',   value:'32',        sub:'ประเภท'},
-              {icon:'✅',label:'เสร็จสิ้น (เฉลี่ย)',value:'1,048',     sub:'ครั้ง'},
-              {icon:'📊',label:'Avg Completion',    value:`${avgProg}%`,sub:''},
-              {icon:'🏆',label:'ยอดนิยมสูงสุด',    value:'Flash Card', sub:''},
-            ].map(({icon,label,value,sub})=>(
+              {Icon:FileText,     label:'ภารกิจทั้งหมด',   value:'32',        sub:'ประเภท', color:'#57534e'},
+              {Icon:CheckCircle2, label:'เสร็จสิ้น (เฉลี่ย)',value:'1,048',     sub:'ครั้ง',  color:IconAccent.success},
+              {Icon:BarChart2,    label:'Avg Completion',    value:`${avgProg}%`,sub:'',     color:'#F26B45'},
+              {Icon:Trophy,       label:'ยอดนิยมสูงสุด',    value:'Flash Card', sub:'',     color:IconAccent.award},
+            ].map(({Icon,label,value,sub,color})=>(
               <div key={label} style={{background:'#ffffff',
                 border:'1px solid #e7e5e4',borderRadius:16,
                 padding:'18px 20px',display:'flex',alignItems:'center',gap:14,
                 boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-                <div style={{fontSize:'1.5rem'}}>{icon}</div>
+                <div style={{color,display:'inline-flex'}}><Icon size={26}/></div>
                 <div>
                   <div style={{color:'#78716c',fontSize:'0.72rem'}}>{label}</div>
                   <div style={{color:'#161412',fontSize:'1.2rem',fontWeight:800,letterSpacing:'-0.02em'}}>
@@ -5713,14 +5812,13 @@
               <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>
                 Completion Rate ตามประเภทภารกิจ
               </h3>
-              {CHDATA.map(({type,icon,pct,done,total,color})=>(
+              {CHDATA.map(({type,Icon,pct,done,total,color})=>(
                 <div key={type} style={{marginBottom:18}}>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
                     <div style={{display:'flex',alignItems:'center',gap:8}}>
                       <div style={{width:32,height:32,borderRadius:9,flexShrink:0,
-                        background:`${color}18`,border:`1px solid ${color}40`,
-                        display:'flex',alignItems:'center',justifyContent:'center',
-                        fontSize:'0.9rem'}}>{icon}</div>
+                        background:`${color}18`,border:`1px solid ${color}40`,color,
+                        display:'flex',alignItems:'center',justifyContent:'center'}}><Icon size={16}/></div>
                       <div>
                         <div style={{color:'#161412',fontSize:'0.82rem',fontWeight:600}}>{type}</div>
                         <div style={{color:'#78716c',fontSize:'0.67rem'}}>เฉลี่ย {done.toFixed(1)}/{total} ต่อคน</div>
@@ -5738,7 +5836,10 @@
             <div style={{display:'flex',flexDirection:'column',gap:16}}>
               <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',
                 boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-                <h3 style={{margin:'0 0 16px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>🏆 Top Learners</h3>
+                <h3 style={{margin:'0 0 16px',fontWeight:700,fontSize:'0.9rem',color:'#161412',
+                  display:'inline-flex',alignItems:'center',gap:6}}>
+                  <Trophy size={16} style={{color:IconAccent.award}}/> Top Learners
+                </h3>
                 {LEARNERS.slice(0,5).map((l,i)=>(
                   <div key={l.id} style={{display:'flex',alignItems:'center',gap:10,
                     padding:'8px 0',borderBottom:'1px solid #f0eeec'}}>
@@ -5758,7 +5859,10 @@
               </div>
 
               <div style={{background:'rgba(239,68,68,0.08)',border:'1px solid rgba(239,68,68,0.25)',borderRadius:18,padding:'18px 22px'}}>
-                <h3 style={{margin:'0 0 14px',fontWeight:700,fontSize:'0.875rem',color:'#b91c1c'}}>⚠️ ต้องการความสนใจ</h3>
+                <h3 style={{margin:'0 0 14px',fontWeight:700,fontSize:'0.875rem',color:'#b91c1c',
+                  display:'inline-flex',alignItems:'center',gap:6}}>
+                  <AlertTriangle size={16} style={{color:IconAccent.danger}}/> ต้องการความสนใจ
+                </h3>
                 {LEARNERS.filter(l=>l.status!=='active').map(l=>(
                   <div key={l.id} style={{display:'flex',alignItems:'center',gap:10,
                     padding:'7px 0',borderBottom:'1px solid rgba(239,68,68,0.10)'}}>
@@ -5825,14 +5929,15 @@
           <div style={{borderBottom:'1px solid #e7e5e4',background:'#ffffff',
             padding:'0 max(24px,calc((100vw - 1400px)/2))'}}>
             <div style={{display:'flex'}}>
-              {[['overview','📊 Overview'],['learners','👥 ผู้เรียน'],['challenges','🎯 ภารกิจ']].map(([id,label])=>(
+              {[['overview',BarChart2,'Overview'],['learners',Users,'ผู้เรียน'],['challenges',Target,'ภารกิจ']].map(([id,TabIcon,label])=>(
                 <button key={id} onClick={()=>setTab(id)} style={{
                   padding:'13px 20px',border:'none',background:'transparent',
                   color:tab===id?'#161412':'#78716c',fontSize:'0.875rem',fontWeight:tab===id?600:400,
                   cursor:'pointer',
                   borderBottom:tab===id?'2px solid #ED4724':'2px solid transparent',
-                  transition:'color 0.15s'}}>
-                  {label}
+                  transition:'color 0.15s',
+                  display:'inline-flex',alignItems:'center',gap:8}}>
+                  <TabIcon size={16}/> {label}
                 </button>
               ))}
             </div>
@@ -5919,7 +6024,10 @@
         }}>
           {/* Header line */}
           <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
-            <span style={{fontSize:6.5, color:'#fff', fontWeight:700}}>🔥 7d</span>
+            <span style={{fontSize:6.5, color:'#fff', fontWeight:700,
+              display:'inline-flex',alignItems:'center',gap:2}}>
+              <Flame size={8} style={{color:IconAccent.streak}}/> 7d
+            </span>
             <span style={{fontSize:6.5, color:color, fontWeight:800, letterSpacing:'0.02em'}}>1,240 pts</span>
           </div>
           {/* Mission card */}
@@ -5962,7 +6070,7 @@
           color: '#F59E0B',
           glow: 'rgba(245,158,11,0.18)',
           border: 'rgba(245,158,11,0.32)',
-          icon: '📋',
+          Icon: FileText,
           desc: 'เตรียมความพร้อมก่อนเข้าคอร์ส ประเมินตัวเอง และตั้งเป้าหมายการเรียนรู้',
           features: ['Pre-Assessment', 'Goal Setting', 'Onboarding Journey', 'Learning Path'],
           mockup: 'checklist',
@@ -5978,7 +6086,7 @@
           color: '#ED4724',
           glow: 'rgba(237,71,36,0.18)',
           border: 'rgba(237,71,36,0.32)',
-          icon: '🎓',
+          Icon: GraduationCap,
           desc: 'กิจกรรม Live ระหว่างการเรียน Harvester และ Real-time Engagement',
           features: ['Live Activities', 'Harvester', 'Real-time Poll', 'Group Challenge'],
           mockup: 'live',
@@ -5994,7 +6102,7 @@
           color: '#6366f1',
           glow: 'rgba(99,102,241,0.2)',
           border: 'rgba(99,102,241,0.4)',
-          icon: '🚀',
+          Icon: Rocket,
           desc: 'ฝึกฝนต่อเนื่องหลังห้องเรียน ทำภารกิจ ทบทวนเนื้อหา และติดตามความก้าวหน้า',
           features: ['Mission & Quiz', 'Micro Learning', 'Flash Card', 'Progress & Leaderboard'],
           mockup: 'mobile',
@@ -6120,9 +6228,9 @@
                 marginTop:24,
               }}>
                 {[
-                  {label:'3 Phases',  icon:'🎯', c:'#F59E0B'},
-                  {label:'Mobile + Web', icon:'📱', c:'#06b6d4'},
-                  {label:'Live Demo',   icon:'⚡', c:'#6366f1'},
+                  {label:'3 Phases',     Icon:Target,     c:'#F59E0B'},
+                  {label:'Mobile + Web', Icon:Smartphone, c:'#06b6d4'},
+                  {label:'Live Demo',    Icon:Zap,        c:'#6366f1'},
                 ].map(s=>(
                   <span key={s.label} style={{
                     display:'inline-flex',alignItems:'center',gap:6,
@@ -6130,7 +6238,7 @@
                     color:s.c, borderRadius:999, padding:'5px 13px',
                     fontSize:'0.78rem',fontWeight:600,letterSpacing:'-0.01em',
                   }}>
-                    <span>{s.icon}</span>
+                    <s.Icon size={13}/>
                     {s.label}
                   </span>
                 ))}
@@ -6245,7 +6353,7 @@
                 gap:24, width:'100%',
                 position:'relative', zIndex:1,
               }}>
-                {phases.map(({id,num,label,thai,status,color,glow,border,icon,desc,features,mockup,stagger,active},i)=>{
+                {phases.map(({id,num,label,thai,status,color,glow,border,Icon,desc,features,mockup,stagger,active},i)=>{
                   const isLive = status==='live';
                   const isHov = hovered===id;
                   return (
@@ -6286,18 +6394,6 @@
                                                    '100% 100%, 22px 22px',
                         }}/>
 
-                        {/* Active badge (only on Out-of-Class) */}
-                        {active && (
-                          <div style={{
-                            position:'absolute', top:14, left:18,
-                            display:'inline-flex', alignItems:'center', gap:5,
-                            background:'rgba(34,197,94,0.14)', border:'1px solid rgba(34,197,94,0.42)',
-                            borderRadius:999, padding:'3px 10px', zIndex:3,
-                          }}>
-                            <span className="anim-pulse" style={{width:5,height:5,borderRadius:'50%',background:'#22c55e',display:'inline-block',boxShadow:'0 0 6px rgba(34,197,94,0.7)'}}/>
-                            <span style={{color:'#86efac',fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.06em'}}>LIVE</span>
-                          </div>
-                        )}
 
                         {/* Floating mini mockup (top-right) */}
                         <div className="phase-mockup anim-mockup-bob" style={{
@@ -6324,10 +6420,10 @@
                             background:`${color}1a`,
                             border:`1px solid ${color}40`,
                             display:'flex',alignItems:'center',justifyContent:'center',
-                            fontSize:'1.5rem',
+                            color,
                             boxShadow: isHov ? `0 0 28px ${color}50` : 'none',
                             transition:'box-shadow 0.25s',
-                          }}>{icon}</div>
+                          }}><Icon size={26}/></div>
                           <div>
                             <div style={{fontWeight:800,fontSize:'1.25rem',
                               letterSpacing:'-0.02em',lineHeight:1}}>{label}</div>
@@ -6439,9 +6535,10 @@
                   <div style={{
                     width:56, height:56, borderRadius:16, flexShrink:0,
                     background:'rgba(251,191,36,0.18)', border:'1px solid rgba(251,191,36,0.42)',
-                    display:'flex',alignItems:'center',justifyContent:'center', fontSize:'1.6rem',
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    color:'#fde68a',
                     boxShadow:'0 0 26px rgba(251,191,36,0.30)',
-                  }}>🧭</div>
+                  }}><Compass size={26}/></div>
                   <div style={{flex:1, minWidth:200}}>
                     <div style={{display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
                       <span style={{fontWeight:800,fontSize:'1.18rem',letterSpacing:'-0.01em'}}>Transformation Stage</span>
@@ -6571,18 +6668,13 @@
                     <div style={{
                       width:56, height:56, borderRadius:16, flexShrink:0,
                       background:'rgba(99,102,241,0.18)', border:'1px solid rgba(99,102,241,0.42)',
-                      display:'flex',alignItems:'center',justifyContent:'center', fontSize:'1.6rem',
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      color:'#a5b4fc',
                       boxShadow:'0 0 26px rgba(99,102,241,0.30)',
-                    }}>👩‍💼</div>
+                    }}><Briefcase size={26}/></div>
                     <div style={{flex:1}}>
                       <div style={{display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
                         <span style={{fontWeight:800,fontSize:'1.18rem',letterSpacing:'-0.01em'}}>HR Dashboard</span>
-                        <span style={{display:'inline-flex',alignItems:'center',gap:4,
-                          background:'rgba(34,197,94,0.14)',border:'1px solid rgba(34,197,94,0.42)',
-                          borderRadius:999,padding:'2px 9px'}}>
-                          <span className="anim-pulse" style={{width:5,height:5,borderRadius:'50%',background:'#22c55e',boxShadow:'0 0 6px rgba(34,197,94,0.7)',display:'inline-block'}}/>
-                          <span style={{color:'#86efac',fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.06em'}}>LIVE</span>
-                        </span>
                       </div>
                       <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginTop:4, lineHeight:1.5}}>
                         ภาพรวมผู้เรียน · ติดตามความก้าวหน้า · Export รายงาน
@@ -6602,7 +6694,6 @@
                         <div style={{color:'#71717a',fontSize:'0.6rem',fontWeight:700,letterSpacing:'0.1em'}}>TOTAL LEARNERS</div>
                         <div style={{display:'flex', alignItems:'baseline', gap:7, marginTop:3}}>
                           <span style={{color:'#fff',fontSize:'1.75rem',fontWeight:800,letterSpacing:'-0.02em',lineHeight:1}}>24</span>
-                          <span style={{color:'#86efac',fontSize:'0.72rem',fontWeight:700}}>+3 ใหม่</span>
                         </div>
                       </div>
                       {/* Avatar stack */}
@@ -6678,18 +6769,13 @@
                     <div style={{
                       width:56, height:56, borderRadius:16, flexShrink:0,
                       background:'rgba(20,184,166,0.18)', border:'1px solid rgba(20,184,166,0.42)',
-                      display:'flex',alignItems:'center',justifyContent:'center', fontSize:'1.6rem',
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      color:'#5eead4',
                       boxShadow:'0 0 26px rgba(20,184,166,0.30)',
-                    }}>📩</div>
+                    }}><UserIcon size={26}/></div>
                     <div style={{flex:1}}>
                       <div style={{display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
                         <span style={{fontWeight:800,fontSize:'1.18rem',letterSpacing:'-0.01em'}}>Manager Review</span>
-                        <span style={{display:'inline-flex',alignItems:'center',gap:4,
-                          background:'rgba(20,184,166,0.14)',border:'1px solid rgba(20,184,166,0.36)',
-                          borderRadius:999,padding:'2px 9px'}}>
-                          <span className="anim-pulse" style={{width:5,height:5,borderRadius:'50%',background:'#2dd4bf',boxShadow:'0 0 6px rgba(45,212,191,0.7)',display:'inline-block'}}/>
-                          <span style={{color:'#5eead4',fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.06em'}}>FEATURE</span>
-                        </span>
                       </div>
                       <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginTop:4, lineHeight:1.5}}>
                         Manager ตรวจ Mission · ลิงก์ใน E-mail · ไม่ต้องล็อกอิน
@@ -6713,8 +6799,9 @@
                       <div style={{
                         width:32, height:32, borderRadius:9, flexShrink:0,
                         background:'rgba(20,184,166,0.22)', border:'1px solid rgba(20,184,166,0.42)',
-                        display:'flex',alignItems:'center',justifyContent:'center', fontSize:'1rem',
-                      }}>📧</div>
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        color:'#5eead4',
+                      }}><Mail size={16}/></div>
                       <div style={{flex:1, minWidth:0}}>
                         <div style={{color:'#fff',fontSize:'0.76rem',fontWeight:700, marginBottom:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>
                           Submission ใหม่จากทีม
@@ -6730,16 +6817,19 @@
                     {/* 3 steps as cards */}
                     <div style={{display:'flex', gap:8}}>
                       {[
-                        ['📧','Auto-send'],
-                        ['🔗','No login'],
-                        ['✍️','1-page'],
-                      ].map(([emoji,text])=>(
+                        [Mail,     'Auto-send'],
+                        [Link,     'No login'],
+                        [PenSquare,'1-page'],
+                      ].map(([StepIcon,text])=>(
                         <div key={text} style={{
                           flex:1, textAlign:'center',
                           padding:'11px 6px', borderRadius:10,
                           background:'rgba(20,184,166,0.06)', border:'1px solid rgba(20,184,166,0.20)',
                         }}>
-                          <div style={{fontSize:'1.05rem', marginBottom:4, lineHeight:1}}>{emoji}</div>
+                          <div style={{marginBottom:4, lineHeight:1,
+                            display:'flex',justifyContent:'center',color:'#5eead4'}}>
+                            <StepIcon size={18}/>
+                          </div>
                           <div style={{color:'#a1a1aa',fontSize:'0.66rem',fontWeight:600,letterSpacing:'-0.01em'}}>{text}</div>
                         </div>
                       ))}
@@ -6783,9 +6873,9 @@
       const TEAL_BORDER = 'rgba(20,184,166,0.28)';
 
       const steps = [
-        { num:'01', icon:'⚙️', actor:'HR',      title:'Set Up Manager Email',       desc:'HR กรอกอีเมลของหัวหน้างานให้กับ Learner แต่ละคนในระบบ ก่อนเปิดคอร์ส' },
-        { num:'02', icon:'📧', actor:'System',  title:'Auto E-mail Notification',    desc:'ระบบส่งอีเมลแจ้ง Manager พร้อมลิงก์เข้าหน้า Review โดยอัตโนมัติ' },
-        { num:'03', icon:'🔗', actor:'Manager', title:'Open Review Link',            desc:'Manager คลิกลิงก์ในอีเมล → เข้าหน้า Manager Review โดยไม่ต้องล็อกอิน' },
+        { num:'01', Icon:Settings, actor:'HR',      title:'Set Up Manager Email',       desc:'HR กรอกอีเมลของหัวหน้างานให้กับ Learner แต่ละคนในระบบ ก่อนเปิดคอร์ส' },
+        { num:'02', Icon:Mail,     actor:'System',  title:'Auto E-mail Notification',    desc:'ระบบส่งอีเมลแจ้ง Manager พร้อมลิงก์เข้าหน้า Review โดยอัตโนมัติ' },
+        { num:'03', Icon:Link,     actor:'Manager', title:'Open Review Link',            desc:'Manager คลิกลิงก์ในอีเมล → เข้าหน้า Manager Review โดยไม่ต้องล็อกอิน' },
       ];
 
       const actorColor = {
@@ -6929,7 +7019,7 @@
                 display:'grid', gap:14,
                 gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))',
               }}>
-                {steps.map(({num,icon,actor,title,desc},i)=>{
+                {steps.map(({num,Icon,actor,title,desc},i)=>{
                   const ac = actorColor[actor];
                   return (
                     <div key={num} style={{
@@ -6957,8 +7047,8 @@
                           width:38,height:38,borderRadius:10,flexShrink:0,
                           background:TEAL_SOFT,border:`1px solid ${TEAL_BORDER}`,
                           display:'flex',alignItems:'center',justifyContent:'center',
-                          fontSize:'1.05rem',
-                        }}>{icon}</div>
+                          color:TEAL,
+                        }}><Icon size={18}/></div>
                         <div>
                           <div style={{fontWeight:700,fontSize:'0.93rem',marginBottom:4,letterSpacing:'-0.01em'}}>{title}</div>
                           <div style={{color:'#a1a1aa',fontSize:'0.8rem',lineHeight:1.55}}>{desc}</div>
@@ -7039,9 +7129,14 @@
                       background:'#fafaf9',border:'1px dashed #e7e5e4',
                       borderRadius:10,padding:'10px 12px',marginBottom:18,
                       fontSize:'0.74rem',color:'#52525b',
+                      display:'flex',flexDirection:'column',gap:4,
                     }}>
-                      📋 <strong>Module:</strong> Trust & Communication<br/>
-                      ⏰ <strong>Submitted:</strong> 22 พ.ค. 2569 · 14:32
+                      <span style={{display:'inline-flex',alignItems:'center',gap:6}}>
+                        <FileText size={13}/> <span><strong>Module:</strong> Trust & Communication</span>
+                      </span>
+                      <span style={{display:'inline-flex',alignItems:'center',gap:6}}>
+                        <Clock size={13}/> <span><strong>Submitted:</strong> 22 พ.ค. 2569 · 14:32</span>
+                      </span>
                     </div>
                     <button style={{
                       background:TEAL,color:'#fff',border:'none',
@@ -7084,7 +7179,8 @@
                       borderRadius:6,padding:'4px 10px',
                       fontSize:'0.7rem',color:'#71717a',
                       overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',
-                    }}>🔒 joinstick.app/review/mgr/3f8a-2c9b...</div>
+                      display:'flex',alignItems:'center',gap:5,
+                    }}><Lock size={11}/> <span style={{overflow:'hidden',textOverflow:'ellipsis'}}>joinstick.app/review/mgr/3f8a-2c9b...</span></div>
                   </div>
 
                   {/* Page header */}
@@ -7143,11 +7239,13 @@
                       <span style={{
                         background:'#fff',border:'1px solid #e5e7eb',color:'#52525b',
                         borderRadius:6,padding:'4px 10px',fontSize:'0.7rem',fontWeight:600,
-                      }}>📝 Text</span>
+                        display:'inline-flex',alignItems:'center',gap:5,
+                      }}><FileText size={12}/> Text</span>
                       <span style={{
                         background:'#fff',border:'1px solid #e5e7eb',color:'#52525b',
                         borderRadius:6,padding:'4px 10px',fontSize:'0.7rem',fontWeight:600,
-                      }}>📷 photo_evidence.jpg</span>
+                        display:'inline-flex',alignItems:'center',gap:5,
+                      }}><Camera size={12}/> photo_evidence.jpg</span>
                     </div>
                   </div>
 
@@ -7689,8 +7787,8 @@
                           width:24,height:24,borderRadius:7,flexShrink:0,
                           background:`${selected.color}26`,border:`1px solid ${selected.color}66`,
                           display:'flex',alignItems:'center',justifyContent:'center',
-                          fontSize:'0.85rem',
-                        }}>📋</span>
+                          color:selected.color,
+                        }}><FileText size={13}/></span>
                         <span style={{
                           color:selected.color,fontSize:'0.72rem',fontWeight:800,
                           letterSpacing:'0.1em',
@@ -7725,8 +7823,8 @@
                           width:24,height:24,borderRadius:7,flexShrink:0,
                           background:`${selected.color}26`,border:`1px solid ${selected.color}66`,
                           display:'flex',alignItems:'center',justifyContent:'center',
-                          fontSize:'0.85rem',
-                        }}>🎯</span>
+                          color:selected.color,
+                        }}><Target size={13}/></span>
                         <span style={{
                           color:selected.color,fontSize:'0.72rem',fontWeight:800,
                           letterSpacing:'0.1em',
@@ -8284,7 +8382,7 @@
                         color:selected.color, borderRadius:6,padding:'3px 9px',
                         fontSize:'0.68rem',fontWeight:700,letterSpacing:'0.02em',
                       }}>
-                        🗓️ {selected.timeStage}
+                        <Calendar size={11}/> {selected.timeStage}
                       </span>
                       <span style={{
                         display:'inline-flex',alignItems:'center',gap:5,
@@ -8305,7 +8403,8 @@
                     <div style={{
                       color:selected.color,fontSize:'0.66rem',fontWeight:800,
                       letterSpacing:'0.1em',marginBottom:8,
-                    }}>⚡ FEATURES OF JOINSTICK ที่ใช้ใน Stage นี้</div>
+                      display:'inline-flex',alignItems:'center',gap:5,
+                    }}><Zap size={12}/> FEATURES OF JOINSTICK ที่ใช้ใน Stage นี้</div>
                     <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
                       {selected.features.map((f, fi) => (
                         <span key={`${selected.num}-${f}`} style={{
