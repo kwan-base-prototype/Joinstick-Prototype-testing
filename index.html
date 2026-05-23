@@ -361,13 +361,9 @@
       .journey-nav-btn.right { right: 12px !important; }
     }
 
-    /* Tiny phone (≤390px) — scale PhoneFrame down */
+    /* PhoneFrame is fit-to-viewport via JS; keep extra-tight padding on narrow screens */
     @media (max-width: 414px) {
-      .phone-frame-wrap   { transform: scale(0.92); transform-origin: center top; }
-      .phone-frame-outer  { padding: 0.75rem !important; }
-    }
-    @media (max-width: 360px) {
-      .phone-frame-wrap   { transform: scale(0.84); }
+      .phone-frame-outer  { padding: 0.5rem !important; }
     }
 
     /* ── Flash Card 3D flip ── */
@@ -794,9 +790,32 @@
     /* ── Phone mockup wrapper ────────────────────── */
     function PhoneFrame({ children, statusBg }) {
       const sBar = statusBg || '#09090b';
+      const PHONE_W = 390;
+      const PHONE_H = 844;
+      const HALO   = 24; // outer ring/shadow halo to keep on-screen
+      const [scale, setScale] = useState(1);
+
+      useEffect(() => {
+        const update = () => {
+          const padPx = window.innerWidth <= 414 ? 8 : 24; // matches .phone-frame-outer padding
+          const availW = window.innerWidth  - padPx * 2 - HALO;
+          const availH = window.innerHeight - padPx * 2 - HALO;
+          const s = Math.min(1, availW / PHONE_W, availH / PHONE_H);
+          setScale(Math.max(0.35, s));
+        };
+        update();
+        window.addEventListener('resize', update);
+        window.addEventListener('orientationchange', update);
+        return () => {
+          window.removeEventListener('resize', update);
+          window.removeEventListener('orientationchange', update);
+        };
+      }, []);
+
       return (
         <div className="phone-frame-outer" style={{
-          minHeight: '100vh',
+          height: '100vh',
+          width: '100%',
           background: '#0f0f10',
           display: 'flex',
           alignItems: 'center',
@@ -805,8 +824,10 @@
           overflow: 'hidden',
         }}>
           <div className="phone-frame-wrap" style={{
-            width: 390,
-            height: 844,
+            width: PHONE_W,
+            height: PHONE_H,
+            transform: `scale(${scale})`,
+            transformOrigin: 'center center',
             background: '#09090b',
             borderRadius: 52,
             border: '2px solid rgba(255,255,255,0.18)',
