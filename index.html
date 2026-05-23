@@ -126,6 +126,42 @@
     }
     .anim-glow-ring { animation: glowRing 2.4s ease-out infinite; }
 
+    /* ── Transformation Journey animations ── */
+    @keyframes tjCurveReveal {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0 0 0); }
+    }
+    @keyframes tjMarkerPop {
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+      60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.18); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes tjLabelRise {
+      0%   { opacity: 0; transform: translateX(-50%) translateY(8px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes tjChipPop {
+      0%   { opacity: 0; transform: translateY(6px) scale(0.92); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes tjPhaseShimmer {
+      0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+      40%  { opacity: 1; }
+      60%  { opacity: 1; }
+      100% { transform: translateX(200%) skewX(-18deg); opacity: 0; }
+    }
+    @keyframes tjSelectedPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50%      { transform: translate(-50%, -50%) scale(1.04); }
+    }
+    .tj-shimmer {
+      position: absolute; top: 0; bottom: 0; left: 0;
+      width: 30%;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
+      pointer-events: none;
+      animation: tjPhaseShimmer 5s ease-in-out infinite;
+    }
+
     /* ── Marquee horizontal scroll ── */
     @keyframes marquee {
       0%   { transform: translateX(0); }
@@ -411,6 +447,10 @@
     const Smartphone   = p => <Svg {...p}><rect x="7" y="2" width="10" height="20" rx="2.2"/><polygon points="10.5 9 14 12 10.5 15 10.5 9" fill="currentColor" stroke="none"/></Svg>;
     const FileText     = p => <Svg {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></Svg>;
     const Clock        = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></Svg>;
+    const Calendar     = p => <Svg {...p}><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></Svg>;
+    const Users        = p => <Svg {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></Svg>;
+    const MessageCircle= p => <Svg {...p}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></Svg>;
+    const Sparkles     = p => <Svg {...p}><path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z"/><path d="M19 14l.95 2.3L22 17.25l-2.05.95L19 20.5l-.95-2.3L16 17.25l2.05-.95L19 14z"/><path d="M5 14l.7 1.7L7.5 16.5l-1.8.8L5 19l-.7-1.7L2.5 16.5l1.8-.8L5 14z"/></Svg>;
     const Lock         = p => <Svg {...p}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Svg>;
     const FlashCard    = p => <Svg {...p}><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></Svg>;
     const Send         = p => <Svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></Svg>;
@@ -900,8 +940,61 @@
       );
     }
 
+    /* ── GlobalPills · Persistent top-nav across pages ─── */
+    function GlobalPills({ activeLabel, onNav }) {
+      const [hoverTab, setHoverTab] = useState(null);
+      const tabs = [
+        { label: 'Home',                   scene: 'landing'   },
+        { label: 'Features',               scene: 'phases'    },
+        { label: 'Shift Stage',            scene: 'transform' },
+        { label: 'Transformation Journey', scene: 'journey'   },
+        { label: 'Available Course',       scene: null        },
+      ];
+      return (
+        <div className="lp-pills" style={{
+          display:'flex', alignItems:'center', gap:4, padding:5,
+          background:'rgba(255,255,255,0.04)',
+          border:'1px solid rgba(255,255,255,0.06)',
+          borderRadius:999,
+          backdropFilter:'blur(8px)',
+          boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04)',
+        }}>
+          {tabs.map(({label, scene}) => {
+            const isActive = label === activeLabel;
+            const isHover  = hoverTab === label;
+            const isClickable = !!scene;
+            return (
+              <span
+                key={label}
+                onClick={() => { if (isClickable && onNav) onNav(scene); }}
+                onMouseEnter={() => setHoverTab(label)}
+                onMouseLeave={() => setHoverTab(null)}
+                style={{
+                  position:'relative',
+                  padding:'8px 16px',
+                  borderRadius:999,
+                  fontSize:'0.8125rem',
+                  fontWeight: isActive ? 600 : 500,
+                  cursor: isClickable ? 'pointer' : 'default',
+                  whiteSpace:'nowrap',
+                  color: isActive ? '#fff' : (isHover && isClickable ? '#e4e4e7' : '#a1a1aa'),
+                  background: isActive
+                    ? '#ED4724'
+                    : (isHover && isClickable ? 'rgba(255,255,255,0.06)' : 'transparent'),
+                  boxShadow: isActive ? '0 4px 14px rgba(237,71,36,0.4)' : 'none',
+                  transition:'all 0.22s cubic-bezier(0.4,0,0.2,1)',
+                  letterSpacing:'-0.005em',
+                  opacity: isClickable ? 1 : 0.55,
+                }}
+              >{label}</span>
+            );
+          })}
+        </div>
+      );
+    }
+
     /* ── LandingPage ─────────────────────────────── */
-    function LandingPage({ onEnter }) {
+    function LandingPage({ onEnter, onShiftStage, onJourney }) {
       const [exiting, setExiting] = useState(false);
       const [activeTab, setActiveTab] = useState('Home');
       const [hoverTab, setHoverTab] = useState(null);
@@ -951,10 +1044,10 @@
       }, [featuresInView]);
 
       const features = [
-        { icon:'🎯', title:'Mission-Based Learning', desc:'ภารกิจที่ออกแบบให้เหมาะกับคุณโดยเฉพาะ เรียนรู้ผ่านการลงมือทำจริง ไม่ใช่แค่อ่านทฤษฎี', color:'#ED4724', tag:'PRACTICE' },
-        { icon:'⚡', title:'Micro Learning',         desc:'เนื้อหา 5–10 นาที เรียนได้ทุกที่ ทุกเวลา ไม่เสียเวลา ไม่ต้องจัดตาราง',           color:'#f59e0b', tag:'BITESIZE' },
-        { icon:'📊', title:'Real-time Progress',     desc:'ติดตามพัฒนาการของตัวเอง เห็นชัดว่าเรียนได้มากแค่ไหน และต้องพัฒนาอะไรต่อไป',     color:'#06b6d4', tag:'INSIGHT'  },
-        { icon:'🏆', title:'Leaderboard & Rewards',  desc:'แข่งขันกับเพื่อนร่วมองค์กร สะสมคะแนน รับ Badge และสร้างแรงจูงใจในการเรียนรู้',   color:'#a78bfa', tag:'REWARD'   },
+        { Icon:Target,    title:'Mission-Based Learning', desc:'ภารกิจที่ออกแบบให้เหมาะกับคุณโดยเฉพาะ เรียนรู้ผ่านการลงมือทำจริง ไม่ใช่แค่อ่านทฤษฎี', color:'#ED4724', tag:'PRACTICE' },
+        { Icon:Zap,       title:'Micro Learning',         desc:'เนื้อหา 5–10 นาที เรียนได้ทุกที่ ทุกเวลา ไม่เสียเวลา ไม่ต้องจัดตาราง',           color:'#f59e0b', tag:'BITESIZE' },
+        { Icon:BarChart2, title:'Real-time Progress',     desc:'ติดตามพัฒนาการของตัวเอง เห็นชัดว่าเรียนได้มากแค่ไหน และต้องพัฒนาอะไรต่อไป',     color:'#06b6d4', tag:'INSIGHT'  },
+        { Icon:Trophy,    title:'Leaderboard & Rewards',  desc:'แข่งขันกับเพื่อนร่วมองค์กร สะสมคะแนน รับ Badge และสร้างแรงจูงใจในการเรียนรู้',   color:'#a78bfa', tag:'REWARD'   },
       ];
 
       return (
@@ -1034,47 +1127,15 @@
             </div>
 
             {/* Nav links — pill tab group */}
-            <div className="lp-pills" style={{
-              display:'flex', alignItems:'center', gap:4,
-              padding:5,
-              background:'rgba(255,255,255,0.04)',
-              border:'1px solid rgba(255,255,255,0.06)',
-              borderRadius:999,
-              backdropFilter:'blur(8px)',
-              boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04)',
-            }}>
-              {['Home','Features','Shift Stage','Transformation Journey','Available Course'].map(l => {
-                const isActive = activeTab === l;
-                const isHover = hoverTab === l;
-                return (
-                  <span
-                    key={l}
-                    onClick={() => {
-                      setActiveTab(l);
-                      if (l === 'Features' || l === 'Transformation Journey') handleEnter();
-                    }}
-                    onMouseEnter={() => setHoverTab(l)}
-                    onMouseLeave={() => setHoverTab(null)}
-                    style={{
-                      position:'relative',
-                      padding:'8px 16px',
-                      borderRadius:999,
-                      fontSize:'0.8125rem',
-                      fontWeight: isActive ? 600 : 500,
-                      cursor:'pointer',
-                      whiteSpace:'nowrap',
-                      color: isActive ? '#fff' : (isHover ? '#e4e4e7' : '#a1a1aa'),
-                      background: isActive
-                        ? '#ED4724'
-                        : (isHover ? 'rgba(255,255,255,0.06)' : 'transparent'),
-                      boxShadow: isActive ? '0 4px 14px rgba(237,71,36,0.4)' : 'none',
-                      transition:'all 0.22s cubic-bezier(0.4,0,0.2,1)',
-                      letterSpacing:'-0.005em',
-                    }}
-                  >{l}</span>
-                );
-              })}
-            </div>
+            <GlobalPills
+              activeLabel="Home"
+              onNav={(s) => {
+                if (s === 'landing')   return;
+                if (s === 'phases')    onEnter && onEnter();
+                if (s === 'transform') onShiftStage && onShiftStage();
+                if (s === 'journey')   onJourney && onJourney();
+              }}
+            />
 
             <button onClick={handleEnter} className="btn-press lp-nav-cta" style={{
               padding:'9px 20px', borderRadius:10, border:'none',
@@ -1224,7 +1285,7 @@
                 fontSize:'0.7rem', fontWeight:700, letterSpacing:'0.04em',
                 backdropFilter:'blur(6px)',
                 boxShadow:'0 8px 24px rgba(251,191,36,0.18)',
-              }}>🔥 Live Streak</div>
+                display:'inline-flex',alignItems:'center',gap:5}}><Flame size={12} strokeWidth={2}/> Live Streak</div>
 
               {/* Floating badge — bottom left */}
               <div className="anim-float" style={{
@@ -1237,7 +1298,8 @@
                 backdropFilter:'blur(6px)',
                 boxShadow:'0 8px 24px rgba(99,102,241,0.18)',
                 animationDelay:'-2s',
-              }}>+50 pts ✨</div>
+                display:'inline-flex',alignItems:'center',gap:5,
+              }}>+50 pts <Sparkles size={12} strokeWidth={2}/></div>
 
               {/* Phone shell — floats & tilts */}
               <div className="anim-phone-tilt" style={{
@@ -1273,7 +1335,7 @@
                   {/* Header (shared) */}
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
                     <div>
-                      <div style={{color:'#a8a29e',fontSize:'0.6rem'}}>สวัสดี 👋</div>
+                      <div style={{color:'#a8a29e',fontSize:'0.6rem'}}>สวัสดี</div>
                       <div style={{color:'#fff',fontSize:'0.8rem',fontWeight:700}}>คุณสมชาย</div>
                     </div>
                     <div style={{width:30,height:30,borderRadius:'50%',background:'#ED4724',
@@ -1290,7 +1352,7 @@
                         display:'flex',alignItems:'center',justifyContent:'space-between',
                       }}>
                         <div>
-                          <div style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600}}>🔥 Streak</div>
+                          <div style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600,display:'inline-flex',alignItems:'center',gap:3}}><Flame size={9} strokeWidth={2}/> Streak</div>
                           <div style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,lineHeight:1}}>7 วัน</div>
                         </div>
                         <div style={{textAlign:'right'}}>
@@ -1381,7 +1443,7 @@
                         border:'1px solid rgba(99,102,241,0.32)',
                         borderRadius:14, padding:14, marginBottom:12, textAlign:'center',
                       }}>
-                        <div style={{fontSize:'0.55rem',color:'#a5b4fc',fontWeight:700,letterSpacing:'0.08em',marginBottom:8}}>🏆 LEADERBOARD</div>
+                        <div style={{fontSize:'0.55rem',color:'#a5b4fc',fontWeight:700,letterSpacing:'0.08em',marginBottom:8,display:'inline-flex',alignItems:'center',gap:4,justifyContent:'center',width:'100%'}}><Trophy size={10} strokeWidth={2}/> LEADERBOARD</div>
                         <div style={{color:'#fff',fontSize:'1.7rem',fontWeight:800,lineHeight:1}}>#3</div>
                         <div style={{color:'#c4b5fd',fontSize:'0.6rem',marginTop:3}}>จาก 124 คน</div>
                       </div>
@@ -1418,9 +1480,11 @@
                   display:'flex', alignItems:'center', justifyContent:'space-around',
                   paddingBottom:6,
                 }}>
-                  {['🏠','🎯','📺','📊','🏆'].map((ic,i)=>(
-                    <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2}}>
-                      <span style={{fontSize:'0.85rem',opacity:i===phoneIdx?1:0.55,transition:'opacity 0.3s'}}>{ic}</span>
+                  {[Home, Target, Video, BarChart2, Trophy].map((Ico,i)=>(
+                    <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2,
+                      color: i===phoneIdx ? '#ED4724' : 'rgba(255,255,255,0.55)',
+                      opacity: i===phoneIdx ? 1 : 0.7, transition:'all 0.3s'}}>
+                      <Ico size={14} strokeWidth={2}/>
                       {i===phoneIdx && <div style={{width:4,height:4,borderRadius:'50%',background:'#ED4724'}}/>}
                     </div>
                   ))}
@@ -1472,7 +1536,7 @@
               gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))',
               gap:20,
             }}>
-              {features.map(({icon,title,desc,color,tag},i)=>(
+              {features.map(({Icon,title,desc,color,tag},i)=>(
                 <div key={title}
                   className="feature-card anim-wiggle-hover"
                   style={{
@@ -1518,10 +1582,12 @@
                     background:`${color}1a`,
                     border:`1px solid ${color}40`,
                     display:'flex',alignItems:'center',justifyContent:'center',
-                    fontSize:'1.7rem', marginBottom:18,
+                    color, marginBottom:18,
                     boxShadow:`0 8px 24px ${color}22`,
                   }}>
-                    <span className="anim-wiggle-target" style={{display:'inline-block'}}>{icon}</span>
+                    <span className="anim-wiggle-target" style={{display:'inline-flex'}}>
+                      <Icon size={26} strokeWidth={1.8}/>
+                    </span>
                   </div>
 
                   <h3 style={{fontWeight:700,fontSize:'1.05rem',margin:'0 0 8px',letterSpacing:'-0.01em',color:'#fff'}}>{title}</h3>
@@ -3657,12 +3723,6 @@
                       {/* Color band */}
                       <div style={{height:4,background:`linear-gradient(to right,${mod.color},${mod.color}55)`}}/>
                       <div style={{padding:'14px 14px 12px',display:'flex',gap:12,alignItems:'flex-start'}}>
-                        {/* Module emblem */}
-                        <div style={{width:46,height:46,borderRadius:12,background:`${mod.color}1e`,
-                          border:`1px solid ${mod.color}40`,flexShrink:0,
-                          display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.3rem'}}>
-                          {mod.icon}
-                        </div>
                         <div style={{flex:1,minWidth:0}}>
                           <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
                             <span style={{color:mod.color,fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.08em',
@@ -4029,14 +4089,35 @@
               </div>
               <div style={{padding:'16px 22px'}}>
                 {[
-                  {icon:'📅',label:'วันที่จัดอบรม',value:classInfo.dates},
-                  {icon:'⏱',label:'ระยะเวลา',value:classInfo.duration},
-                  {icon:'👥',label:'ผู้เข้าร่วม',value:`${classInfo.participants} คน`},
-                  {icon:'🎓',label:'วิทยากร',value:classInfo.instructor.name},
+                  {icon:'calendar',label:'วันที่จัดอบรม',value:classInfo.dates},
+                  {icon:'clock',   label:'ระยะเวลา',     value:classInfo.duration},
+                  {icon:'users',   label:'ผู้เข้าร่วม',   value:`${classInfo.participants} คน`},
+                  {icon:'avatar',  label:'วิทยากร',     value:classInfo.instructor.name},
                 ].map(({icon,label,value})=>(
                   <div key={label} style={{display:'flex',alignItems:'center',gap:12,
                     padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
-                    <span style={{fontSize:'1rem',width:22,textAlign:'center',filter:'grayscale(1) brightness(2.2) contrast(0.85)'}}>{icon}</span>
+                    {icon === 'avatar' ? (
+                      <span style={{
+                        width:24,height:24,borderRadius:'50%',flexShrink:0,
+                        background:'#ED4724',overflow:'hidden',position:'relative',
+                        display:'inline-block',
+                        border:'1px solid rgba(237,71,36,0.55)',
+                      }}>
+                        <img src="assets/methavin.png" alt={value}
+                          style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 20%'}}
+                          onError={e => { e.target.style.display='none'; }}/>
+                      </span>
+                    ) : (
+                      <span style={{
+                        width:24,height:24,flexShrink:0,
+                        display:'inline-flex',alignItems:'center',justifyContent:'center',
+                        color:'#a8a29e',
+                      }}>
+                        {icon === 'calendar' && <Calendar size={18} strokeWidth={1.7}/>}
+                        {icon === 'clock'    && <Clock    size={18} strokeWidth={1.7}/>}
+                        {icon === 'users'    && <Users    size={18} strokeWidth={1.7}/>}
+                      </span>
+                    )}
                     <div style={{flex:1}}>
                       <div style={{color:'#a8a29e',fontSize:'0.63rem'}}>{label}</div>
                       <div style={{color:'#e4e4e7',fontSize:'0.79rem',fontWeight:600,marginTop:1}}>{value}</div>
@@ -4092,9 +4173,11 @@
                 margin:'0 0 4px',letterSpacing:'0',lineHeight:1.3}}>{classInfo.name}</h2>
               <p style={{color:'#F26B45',fontSize:'0.73rem',margin:'0 0 14px'}}>{classInfo.org}</p>
               <div style={{display:'flex',gap:14,flexWrap:'wrap'}}>
-                {[['📅',classInfo.dates],['⏱',classInfo.duration],['👥',`${classInfo.participants} คน`]].map(([ic,v])=>(
-                  <div key={v} style={{display:'flex',alignItems:'center',gap:4}}>
-                    <span style={{fontSize:'0.73rem'}}>{ic}</span>
+                {[['calendar',classInfo.dates],['clock',classInfo.duration],['users',`${classInfo.participants} คน`]].map(([ic,v])=>(
+                  <div key={v} style={{display:'flex',alignItems:'center',gap:5,color:'#e7c3b1'}}>
+                    {ic === 'calendar' && <Calendar size={13} strokeWidth={1.8}/>}
+                    {ic === 'clock'    && <Clock    size={13} strokeWidth={1.8}/>}
+                    {ic === 'users'    && <Users    size={13} strokeWidth={1.8}/>}
                     <span style={{color:'#e7c3b1',fontSize:'0.7rem',fontWeight:500}}>{v}</span>
                   </div>
                 ))}
@@ -4205,14 +4288,22 @@
 
             <div style={{width:'100%',display:'flex',flexDirection:'column',gap:10,marginBottom:28}}>
               {[
-                {icon:'⏱',label:'ใช้เวลาประมาณ',value:'3–5 นาที'},
-                {icon:'❓',label:'จำนวนคำถาม',value:`${preTestQuestions.length} ข้อ`},
-                {icon:'🎯',label:'วัตถุประสงค์',value:'ปรับ Learning Path ให้เหมาะกับคุณ'},
+                {icon:'clock', label:'ใช้เวลาประมาณ',value:'3–5 นาที'},
+                {icon:'help',  label:'จำนวนคำถาม',  value:`${preTestQuestions.length} ข้อ`},
+                {icon:'target',label:'วัตถุประสงค์',value:'ปรับ Learning Path ให้เหมาะกับคุณ'},
               ].map(({icon,label,value})=>(
                 <div key={label} style={{display:'flex',alignItems:'center',gap:12,
                   background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
                   borderRadius:14,padding:'12px 16px'}}>
-                  <span style={{fontSize:'1.1rem'}}>{icon}</span>
+                  <span style={{
+                    width:24,height:24,flexShrink:0,
+                    display:'inline-flex',alignItems:'center',justifyContent:'center',
+                    color:'#ED4724',
+                  }}>
+                    {icon === 'clock'  && <Clock  size={18} strokeWidth={1.7}/>}
+                    {icon === 'help'   && <Info   size={18} strokeWidth={1.7}/>}
+                    {icon === 'target' && <Target size={18} strokeWidth={1.7}/>}
+                  </span>
                   <div>
                     <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>{label}</div>
                     <div style={{color:'#e4e4e7',fontSize:'0.8rem',fontWeight:600,marginTop:1}}>{value}</div>
@@ -4359,7 +4450,7 @@
               <div style={{marginTop:16,background:'rgba(237,71,36,0.08)',
                 border:'1px solid rgba(237,71,36,0.25)',borderRadius:16,padding:'18px'}}>
                 <div style={{display:'flex',gap:10,alignItems:'flex-start'}}>
-                  <span style={{fontSize:'1.2rem'}}>📅</span>
+                  <span style={{display:'inline-flex',color:'#ED4724',marginTop:1}}><Calendar size={20} strokeWidth={1.7}/></span>
                   <div>
                     <div style={{color:'#ED4724',fontSize:'0.82rem',fontWeight:700,marginBottom:4}}>ขั้นตอนต่อไป</div>
                     <div style={{color:'#d4d4d8',fontSize:'0.78rem',lineHeight:1.65}}>
@@ -4455,10 +4546,10 @@
         {time:'15:30',label:'Reflection & เตรียมตัวสู่ Day 3 — 360°',done:false},
       ];
       const ACTS=[
-        {id:'poll', icon:'📊',label:'Live Poll',     sub:'กำลัง Live',  live:true, color:'#06b6d4'},
-        {id:'group',icon:'👥',label:'Group Challenge',sub:'เริ่ม 11:00',live:false,color:'#10b981'},
-        {id:'quiz', icon:'⚡',label:'Live Quiz',      sub:'เริ่ม 14:30',live:false,color:'#f59e0b'},
-        {id:'qna',  icon:'💬',label:'Q&A',            sub:'21 คำถาม',   live:true, color:'#8b5cf6'},
+        {id:'poll', iconKey:'chart',  label:'Live Poll',     sub:'กำลัง Live',  live:true, color:'#06b6d4'},
+        {id:'group',iconKey:'users',  label:'Group Challenge',sub:'เริ่ม 11:00',live:false,color:'#10b981'},
+        {id:'quiz', iconKey:'zap',    label:'Live Quiz',      sub:'เริ่ม 14:30',live:false,color:'#f59e0b'},
+        {id:'qna',  iconKey:'message',label:'Q&A',            sub:'21 คำถาม',   live:true, color:'#8b5cf6'},
       ];
       const POLL={
         q:'เมื่อคุณต้องตัดสินใจเรื่องสำคัญในที่ทำงาน คุณมักจะให้น้ำหนักกับอะไรมากกว่ากัน?',
@@ -4520,17 +4611,23 @@
             <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',
               justifyContent:'center',padding:'32px 24px',textAlign:'center'}}>
               <div className="bounce-in" style={{width:72,height:72,borderRadius:'50%',
-                background:'#ED4724',
+                background:'#22c55e',
                 display:'flex',alignItems:'center',justifyContent:'center',
                 fontSize:'2rem',marginBottom:20,
-                boxShadow:'0 8px 32px rgba(237,71,36,0.35)'}}>✓</div>
-              <h2 className="bp-heading" style={{fontWeight:800,fontSize:'1.2rem',margin:'0 0 6px',letterSpacing:'0'}}>เข้าร่วมสำเร็จ!</h2>
+                boxShadow:'0 8px 32px rgba(34,197,94,0.35)'}}>✓</div>
+              <h2 className="bp-heading" style={{color:'#fff',fontWeight:800,fontSize:'1.2rem',margin:'0 0 6px',letterSpacing:'0'}}>เข้าร่วมสำเร็จ!</h2>
               <p style={{color:'#ED4724',fontSize:'0.82rem',margin:'0 0 24px'}}>{SESSION.course}</p>
               <div style={{display:'flex',gap:20,marginBottom:28}}>
-                {[['👥',`${SESSION.participants} คน`],['🟢',`${SESSION.online} Online`],['📅',`Day ${SESSION.day}/${SESSION.total}`]].map(([ic,v])=>(
+                {[['users',`${SESSION.participants} คน`],['online',`${SESSION.online} Online`],['calendar',`Day ${SESSION.day}/${SESSION.total}`]].map(([ic,v])=>(
                   <div key={v} style={{textAlign:'center'}}>
-                    <div style={{fontSize:'1.1rem'}}>{ic}</div>
-                    <div style={{color:'#a8a29e',fontSize:'0.7rem',marginTop:2}}>{v}</div>
+                    <div style={{display:'flex',justifyContent:'center',color:'#a8a29e',marginBottom:2}}>
+                      {ic === 'users'    && <Users    size={18} strokeWidth={1.7}/>}
+                      {ic === 'calendar' && <Calendar size={18} strokeWidth={1.7}/>}
+                      {ic === 'online'   && (
+                        <span style={{width:10,height:10,borderRadius:'50%',background:'#22c55e',boxShadow:'0 0 6px #22c55e',display:'inline-block',marginTop:4}}/>
+                      )}
+                    </div>
+                    <div style={{color:'#a8a29e',fontSize:'0.7rem'}}>{v}</div>
                   </div>
                 ))}
               </div>
@@ -4544,7 +4641,7 @@
             <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',
               justifyContent:'center',padding:'32px 24px'}}>
               <JoinstickLogo size={84} variant="white" style={{marginBottom:20}} />
-              <h2 className="bp-heading" style={{fontWeight:800,fontSize:'1.2rem',letterSpacing:'0',margin:'0 0 6px'}}>เข้าร่วม Session</h2>
+              <h2 className="bp-heading" style={{color:'#fff',fontWeight:800,fontSize:'1.2rem',letterSpacing:'0',margin:'0 0 6px'}}>เข้าร่วม Session</h2>
               <p style={{color:'#a8a29e',fontSize:'0.8rem',textAlign:'center',margin:'0 0 26px',lineHeight:1.6}}>
                 กรอกรหัส 4 หลักที่วิทยากรให้บนจอ
               </p>
@@ -4588,99 +4685,271 @@
         </div>
       );
 
+      /* ── Icon renderer for activity cards ── */
+      const ActIcon = ({iconKey, size=22, strokeWidth=1.7}) => {
+        const p = {size, strokeWidth};
+        if (iconKey === 'chart')   return <BarChart2 {...p}/>;
+        if (iconKey === 'users')   return <Users {...p}/>;
+        if (iconKey === 'zap')     return <Zap {...p}/>;
+        if (iconKey === 'message') return <MessageCircle {...p}/>;
+        return null;
+      };
+
       /* ── 2. Dashboard ── */
-      const renderDashboard=()=>(
+      const renderDashboard=()=>{
+        const liveAct = ACTS.find(a => a.live);
+        const otherActs = ACTS.filter(a => !a.live);
+        const onlinePct = Math.round((SESSION.online / SESSION.participants) * 100);
+        return (
         <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
-          <div style={{padding:'14px 20px',borderBottom:'1px solid rgba(255,255,255,0.06)',
-            background:'rgba(237,71,36,0.05)',flexShrink:0}}>
-            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:6}}>
-              <div>
-                <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
-                  <span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>
-                  <span style={{color:'#22c55e',fontSize:'0.68rem',fontWeight:600}}>LIVE · Day {SESSION.day}/{SESSION.total}</span>
-                </div>
-                <div className="bp-heading" style={{color:'#f4f4f5',fontSize:'1rem',fontWeight:800,letterSpacing:'0'}}>{SESSION.course}</div>
-              </div>
-              <div style={{textAlign:'right'}}>
-                <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>Online</div>
-                <div style={{color:'#ED4724',fontSize:'0.9rem',fontWeight:700}}>{SESSION.online}/{SESSION.participants}</div>
+          {/* ── Header — speaker-led, alive ── */}
+          <div style={{
+            padding:'12px 18px 14px',flexShrink:0,position:'relative',overflow:'hidden',
+            background:'linear-gradient(180deg, rgba(237,71,36,0.14) 0%, rgba(237,71,36,0.04) 100%)',
+            borderBottom:'1px solid rgba(237,71,36,0.18)',
+          }}>
+            {/* Subtle radial glow */}
+            <div aria-hidden="true" style={{
+              position:'absolute',top:-30,right:-20,width:120,height:120,
+              background:'radial-gradient(circle, rgba(237,71,36,0.25), transparent 70%)',
+              pointerEvents:'none',
+            }}/>
+
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8,position:'relative'}}>
+              {/* Live + Day badge */}
+              <div style={{
+                display:'inline-flex',alignItems:'center',gap:6,
+                background:'rgba(34,197,94,0.14)',border:'1px solid rgba(34,197,94,0.36)',
+                borderRadius:999, padding:'3px 9px',
+              }}>
+                <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block',boxShadow:'0 0 8px #22c55e'}}/>
+                <span style={{color:'#86efac',fontSize:'0.62rem',fontWeight:800,letterSpacing:'0.06em'}}>LIVE · DAY {SESSION.day}/{SESSION.total}</span>
               </div>
             </div>
-            <div style={{color:'#78716c',fontSize:'0.7rem'}}>{SESSION.instructor} · {SESSION.course}</div>
-          </div>
 
-          <div style={{flex:1,overflowY:'auto',padding:'16px 20px 20px'}}>
-            <h3 style={{color:'#f4f4f5',fontSize:'0.82rem',fontWeight:700,margin:'0 0 10px'}}>กิจกรรมวันนี้</h3>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:20}}>
-              {ACTS.map(({id,icon,label,sub,live,color})=>(
-                <button key={id} onClick={()=>setScreen(id)} className="btn-press" style={{
-                  padding:'14px 12px',borderRadius:16,
-                  background:live?`${color}10`:'rgba(255,255,255,0.03)',
-                  border:`1px solid ${live?`${color}30`:'rgba(255,255,255,0.07)'}`,
-                  cursor:'pointer',textAlign:'left',
-                }}>
-                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:6}}>
-                    <span style={{fontSize:'1.2rem'}}>{icon}</span>
-                    {live&&<span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block'}} className="anim-pulse"/>}
-                  </div>
-                  <div style={{color:'#f4f4f5',fontSize:'0.8rem',fontWeight:700,marginBottom:2}}>{label}</div>
-                  <div style={{color:live?color:'#78716c',fontSize:'0.65rem',fontWeight:live?600:400}}>{sub}</div>
-                </button>
-              ))}
-            </div>
+            {/* Course title */}
+            <h2 className="bp-heading" style={{
+              color:'#fff',fontSize:'1.05rem',fontWeight:800,letterSpacing:'-0.01em',
+              margin:'0 0 8px',lineHeight:1.2,position:'relative',
+            }}>{SESSION.course}</h2>
 
-            <button onClick={()=>setScreen('reflection')} className="btn-press" style={{
-              width:'100%',padding:'13px 0',borderRadius:14,border:'1px solid rgba(255,255,255,0.1)',
-              background:'rgba(255,255,255,0.04)',color:'#a8a29e',
-              fontSize:'0.85rem',fontWeight:600,cursor:'pointer',marginBottom:10}}>🪞 Reflection</button>
-            {AGENDA.map(({time,label,done,active},i)=>(
-              <div key={i} style={{display:'flex',gap:12,padding:'8px 0',
-                borderBottom:'1px solid rgba(255,255,255,0.04)'}}>
-                <span style={{width:36,flexShrink:0,textAlign:'right',paddingTop:1,
-                  color:active?'#ED4724':done?'#3f3f46':'#78716c',fontSize:'0.67rem',fontWeight:600}}>{time}</span>
-                <div style={{display:'flex',gap:8,alignItems:'center',flex:1}}>
-                  <div style={{width:8,height:8,borderRadius:'50%',flexShrink:0,marginTop:1,
-                    background:active?'#ED4724':done?'#22c55e':'rgba(255,255,255,0.1)',
-                    boxShadow:active?'0 0 0 3px rgba(237,71,36,0.20)':done?'0 0 0 3px rgba(34,197,94,0.1)':'none'}}/>
-                  <span style={{fontSize:'0.78rem',lineHeight:1.3,fontWeight:active?600:400,
-                    color:active?'#f4f4f5':done?'#78716c':'#a8a29e',
-                    textDecoration:done?'line-through':'none'}}>{label}</span>
-                  {active&&<span style={{fontSize:'0.6rem',fontWeight:700,color:'#ED4724',
-                    background:'rgba(237,71,36,0.12)',borderRadius:999,padding:'1px 6px'}}>LIVE</span>}
-                </div>
-              </div>
-            ))}
-
-            <div style={{marginTop:14,background:'rgba(255,255,255,0.02)',
-              border:'1px solid rgba(255,255,255,0.05)',borderRadius:12,
-              padding:'12px 14px',display:'flex',alignItems:'center',gap:10}}>
-              <div style={{width:32,height:32,borderRadius:'50%',flexShrink:0,
-                background:'#ED4724', overflow:'hidden', position:'relative',
-                display:'flex',alignItems:'center',justifyContent:'center',
-                fontSize:'0.75rem',fontWeight:700,color:'#fff'}}>
-                <span>ม</span>
-                <img src="assets/methavin.png" alt="เมธวิน ปิติพรวิวัฒน์"
-                  style={{position:'absolute', inset:0, width:'100%', height:'100%',
-                    objectFit:'cover', objectPosition:'center 20%'}}
+            {/* Speaker chip — inline, with avatar */}
+            <div style={{display:'flex',alignItems:'center',gap:8,position:'relative'}}>
+              <div style={{
+                width:26,height:26,borderRadius:'50%',flexShrink:0,
+                background:'#ED4724',overflow:'hidden',position:'relative',
+                border:'2px solid rgba(237,71,36,0.55)',
+                boxShadow:'0 0 0 2px rgba(34,197,94,0.55), 0 4px 12px rgba(237,71,36,0.4)',
+              }}>
+                <img src="assets/methavin.png" alt={SESSION.instructor}
+                  style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 20%'}}
                   onError={e => { e.target.style.display='none'; }}/>
               </div>
-              <div>
-                <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>{SESSION.instructor}</div>
-                <div style={{color:'#d4d4d8',fontSize:'0.75rem',marginTop:1,lineHeight:1.4}}>
-                  "เชิญทำ Live Poll ก่อนเลยนะครับ เพื่อดูว่าคนในห้องมี Preference แบบไหนกันบ้าง ก่อนเราจะลงลึก MBTI 4 มิติ"
+              {/* Voice wave animation */}
+              <div style={{display:'flex',alignItems:'center',gap:2,height:14}}>
+                {[8,12,6,14,9].map((h,i) => (
+                  <span key={i} style={{
+                    width:2,height:`${h}px`,borderRadius:1,
+                    background:'#22c55e',display:'inline-block',
+                    animation:`pulse 0.9s ease-in-out ${i*0.12}s infinite`,
+                    opacity:0.85,
+                  }}/>
+                ))}
+              </div>
+              <div style={{lineHeight:1.15,flex:1,minWidth:0}}>
+                <div style={{color:'#fff',fontSize:'0.7rem',fontWeight:700,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{SESSION.instructor}</div>
+                <div style={{color:'#a8a29e',fontSize:'0.58rem',marginTop:1,letterSpacing:'0.02em'}}>กำลังพูด · {liveAct?.label}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Body ── */}
+          <div style={{flex:1,overflowY:'auto',padding:'14px 18px 18px',display:'flex',flexDirection:'column',gap:14}}>
+
+            {/* ── FEATURED LIVE ACTIVITY ── */}
+            {liveAct && (
+              <button onClick={()=>setScreen(liveAct.id)} className="btn-press" style={{
+                position:'relative',overflow:'hidden',
+                background:`linear-gradient(135deg, ${liveAct.color}22 0%, ${liveAct.color}08 100%)`,
+                border:`1px solid ${liveAct.color}55`,
+                borderRadius:18,padding:'14px 16px',cursor:'pointer',textAlign:'left',
+                boxShadow:`0 8px 28px ${liveAct.color}1a, inset 0 1px 0 rgba(255,255,255,0.04)`,
+              }}>
+                {/* Corner glow */}
+                <div aria-hidden="true" style={{
+                  position:'absolute',top:-30,right:-30,width:120,height:120,
+                  background:`radial-gradient(circle, ${liveAct.color}55, transparent 65%)`,
+                  pointerEvents:'none',
+                }}/>
+                <div style={{display:'flex',alignItems:'center',gap:11,marginBottom:10,position:'relative'}}>
+                  <div style={{
+                    width:42,height:42,borderRadius:12,flexShrink:0,
+                    background:`${liveAct.color}26`,border:`1px solid ${liveAct.color}55`,
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    color:liveAct.color,
+                    boxShadow:`0 0 16px ${liveAct.color}55`,
+                  }}><ActIcon iconKey={liveAct.iconKey} size={22} strokeWidth={1.8}/></div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
+                      <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',boxShadow:'0 0 8px #22c55e',display:'inline-block'}}/>
+                      <span style={{color:'#86efac',fontSize:'0.58rem',fontWeight:800,letterSpacing:'0.08em'}}>LIVE NOW</span>
+                    </div>
+                    <div style={{color:'#fff',fontSize:'0.95rem',fontWeight:800,letterSpacing:'-0.01em'}}>{liveAct.label}</div>
+                  </div>
+                  <div style={{
+                    background:`${liveAct.color}33`,border:`1px solid ${liveAct.color}66`,
+                    color:'#fff',borderRadius:9,padding:'5px 10px',
+                    fontSize:'0.7rem',fontWeight:800,letterSpacing:'-0.01em',
+                    boxShadow:`0 0 12px ${liveAct.color}55`,
+                  }}>เข้าร่วม →</div>
                 </div>
+                {/* Live progress strip */}
+                <div style={{position:'relative'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                    <span style={{color:'#a8a29e',fontSize:'0.62rem'}}>คนกำลังตอบ</span>
+                    <span style={{color:liveAct.color,fontSize:'0.66rem',fontWeight:800,fontVariantNumeric:'tabular-nums'}}>
+                      18 / {SESSION.participants}
+                    </span>
+                  </div>
+                  <div style={{height:4,background:'rgba(255,255,255,0.06)',borderRadius:99,overflow:'hidden'}}>
+                    <div style={{
+                      width:`${(18/SESSION.participants)*100}%`,height:'100%',
+                      background:`linear-gradient(90deg, ${liveAct.color}, ${liveAct.color}cc)`,
+                      borderRadius:99,
+                      boxShadow:`0 0 8px ${liveAct.color}`,
+                    }}/>
+                  </div>
+                </div>
+              </button>
+            )}
+
+            {/* ── Other Activities — horizontal pill chips ── */}
+            <div>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+                <span style={{color:'#a8a29e',fontSize:'0.64rem',fontWeight:700,letterSpacing:'0.08em'}}>กิจกรรมที่กำลังจะมา</span>
+                <span style={{color:'#52525b',fontSize:'0.6rem',fontWeight:600}}>{otherActs.length} รายการ</span>
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:6}}>
+                {otherActs.map(({id,iconKey,label,sub,color})=>(
+                  <button key={id} onClick={()=>setScreen(id)} className="btn-press" style={{
+                    padding:'10px 8px',borderRadius:12,
+                    background:'rgba(255,255,255,0.025)',
+                    border:'1px solid rgba(255,255,255,0.06)',
+                    cursor:'pointer',textAlign:'left',
+                    display:'flex',flexDirection:'column',alignItems:'flex-start',gap:4,
+                  }}>
+                    <div style={{
+                      width:28,height:28,borderRadius:8,
+                      background:`${color}1a`,border:`1px solid ${color}33`,
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      color:color,
+                    }}><ActIcon iconKey={iconKey} size={16} strokeWidth={1.8}/></div>
+                    <div style={{color:'#e4e4e7',fontSize:'0.7rem',fontWeight:700,letterSpacing:'-0.01em',lineHeight:1.15}}>{label}</div>
+                    <div style={{color:color,fontSize:'0.58rem',fontWeight:600,letterSpacing:'0.02em'}}>{sub}</div>
+                  </button>
+                ))}
               </div>
             </div>
 
-            <div style={{marginTop:12}}>
-              <button onClick={onNext} className="btn-press" style={{
-                width:'100%',padding:'13px 0',borderRadius:14,border:'none',
-                background:'#ED4724',color:'#fff',fontSize:'0.88rem',fontWeight:700,
-                cursor:'pointer',boxShadow:'0 8px 24px rgba(237,71,36,0.40)'}}>ไป Phase ต่อไป →</button>
+            {/* ── Quote bubble — speech style with arrow ── */}
+            <div style={{
+              position:'relative',marginTop:2,marginLeft:8,
+              background:'rgba(237,71,36,0.08)',
+              border:'1px solid rgba(237,71,36,0.22)',
+              borderRadius:'14px 14px 14px 4px',padding:'10px 12px',
+            }}>
+              <div aria-hidden="true" style={{
+                position:'absolute',left:-7,bottom:0,width:0,height:0,
+                borderTop:'7px solid rgba(237,71,36,0.22)',
+                borderLeft:'8px solid transparent',
+              }}/>
+              <div style={{display:'flex',alignItems:'center',gap:5,marginBottom:4}}>
+                <span style={{color:'#fb923c',fontSize:'0.58rem',fontWeight:700,letterSpacing:'0.04em',display:'inline-flex',alignItems:'center',gap:4}}><MessageCircle size={11} strokeWidth={2}/> {SESSION.instructor} ส่งให้ห้อง</span>
+              </div>
+              <div style={{color:'#f4f4f5',fontSize:'0.74rem',lineHeight:1.5,fontStyle:'italic'}}>
+                "เชิญทำ Live Poll ก่อนเลยนะครับ เพื่อดูว่าคนในห้องมี Preference แบบไหนกันบ้าง ก่อนเราจะลงลึก MBTI 4 มิติ"
+              </div>
             </div>
+
+            {/* ── Next Up — compact preview of next agenda item ── */}
+            {(() => {
+              const nextItem = AGENDA.find(a => !a.done && !a.active);
+              if (!nextItem) return null;
+              return (
+                <div style={{
+                  background:'linear-gradient(135deg, rgba(99,102,241,0.10) 0%, rgba(99,102,241,0.02) 100%)',
+                  border:'1px solid rgba(99,102,241,0.28)',
+                  borderRadius:14,padding:'11px 13px',
+                  position:'relative',overflow:'hidden',
+                }}>
+                  <div aria-hidden="true" style={{
+                    position:'absolute',top:-30,right:-30,width:100,height:100,
+                    background:'radial-gradient(circle, rgba(99,102,241,0.35), transparent 65%)',
+                    pointerEvents:'none',
+                  }}/>
+                  <div style={{display:'flex',alignItems:'center',gap:10,position:'relative'}}>
+                    <div style={{
+                      padding:'8px 12px',borderRadius:11,flexShrink:0,
+                      background:'rgba(99,102,241,0.18)',border:'1px solid rgba(99,102,241,0.45)',
+                      display:'inline-flex',alignItems:'center',gap:6,
+                      color:'#a5b4fc',
+                      boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04)',
+                    }}>
+                      <Clock size={14} strokeWidth={2}/>
+                      <span style={{
+                        color:'#fff',fontSize:'1rem',fontWeight:800,
+                        fontVariantNumeric:'tabular-nums',letterSpacing:'-0.02em',
+                        lineHeight:1,
+                      }}>{nextItem.time}</span>
+                    </div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{
+                        display:'inline-flex',alignItems:'center',gap:5,
+                        background:'rgba(99,102,241,0.18)',border:'1px solid rgba(99,102,241,0.40)',
+                        borderRadius:99,padding:'1px 7px',marginBottom:4,
+                      }}>
+                        <span style={{width:4,height:4,borderRadius:'50%',background:'#a5b4fc'}}/>
+                        <span style={{color:'#a5b4fc',fontSize:'0.52rem',fontWeight:800,letterSpacing:'0.06em'}}>ถัดไป</span>
+                      </div>
+                      <div style={{color:'#e4e4e7',fontSize:'0.78rem',fontWeight:700,letterSpacing:'-0.01em',lineHeight:1.3,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{nextItem.label}</div>
+                    </div>
+                    <span style={{color:'#a5b4fc',fontSize:'0.6rem',fontWeight:700,letterSpacing:'0.02em'}}>อีก 25 นาที</span>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* ── Reflection — placed at end, contextually ── */}
+            <button onClick={()=>setScreen('reflection')} className="btn-press" style={{
+              width:'100%',padding:'12px 14px',borderRadius:14,
+              border:'1px dashed rgba(255,255,255,0.16)',
+              background:'rgba(255,255,255,0.02)',
+              cursor:'pointer',
+              display:'flex',alignItems:'center',gap:10,textAlign:'left',
+            }}>
+              <span style={{
+                width:28,height:28,borderRadius:8,flexShrink:0,
+                background:'rgba(251,191,36,0.12)',border:'1px solid rgba(251,191,36,0.30)',
+                color:'#fbbf24',
+                display:'inline-flex',alignItems:'center',justifyContent:'center',
+              }}><Sparkles size={16} strokeWidth={1.7}/></span>
+              <div style={{flex:1}}>
+                <div style={{color:'#e4e4e7',fontSize:'0.78rem',fontWeight:700,letterSpacing:'-0.01em'}}>เก็บเกี่ยวการเรียนรู้</div>
+                <div style={{color:'#71717a',fontSize:'0.62rem',marginTop:1}}>สรุปสิ่งที่เรียนรู้วันนี้ · ส่ง 16:00</div>
+              </div>
+              <span style={{color:'#71717a',fontSize:'0.78rem'}}>→</span>
+            </button>
+
+            <button onClick={onNext} className="btn-press" style={{
+              width:'100%',padding:'12px 0',borderRadius:14,border:'none',
+              background:'#ED4724',color:'#fff',fontSize:'0.86rem',fontWeight:700,
+              cursor:'pointer',boxShadow:'0 8px 24px rgba(237,71,36,0.40)',
+              letterSpacing:'-0.01em',
+            }}>ไป Phase ต่อไป →</button>
           </div>
         </div>
-      );
+        );
+      };
 
       /* ── 3. Live Poll ── */
       const renderPoll=()=>(
@@ -5674,7 +5943,7 @@
     }
 
     /* ── PhaseSelect ─────────────────────────────── */
-    function PhaseSelect({ onSelect, onBack }) {
+    function PhaseSelect({ onSelect, onBack, onNav }) {
       const [exiting, setExiting] = useState(false);
       const [hovered, setHovered] = useState(null);
 
@@ -5793,6 +6062,7 @@
               <JoinstickLogo size={38} variant="white" />
               <span className="bp-heading" style={{fontWeight:700,fontSize:'1.05rem',letterSpacing:'0.1em'}}>JOINSTICK</span>
             </div>
+            <GlobalPills activeLabel="Features" onNav={onNav} />
             <button onClick={onBack} style={{
               display:'flex',alignItems:'center',gap:6,
               background:'rgba(255,255,255,0.05)',
@@ -6113,6 +6383,132 @@
               </div>
             </div>
 
+            {/* Shift Stage · Framework section */}
+            <div className="fade-in" style={{
+              animationDelay:'0.55s', opacity:0,
+              marginTop:80, width:'100%', maxWidth:1180,
+            }}>
+              <div style={{textAlign:'center', marginBottom:32}}>
+                <div style={{
+                  display:'inline-flex', alignItems:'center', gap:8,
+                  background:'rgba(251,191,36,0.10)', border:'1px solid rgba(251,191,36,0.30)',
+                  borderRadius:999, padding:'5px 14px', marginBottom:18,
+                }}>
+                  <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#fbbf24',boxShadow:'0 0 8px rgba(251,191,36,0.7)',display:'inline-block'}}/>
+                  <span className="bp-slogan" style={{color:'#fde68a',fontSize:'0.72rem',fontWeight:500}}>LEARNING FRAMEWORK</span>
+                </div>
+                <h2 className="bp-heading" style={{
+                  fontSize:'clamp(1.5rem,2.8vw,2.1rem)', fontWeight:800,
+                  letterSpacing:'0.01em', margin:'0 0 12px', lineHeight:1.2,
+                  color:'#fff',
+                }}>
+                  เข้าใจ <span style={{color:'#fbbf24'}}>การเปลี่ยนแปลง</span> ทั้ง 6 Stage
+                </h2>
+                <p style={{color:'#a8a29e',fontSize:'0.98rem',margin:'0 auto',lineHeight:1.65, maxWidth:620}}>
+                  Framework ที่ใช้ออกแบบ Learning Journey ของ Joinstick · ตั้งแต่ Unaware → Automate
+                </p>
+              </div>
+
+              {/* ─── Transformation Stage Card (full width) ─── */}
+              <div onClick={()=>go('transform')}
+                className="journey-phase-card"
+                style={{
+                  background:'linear-gradient(160deg, rgba(251,191,36,0.10), rgba(59,130,246,0.06))',
+                  border:'1px solid rgba(251,191,36,0.28)',
+                  borderRadius:24, padding:28,
+                  cursor:'pointer', position:'relative', overflow:'hidden',
+                  boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.25)',
+                }}
+                onMouseEnter={e=>{e.currentTarget.style.background='linear-gradient(160deg, rgba(251,191,36,0.18), rgba(59,130,246,0.12))';e.currentTarget.style.borderColor='rgba(251,191,36,0.55)';e.currentTarget.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 60px rgba(251,191,36,0.20)';}}
+                onMouseLeave={e=>{e.currentTarget.style.background='linear-gradient(160deg, rgba(251,191,36,0.10), rgba(59,130,246,0.06))';e.currentTarget.style.borderColor='rgba(251,191,36,0.28)';e.currentTarget.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.25)';}}>
+
+                {/* Diagonal stripes pattern */}
+                <div aria-hidden="true" style={{
+                  position:'absolute', inset:0, pointerEvents:'none', opacity:0.4,
+                  backgroundImage:'repeating-linear-gradient(45deg, rgba(251,191,36,0.08) 0, rgba(251,191,36,0.08) 1px, transparent 1px, transparent 18px)',
+                }}/>
+                {/* Corner blob */}
+                <div aria-hidden="true" style={{
+                  position:'absolute', top:-60, right:-60, width:220, height:220,
+                  background:'radial-gradient(circle, rgba(251,191,36,0.22) 0%, transparent 65%)',
+                  borderRadius:'50%', pointerEvents:'none',
+                }}/>
+
+                {/* Header */}
+                <div style={{display:'flex',alignItems:'center',gap:14, marginBottom:20, position:'relative', flexWrap:'wrap'}}>
+                  <div style={{
+                    width:56, height:56, borderRadius:16, flexShrink:0,
+                    background:'rgba(251,191,36,0.18)', border:'1px solid rgba(251,191,36,0.42)',
+                    display:'flex',alignItems:'center',justifyContent:'center', fontSize:'1.6rem',
+                    boxShadow:'0 0 26px rgba(251,191,36,0.30)',
+                  }}>🧭</div>
+                  <div style={{flex:1, minWidth:200}}>
+                    <div style={{display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
+                      <span style={{fontWeight:800,fontSize:'1.18rem',letterSpacing:'-0.01em'}}>Transformation Stage</span>
+                      <span style={{display:'inline-flex',alignItems:'center',gap:4,
+                        background:'rgba(251,191,36,0.14)',border:'1px solid rgba(251,191,36,0.40)',
+                        borderRadius:999,padding:'2px 9px'}}>
+                        <span className="anim-pulse" style={{width:5,height:5,borderRadius:'50%',background:'#fbbf24',boxShadow:'0 0 6px rgba(251,191,36,0.7)',display:'inline-block'}}/>
+                        <span style={{color:'#fde68a',fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.06em'}}>FRAMEWORK</span>
+                      </span>
+                    </div>
+                    <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginTop:4, lineHeight:1.5}}>
+                      6 Stage ของ Learner · จาก Unaware ถึง Automate · พฤติกรรม + ความสามารถ
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mini stage ladder */}
+                <div style={{
+                  background:'rgba(0,0,0,0.32)', borderRadius:14,
+                  padding:18, marginBottom:18, position:'relative',
+                  border:'1px solid rgba(255,255,255,0.05)',
+                }}>
+                  <div style={{
+                    display:'flex', gap:8, flexWrap:'wrap',
+                  }}>
+                    {[
+                      {n:0,l:'Unaware',       r:'Ignorance',    c:'#71717a'},
+                      {n:1,l:'Awareness',     r:'Questioner',   c:'#ef4444'},
+                      {n:2,l:'Acknowledgment',r:'Goal Setter',  c:'#f97316'},
+                      {n:3,l:'Activation',    r:'Apprentice',   c:'#fbbf24'},
+                      {n:4,l:'Adoption',      r:'Practitioner', c:'#22c55e'},
+                      {n:5,l:'Automate',      r:'Graduates',    c:'#3b82f6'},
+                    ].map(s=>(
+                      <div key={s.n} style={{
+                        flex:'1 1 140px', minWidth:120,
+                        background:`${s.c}14`, border:`1px solid ${s.c}44`,
+                        borderRadius:10, padding:'10px 12px',
+                      }}>
+                        <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
+                          <span style={{
+                            width:18,height:18,borderRadius:5,
+                            background:`${s.c}33`, border:`1px solid ${s.c}66`,
+                            color:s.c, fontSize:'0.62rem',fontWeight:800,
+                            display:'flex',alignItems:'center',justifyContent:'center',
+                          }}>{s.n}</span>
+                          <span style={{color:'#fff',fontSize:'0.74rem',fontWeight:700,letterSpacing:'-0.01em'}}>{s.l}</span>
+                        </div>
+                        <div style={{color:'#a1a1aa',fontSize:'0.66rem',fontWeight:500,paddingLeft:24}}>{s.r}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <div style={{
+                  position:'relative',
+                  display:'flex',alignItems:'center',justifyContent:'center',gap:8,
+                  padding:'13px 0', borderRadius:14,
+                  background:'#fbbf24', color:'#1f1300',
+                  fontSize:'0.92rem', fontWeight:800, letterSpacing:'-0.01em',
+                  boxShadow:'0 8px 22px rgba(251,191,36,0.34)',
+                }}>
+                  ดูรายละเอียด Transformation Stage <span>→</span>
+                </div>
+              </div>
+            </div>
+
             {/* For HR & Managers section */}
             <div className="fade-in" style={{
               animationDelay:'0.65s', opacity:0,
@@ -6381,7 +6777,7 @@
     }
 
     /* ── Manager Review · One-page Feature Summary ── */
-    function ManagerReview({ onBack }) {
+    function ManagerReview({ onBack, onNav }) {
       const TEAL = '#14b8a6';
       const TEAL_SOFT = 'rgba(20,184,166,0.12)';
       const TEAL_BORDER = 'rgba(20,184,166,0.28)';
@@ -6427,6 +6823,7 @@
               <JoinstickLogo size={38} variant="white" />
               <span className="bp-heading" style={{fontWeight:700,fontSize:'1.05rem',letterSpacing:'0.1em'}}>JOINSTICK</span>
             </div>
+            <GlobalPills activeLabel={null} onNav={onNav} />
             <button onClick={onBack} style={{
               display:'flex',alignItems:'center',gap:6,
               background:'rgba(255,255,255,0.05)',
@@ -6855,6 +7252,1147 @@
       );
     }
 
+    /* ── Transform Stage · 6-stage Transformation Framework ── */
+    function TransformStage({ onBack, onNav }) {
+      const stages = [
+        {
+          num: 0,
+          name: 'Unaware',
+          role: 'Ignorance',
+          desc: 'ไม่รู้ตัวว่าตัวเองขาด',
+          timeSales: '—',
+          timeStage: 'Before journey',
+          location: 'Pre Class',
+          color: '#71717a',
+          soft: 'rgba(113,113,122,0.14)',
+          border: 'rgba(113,113,122,0.36)',
+          behavior: [
+            { title:'Unconscious Incompetence', desc:'ยังไม่ตระหนักว่าตัวเองขาดอะไร ทำสิ่งเดิม ๆ โดยไม่รู้ว่ามีทางที่ดีกว่า' },
+          ],
+          proficiency: [
+            { title:'No knowledge', desc:'ไม่มีความรู้ในเรื่องนั้น ๆ' },
+          ],
+        },
+        {
+          num: 1,
+          name: 'Awareness',
+          role: 'Questioner',
+          desc: 'รู้ตัวว่าตัวเองขาดความสามารถ',
+          timeSales: '1–3 Days',
+          timeStage: '1–3 Days (Day 1–3)',
+          location: 'In Class',
+          color: '#ef4444',
+          soft: 'rgba(239,68,68,0.14)',
+          border: 'rgba(239,68,68,0.40)',
+          behavior: [
+            { title:'Sensing Gap', desc:'ตระหนักรู้ว่าตัวเองไม่รู้ (Conscious Incompetence)' },
+            { title:'Ambivalence', desc:'ลังเล ยังไม่มี Commitment รู้ว่าของเดิมอาจไม่พอ แต่ยังไม่แน่ใจว่าจะเปลี่ยนหรือไม่' },
+          ],
+          proficiency: [
+            { title:'Error', desc:'เห็นความผิดพลาดของตัวเอง' },
+            { title:'Curious', desc:'เริ่มตั้งคำถามกับความสามารถที่มีอยู่' },
+          ],
+        },
+        {
+          num: 2,
+          name: 'Acknowledgment',
+          role: 'Goal Setter',
+          desc: 'รู้ตัวว่าตัวเองขาดอะไรบ้าง และอธิบายว่าตัวเองขาดอะไร',
+          timeSales: '1–3 Days',
+          timeStage: '1–3 Days (Day 1–3)',
+          location: 'In Class',
+          color: '#f97316',
+          soft: 'rgba(249,115,22,0.14)',
+          border: 'rgba(249,115,22,0.40)',
+          behavior: [
+            { title:'Conscious Gap (Incompetence)', desc:'ตระหนักรู้ว่าตัวเองไม่รู้อะไรบ้าง' },
+            { title:'Committed Planning', desc:'ตั้งเป้าหมายและวางแผนได้อย่างมี Commitment มีทิศทางชัด พร้อมลงมือ แต่ยังไม่ได้เริ่มในชีวิตจริง' },
+          ],
+          proficiency: [
+            { title:'Gap Mapping', desc:'ระบุได้ว่าตัวเองขาด Knowledge / Skill / Mindset อะไร' },
+            { title:'Conceptual Understanding', desc:'เข้าใจเนื้อหา/ทักษะที่ต้องการ Conceptually อธิบายได้ถูกต้อง แต่ยังไม่ได้ Apply จริง' },
+            { title:'Readiness Mindset', desc:'พร้อมที่จะลงมือเปลี่ยนแปลงตัวเอง' },
+          ],
+        },
+        {
+          num: 3,
+          name: 'Activation',
+          role: 'Apprentice',
+          desc: 'เริ่มฝึกแล้วแต่ยังต้องอาศัยหลักการ',
+          timeSales: '10–14 Days',
+          timeStage: '10 Days (Day 4–14)',
+          location: 'Out of Class',
+          color: '#fbbf24',
+          soft: 'rgba(251,191,36,0.14)',
+          border: 'rgba(251,191,36,0.42)',
+          behavior: [
+            { title:'Start new / Stop old', desc:'เริ่มต้นพฤติกรรมใหม่ หรือหยุดพฤติกรรมเก่า ลงมือทำแล้ว แต่ยังไม่สม่ำเสมอ' },
+            { title:'Intrinsic Drive Emerging', desc:'มี Why ที่เป็นของตัวเองชัดขึ้น แสดงออกผ่านการพูดถึงเหตุผลส่วนตัว ไม่ใช่แค่ทำเพราะถูกบอก' },
+          ],
+          proficiency: [
+            { title:'Novice', desc:'เริ่มมีประสบการณ์ Apply ใน Context จริง · ต้องคิดทุก Step และทำตามกฎอย่างเคร่งครัด ไม่รู้ว่าต้องปรับอะไรเมื่อ Context เปลี่ยน' },
+            { title:'Self-efficacy Fragile', desc:'ความเชื่อมั่นในตัวเองแกว่ง สูงเมื่อทำสำเร็จ ต่ำเมื่อล้มเหลว ยังต้องการ Quick Win เพื่อประคอง' },
+          ],
+        },
+        {
+          num: 4,
+          name: 'Adoption',
+          role: 'Practitioner',
+          desc: 'ทำอย่างสม่ำเสมอ ได้เป็นอย่างดี',
+          timeSales: '45 Days',
+          timeStage: '30 Days (Day 15–45)',
+          location: 'Out of Class',
+          color: '#22c55e',
+          soft: 'rgba(34,197,94,0.14)',
+          border: 'rgba(34,197,94,0.40)',
+          behavior: [
+            { title:'Discipline', desc:'ทำเป็นประจำอย่างสม่ำเสมอ Maintain Velocity · ทำได้แม้ไม่มี Motivation บริบทเปลี่ยน หรือไม่มีคนดูแล' },
+            { title:'System-building', desc:'เริ่มสร้าง Routine หรือ Structure เพื่อรองรับพฤติกรรม ไม่พึ่งแค่ Willpower อีกต่อไป' },
+          ],
+          proficiency: [
+            { title:'Competent', desc:'นำ K/S/M ไป Integrate หรือ Apply ในสถานการณ์จริงได้ดีบ้าง ไม่ดีบ้าง' },
+            { title:'Pattern Recognition', desc:'ยังต้องคิดเยอะ แต่เริ่มมี Pattern บางอย่างที่ไม่ต้องคิดแล้ว' },
+            { title:'Growth Mindset Stable', desc:'ทัศนคติของการเติบโตเริ่มมั่นคง ยอมรับความผิดพลาดและเรียนรู้ต่อ' },
+          ],
+        },
+        {
+          num: 5,
+          name: 'Automate',
+          role: 'Graduates',
+          desc: 'ทำจนเป็นนิสัย ทำได้อย่างชำนาญ ทำได้โดยแทบไม่รู้สึกว่าต้องใส่ Effort',
+          timeSales: '3 Months',
+          timeStage: '45 Days (Day 46–90)',
+          location: 'Out of Class',
+          color: '#3b82f6',
+          soft: 'rgba(59,130,246,0.14)',
+          border: 'rgba(59,130,246,0.40)',
+          behavior: [
+            { title:'Habit', desc:'ทำเป็นนิสัย เป็นอัตโนมัติโดยไม่ต้องใส่ Effort หรือใช้ Effort น้อยมาก ๆ' },
+            { title:'Identity', desc:'พูดถึงพฤติกรรมนั้นในฐานะ "ตัวตน" ไม่ใช่ "สิ่งที่กำลังฝึก" — "ฉันเป็นคนที่..."' },
+          ],
+          proficiency: [
+            { title:'Proficient', desc:'Apply ในบริบทจริงได้เป็นอย่างดีและคล่องแคล่ว "ชำนาญ"' },
+          ],
+        },
+      ];
+
+      const GOLD = '#fbbf24';
+      const GOLD_SOFT = 'rgba(251,191,36,0.12)';
+      const GOLD_BORDER = 'rgba(251,191,36,0.30)';
+
+      const phaseInfo = (loc) => loc === 'Pre Class'
+        ? { color:'#F59E0B', soft:'rgba(245,158,11,0.12)', bd:'rgba(245,158,11,0.42)', fg:'#fcd34d' }
+        : loc === 'In Class'
+        ? { color:'#ED4724', soft:'rgba(237,71,36,0.12)',  bd:'rgba(237,71,36,0.42)',  fg:'#fda4a4' }
+        : { color:'#6366f1', soft:'rgba(99,102,241,0.12)', bd:'rgba(99,102,241,0.42)', fg:'#a5b4fc' };
+
+      const phaseGroups = [
+        { name:'Pre Class',    sub:'ก่อนเริ่ม',  color:'#F59E0B', items: stages.filter(s => s.location === 'Pre Class') },
+        { name:'In Class',     sub:'Day 1–3',  color:'#ED4724', items: stages.filter(s => s.location === 'In Class') },
+        { name:'Out of Class', sub:'Day 4–90', color:'#6366f1', items: stages.filter(s => s.location === 'Out of Class') },
+      ];
+
+      const [selectedNum, setSelectedNum] = useState(0);
+      const [hoverNum, setHoverNum] = useState(null);
+      const selected = stages.find(s => s.num === selectedNum) || stages[0];
+      const selectedPhase = phaseInfo(selected.location);
+
+      useEffect(() => {
+        const onKey = (e) => {
+          if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault(); setSelectedNum(n => Math.max(0, n - 1));
+          } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault(); setSelectedNum(n => Math.min(5, n + 1));
+          } else if (e.key >= '0' && e.key <= '5') {
+            e.preventDefault(); setSelectedNum(parseInt(e.key, 10));
+          }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+      }, []);
+
+      return (
+        <div style={{
+          minHeight:'100vh', background:'#161412', color:'#fff',
+          fontFamily:"'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        }}>
+          {/* Ambient blobs — change tint based on selected stage */}
+          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0,transition:'all 0.6s ease'}}>
+            <div style={{position:'absolute',top:'-15%',left:'10%',width:'50vw',height:'50vw',
+              background:`radial-gradient(circle, ${selected.color}1f 0%, transparent 65%)`,borderRadius:'50%',
+              transition:'background 0.6s ease'}}/>
+            <div style={{position:'absolute',bottom:'-20%',right:'5%',width:'45vw',height:'45vw',
+              background:`radial-gradient(circle, ${selectedPhase.color}14 0%, transparent 65%)`,borderRadius:'50%',
+              transition:'background 0.6s ease'}}/>
+          </div>
+
+          {/* Navbar */}
+          <nav style={{
+            position:'sticky',top:0,zIndex:100,
+            display:'flex',alignItems:'center',justifyContent:'space-between',
+            padding:'0 max(24px,calc((100vw - 1200px)/2))',
+            height:64,
+            background:'rgba(22,20,18,0.85)',
+            backdropFilter:'blur(12px)',
+            borderBottom:'1px solid rgba(255,255,255,0.06)',
+          }}>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <JoinstickLogo size={38} variant="white" />
+              <span className="bp-heading" style={{fontWeight:700,fontSize:'1.05rem',letterSpacing:'0.1em'}}>JOINSTICK</span>
+            </div>
+            <GlobalPills activeLabel="Shift Stage" onNav={onNav} />
+            <button onClick={onBack} style={{
+              display:'flex',alignItems:'center',gap:6,
+              background:'rgba(255,255,255,0.05)',
+              border:'1px solid rgba(255,255,255,0.08)',
+              borderRadius:10,padding:'8px 16px',
+              color:'#a8a29e',fontSize:'0.875rem',cursor:'pointer',
+              transition:'color 0.15s,background 0.15s',
+            }}
+              onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.background='rgba(255,255,255,0.08)'}}
+              onMouseLeave={e=>{e.currentTarget.style.color='#a8a29e';e.currentTarget.style.background='rgba(255,255,255,0.05)'}}>
+              ← กลับหน้าหลัก
+            </button>
+          </nav>
+
+          {/* Content */}
+          <div className="mr-section" style={{
+            position:'relative',zIndex:1,
+            padding:'18px max(20px,calc((100vw - 1280px)/2)) 24px',
+            maxWidth:1280,margin:'0 auto',
+          }}>
+
+            {/* COMPACT HERO + STEP NAVIGATOR */}
+            <section className="fade-in" style={{marginBottom:18}}>
+              <div style={{display:'flex',alignItems:'baseline',gap:14,flexWrap:'wrap',marginBottom:14}}>
+                <div style={{
+                  display:'inline-flex',alignItems:'center',gap:8,
+                  background:GOLD_SOFT,border:`1px solid ${GOLD_BORDER}`,
+                  borderRadius:999,padding:'4px 12px',alignSelf:'center',
+                }}>
+                  <span style={{width:6,height:6,borderRadius:'50%',background:GOLD,display:'inline-block'}}/>
+                  <span className="bp-slogan" style={{color:'#fde68a',fontSize:'0.66rem',fontWeight:600,letterSpacing:'0.08em'}}>FRAMEWORK · SHIFT STAGE</span>
+                </div>
+                <h1 className="bp-heading" style={{
+                  fontSize:'clamp(1.4rem, 2.4vw, 1.75rem)',fontWeight:800,
+                  letterSpacing:'-0.01em',margin:0,lineHeight:1.1,
+                }}>
+                  Transformation Stage
+                </h1>
+                <p style={{
+                  color:'#a8a29e',fontSize:'0.78rem',lineHeight:1.5,
+                  margin:0,flex:'1 1 240px',
+                }}>
+                  6 Stage · Unaware → Automate · พฤติกรรม + ความสามารถ
+                </p>
+                <span style={{
+                  color:'#71717a',fontSize:'0.68rem',fontWeight:600,letterSpacing:'0.04em',
+                  display:'inline-flex',alignItems:'center',gap:6,
+                  background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',
+                  borderRadius:6,padding:'4px 10px',
+                }}>
+                  <kbd style={{
+                    background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.15)',
+                    borderRadius:4,padding:'1px 5px',fontSize:'0.62rem',fontFamily:'inherit',
+                  }}>← →</kbd>
+                  หรือกด <kbd style={{
+                    background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.15)',
+                    borderRadius:4,padding:'1px 5px',fontSize:'0.62rem',fontFamily:'inherit',
+                  }}>0–5</kbd> เพื่อสลับ Stage
+                </span>
+              </div>
+
+              {/* Step navigator — 6 connected dots */}
+              <div style={{
+                background:'rgba(255,255,255,0.025)',
+                border:'1px solid rgba(255,255,255,0.07)',
+                borderRadius:14,
+                padding:'14px 18px',
+                position:'relative',
+                overflow:'hidden',
+              }}>
+                {/* Subtle growth curve in the background */}
+                <svg
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                  style={{
+                    position:'absolute', left:0, top:0, right:0, bottom:0,
+                    width:'100%', height:'100%', pointerEvents:'none',
+                    opacity:0.35,
+                  }}
+                >
+                  <defs>
+                    <linearGradient id="growthCurveStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%"   stopColor="#71717a"/>
+                      <stop offset="20%"  stopColor="#ef4444"/>
+                      <stop offset="40%"  stopColor="#f97316"/>
+                      <stop offset="60%"  stopColor="#fbbf24"/>
+                      <stop offset="80%"  stopColor="#22c55e"/>
+                      <stop offset="100%" stopColor="#3b82f6"/>
+                    </linearGradient>
+                    <linearGradient id="growthCurveFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%"   stopColor="#fbbf24" stopOpacity="0.18"/>
+                      <stop offset="60%"  stopColor="#fbbf24" stopOpacity="0.04"/>
+                      <stop offset="100%" stopColor="#fbbf24" stopOpacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  {/* Filled area under the curve */}
+                  <path
+                    d="M 0,92 C 18,90 28,82 40,68 C 52,52 64,32 78,18 C 88,9 95,5 100,3 L 100,100 L 0,100 Z"
+                    fill="url(#growthCurveFill)"
+                  />
+                  {/* The curve line */}
+                  <path
+                    d="M 0,92 C 18,90 28,82 40,68 C 52,52 64,32 78,18 C 88,9 95,5 100,3"
+                    fill="none"
+                    stroke="url(#growthCurveStroke)"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+
+                <div style={{
+                  position:'relative',
+                  display:'grid',gridTemplateColumns:'repeat(6, 1fr)',gap:8,
+                }}>
+                  {stages.map(s => {
+                    const isSel = s.num === selectedNum;
+                    const isHov = s.num === hoverNum;
+                    return (
+                      <button key={s.num}
+                        onClick={() => setSelectedNum(s.num)}
+                        onMouseEnter={() => setHoverNum(s.num)}
+                        onMouseLeave={() => setHoverNum(null)}
+                        title={`Stage ${s.num} · ${s.name} (${s.role})`}
+                        style={{
+                          display:'flex',flexDirection:'column',alignItems:'center',gap:6,
+                          background:'transparent',border:'none',cursor:'pointer',
+                          padding:'4px 4px',position:'relative',
+                          color:isSel?'#fff':'#a1a1aa',
+                          transition:'color 0.2s ease',
+                        }}>
+                        {/* Dot */}
+                        <div style={{
+                          width: isSel ? 32 : (isHov ? 26 : 22),
+                          height: isSel ? 32 : (isHov ? 26 : 22),
+                          borderRadius:'50%',flexShrink:0,
+                          background: isSel ? s.color : `${s.color}33`,
+                          border:`2px solid ${isSel ? s.color : `${s.color}88`}`,
+                          color: isSel ? '#fff' : s.color,
+                          fontWeight:800, fontSize: isSel ? '0.92rem' : '0.74rem',
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          boxShadow: isSel ? `0 0 24px ${s.color}, 0 0 8px ${s.color}` : (isHov ? `0 0 12px ${s.color}80` : 'none'),
+                          transition:'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                          zIndex:2,
+                        }}>{s.num}</div>
+                        <div style={{
+                          display:'flex',flexDirection:'column',alignItems:'center',gap:1,
+                          lineHeight:1.2,textAlign:'center',
+                        }}>
+                          <span style={{
+                            fontSize:'0.72rem',fontWeight: isSel ? 800 : 600,
+                            color: isSel ? s.color : (isHov ? '#e4e4e7' : '#a1a1aa'),
+                            transition:'all 0.2s ease',letterSpacing:'-0.01em',
+                          }}>{s.name}</span>
+                          <span style={{
+                            fontSize:'0.62rem',fontWeight:500,
+                            color: isSel ? '#a1a1aa' : '#71717a',
+                          }}>{s.role}</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+
+            {/* DETAIL */}
+            <section className="fade-in" style={{animationDelay:'0.08s',opacity:0}}>
+              <main key={selected.num} className="fade-in" style={{
+                background:`linear-gradient(180deg, ${selected.color}0a 0%, rgba(255,255,255,0.025) 100%)`,
+                border:`1px solid ${selected.color}40`,
+                borderRadius:14,
+                padding:'22px 26px',
+                position:'relative',overflow:'hidden',
+                boxShadow:`0 0 40px ${selected.color}1a inset, 0 8px 32px ${selected.color}1a`,
+                transition:'border-color 0.4s ease, box-shadow 0.4s ease',
+              }}>
+                  {/* Corner glow */}
+                  <div aria-hidden="true" style={{
+                    position:'absolute',top:-80,right:-80,width:220,height:220,
+                    background:`radial-gradient(circle, ${selected.color}33 0%, transparent 65%)`,
+                    borderRadius:'50%',pointerEvents:'none',
+                  }}/>
+
+                  {/* Hero */}
+                  <div style={{
+                    display:'flex',alignItems:'center',gap:18,marginBottom:14,position:'relative',
+                  }}>
+                    {/* Huge stage number */}
+                    <div style={{
+                      width:84,height:84,borderRadius:18,flexShrink:0,
+                      background:`${selected.color}26`, border:`2.5px solid ${selected.color}`,
+                      color:selected.color, fontWeight:900,fontSize:'2.5rem',
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      boxShadow:`0 0 32px ${selected.color}80, 0 0 12px ${selected.color}`,
+                      letterSpacing:'-0.02em',
+                    }}>{selected.num}</div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{
+                        display:'flex',alignItems:'center',gap:10,flexWrap:'wrap',marginBottom:6,
+                      }}>
+                        <h2 className="bp-heading" style={{
+                          fontSize:'clamp(1.5rem,3vw,2rem)',fontWeight:900,
+                          color:'#fff',letterSpacing:'-0.02em',margin:0,lineHeight:1.05,
+                        }}>{selected.name}</h2>
+                        <span style={{
+                          background:`${selected.color}1a`, border:`1px solid ${selected.color}66`,
+                          color:selected.color, borderRadius:7, padding:'4px 11px',
+                          fontSize:'0.74rem',fontWeight:800,letterSpacing:'0.04em',
+                        }}>{selected.role.toUpperCase()}</span>
+                        {/* Phase chip */}
+                        <span style={{
+                          display:'inline-flex',alignItems:'center',gap:6,
+                          background:selectedPhase.soft, border:`1px solid ${selectedPhase.bd}`,
+                          color:selectedPhase.fg, borderRadius:7, padding:'4px 11px',
+                          fontSize:'0.72rem',fontWeight:700,letterSpacing:'0.04em',
+                        }}>
+                          <span style={{width:5,height:5,borderRadius:'50%',background:'currentColor'}}/>
+                          {selected.location.toUpperCase()}
+                        </span>
+                      </div>
+                      <p style={{
+                        color:'#d4d4d8',fontSize:'0.95rem',lineHeight:1.55,
+                        margin:0,fontWeight:500,
+                      }}>{selected.desc}</p>
+                    </div>
+                  </div>
+
+                  {/* Two-column detail: Behavior + Proficiency */}
+                  <div style={{
+                    display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginTop:6,
+                  }}>
+                    {/* Behavior */}
+                    <div style={{
+                      background:'rgba(0,0,0,0.28)',
+                      border:`1px solid ${selected.color}33`,
+                      borderRadius:12,padding:'14px 16px',
+                    }}>
+                      <div style={{
+                        display:'flex',alignItems:'center',gap:8,marginBottom:10,
+                        paddingBottom:8,borderBottom:`1px solid ${selected.color}22`,
+                      }}>
+                        <span style={{
+                          width:24,height:24,borderRadius:7,flexShrink:0,
+                          background:`${selected.color}26`,border:`1px solid ${selected.color}66`,
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'0.85rem',
+                        }}>📋</span>
+                        <span style={{
+                          color:selected.color,fontSize:'0.72rem',fontWeight:800,
+                          letterSpacing:'0.1em',
+                        }}>BEHAVIOR · พฤติกรรม</span>
+                      </div>
+                      <div style={{display:'flex',flexDirection:'column',gap:11}}>
+                        {selected.behavior.map(b => (
+                          <div key={b.title} style={{position:'relative',paddingLeft:14}}>
+                            <span style={{
+                              position:'absolute',left:0,top:8,
+                              width:6,height:6,borderRadius:'50%',background:selected.color,
+                              boxShadow:`0 0 8px ${selected.color}`,
+                            }}/>
+                            <div style={{color:'#fff',fontSize:'0.86rem',fontWeight:700,letterSpacing:'-0.01em',marginBottom:2,lineHeight:1.3}}>{b.title}</div>
+                            <div style={{color:'#a8a29e',fontSize:'0.76rem',lineHeight:1.5}}>{b.desc}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Proficiency */}
+                    <div style={{
+                      background:'rgba(0,0,0,0.28)',
+                      border:`1px solid ${selected.color}33`,
+                      borderRadius:12,padding:'14px 16px',
+                    }}>
+                      <div style={{
+                        display:'flex',alignItems:'center',gap:8,marginBottom:10,
+                        paddingBottom:8,borderBottom:`1px solid ${selected.color}22`,
+                      }}>
+                        <span style={{
+                          width:24,height:24,borderRadius:7,flexShrink:0,
+                          background:`${selected.color}26`,border:`1px solid ${selected.color}66`,
+                          display:'flex',alignItems:'center',justifyContent:'center',
+                          fontSize:'0.85rem',
+                        }}>🎯</span>
+                        <span style={{
+                          color:selected.color,fontSize:'0.72rem',fontWeight:800,
+                          letterSpacing:'0.1em',
+                        }}>PROFICIENCY · ความสามารถ</span>
+                      </div>
+                      <div style={{display:'flex',flexDirection:'column',gap:11}}>
+                        {selected.proficiency.map(p => (
+                          <div key={p.title} style={{position:'relative',paddingLeft:14}}>
+                            <span style={{
+                              position:'absolute',left:0,top:8,
+                              width:6,height:6,borderRadius:'50%',background:selected.color,
+                              boxShadow:`0 0 8px ${selected.color}`,
+                            }}/>
+                            <div style={{color:'#fff',fontSize:'0.86rem',fontWeight:700,letterSpacing:'-0.01em',marginBottom:2,lineHeight:1.3}}>{p.title}</div>
+                            <div style={{color:'#a8a29e',fontSize:'0.76rem',lineHeight:1.5}}>{p.desc}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Prev/Next navigation */}
+                  <div style={{
+                    marginTop:14,paddingTop:12,
+                    borderTop:'1px solid rgba(255,255,255,0.06)',
+                    display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,
+                  }}>
+                    <button onClick={() => setSelectedNum(Math.max(0, selectedNum - 1))}
+                      disabled={selectedNum === 0}
+                      style={{
+                        display:'inline-flex',alignItems:'center',gap:6,
+                        background: selectedNum === 0 ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.06)',
+                        border:'1px solid rgba(255,255,255,0.10)',
+                        borderRadius:9,padding:'8px 14px',
+                        color: selectedNum === 0 ? '#52525b' : '#d4d4d8',
+                        fontSize:'0.8rem',fontWeight:600,
+                        cursor: selectedNum === 0 ? 'not-allowed' : 'pointer',
+                        opacity: selectedNum === 0 ? 0.5 : 1,
+                        transition:'all 0.18s',
+                      }}>
+                      <span>←</span>
+                      {selectedNum > 0 ? (
+                        <span>Stage {selectedNum - 1} · {stages[selectedNum - 1].name}</span>
+                      ) : 'ก่อนหน้า'}
+                    </button>
+                    <div style={{
+                      display:'flex',alignItems:'center',gap:8,
+                      color:'#71717a',fontSize:'0.72rem',fontWeight:600,
+                    }}>
+                      <span style={{color:selected.color,fontWeight:800}}>{selectedNum + 1}</span>
+                      <span>/</span>
+                      <span>6</span>
+                    </div>
+                    <button onClick={() => setSelectedNum(Math.min(5, selectedNum + 1))}
+                      disabled={selectedNum === 5}
+                      style={{
+                        display:'inline-flex',alignItems:'center',gap:6,
+                        background: selectedNum === 5 ? 'rgba(255,255,255,0.03)' : `${selected.color}26`,
+                        border: selectedNum === 5 ? '1px solid rgba(255,255,255,0.10)' : `1px solid ${selected.color}66`,
+                        borderRadius:9,padding:'8px 14px',
+                        color: selectedNum === 5 ? '#52525b' : selected.color,
+                        fontSize:'0.8rem',fontWeight:700,
+                        cursor: selectedNum === 5 ? 'not-allowed' : 'pointer',
+                        opacity: selectedNum === 5 ? 0.5 : 1,
+                        transition:'all 0.18s',
+                        boxShadow: selectedNum === 5 ? 'none' : `0 0 12px ${selected.color}33`,
+                      }}>
+                      {selectedNum < 5 ? (
+                        <span>Stage {selectedNum + 1} · {stages[selectedNum + 1].name}</span>
+                      ) : 'จบ Journey'}
+                      <span>→</span>
+                    </button>
+                  </div>
+              </main>
+            </section>
+
+
+          </div>
+
+          {/* Footer */}
+          <footer style={{
+            position:'relative',zIndex:1,
+            padding:'14px max(24px,calc((100vw - 1280px)/2))',
+            borderTop:'1px solid rgba(255,255,255,0.05)',
+            display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8,
+          }}>
+            <span style={{color:'#3f3f46',fontSize:'0.74rem'}}>Joinstick · Transformation Stage Framework</span>
+            <span style={{color:'#3f3f46',fontSize:'0.74rem'}}>คลิก stage ที่ sidebar หรือกด ← → · 0–5 เพื่อสำรวจ</span>
+          </footer>
+        </div>
+      );
+    }
+
+    /* ── Transformation Journey · Timeline + How Joinstick Maps ── */
+    function TransformationJourney({ onBack, onNav }) {
+      const stages = [
+        { num:0, name:'Unaware',        role:'Ignorance',    timeStage:'Before journey',     color:'#71717a',
+          phase:'Pre Class',  phaseColor:'#F59E0B',
+          dayStart:-1, dayEnd:0,
+          tagline:'ยังไม่รู้ตัวว่าตัวเองขาด',
+          features:['ก่อนเข้า Course']},
+        { num:1, name:'Awareness',      role:'Questioner',   timeStage:'Day 1',              color:'#ef4444',
+          phase:'In Class',   phaseColor:'#ED4724',
+          dayStart:1,  dayEnd:1,
+          tagline:'เริ่มเห็นช่องว่างของตัวเอง',
+          features:['Pre-Assessment','Speaker Live','Awareness Activities']},
+        { num:2, name:'Acknowledgment', role:'Goal Setter',  timeStage:'Day 2–4',             color:'#f97316',
+          phase:'In Class',   phaseColor:'#ED4724',
+          dayStart:2,  dayEnd:4, markerDay:3,
+          tagline:'รู้ว่าขาดอะไร · วางแผน · พร้อมเริ่ม',
+          features:['Goal Setting','Live Quiz','Mission Planning']},
+        { num:3, name:'Activation',     role:'Apprentice',   timeStage:'Day 4–14 · 11 วัน',   color:'#fbbf24',
+          phase:'Out of Class', phaseColor:'#6366f1',
+          dayStart:4,  dayEnd:14, markerDay:14,
+          tagline:'เริ่มฝึก · ยังต้อง Quick Win',
+          features:['Mission','Flash Card','Recall Quiz','Leaderboard']},
+        { num:4, name:'Adoption',       role:'Practitioner', timeStage:'Day 15–45 · 31 วัน',  color:'#22c55e',
+          phase:'Out of Class', phaseColor:'#6366f1',
+          dayStart:15, dayEnd:45, markerDay:45,
+          tagline:'ทำสม่ำเสมอ · สร้าง Routine',
+          features:['Mission ต่อเนื่อง','Manager Review','Routine Tracking']},
+        { num:5, name:'Automate',       role:'Graduates',    timeStage:'Day 46–90 · 45 วัน',  color:'#3b82f6',
+          phase:'Out of Class', phaseColor:'#6366f1',
+          dayStart:46, dayEnd:90, markerDay:90,
+          tagline:'เป็นนิสัย · เป็นตัวตน',
+          features:['Self-driven','HR Dashboard','Transformation Rank']},
+      ];
+
+      const phases = [
+        { name:'Pre Class',    sub:'ก่อนเริ่ม',  color:'#F59E0B', soft:'rgba(245,158,11,0.12)',  bd:'rgba(245,158,11,0.40)',  fg:'#fcd34d', dayStart:-1, dayEnd:1 },
+        { name:'In Class',     sub:'Day 1–3',  color:'#ED4724', soft:'rgba(237,71,36,0.12)',  bd:'rgba(237,71,36,0.40)',  fg:'#fda4a4', dayStart:1,  dayEnd:3 },
+        { name:'Out of Class', sub:'Day 4–90', color:'#6366f1', soft:'rgba(99,102,241,0.12)', bd:'rgba(99,102,241,0.40)', fg:'#a5b4fc', dayStart:3,  dayEnd:110 },
+      ];
+      const phaseInfoColorMap = (name) => phases.find(p => p.name === name) || phases[2];
+
+      const GOLD = '#fbbf24';
+      const GOLD_SOFT = 'rgba(251,191,36,0.12)';
+      const GOLD_BORDER = 'rgba(251,191,36,0.30)';
+
+      // Map day → x position percentage using a log scale.
+      // dayMin = -1 reserves a slim Pre Class strip; dayMax = 110 gives right margin for Day 90.
+      const dayMin = -1, dayMax = 110;
+      const shift = 5;
+      const logMin = Math.log(dayMin + shift);
+      const logMax = Math.log(dayMax + shift);
+      const dayToX = (day) => {
+        const v = Math.log(Math.max(dayMin, Math.min(dayMax, day)) + shift);
+        return ((v - logMin) / (logMax - logMin)) * 100;
+      };
+      // Curve y position — exponential growth curve (flat at start, steep at end)
+      const stageToY = (num) => {
+        // Lower n keeps near baseline (~90), higher n rises sharply to peak (~10)
+        // Using y = 92 - 82 * (n/5)^2.2 for a hockey-stick growth shape
+        const t = num / 5;
+        return 92 - 82 * Math.pow(t, 2.2);
+      };
+
+      const [selectedNum, setSelectedNum] = useState(3);
+      const [hoverNum, setHoverNum] = useState(null);
+      const selected = stages.find(s => s.num === selectedNum) || stages[0];
+
+      useEffect(() => {
+        const onKey = (e) => {
+          if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault(); setSelectedNum(n => Math.max(0, n - 1));
+          } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault(); setSelectedNum(n => Math.min(5, n + 1));
+          } else if (e.key >= '0' && e.key <= '5') {
+            e.preventDefault(); setSelectedNum(parseInt(e.key, 10));
+          }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+      }, []);
+
+      // Compute x position for a stage marker (prefer explicit markerDay, fall back to midpoint)
+      const stageX = (s) => dayToX(s.markerDay !== undefined ? s.markerDay : (s.dayStart + s.dayEnd) / 2);
+
+      // Build a smooth growth curve path through the 6 stages
+      const curvePoints = stages.map(s => ({
+        x: stageX(s),
+        y: stageToY(s.num),
+      }));
+      // Catmull-Rom-ish bezier through the points
+      const buildPath = (pts) => {
+        if (!pts.length) return '';
+        let d = `M ${pts[0].x},${pts[0].y}`;
+        for (let i = 0; i < pts.length - 1; i++) {
+          const p0 = pts[Math.max(0, i - 1)];
+          const p1 = pts[i];
+          const p2 = pts[i + 1];
+          const p3 = pts[Math.min(pts.length - 1, i + 2)];
+          const cp1x = p1.x + (p2.x - p0.x) / 6;
+          const cp1y = p1.y + (p2.y - p0.y) / 6;
+          const cp2x = p2.x - (p3.x - p1.x) / 6;
+          const cp2y = p2.y - (p3.y - p1.y) / 6;
+          d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`;
+        }
+        return d;
+      };
+      const curvePath = buildPath(curvePoints);
+      const fillPath = curvePath + ` L ${curvePoints[curvePoints.length-1].x},100 L ${curvePoints[0].x},100 Z`;
+
+      // Day axis markers — natural log-scale positions
+      const dayAxisItems = [
+        { day: 1,  x: dayToX(1)  },
+        { day: 3,  x: dayToX(3)  },
+        { day: 7,  x: dayToX(7)  },
+        { day: 14, x: dayToX(14) },
+        { day: 30, x: dayToX(30) },
+        { day: 45, x: dayToX(45) },
+        { day: 60, x: dayToX(60) },
+        { day: 90, x: dayToX(90) },
+      ];
+
+      return (
+        <div style={{
+          minHeight:'100vh', background:'#161412', color:'#fff',
+          fontFamily:"'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        }}>
+          {/* Ambient blobs */}
+          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
+            <div style={{position:'absolute',top:'-15%',left:'10%',width:'45vw',height:'45vw',
+              background:`radial-gradient(circle, rgba(237,71,36,0.10) 0%, transparent 65%)`,borderRadius:'50%'}}/>
+            <div style={{position:'absolute',bottom:'-20%',right:'5%',width:'45vw',height:'45vw',
+              background:'radial-gradient(circle, rgba(59,130,246,0.07) 0%, transparent 65%)',borderRadius:'50%'}}/>
+          </div>
+
+          {/* Navbar */}
+          <nav style={{
+            position:'sticky',top:0,zIndex:100,
+            display:'flex',alignItems:'center',justifyContent:'space-between',
+            padding:'0 max(24px,calc((100vw - 1200px)/2))',
+            height:64,
+            background:'rgba(22,20,18,0.85)',
+            backdropFilter:'blur(12px)',
+            borderBottom:'1px solid rgba(255,255,255,0.06)',
+          }}>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <JoinstickLogo size={38} variant="white" />
+              <span className="bp-heading" style={{fontWeight:700,fontSize:'1.05rem',letterSpacing:'0.1em'}}>JOINSTICK</span>
+            </div>
+            <GlobalPills activeLabel="Transformation Journey" onNav={onNav} />
+            <button onClick={onBack} style={{
+              display:'flex',alignItems:'center',gap:6,
+              background:'rgba(255,255,255,0.05)',
+              border:'1px solid rgba(255,255,255,0.08)',
+              borderRadius:10,padding:'8px 16px',
+              color:'#a8a29e',fontSize:'0.875rem',cursor:'pointer',
+              transition:'color 0.15s,background 0.15s',
+            }}
+              onMouseEnter={e=>{e.currentTarget.style.color='#fff';e.currentTarget.style.background='rgba(255,255,255,0.08)'}}
+              onMouseLeave={e=>{e.currentTarget.style.color='#a8a29e';e.currentTarget.style.background='rgba(255,255,255,0.05)'}}>
+              ← กลับหน้าหลัก
+            </button>
+          </nav>
+
+          {/* Content */}
+          <div className="mr-section" style={{
+            position:'relative',zIndex:1,
+            padding:'20px max(20px,calc((100vw - 1280px)/2)) 24px',
+            maxWidth:1280,margin:'0 auto',
+          }}>
+
+            {/* COMPACT HERO */}
+            <section className="fade-in" style={{marginBottom:18}}>
+              <div style={{display:'flex',alignItems:'baseline',gap:14,flexWrap:'wrap'}}>
+                <div style={{
+                  display:'inline-flex',alignItems:'center',gap:8,
+                  background:'rgba(237,71,36,0.10)',border:'1px solid rgba(237,71,36,0.28)',
+                  borderRadius:999,padding:'4px 12px',alignSelf:'center',
+                }}>
+                  <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#ED4724',display:'inline-block',boxShadow:'0 0 8px rgba(237,71,36,0.7)'}}/>
+                  <span className="bp-slogan" style={{color:'#ED4724',fontSize:'0.66rem',fontWeight:600,letterSpacing:'0.08em'}}>JOURNEY · 90 DAYS</span>
+                </div>
+                <h1 className="bp-heading" style={{
+                  fontSize:'clamp(1.4rem, 2.4vw, 1.75rem)',fontWeight:800,
+                  letterSpacing:'-0.01em',margin:0,lineHeight:1.1,
+                }}>
+                  Transformation Journey
+                </h1>
+                <p style={{
+                  color:'#a8a29e',fontSize:'0.78rem',lineHeight:1.5,
+                  margin:0,flex:'1 1 240px',
+                }}>
+                  เส้นทาง 90 วัน · Pre Class → In Class → Out of Class · 6 Stages
+                </p>
+                <span style={{
+                  color:'#71717a',fontSize:'0.68rem',fontWeight:600,letterSpacing:'0.04em',
+                  display:'inline-flex',alignItems:'center',gap:6,
+                  background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',
+                  borderRadius:6,padding:'4px 10px',
+                }}>
+                  คลิก stage บน timeline หรือกด <kbd style={{
+                    background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.15)',
+                    borderRadius:4,padding:'1px 5px',fontSize:'0.62rem',fontFamily:'inherit',
+                  }}>0–5</kbd>
+                </span>
+              </div>
+            </section>
+
+            {/* PROPORTIONAL TIMELINE */}
+            <section className="fade-in" style={{animationDelay:'0.08s',opacity:0,marginBottom:18}}>
+              <div style={{
+                background:'rgba(255,255,255,0.025)',
+                border:'1px solid rgba(255,255,255,0.07)',
+                borderRadius:14,
+                padding:'18px 20px 12px',
+                position:'relative',
+                overflow:'hidden',
+              }}>
+                {/* Phase band strip */}
+                <div style={{
+                  position:'relative',display:'flex',height:24,marginBottom:10,
+                  borderRadius:8,overflow:'hidden',
+                  border:'1px solid rgba(255,255,255,0.06)',
+                }}>
+                  {phases.map((p, pi) => {
+                    const left = dayToX(p.dayStart);
+                    const right = dayToX(p.dayEnd);
+                    const width = right - left;
+                    return (
+                      <div key={p.name} style={{
+                        position:'absolute',left:`${left}%`,width:`${width}%`,top:0,bottom:0,
+                        background: p.soft,
+                        borderRight: '1px solid rgba(255,255,255,0.08)',
+                        display:'flex',alignItems:'center',justifyContent:'flex-start',
+                        paddingLeft:8,gap:6,
+                        overflow:'hidden',
+                      }}>
+                        {/* Shimmer sweep (staggered per band) */}
+                        <span aria-hidden="true" className="tj-shimmer" style={{animationDelay: `${1.6 + pi * 0.8}s`}}/>
+                        <span style={{width:5,height:5,borderRadius:'50%',background:p.color,boxShadow:`0 0 8px ${p.color}`}}/>
+                        <span style={{color:p.fg,fontSize:'0.62rem',fontWeight:800,letterSpacing:'0.04em',whiteSpace:'nowrap',position:'relative'}}>{p.name.toUpperCase()}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Curve + stage markers */}
+                <div style={{
+                  position:'relative', height:200,
+                }}>
+                  {/* Growth curve SVG */}
+                  <svg
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                    style={{
+                      position:'absolute',inset:0,width:'100%',height:'100%',
+                      pointerEvents:'none',
+                    }}
+                  >
+                    <defs>
+                      <linearGradient id="tj-curve-stroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%"   stopColor="#71717a"/>
+                        <stop offset="20%"  stopColor="#ef4444"/>
+                        <stop offset="35%"  stopColor="#f97316"/>
+                        <stop offset="55%"  stopColor="#fbbf24"/>
+                        <stop offset="78%"  stopColor="#22c55e"/>
+                        <stop offset="100%" stopColor="#3b82f6"/>
+                      </linearGradient>
+                      <linearGradient id="tj-curve-fill" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%"   stopColor="#fbbf24" stopOpacity="0.22"/>
+                        <stop offset="60%"  stopColor="#fbbf24" stopOpacity="0.06"/>
+                        <stop offset="100%" stopColor="#fbbf24" stopOpacity="0"/>
+                      </linearGradient>
+                      {/* Reveal clip — animated rectangle widens left → right */}
+                      <clipPath id="tj-reveal-clip" clipPathUnits="userSpaceOnUse">
+                        <rect x="0" y="0" height="100" width="0">
+                          <animate attributeName="width" from="0" to="100"
+                            dur="1.8s" begin="0.1s" fill="freeze"
+                            calcMode="spline" keyTimes="0;1" keySplines="0.65 0 0.35 1"/>
+                        </rect>
+                      </clipPath>
+                    </defs>
+                    {/* Fill (clipped by reveal) */}
+                    <path d={fillPath} fill="url(#tj-curve-fill)" clipPath="url(#tj-reveal-clip)"/>
+                    {/* Line — continuous, revealed by clip animation */}
+                    <path id="tj-curve-path" d={curvePath} fill="none"
+                      stroke="url(#tj-curve-stroke)" strokeWidth="2.2"
+                      strokeLinecap="round" strokeLinejoin="round"
+                      vectorEffect="non-scaling-stroke"
+                      clipPath="url(#tj-reveal-clip)"/>
+                    {/* Traveling spark — small dot that moves along the curve in a loop */}
+                    <circle r="0.9" fill="#fff"
+                      style={{filter:'drop-shadow(0 0 2px #fff) drop-shadow(0 0 4px #fbbf24)'}}>
+                      <animateMotion dur="6s" repeatCount="indefinite" begin="1.6s"
+                        rotate="auto">
+                        <mpath xlinkHref="#tj-curve-path"/>
+                      </animateMotion>
+                      <animate attributeName="r" values="0.6;1.2;0.6" dur="2s" repeatCount="indefinite"/>
+                      <animate attributeName="opacity" values="0;1;1;1;0" dur="6s" repeatCount="indefinite" begin="1.6s"/>
+                    </circle>
+                  </svg>
+
+                  {/* Vertical guides + Stage markers */}
+                  {stages.map(s => {
+                    const xMid = stageX(s);
+                    const yPct = stageToY(s.num);
+                    const isSel = s.num === selectedNum;
+                    const isHov = s.num === hoverNum;
+                    const size = isSel ? 42 : (isHov ? 36 : 30);
+                    return (
+                      <React.Fragment key={s.num}>
+                        {/* Dashed vertical line from curve point down to baseline */}
+                        <div style={{
+                          position:'absolute',left:`${xMid}%`,top:`${yPct}%`,bottom:0,
+                          width:0,
+                          borderLeft:`1px dashed ${s.color}55`,
+                          opacity: isSel ? 0.9 : 0.35,
+                          pointerEvents:'none',
+                          transition:'opacity 0.2s',
+                        }}/>
+                        {/* Day range chip — shown below the curve point at top */}
+                        <button
+                          onClick={() => setSelectedNum(s.num)}
+                          onMouseEnter={() => setHoverNum(s.num)}
+                          onMouseLeave={() => setHoverNum(null)}
+                          title={`${s.name} · ${s.role}`}
+                          style={{
+                            position:'absolute',
+                            left:`${xMid}%`, top:`${yPct}%`,
+                            transform:`translate(-50%, -50%)`,
+                            width:size, height:size, borderRadius:'50%',
+                            background: isSel ? s.color : `${s.color}33`,
+                            border:`2px solid ${isSel ? s.color : `${s.color}99`}`,
+                            color: isSel ? '#fff' : s.color,
+                            fontWeight:800, fontSize: isSel ? '1.05rem' : '0.82rem',
+                            display:'flex',alignItems:'center',justifyContent:'center',
+                            cursor:'pointer',
+                            boxShadow: isSel
+                              ? `0 0 28px ${s.color}, 0 0 12px ${s.color}, 0 0 0 4px ${s.color}33`
+                              : (isHov ? `0 0 16px ${s.color}99` : `0 0 8px ${s.color}55`),
+                            transition:'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                            zIndex: isSel ? 4 : 3,
+                            padding:0,
+                            opacity:0,
+                            animation:`tjMarkerPop 0.55s ${0.45 + s.num * 0.15}s cubic-bezier(0.34, 1.56, 0.64, 1) forwards${isSel ? ', tjSelectedPulse 2.6s '+(0.45+s.num*0.15+0.55)+'s ease-in-out infinite' : ''}`,
+                          }}>{s.num}</button>
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+
+                {/* Stage name labels under each marker */}
+                <div style={{position:'relative',height:36,marginTop:4}}>
+                  {stages.map(s => {
+                    const xMid = stageX(s);
+                    const isSel = s.num === selectedNum;
+                    const isHov = s.num === hoverNum;
+                    return (
+                      <button key={s.num}
+                        onClick={() => setSelectedNum(s.num)}
+                        onMouseEnter={() => setHoverNum(s.num)}
+                        onMouseLeave={() => setHoverNum(null)}
+                        style={{
+                          position:'absolute',left:`${xMid}%`, top:0,
+                          transform:'translateX(-50%)',
+                          display:'flex',flexDirection:'column',alignItems:'center',gap:1,
+                          background:'transparent',border:'none',cursor:'pointer',
+                          padding:'2px 4px',
+                          minWidth: 64, maxWidth: 110,
+                          opacity:0,
+                          animation:`tjLabelRise 0.5s ${0.7 + s.num * 0.15}s ease forwards`,
+                        }}>
+                        <span style={{
+                          color: isSel ? s.color : (isHov ? '#fff' : '#d4d4d8'),
+                          fontSize:'0.72rem',fontWeight: isSel ? 800 : 700,
+                          letterSpacing:'-0.01em',whiteSpace:'nowrap',
+                          transition:'color 0.18s',
+                        }}>{s.name}</span>
+                        <span style={{
+                          color: isSel ? '#a1a1aa' : '#71717a',
+                          fontSize:'0.6rem',fontWeight:600,whiteSpace:'nowrap',
+                        }}>{s.role}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Day axis */}
+                <div style={{
+                  position:'relative',marginTop:8,paddingTop:8,
+                  borderTop:'1px dashed rgba(255,255,255,0.08)',
+                  height:24,
+                }}>
+                  {dayAxisItems.map(({day, x}) => (
+                    <div key={day} style={{
+                      position:'absolute',left:`${x}%`,top:0,
+                      transform:'translateX(-50%)',
+                      display:'flex',flexDirection:'column',alignItems:'center',gap:1,
+                    }}>
+                      <span style={{
+                        width:1,height:5,background:'rgba(255,255,255,0.20)',
+                      }}/>
+                      <span style={{
+                        color:'#71717a',fontSize:'0.6rem',fontWeight:600,
+                      }}>Day {day}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* SELECTED STAGE DETAIL CARD */}
+            <section className="fade-in" style={{animationDelay:'0.16s',opacity:0}}>
+              <main key={selected.num} className="fade-in" style={{
+                background:`linear-gradient(180deg, ${selected.color}0a 0%, rgba(255,255,255,0.025) 100%)`,
+                border:`1px solid ${selected.color}40`,
+                borderRadius:14,
+                padding:'18px 22px',
+                position:'relative',overflow:'hidden',
+                boxShadow:`0 0 30px ${selected.color}1a inset, 0 8px 24px ${selected.color}1a`,
+                transition:'border-color 0.4s ease, box-shadow 0.4s ease',
+              }}>
+                {/* Corner glow */}
+                <div aria-hidden="true" style={{
+                  position:'absolute',top:-70,right:-70,width:200,height:200,
+                  background:`radial-gradient(circle, ${selected.color}33 0%, transparent 65%)`,
+                  borderRadius:'50%',pointerEvents:'none',
+                }}/>
+
+                <div style={{
+                  display:'grid',gridTemplateColumns:'auto 1.4fr 1.6fr',gap:24,alignItems:'center',position:'relative',
+                }}>
+                  {/* Big stage number */}
+                  <div style={{
+                    width:88,height:88,borderRadius:18,flexShrink:0,
+                    background:`${selected.color}26`, border:`2.5px solid ${selected.color}`,
+                    color:selected.color, fontWeight:900,fontSize:'2.6rem',
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    boxShadow:`0 0 32px ${selected.color}80, 0 0 12px ${selected.color}`,
+                  }}>{selected.num}</div>
+
+                  {/* Name + meta */}
+                  <div>
+                    <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',marginBottom:4}}>
+                      <h2 className="bp-heading" style={{
+                        fontSize:'1.5rem',fontWeight:900,color:'#fff',
+                        letterSpacing:'-0.02em',margin:0,lineHeight:1.1,
+                      }}>{selected.name}</h2>
+                      <span style={{
+                        background:`${selected.color}1a`, border:`1px solid ${selected.color}66`,
+                        color:selected.color, borderRadius:6, padding:'3px 9px',
+                        fontSize:'0.66rem',fontWeight:800,letterSpacing:'0.04em',
+                      }}>{selected.role.toUpperCase()}</span>
+                    </div>
+                    <div style={{color:'#a8a29e',fontSize:'0.84rem',lineHeight:1.4,marginBottom:6}}>{selected.tagline}</div>
+                    <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+                      <span style={{
+                        display:'inline-flex',alignItems:'center',gap:5,
+                        background:'rgba(0,0,0,0.3)',border:`1px solid ${selected.color}40`,
+                        color:selected.color, borderRadius:6,padding:'3px 9px',
+                        fontSize:'0.68rem',fontWeight:700,letterSpacing:'0.02em',
+                      }}>
+                        🗓️ {selected.timeStage}
+                      </span>
+                      <span style={{
+                        display:'inline-flex',alignItems:'center',gap:5,
+                        background: phaseInfoColorMap(selected.phase).soft,
+                        border:`1px solid ${phaseInfoColorMap(selected.phase).bd}`,
+                        color: phaseInfoColorMap(selected.phase).fg,
+                        borderRadius:6,padding:'3px 9px',
+                        fontSize:'0.68rem',fontWeight:700,letterSpacing:'0.02em',
+                      }}>
+                        <span style={{width:5,height:5,borderRadius:'50%',background:'currentColor'}}/>
+                        {selected.phase}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Features active in this stage */}
+                  <div>
+                    <div style={{
+                      color:selected.color,fontSize:'0.66rem',fontWeight:800,
+                      letterSpacing:'0.1em',marginBottom:8,
+                    }}>⚡ FEATURES OF JOINSTICK ที่ใช้ใน Stage นี้</div>
+                    <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+                      {selected.features.map((f, fi) => (
+                        <span key={`${selected.num}-${f}`} style={{
+                          display:'inline-flex',alignItems:'center',gap:5,
+                          background:`${selected.color}1a`, border:`1px solid ${selected.color}55`,
+                          color: selected.color === '#fbbf24' ? '#fde68a' : (selected.color === '#71717a' ? '#d4d4d8' : selected.color),
+                          borderRadius:7, padding:'5px 11px',
+                          fontSize:'0.76rem',fontWeight:700,letterSpacing:'-0.005em',
+                          opacity:0,
+                          animation:`tjChipPop 0.4s ${0.08 + fi * 0.07}s cubic-bezier(0.34, 1.56, 0.64, 1) forwards`,
+                        }}>
+                          <span style={{width:4,height:4,borderRadius:'50%',background:selected.color,boxShadow:`0 0 6px ${selected.color}`}}/>
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Prev / Next */}
+                <div style={{
+                  marginTop:12,paddingTop:12,
+                  borderTop:'1px solid rgba(255,255,255,0.06)',
+                  display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,
+                }}>
+                  <button onClick={() => setSelectedNum(Math.max(0, selectedNum - 1))}
+                    disabled={selectedNum === 0}
+                    style={{
+                      display:'inline-flex',alignItems:'center',gap:6,
+                      background: selectedNum === 0 ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.06)',
+                      border:'1px solid rgba(255,255,255,0.10)',
+                      borderRadius:9,padding:'7px 13px',
+                      color: selectedNum === 0 ? '#52525b' : '#d4d4d8',
+                      fontSize:'0.78rem',fontWeight:600,
+                      cursor: selectedNum === 0 ? 'not-allowed' : 'pointer',
+                      opacity: selectedNum === 0 ? 0.5 : 1,
+                    }}>
+                    <span>←</span>
+                    {selectedNum > 0
+                      ? <span>Stage {selectedNum - 1} · {stages[selectedNum - 1].name}</span>
+                      : 'ก่อนหน้า'}
+                  </button>
+                  <div style={{
+                    display:'flex',alignItems:'center',gap:8,
+                    color:'#71717a',fontSize:'0.72rem',fontWeight:600,
+                  }}>
+                    <span style={{color:selected.color,fontWeight:800}}>{selectedNum + 1}</span>
+                    <span>/</span>
+                    <span>6</span>
+                  </div>
+                  <button onClick={() => setSelectedNum(Math.min(5, selectedNum + 1))}
+                    disabled={selectedNum === 5}
+                    style={{
+                      display:'inline-flex',alignItems:'center',gap:6,
+                      background: selectedNum === 5 ? 'rgba(255,255,255,0.03)' : `${selected.color}26`,
+                      border: selectedNum === 5 ? '1px solid rgba(255,255,255,0.10)' : `1px solid ${selected.color}66`,
+                      borderRadius:9,padding:'7px 13px',
+                      color: selectedNum === 5 ? '#52525b' : selected.color,
+                      fontSize:'0.78rem',fontWeight:700,
+                      cursor: selectedNum === 5 ? 'not-allowed' : 'pointer',
+                      opacity: selectedNum === 5 ? 0.5 : 1,
+                      boxShadow: selectedNum === 5 ? 'none' : `0 0 12px ${selected.color}33`,
+                    }}>
+                    {selectedNum < 5
+                      ? <span>Stage {selectedNum + 1} · {stages[selectedNum + 1].name}</span>
+                      : 'จบ Journey'}
+                    <span>→</span>
+                  </button>
+                </div>
+              </main>
+            </section>
+          </div>
+
+          {/* Footer */}
+          <footer style={{
+            position:'relative',zIndex:1,
+            padding:'20px max(24px,calc((100vw - 1200px)/2))',
+            borderTop:'1px solid rgba(255,255,255,0.05)',
+            display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8,
+          }}>
+            <span style={{color:'#3f3f46',fontSize:'0.78rem'}}>Joinstick · Transformation Journey</span>
+            <span style={{color:'#3f3f46',fontSize:'0.78rem'}}>Prototype Demo · 2025</span>
+          </footer>
+        </div>
+      );
+    }
+
     /* ── JourneyNav ─ fixed overlay outside phone ── */
     function JourneyNav({ onJourney, onNext, nextLabel, nextColor }) {
       const font = "'Inter', system-ui, sans-serif";
@@ -6913,7 +8451,7 @@
 
     /* ── App shell ────────────────────────────────── */
     function App() {
-      const [scene, setScene] = useState('landing'); // 'landing'|'phases'|'preclass'|'inclass'|'learner'|'hr'
+      const [scene, setScene] = useState('landing'); // 'landing'|'phases'|'preclass'|'inclass'|'learner'|'hr'|'manager'|'transform'|'journey'
 
       const goTo = (s) => setScene(s);
 
@@ -6936,23 +8474,34 @@
             />
           )}
 
-          {scene === 'landing' && <LandingPage onEnter={() => goTo('phases')} />}
+          {scene === 'landing' && (
+            <LandingPage
+              onEnter={() => goTo('phases')}
+              onShiftStage={() => goTo('transform')}
+              onJourney={() => goTo('journey')}
+            />
+          )}
           {scene === 'phases'  && (
             <PhaseSelect
               onSelect={(phase) =>
-                goTo(phase === 'preclass' ? 'preclass' :
-                     phase === 'inclass'  ? 'inclass'  :
-                     phase === 'hr'       ? 'hr'       :
-                     phase === 'manager'  ? 'manager'  : 'learner')
+                goTo(phase === 'preclass'  ? 'preclass'  :
+                     phase === 'inclass'   ? 'inclass'   :
+                     phase === 'hr'        ? 'hr'        :
+                     phase === 'manager'   ? 'manager'   :
+                     phase === 'transform' ? 'transform' :
+                     phase === 'journey'   ? 'journey'   : 'learner')
               }
               onBack={() => goTo('landing')}
+              onNav={goTo}
             />
           )}
-          {scene === 'preclass' && <PreClassApp onBack={() => goTo('phases')} onNext={() => goTo('inclass')} />}
-          {scene === 'inclass'  && <InClassApp  onBack={() => goTo('phases')} onNext={() => goTo('learner')} />}
-          {scene === 'hr'       && <HRDashboard onBack={() => goTo('manager')} />}
-          {scene === 'manager'  && <ManagerReview onBack={() => goTo('phases')} />}
-          {scene === 'learner'  && <LearnerApp />}
+          {scene === 'preclass'  && <PreClassApp   onBack={() => goTo('phases')} onNext={() => goTo('inclass')} />}
+          {scene === 'inclass'   && <InClassApp    onBack={() => goTo('phases')} onNext={() => goTo('learner')} />}
+          {scene === 'hr'        && <HRDashboard   onBack={() => goTo('manager')} />}
+          {scene === 'manager'   && <ManagerReview onBack={() => goTo('phases')} onNav={goTo} />}
+          {scene === 'transform' && <TransformStage onBack={() => goTo('landing')} onNav={goTo} />}
+          {scene === 'journey'   && <TransformationJourney onBack={() => goTo('landing')} onNav={goTo} />}
+          {scene === 'learner'   && <LearnerApp />}
         </>
       );
     }
