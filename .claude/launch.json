@@ -4,20 +4,20 @@
     {
       "name": "Ruby WEBrick Server",
       "runtimeExecutable": "/usr/bin/ruby",
-      "runtimeArgs": ["-run", "-e", "httpd", "--", "--port=3000", "/tmp/joinstick-preview"],
-      "port": 3000
+      "runtimeArgs": ["-run", "-e", "httpd", "--", "/tmp/joinstick-preview"],
+      "autoPort": true
     },
     {
       "name": "Static Server (serve)",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", ".", "--listen", "3000", "--no-clipboard"],
-      "port": 3000
+      "runtimeArgs": ["serve", ".", "--no-clipboard"],
+      "autoPort": true
     },
     {
       "name": "Live Server (auto-reload)",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["live-server", ".", "--port=3001", "--no-browser"],
-      "port": 3001
+      "runtimeArgs": ["live-server", ".", "--no-browser"],
+      "autoPort": true
     }
   ]
 }
