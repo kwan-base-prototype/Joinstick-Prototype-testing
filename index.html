@@ -7,11 +7,50 @@
   <title>Joinstick — Learner App Demo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-    body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #161412; }
-    .bp-heading { font-family: 'Poppins', sans-serif; letter-spacing: 0.04em; }
-    .bp-slogan { font-family: 'Poppins', sans-serif; letter-spacing: 0.4em; font-weight: 500; }
+    body { font-family: 'Inter', 'IBM Plex Sans Thai', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #161412; }
+    .bp-heading { font-family: 'Poppins', 'IBM Plex Sans Thai', sans-serif; letter-spacing: 0.04em; }
+    .bp-slogan { font-family: 'Poppins', 'IBM Plex Sans Thai', sans-serif; letter-spacing: 0.4em; font-weight: 500; }
+    :lang(th), [lang="th"] { font-family: 'IBM Plex Sans Thai', 'Inter', sans-serif; }
+    /* ── HR Dashboard (Soft Bento Modern) ── */
+    .num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+    .hr-card { background:#ffffff; border:1px solid #e7e5e4; border-radius:20px; padding:24px;
+               box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(28,25,23,0.04); }
+    .hr-eyebrow { color:#a8a29e; font-size:0.65rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; }
+    .hr-title { font-family:'Inter',sans-serif; font-size:1.8rem; font-weight:600; letter-spacing:-0.025em; color:#1c1917; }
+    .hr-kpi  { font-family:'JetBrains Mono',monospace; font-weight:600; letter-spacing:-0.04em; color:#1c1917; font-variant-numeric:tabular-nums; }
+    .hr-btn-primary { background:#1c1917; color:#fafaf9; border:none; border-radius:10px; padding:10px 18px;
+                      font-size:0.82rem; font-weight:500; cursor:pointer; transition:background 0.15s; font-family:'Inter',sans-serif; }
+    .hr-btn-primary:hover { background:#292524; }
+    .hr-btn-ghost { background:#fafaf9; border:1px solid #e7e5e4; color:#1c1917; border-radius:10px; padding:8px 14px;
+                    font-size:0.78rem; font-weight:500; cursor:pointer; transition:background 0.15s,border-color 0.15s; font-family:'Inter',sans-serif; }
+    .hr-btn-ghost:hover { background:#f5f5f4; border-color:#d6d3d1; }
+    .hr-row-hover:hover { background:#fafaf9; }
+    .hr-drawer-backdrop { position:fixed; inset:0; background:rgba(28,25,23,0.32);
+                          backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+                          opacity:0; pointer-events:none; z-index:200;
+                          transition: opacity 0.42s ease; }
+    .hr-drawer-backdrop.open { opacity:1; pointer-events:auto; }
+    .hr-drawer { position:fixed; top:0; right:0; bottom:0; width:560px; max-width:96vw;
+                 background:#ffffff; z-index:201; overflow-y:auto;
+                 box-shadow:-32px 0 64px rgba(28,25,23,0.12);
+                 transform: translateX(100%);
+                 transition: transform 0.42s cubic-bezier(0.32,0.72,0,1); }
+    .hr-drawer.open { transform: translateX(0); }
+    .hr-stage-card { cursor:pointer; transition:border-color 0.15s, background 0.15s, transform 0.15s; }
+    .hr-stage-card:hover { border-color:#1c1917 !important; transform:translateY(-1px); }
+    .hr-stage-card.active { border-color:#059669 !important; background:rgba(5,150,105,0.04) !important; }
+    .hr-chip-btn { cursor:pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
+    .hr-chip-btn:hover { background:#f5f5f4; border-color:#d6d3d1; }
+    .hr-chip-btn.active { background:#1c1917 !important; color:#fafaf9 !important; border-color:#1c1917 !important; }
+    .hr-tab-btn { transition: color 0.15s, border-color 0.15s; }
+    .hr-tl-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:6px; }
+    .hr-tl-line { width:1.5px; background:#e7e5e4; flex:1; min-height:18px; }
+    @media (max-width: 980px) {
+      .hr-2col { grid-template-columns: 1fr !important; }
+      .hr-drawer { width:100vw; }
+    }
     ::-webkit-scrollbar { display: none; }
     /* ── Fade in (tab content, general) ── */
     .fade-in { animation: fadeIn 0.35s ease forwards; }
@@ -1195,10 +1234,13 @@
       }, [featuresInView]);
 
       const features = [
-        { Icon:Target,    title:'Mission-Based Learning', desc:'ภารกิจที่ออกแบบให้เหมาะกับคุณโดยเฉพาะ เรียนรู้ผ่านการลงมือทำจริง ไม่ใช่แค่อ่านทฤษฎี', color:'#ED4724', tag:'PRACTICE' },
-        { Icon:Zap,       title:'Micro Learning',         desc:'เนื้อหา 5–10 นาที เรียนได้ทุกที่ ทุกเวลา ไม่เสียเวลา ไม่ต้องจัดตาราง',           color:'#f59e0b', tag:'BITESIZE' },
-        { Icon:BarChart2, title:'Real-time Progress',     desc:'ติดตามพัฒนาการของตัวเอง เห็นชัดว่าเรียนได้มากแค่ไหน และต้องพัฒนาอะไรต่อไป',     color:'#06b6d4', tag:'INSIGHT'  },
-        { Icon:Trophy,    title:'Leaderboard & Rewards',  desc:'แข่งขันกับเพื่อนร่วมองค์กร สะสมคะแนน รับ Badge และสร้างแรงจูงใจในการเรียนรู้',   color:'#a78bfa', tag:'REWARD'   },
+        { Icon:Target,    title:'Mission-Based Learning',   desc:'ภารกิจที่ออกแบบให้เหมาะกับคุณโดยเฉพาะ เรียนรู้ผ่านการลงมือทำจริง ไม่ใช่แค่อ่านทฤษฎี', color:'#ED4724', tag:'PRACTICE' },
+        { Icon:Zap,       title:'Micro Learning',           desc:'เนื้อหา 5–10 นาที เรียนได้ทุกที่ ทุกเวลา ไม่เสียเวลา ไม่ต้องจัดตาราง',                    color:'#f59e0b', tag:'BITESIZE' },
+        { Icon:BarChart2, title:'Real-time Progress',       desc:'ติดตามพัฒนาการของตัวเอง เห็นชัดว่าเรียนได้มากแค่ไหน และต้องพัฒนาอะไรต่อไป',          color:'#06b6d4', tag:'INSIGHT'  },
+        { Icon:Trophy,    title:'Leaderboard & Rewards',    desc:'แข่งขันกับเพื่อนร่วมองค์กร สะสมคะแนน รับ Badge และสร้างแรงจูงใจในการเรียนรู้',         color:'#a78bfa', tag:'REWARD'   },
+        { Icon:FileText,  title:'Visible Learning Evidence',desc:'เห็นข้อมูลจริงว่าพนักงานทำภารกิจอะไร ส่งงานอะไร ตอบคำถามอย่างไร · ไม่ใช่แค่ดูจำนวนคนเข้าเรียน',     color:'#10b981', tag:'EVIDENCE' },
+        { Icon:Activity,  title:'Transformation Tracking',  desc:'ไม่ใช่จบคลาสแล้วจบ · ติดตามต่อ 90 วันว่าแต่ละคนยังจำได้ นำไปใช้จริง และพัฒนาถึง Stage ไหน',           color:'#14b8a6', tag:'JOURNEY'  },
+        { Icon:Award,     title:'Impact & Action Plan',     desc:'วัดผล training ที่ลงทุนไป · เห็นว่าใครเก่งขึ้น ใครมี gap และต้อง follow-up หรือให้ manager ช่วยดูแล', color:'#6366f1', tag:'IMPACT'   },
       ];
 
       return (
@@ -1368,17 +1410,6 @@
                     letterSpacing:'-0.01em',
                   }}>ลองใช้ Prototype →</button>
                 </div>
-                <button style={{
-                  padding:'14px 28px', borderRadius:14,
-                  border:'1px solid rgba(255,255,255,0.12)',
-                  background:'rgba(255,255,255,0.04)',
-                  color:'#d4d4d8', fontSize:'1rem', fontWeight:600,
-                  cursor:'pointer', transition:'border-color 0.2s, background 0.2s',
-                }}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.25)';e.currentTarget.style.background='rgba(255,255,255,0.07)';}}
-                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.12)';e.currentTarget.style.background='rgba(255,255,255,0.04)';}}>
-                  ดูวิธีใช้งาน
-                </button>
               </div>
 
             </div>
@@ -1655,14 +1686,6 @@
             padding:'90px max(24px,calc((100vw - 1200px)/2))',
           }}>
             <div style={{textAlign:'center',marginBottom:56}}>
-              <div style={{
-                display:'inline-flex',alignItems:'center',gap:8,
-                background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',
-                borderRadius:999,padding:'5px 14px',marginBottom:18,
-              }}>
-                <span style={{width:5,height:5,borderRadius:'50%',background:'#fbbf24'}}/>
-                <span style={{color:'#fbbf24',fontSize:'0.7rem',fontWeight:600,letterSpacing:'0.12em'}}>FEATURES</span>
-              </div>
               <h2 className="bp-heading" style={{
                 fontSize:'clamp(1.8rem,3.8vw,2.6rem)',fontWeight:800,
                 letterSpacing:'-0.01em',margin:'0 0 14px',
@@ -1672,15 +1695,14 @@
               </p>
             </div>
             <div style={{
-              display:'grid',
-              gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))',
-              gap:20,
+              display:'flex', flexWrap:'wrap', justifyContent:'center', gap:20,
             }}>
               {features.map(({Icon,title,desc,color,tag},i)=>(
                 <div key={title}
                   className="feature-card anim-wiggle-hover"
                   style={{
                     position:'relative',
+                    flex:'1 1 240px', minWidth:240, maxWidth:'calc(25% - 15px)',
                     background:'rgba(255,255,255,0.03)',
                     border:'1px solid rgba(255,255,255,0.07)',
                     borderRadius:20, padding:'28px 24px 26px',
@@ -6731,758 +6753,1253 @@
       );
     }
 
-    /* ── HRDashboard ─────────────────────────────── */
+    /* ── HRDashboard (Soft Bento Modern · 30 Learners · 2-tab + Drawer) ─── */
     function HRDashboard({ onBack }) {
-      const [tab, setTab] = useState('overview');
-      const [expanded, setExpanded] = useState(null);
+      const [tab, setTab]                     = useState('overview');
+      const [statusFilter, setStatusFilter]   = useState('all');   // 'all' | 'onTrack' | 'atRisk' | 'behind'
+      const [stageFilter, setStageFilter]     = useState(null);    // null | 0..5
+      const [selectedLearner, setSelectedLearner] = useState(null);
+      const [drawerOpen, setDrawerOpen]       = useState(false);
+      const [openEvidence, setOpenEvidence]   = useState(null);    // mission id whose evidence is expanded
+      const [sortBy, setSortBy]               = useState('transformation');
 
-      // Stage metadata (matches Shift Stage framework)
+      // ── Class metadata ──
+      const CLASS = {
+        name: 'Essential Leadership',
+        tagline: 'Lead with your heart',
+        onsite: '1–2 May 2026',
+        totalLearners: 30,
+        totalDays: 90,
+      };
+      const dayCurrent  = 25;
+      const dayProgress = Math.round((dayCurrent / CLASS.totalDays) * 100);
+
+      // ── Stage metadata ──
       const STAGE_META = [
-        {num:0, name:'Unaware',        role:'Ignorance',    color:'#71717a', targetDays:1},
+        {num:0, name:'Unaware',        role:'Ignorance',    color:'#a8a29e', targetDays:1},
         {num:1, name:'Awareness',      role:'Questioner',   color:'#ef4444', targetDays:1},
         {num:2, name:'Acknowledgment', role:'Goal Setter',  color:'#f97316', targetDays:3},
         {num:3, name:'Activation',     role:'Apprentice',   color:'#fbbf24', targetDays:11},
-        {num:4, name:'Adoption',       role:'Practitioner', color:'#22c55e', targetDays:30},
-        {num:5, name:'Automate',       role:'Graduates',    color:'#3b82f6', targetDays:45},
+        {num:4, name:'Adoption',       role:'Practitioner', color:'#059669', targetDays:30},
+        {num:5, name:'Automate',       role:'Graduates',    color:'#0d9488', targetDays:45},
       ];
       const stageMeta = (n) => STAGE_META[n] || STAGE_META[0];
 
-      // Enhanced learner data: 24 cohort members + stage, daysInStage, goalStatus, mgrReview
+      // ── LEARNERS (30 records) — added prevStage (Pre-Class baseline) ──
+      // Movement story: 6/12/12/0/0/0 (pre) → 2/3/5/9/11/0 (now) — most moved up; Stage 5 ยังไม่มีใครถึง
       const LEARNERS = [
-        // Stage 5 — Automate (2)
-        {id:1, name:'วิไลวรรณ สุขสมบูรณ์',   role:'HR Manager',          av:'ว',bg:'#f59e0b',progress:92,done:14,pts:2100,last:'30 นาที',     streak:12,status:'active',  stage:5,daysInStage:8, goalStatus:'achieved',mgrReview:'completed'},
-        {id:2, name:'สมหมาย ทองดี',           role:'Team Lead',           av:'ส',bg:'#3b82f6',progress:88,done:13,pts:1920,last:'1 ชม.',       streak:9, status:'active',  stage:5,daysInStage:12,goalStatus:'achieved',mgrReview:'completed'},
-        // Stage 4 — Adoption (5)
-        {id:3, name:'ธนพล วัฒนา',             role:'Sales Manager',       av:'ธ',bg:'#6366f1',progress:85,done:12,pts:1840,last:'2 ชม.',       streak:8, status:'active',  stage:4,daysInStage:22,goalStatus:'on-track',mgrReview:'completed'},
-        {id:4, name:'นุชนาถ พิทักษ์',          role:'Project Manager',     av:'น',bg:'#10b981',progress:82,done:11,pts:1720,last:'3 ชม.',       streak:7, status:'active',  stage:4,daysInStage:18,goalStatus:'on-track',mgrReview:'completed'},
-        {id:5, name:'ปิยะ มงคล',              role:'Marketing Lead',      av:'ป',bg:'#ec4899',progress:80,done:11,pts:1680,last:'4 ชม.',       streak:6, status:'active',  stage:4,daysInStage:16,goalStatus:'on-track',mgrReview:'completed'},
-        {id:6, name:'ภาคภูมิ เสริมศักดิ์',    role:'Tech Lead',           av:'ภ',bg:'#8b5cf6',progress:78,done:10,pts:1580,last:'5 ชม.',       streak:5, status:'active',  stage:4,daysInStage:20,goalStatus:'on-track',mgrReview:'completed'},
-        {id:7, name:'ชนกานต์ ปัญญา',          role:'Product Manager',     av:'ช',bg:'#06b6d4',progress:76,done:10,pts:1540,last:'6 ชม.',       streak:5, status:'active',  stage:4,daysInStage:14,goalStatus:'on-track',mgrReview:'pending'},
-        // Stage 3 — Activation (7)
-        {id:8, name:'รสริน อภิชาติ',          role:'Customer Success',    av:'ร',bg:'#14b8a6',progress:73,done:9, pts:1480,last:'8 ชม.',       streak:4, status:'active',  stage:3,daysInStage:8, goalStatus:'on-track',mgrReview:'completed'},
-        {id:9, name:'ประภาส กาญจนา',          role:'Senior Developer',    av:'ป',bg:'#0ea5e9',progress:68,done:9, pts:1320,last:'1 วัน',       streak:3, status:'at-risk', stage:3,daysInStage:14,goalStatus:'off-track',mgrReview:'pending'},
-        {id:10,name:'สุรชัย จันทรา',          role:'DevOps Engineer',     av:'ส',bg:'#f97316',progress:65,done:9, pts:1280,last:'1 วัน',       streak:6, status:'active',  stage:3,daysInStage:8, goalStatus:'on-track',mgrReview:'completed'},
-        {id:11,name:'ไพศาล ก้าวหน้า',         role:'Operations Manager',  av:'ไ',bg:'#ef4444',progress:63,done:8, pts:1240,last:'1 วัน',       streak:5, status:'active',  stage:3,daysInStage:9, goalStatus:'on-track',mgrReview:'completed'},
-        {id:12,name:'นันทพร เอกชัย',          role:'Brand Manager',       av:'น',bg:'#fbbf24',progress:60,done:8, pts:1180,last:'2 วัน',       streak:3, status:'active',  stage:3,daysInStage:11,goalStatus:'on-track',mgrReview:'pending'},
-        {id:13,name:'ภัทรพล ฉลองชัย',         role:'Frontend Developer',  av:'ภ',bg:'#84cc16',progress:58,done:7, pts:1120,last:'2 วัน',       streak:4, status:'active',  stage:3,daysInStage:12,goalStatus:'on-track',mgrReview:'completed'},
-        {id:14,name:'ฐานิดา พรหมเทพ',         role:'QA Engineer',         av:'ฐ',bg:'#a855f7',progress:56,done:7, pts:1080,last:'2 วัน',       streak:2, status:'active',  stage:3,daysInStage:13,goalStatus:'off-track',mgrReview:'pending'},
+        // Stage 5 — Automate (0) · ยังไม่มีใครถึง Stage นี้
+        // Stage 4 — Adoption (11)
+        {id:1, name:'วิไลวรรณ สุขสมบูรณ์',   role:'HR Manager',         av:'ว',bg:'#0d9488',progress:92,done:16,pts:2020,last:'30 นาที',     streak:12,status:'active',  stage:4,prevStage:2,daysInStage:8, goalStatus:'achieved', mgrReview:'completed'},
+        {id:2, name:'สมหมาย ทองดี',           role:'Team Lead',          av:'ส',bg:'#0e7490',progress:90,done:15,pts:1960,last:'1 ชม.',       streak:11,status:'active',  stage:4,prevStage:2,daysInStage:10,goalStatus:'achieved', mgrReview:'completed'},
+        {id:3, name:'ภาคภูมิ เสริมศักดิ์',    role:'Tech Lead',          av:'ภ',bg:'#155e75',progress:88,done:14,pts:1880,last:'2 ชม.',       streak:10,status:'active',  stage:4,prevStage:1,daysInStage:7, goalStatus:'on-track', mgrReview:'completed'},
+        {id:4, name:'นุชนาถ พิทักษ์',         role:'Project Manager',    av:'น',bg:'#0f766e',progress:86,done:14,pts:1820,last:'3 ชม.',       streak:9, status:'active',  stage:4,prevStage:2,daysInStage:6, goalStatus:'on-track', mgrReview:'completed'},
+        // Stage 4 — Adoption (continued)
+        {id:5, name:'ธนพล วัฒนา',             role:'Sales Manager',      av:'ธ',bg:'#059669',progress:85,done:14,pts:1740,last:'2 ชม.',       streak:9, status:'active',  stage:4,prevStage:1,daysInStage:18,goalStatus:'on-track', mgrReview:'completed'},
+        {id:6, name:'ปิยะ มงคล',              role:'Marketing Lead',     av:'ป',bg:'#10b981',progress:82,done:13,pts:1680,last:'4 ชม.',       streak:8, status:'active',  stage:4,prevStage:2,daysInStage:14,goalStatus:'on-track', mgrReview:'completed'},
+        {id:7, name:'ชนกานต์ ปัญญา',          role:'Product Manager',    av:'ช',bg:'#14b8a6',progress:80,done:12,pts:1580,last:'6 ชม.',       streak:7, status:'active',  stage:4,prevStage:1,daysInStage:16,goalStatus:'on-track', mgrReview:'pending'},
+        {id:8, name:'อนันต์ ชัยพร',           role:'Sr Engineering Mgr', av:'อ',bg:'#0d9488',progress:78,done:12,pts:1540,last:'5 ชม.',       streak:7, status:'active',  stage:4,prevStage:0,daysInStage:12,goalStatus:'on-track', mgrReview:'completed'},
+        {id:9, name:'รัตนา เกียรติ',          role:'Operations Mgr',     av:'ร',bg:'#22c55e',progress:76,done:11,pts:1500,last:'7 ชม.',       streak:5, status:'active',  stage:4,prevStage:2,daysInStage:11,goalStatus:'on-track', mgrReview:'completed'},
+        {id:10,name:'ธีรพงศ์ วิทยา',          role:'Engineering Lead',   av:'ธ',bg:'#16a34a',progress:74,done:11,pts:1460,last:'8 ชม.',       streak:6, status:'active',  stage:4,prevStage:1,daysInStage:9, goalStatus:'on-track', mgrReview:'pending'},
+        {id:11,name:'สุนิสา ภาคิน',           role:'Brand Director',     av:'ส',bg:'#15803d',progress:72,done:10,pts:1420,last:'10 ชม.',      streak:4, status:'active',  stage:4,prevStage:2,daysInStage:13,goalStatus:'on-track', mgrReview:'completed'},
+        // Stage 3 — Activation (9)
+        {id:12,name:'รสริน อภิชาติ',          role:'Customer Success',   av:'ร',bg:'#facc15',progress:68,done:9, pts:1360,last:'8 ชม.',       streak:5, status:'active',  stage:3,prevStage:1,daysInStage:7, goalStatus:'on-track', mgrReview:'completed'},
+        {id:13,name:'สุรชัย จันทรา',          role:'DevOps Engineer',    av:'ส',bg:'#fbbf24',progress:65,done:9, pts:1280,last:'1 วัน',       streak:6, status:'active',  stage:3,prevStage:0,daysInStage:8, goalStatus:'on-track', mgrReview:'completed'},
+        {id:14,name:'ไพศาล ก้าวหน้า',         role:'Operations Manager', av:'ไ',bg:'#eab308',progress:63,done:8, pts:1240,last:'1 วัน',       streak:5, status:'active',  stage:3,prevStage:2,daysInStage:9, goalStatus:'on-track', mgrReview:'completed'},
+        {id:15,name:'นันทพร เอกชัย',          role:'Brand Manager',      av:'น',bg:'#facc15',progress:60,done:8, pts:1180,last:'2 วัน',       streak:3, status:'active',  stage:3,prevStage:2,daysInStage:11,goalStatus:'on-track', mgrReview:'pending'},
+        {id:16,name:'ภัทรพล ฉลองชัย',         role:'Frontend Developer', av:'ภ',bg:'#fde047',progress:58,done:7, pts:1120,last:'2 วัน',       streak:4, status:'active',  stage:3,prevStage:1,daysInStage:12,goalStatus:'on-track', mgrReview:'completed'},
+        {id:17,name:'ฐานิดา พรหมเทพ',         role:'QA Engineer',        av:'ฐ',bg:'#fbbf24',progress:56,done:7, pts:1080,last:'2 วัน',       streak:2, status:'active',  stage:3,prevStage:2,daysInStage:13,goalStatus:'off-track',mgrReview:'pending'},
+        {id:18,name:'ประภาส กาญจนา',          role:'Senior Developer',   av:'ป',bg:'#f59e0b',progress:55,done:7, pts:1050,last:'1 วัน',       streak:3, status:'at-risk', stage:3,prevStage:1,daysInStage:14,goalStatus:'off-track',mgrReview:'pending'},
+        {id:19,name:'มงคล อุดมศักดิ์',        role:'IT Director',        av:'ม',bg:'#eab308',progress:52,done:6, pts:1010,last:'2 วัน',       streak:2, status:'active',  stage:3,prevStage:2,daysInStage:10,goalStatus:'on-track', mgrReview:'completed'},
+        {id:20,name:'ศรีสุดา วงศ์ทอง',         role:'Customer Success Mgr',av:'ศ',bg:'#ca8a04',progress:50,done:6, pts:980, last:'3 วัน',      streak:1, status:'at-risk', stage:3,prevStage:1,daysInStage:13,goalStatus:'off-track',mgrReview:'overdue'},
         // Stage 2 — Acknowledgment (5)
-        {id:15,name:'พิมพ์ใจ รุ่งเรือง',      role:'Business Analyst',    av:'พ',bg:'#8b5cf6',progress:55,done:7, pts:1050,last:'3 วัน',       streak:1, status:'at-risk', stage:2,daysInStage:3, goalStatus:'off-track',mgrReview:'pending'},
-        {id:16,name:'กิตติพงศ์ วิภาวรรณ',     role:'Account Director',    av:'ก',bg:'#22d3ee',progress:50,done:6, pts:980, last:'3 วัน',       streak:2, status:'active',  stage:2,daysInStage:2, goalStatus:'on-track',mgrReview:'completed'},
-        {id:17,name:'มาริสา จำเริญ',          role:'Data Analyst',        av:'ม',bg:'#d946ef',progress:48,done:6, pts:920, last:'4 วัน',       streak:1, status:'at-risk', stage:2,daysInStage:5, goalStatus:'off-track',mgrReview:'pending'},
-        {id:18,name:'ธิดา ปทุมราช',           role:'HR Specialist',       av:'ธ',bg:'#f59e0b',progress:46,done:5, pts:880, last:'4 วัน',       streak:2, status:'active',  stage:2,daysInStage:2, goalStatus:'on-track',mgrReview:'completed'},
-        {id:19,name:'อรุณ จิตใจดี',           role:'UX Designer',         av:'อ',bg:'#f97316',progress:45,done:6, pts:890, last:'5 วัน',       streak:0, status:'inactive',stage:2,daysInStage:7, goalStatus:'set',     mgrReview:'overdue'},
-        // Stage 1 — Awareness (4)
-        {id:20,name:'ชัยพร เกียรติคุณ',       role:'Sales Rep',           av:'ช',bg:'#22c55e',progress:40,done:5, pts:820, last:'4 วัน',       streak:0, status:'at-risk', stage:1,daysInStage:1, goalStatus:'off-track',mgrReview:'pending'},
-        {id:21,name:'วรพล สุวรรณรัตน์',       role:'Backend Developer',   av:'ว',bg:'#3b82f6',progress:38,done:4, pts:780, last:'5 วัน',       streak:1, status:'at-risk', stage:1,daysInStage:1, goalStatus:'set',     mgrReview:'overdue'},
-        {id:22,name:'สุดารัตน์ อิ่มเอม',      role:'Content Strategist',  av:'ส',bg:'#f43f5e',progress:35,done:4, pts:720, last:'6 วัน',       streak:0, status:'inactive',stage:1,daysInStage:2, goalStatus:'set',     mgrReview:'overdue'},
-        {id:23,name:'กัญญา ศิริวงศ์',         role:'Finance Lead',        av:'ก',bg:'#ef4444',progress:30,done:3, pts:580, last:'1 สัปดาห์',  streak:0, status:'inactive',stage:1,daysInStage:5, goalStatus:'set',     mgrReview:'overdue'},
-        // Stage 0 — Unaware (1)
-        {id:24,name:'ปรีชา ตั้งใจ',           role:'Solution Architect',  av:'ป',bg:'#71717a',progress:12,done:1, pts:180, last:'2 สัปดาห์', streak:0, status:'inactive',stage:0,daysInStage:3, goalStatus:'set',     mgrReview:'overdue'},
+        {id:21,name:'พิมพ์ใจ รุ่งเรือง',      role:'Business Analyst',   av:'พ',bg:'#f97316',progress:48,done:6, pts:920, last:'3 วัน',       streak:1, status:'at-risk', stage:2,prevStage:2,daysInStage:3, goalStatus:'off-track',mgrReview:'pending'},
+        {id:22,name:'กิตติพงศ์ วิภาวรรณ',     role:'Account Director',   av:'ก',bg:'#fb923c',progress:46,done:5, pts:880, last:'3 วัน',       streak:2, status:'active',  stage:2,prevStage:1,daysInStage:2, goalStatus:'on-track', mgrReview:'completed'},
+        {id:23,name:'มาริสา จำเริญ',          role:'Data Analyst',       av:'ม',bg:'#ea580c',progress:44,done:5, pts:840, last:'4 วัน',       streak:1, status:'at-risk', stage:2,prevStage:0,daysInStage:5, goalStatus:'off-track',mgrReview:'pending'},
+        {id:24,name:'ธิดา ปทุมราช',           role:'HR Specialist',      av:'ธ',bg:'#f97316',progress:42,done:5, pts:800, last:'4 วัน',       streak:2, status:'active',  stage:2,prevStage:1,daysInStage:3, goalStatus:'on-track', mgrReview:'completed'},
+        {id:25,name:'อรุณ จิตใจดี',           role:'UX Designer',        av:'อ',bg:'#fb923c',progress:40,done:4, pts:760, last:'5 วัน',       streak:0, status:'inactive',stage:2,prevStage:2,daysInStage:7, goalStatus:'set',      mgrReview:'overdue'},
+        // Stage 1 — Awareness (3)
+        {id:26,name:'ชัยพร เกียรติคุณ',       role:'Sales Rep',          av:'ช',bg:'#ef4444',progress:35,done:4, pts:680, last:'5 วัน',       streak:0, status:'at-risk', stage:1,prevStage:1,daysInStage:8, goalStatus:'off-track',mgrReview:'pending'},
+        {id:27,name:'วรพล สุวรรณรัตน์',       role:'Backend Developer',  av:'ว',bg:'#dc2626',progress:32,done:3, pts:620, last:'6 วัน',       streak:0, status:'at-risk', stage:1,prevStage:0,daysInStage:10,goalStatus:'set',      mgrReview:'overdue'},
+        {id:28,name:'สุดารัตน์ อิ่มเอม',      role:'Content Strategist', av:'ส',bg:'#b91c1c',progress:28,done:3, pts:540, last:'8 วัน',       streak:0, status:'inactive',stage:1,prevStage:1,daysInStage:11,goalStatus:'set',      mgrReview:'overdue'},
+        // Stage 0 — Unaware (2) — critical at-risk
+        {id:29,name:'กัญญา ศิริวงศ์',         role:'Finance Lead',       av:'ก',bg:'#a8a29e',progress:18,done:2, pts:340, last:'12 วัน',      streak:0, status:'inactive',stage:0,prevStage:0,daysInStage:7, goalStatus:'set',      mgrReview:'overdue'},
+        {id:30,name:'ปรีชา ตั้งใจ',           role:'Solution Architect', av:'ป',bg:'#78716c',progress:12,done:1, pts:200, last:'14 วัน',      streak:0, status:'inactive',stage:0,prevStage:0,daysInStage:14,goalStatus:'set',      mgrReview:'overdue'},
       ];
+
+      // ── Challenge completion data ──
       const CHDATA = [
-        {type:'Flash Card',    Icon:FlashCard,    pct:91,done:3.6,total:4, color:'#ED4724'},
-        {type:'Quiz',          Icon:Info,         pct:85,done:6.8,total:8, color:'#F26B45'},
-        {type:'Micro Learning',Icon:Zap,          pct:79,done:7.9,total:10,color:'#F59E0B'},
-        {type:'Recall Quiz',   Icon:Activity,     pct:72,done:2.9,total:4, color:'#10b981'},
-        {type:'Mission',       Icon:Target,       pct:68,done:4.1,total:6, color:'#C53A1A'},
+        {type:'Flash Card',     Icon:FlashCard,    pct:91,done:3.6,total:4, color:'#059669'},
+        {type:'Quiz',           Icon:Info,         pct:85,done:6.8,total:8, color:'#0d9488'},
+        {type:'Micro Learning', Icon:Zap,          pct:79,done:7.9,total:10,color:'#0891b2'},
+        {type:'Recall Quiz',    Icon:Activity,     pct:72,done:2.9,total:4, color:'#6366f1'},
+        {type:'Mission',        Icon:Target,       pct:68,done:4.1,total:6, color:'#8b5cf6'},
       ];
-      const TREND = [42,58,51,74,67,82,78];
-      const DAYS  = ['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'];
 
-      const active   = LEARNERS.filter(l=>l.status==='active').length;
-      const atRisk   = LEARNERS.filter(l=>l.status==='at-risk').length;
-      const inactive = LEARNERS.filter(l=>l.status==='inactive').length;
-      const avgProg  = Math.round(LEARNERS.reduce((a,l)=>a+l.progress,0)/LEARNERS.length);
-      const avgPts   = Math.round(LEARNERS.reduce((a,l)=>a+l.pts,0)/LEARNERS.length).toLocaleString();
+      // ── Helpers ──
+      const expectedStageForDay = (d) =>
+        d <= 1 ? 1 : d <= 3 ? 2 : d <= 14 ? 3 : d <= 45 ? 4 : 5;
+      const exp = expectedStageForDay(dayCurrent); // = 4 at day 25
 
-      // Stage-aware aggregates
-      const totalLearners    = LEARNERS.length;
-      const stageCounts      = STAGE_META.map((_,n) => LEARNERS.filter(l => l.stage === n).length);
-      const adoptionPlus     = LEARNERS.filter(l => l.stage >= 4).length;     // Stage 4+ "transformed"
-      const adoptionPlusPct  = Math.round((adoptionPlus / totalLearners) * 100);
-      const goalsAchievedPct = Math.round((LEARNERS.filter(l => l.goalStatus === 'achieved' || l.goalStatus === 'on-track').length / totalLearners) * 100);
-      const mgrReviewDone    = LEARNERS.filter(l => l.mgrReview === 'completed').length;
-      const avgDaysInStage   = Math.round(LEARNERS.reduce((a,l)=>a+l.daysInStage,0)/totalLearners);
-      const stuckLearners    = LEARNERS.filter(l => l.daysInStage > stageMeta(l.stage).targetDays);
+      const transformationScore = (l) =>
+        Math.min(100, Math.round(
+          (l.stage / 5) * 60 +
+          (l.progress / 100) * 25 +
+          (l.goalStatus === 'achieved' ? 15 : l.goalStatus === 'on-track' ? 10 : l.goalStatus === 'off-track' ? 3 : 5)
+        ));
+      const prevTransformationScore = (l) =>
+        Math.min(100, Math.round((l.prevStage / 5) * 60 + 8));
+      const engagementScore = (l) =>
+        Math.min(100, Math.round(
+          Math.min(l.streak / 14, 1) * 30 +
+          (l.status === 'active' ? 40 : l.status === 'at-risk' ? 20 : 0) +
+          Math.min(l.done / 18, 1) * 30
+        ));
+      const learnerStatus = (l) => {
+        if (l.status === 'inactive' || l.stage < exp - 2) return 'behind';
+        if (l.status === 'at-risk' || l.stage <= exp - 1) return 'atRisk';
+        return 'onTrack';
+      };
 
-      // Goal status visuals
-      const goalColor = (s) => s === 'achieved' ? '#22c55e' : s === 'on-track' ? '#3b82f6' : s === 'off-track' ? '#ef4444' : '#a8a29e';
-      const goalLabel = (s) => s === 'achieved' ? 'บรรลุแล้ว' : s === 'on-track' ? 'On Track' : s === 'off-track' ? 'หลุดเป้า' : 'ตั้งแล้ว';
-      const mgrColor  = (s) => s === 'completed' ? '#22c55e' : s === 'pending' ? '#f59e0b' : '#ef4444';
-      const mgrLabel  = (s) => s === 'completed' ? 'Reviewed' : s === 'pending' ? 'รอ Review' : 'เกิน Due';
+      const statusMeta = {
+        all:     { label:'ทั้งหมด',  color:'#1c1917', bg:'transparent',           border:'#e7e5e4' },
+        onTrack: { label:'On Track', color:'#047857', bg:'rgba(16,185,129,0.10)', border:'rgba(16,185,129,0.32)' },
+        atRisk:  { label:'At Risk',  color:'#b45309', bg:'rgba(245,158,11,0.12)', border:'rgba(245,158,11,0.40)' },
+        behind:  { label:'Behind',   color:'#b91c1c', bg:'rgba(239,68,68,0.10)',  border:'rgba(239,68,68,0.32)'  },
+      };
+      const mgrColor  = (s) => s === 'completed' ? '#047857' : s === 'pending' ? '#b45309' : '#b91c1c';
+      const mgrLabel  = (s) => s === 'completed' ? 'Reviewed' : s === 'pending' ? 'Pending' : 'Overdue';
 
-      // Stage badge component (reusable)
+      // ── Aggregates ──
+      const totalLearners = LEARNERS.length;
+      const stageCounts     = STAGE_META.map((_, n) => LEARNERS.filter(l => l.stage     === n).length);
+      const prevStageCounts = STAGE_META.map((_, n) => LEARNERS.filter(l => l.prevStage === n).length);
+      const transformedCount = stageCounts[3] + stageCounts[4] + stageCounts[5]; // Stage 3+ = "Transformed"
+      const avgTransformation = Math.round(LEARNERS.reduce((a,l)=>a+transformationScore(l),0)/totalLearners);
+      const avgEngagement     = Math.round(LEARNERS.reduce((a,l)=>a+engagementScore(l),0)/totalLearners);
+      const statusCounts = {
+        all:     totalLearners,
+        onTrack: LEARNERS.filter(l => learnerStatus(l) === 'onTrack').length,
+        atRisk:  LEARNERS.filter(l => learnerStatus(l) === 'atRisk').length,
+        behind:  LEARNERS.filter(l => learnerStatus(l) === 'behind').length,
+      };
+
+      const atRiskList = LEARNERS
+        .filter(l => learnerStatus(l) !== 'onTrack')
+        .sort((a, b) => transformationScore(a) - transformationScore(b))
+        .slice(0, 5);
+      const topList = LEARNERS
+        .filter(l => l.stage >= 4)
+        .sort((a, b) => transformationScore(b) - transformationScore(a))
+        .slice(0, 5);
+
+      // ── Drawer controls ──
+      const openLearner = (id) => {
+        setSelectedLearner(id);
+        setOpenEvidence(null);
+        // double-RAF for transition to fire after mount
+        requestAnimationFrame(() => requestAnimationFrame(() => setDrawerOpen(true)));
+      };
+      const closeDrawer = () => {
+        setDrawerOpen(false);
+        setTimeout(() => setSelectedLearner(null), 440);
+      };
+
+      useEffect(() => {
+        const onKey = (e) => { if (e.key === 'Escape' && drawerOpen) closeDrawer(); };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+      }, [drawerOpen]);
+
+      // ── Small reusable components ──
       const StageBadge = ({ stage, size = 'sm' }) => {
         const meta = stageMeta(stage);
         const isLg = size === 'lg';
         return (
           <span style={{
-            display:'inline-flex',alignItems:'center',gap:isLg?6:4,
-            padding: isLg ? '4px 10px' : '2px 8px',borderRadius:999,
-            background:`${meta.color}18`, border:`1px solid ${meta.color}44`,
+            display:'inline-flex', alignItems:'center', gap:isLg?6:4,
+            padding: isLg ? '4px 10px' : '2px 8px', borderRadius:999,
+            background:`${meta.color}14`, border:`1px solid ${meta.color}33`,
           }}>
-            <span style={{
+            <span className="num" style={{
               width: isLg ? 16 : 14, height: isLg ? 16 : 14, borderRadius:'50%',
               background:meta.color, color:'#fff',
-              fontSize: isLg ? '0.62rem' : '0.55rem', fontWeight:800,
-              display:'inline-flex',alignItems:'center',justifyContent:'center',
+              fontSize: isLg ? '0.62rem' : '0.55rem', fontWeight:700,
+              display:'inline-flex', alignItems:'center', justifyContent:'center',
             }}>{stage}</span>
             <span style={{
-              color:meta.color, fontSize: isLg ? '0.74rem' : '0.66rem', fontWeight:700, letterSpacing:'-0.005em',
+              color:meta.color, fontSize: isLg ? '0.74rem' : '0.66rem', fontWeight:600, letterSpacing:'-0.005em',
             }}>{meta.name}</span>
           </span>
         );
       };
 
-      const sBg    = s=>s==='active'?'rgba(16,185,129,0.10)':s==='at-risk'?'rgba(245,158,11,0.12)':'rgba(239,68,68,0.10)';
-      const sTxt   = s=>s==='active'?'#047857':s==='at-risk'?'#b45309':'#b91c1c';
-      const sLabel = s=>s==='active'?'Active':s==='at-risk'?'At Risk':'Inactive';
-
-      const SparkLine = () => {
-        const W=200,H=40,max=Math.max(...TREND),min=Math.min(...TREND),range=max-min||1;
-        const pts=TREND.map((v,i)=>`${(i/(TREND.length-1))*W},${H-((v-min)/range)*(H-6)-3}`).join(' ');
-        const area=`0,${H} ${pts} ${W},${H}`;
-        return(
-          <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{overflow:'visible'}}>
-            <defs>
-              <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ED4724" stopOpacity="0.30"/>
-                <stop offset="100%" stopColor="#ED4724" stopOpacity="0"/>
-              </linearGradient>
-            </defs>
-            <polygon points={area} fill="url(#tg)"/>
-            <polyline points={pts} fill="none" stroke="#ED4724" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            {TREND.map((v,i)=>(
-              <circle key={i} cx={(i/(TREND.length-1))*W}
-                cy={H-((v-min)/range)*(H-6)-3} r="3.5" fill="#ED4724"/>
-            ))}
-          </svg>
+      const StatusPill = ({ status, count, active, onClick }) => {
+        const m = statusMeta[status];
+        const isAll = status === 'all';
+        return (
+          <button
+            onClick={onClick}
+            className={`hr-chip-btn ${active ? 'active' : ''}`}
+            style={{
+              padding:'6px 14px', borderRadius:999, cursor:'pointer',
+              border:`1px solid ${active ? '#1c1917' : m.border}`,
+              background: active ? '#1c1917' : (isAll ? '#fff' : m.bg),
+              color: active ? '#fafaf9' : m.color,
+              fontSize:'0.78rem', fontWeight:500, fontFamily:'Inter,sans-serif',
+              display:'inline-flex', alignItems:'center', gap:6,
+            }}>
+            {m.label}
+            {count !== undefined && (
+              <span className="num" style={{
+                fontSize:'0.72rem', fontWeight:600, opacity:0.9,
+              }}>{count}</span>
+            )}
+          </button>
         );
       };
 
-      /* ── Overview ── */
-      const renderOverview = () => (
-        <div>
-          {/* HERO — Transformation metric */}
-          <div style={{
-            background:'linear-gradient(135deg, #ffffff 0%, rgba(34,197,94,0.06) 100%)',
-            border:'1px solid #e7e5e4',borderRadius:20,padding:'24px 28px',marginBottom:18,
-            boxShadow:'0 1px 2px rgba(0,0,0,0.04)',
-            display:'flex',alignItems:'center',justifyContent:'space-between',gap:24,flexWrap:'wrap',
-          }}>
-            <div style={{flex:'1 1 320px'}}>
-              <div style={{display:'inline-flex',alignItems:'center',gap:6,marginBottom:8,
-                background:'rgba(34,197,94,0.12)',border:'1px solid rgba(34,197,94,0.30)',
-                borderRadius:999,padding:'3px 10px',
-              }}>
-                <span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e'}}/>
-                <span style={{color:'#15803d',fontSize:'0.66rem',fontWeight:800,letterSpacing:'0.08em'}}>TRANSFORMATION SCORE</span>
-              </div>
-              <div style={{display:'flex',alignItems:'baseline',gap:10,marginBottom:6}}>
-                <span className="bp-heading" style={{fontSize:'3.2rem',fontWeight:800,letterSpacing:'-0.03em',color:'#161412',lineHeight:1}}>
-                  {adoptionPlus}
-                </span>
-                <span style={{fontSize:'1.5rem',fontWeight:600,color:'#78716c'}}>/ {totalLearners}</span>
-                <span style={{fontSize:'0.9rem',color:'#a8a29e'}}>คนถึง Stage 4+ Adoption</span>
-              </div>
-              <div style={{color:'#57534e',fontSize:'0.82rem'}}>
-                เป้าหมาย: <span style={{fontWeight:700,color:'#161412'}}>70% ภายใน Day 45</span> · ปัจจุบัน Day 18 · ความคืบหน้า <span style={{color:'#22c55e',fontWeight:700}}>{adoptionPlusPct}%</span>
-              </div>
-            </div>
-            {/* Progress meter */}
-            <div style={{flex:'0 0 220px'}}>
-              <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
-                <span style={{color:'#a8a29e',fontSize:'0.65rem',fontWeight:600}}>0%</span>
-                <span style={{color:'#22c55e',fontSize:'0.82rem',fontWeight:800}}>{adoptionPlusPct}%</span>
-                <span style={{color:'#a8a29e',fontSize:'0.65rem',fontWeight:600}}>70%</span>
-              </div>
-              <div style={{height:10,background:'#f5f5f4',borderRadius:999,overflow:'hidden',position:'relative'}}>
-                <div style={{width:`${Math.min(adoptionPlusPct,100)}%`,height:'100%',
-                  background:'linear-gradient(to right,#22c55e,#4ade80)',
-                  borderRadius:999,transition:'width 0.7s'}}/>
-                {/* Target marker at 70% */}
-                <div style={{position:'absolute',left:'70%',top:-2,bottom:-2,
-                  width:2,background:'#161412',opacity:0.4}}/>
-              </div>
-              <div style={{textAlign:'right',marginTop:6,color:'#78716c',fontSize:'0.68rem'}}>
-                ↑ Target Day 45
-              </div>
-            </div>
-          </div>
-
-          {/* 4 Secondary KPIs */}
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:12,marginBottom:20}}>
-            {[
-              {Icon:Clock,        label:'Avg วันใน stage',     value:avgDaysInStage,        sub:'วัน', color:'#6366f1'},
-              {Icon:Target,       label:'Goal บนเส้นทาง',       value:`${goalsAchievedPct}%`,sub:'',   color:'#22c55e'},
-              {Icon:UserIcon,     label:'Manager Review',       value:`${mgrReviewDone}/${totalLearners}`,sub:'', color:'#3b82f6'},
-              {Icon:AlertTriangle,label:'ต้องการความช่วยเหลือ', value:stuckLearners.length,  sub:'คน', color: stuckLearners.length > 0 ? '#ef4444' : '#a8a29e'},
-            ].map(({Icon,label,value,sub,color})=>(
-              <div key={label} style={{background:'#ffffff',
-                border:'1px solid #e7e5e4',borderRadius:14,padding:'14px 16px',
-                boxShadow:'0 1px 2px rgba(0,0,0,0.04)',
-                display:'flex',alignItems:'center',gap:12,
-              }}>
-                <div style={{
-                  width:36,height:36,borderRadius:10,flexShrink:0,
-                  background:`${color}14`,border:`1px solid ${color}33`,
-                  color,display:'flex',alignItems:'center',justifyContent:'center',
-                }}><Icon size={18}/></div>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{color:'#78716c',fontSize:'0.66rem',fontWeight:500,letterSpacing:'0.01em'}}>{label}</div>
-                  <div style={{display:'flex',alignItems:'baseline',gap:3,marginTop:2}}>
-                    <span className="bp-heading" style={{fontSize:'1.1rem',fontWeight:800,color:'#161412',letterSpacing:'-0.02em'}}>{value}</span>
-                    {sub&&<span style={{color:'#a8a29e',fontSize:'0.65rem'}}>{sub}</span>}
-                  </div>
+      // ─────────────────────────────────────────────────────────────
+      // SECTION 1: Class Information Card
+      // ─────────────────────────────────────────────────────────────
+      const renderClassInfo = () => {
+        const milestones = [
+          { day:1,  label:'In-Class' },
+          { day:14, label:'Week 2' },
+          { day:30, label:'1 Month' },
+          { day:45, label:'Mid' },
+          { day:60, label:'2 Months' },
+          { day:90, label:'Wrap-up' },
+        ];
+        return (
+          <div className="hr-card" style={{marginBottom:16, padding:'18px 20px', borderRadius:16}}>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'stretch', gap:20, flexWrap:'wrap', marginBottom:16}}>
+              <div style={{flex:'1 1 240px', minWidth:0, display:'flex', flexDirection:'column', justifyContent:'center'}}>
+                <div className="hr-eyebrow" style={{marginBottom:5, fontSize:'0.6rem'}}>Course · Cohort 2026</div>
+                <div style={{fontFamily:'Inter,sans-serif', fontSize:'1.35rem', fontWeight:600, letterSpacing:'-0.02em', color:'#1c1917', lineHeight:1.15}}>{CLASS.name}</div>
+                <div style={{marginTop:5, display:'inline-flex', alignItems:'center', gap:5, color:'#78716c', fontSize:'0.74rem'}}>
+                  <Calendar size={11} style={{color:'#a8a29e'}}/>
+                  <span>Onsite</span>
+                  <span style={{color:'#d6d3d1'}}>·</span>
+                  <span className="num" style={{color:'#1c1917', fontWeight:500}}>1–2 May 2026</span>
                 </div>
               </div>
-            ))}
-          </div>
-
-          {/* STAGE FUNNEL — most important visualization */}
-          <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,
-            padding:'22px 24px',marginBottom:20,
-            boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:18}}>
-              <div>
-                <h3 style={{margin:'0 0 3px',fontWeight:700,fontSize:'1rem',color:'#161412',
-                  display:'inline-flex',alignItems:'center',gap:8}}>
-                  <Trophy size={18} style={{color:'#f59e0b'}}/>
-                  Stage Distribution
-                </h3>
-                <p style={{margin:0,color:'#78716c',fontSize:'0.75rem'}}>
-                  ผู้เรียน {totalLearners} คน กระจายอยู่ใน Shift Stage ใดบ้าง
-                </p>
+              <div style={{flex:'0 0 auto', textAlign:'center', paddingRight:18, borderRight:'1px solid #f0eeec', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
+                <div className="hr-eyebrow" style={{fontSize:'0.58rem'}}>Avg Engagement</div>
+                <div className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#0d9488', lineHeight:1}}>{avgEngagement}</div>
+                <div className="num" style={{color:'#78716c', fontSize:'0.6rem', letterSpacing:'0.06em', textTransform:'uppercase'}}>Score</div>
               </div>
-              <span style={{color:'#78716c',fontSize:'0.72rem',fontWeight:500}}>
-                Day 1 → 90
-              </span>
+              <div style={{flex:'0 0 auto', textAlign:'center', paddingRight:18, borderRight:'1px solid #f0eeec', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
+                <div className="hr-eyebrow" style={{fontSize:'0.58rem'}}>Avg Transformation</div>
+                <div className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#059669', lineHeight:1}}>{avgTransformation}</div>
+                <div className="num" style={{color:'#78716c', fontSize:'0.6rem', letterSpacing:'0.06em', textTransform:'uppercase'}}>Score</div>
+              </div>
+              <div style={{flex:'0 0 auto', textAlign:'center', paddingRight:18, borderRight:'1px solid #f0eeec', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
+                <div className="hr-eyebrow" style={{fontSize:'0.58rem'}}>Transformation</div>
+                <div style={{display:'flex', alignItems:'center', gap:8, justifyContent:'center'}}>
+                  <span style={{
+                    width:28, height:28, borderRadius:8, flexShrink:0,
+                    background:'rgba(5,150,105,0.10)', border:'1px solid rgba(5,150,105,0.25)',
+                    color:'#059669', display:'inline-flex', alignItems:'center', justifyContent:'center',
+                  }}><Users size={14}/></span>
+                  <span style={{display:'inline-flex', alignItems:'baseline', gap:4}}>
+                    <span className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#059669', lineHeight:1}}>{transformedCount}</span>
+                    <span className="num" style={{color:'#a8a29e', fontSize:'0.82rem', fontWeight:500}}>/ {totalLearners}</span>
+                  </span>
+                </div>
+                <div className="num" style={{color:'#78716c', fontSize:'0.6rem', letterSpacing:'0.06em', textTransform:'uppercase'}}>Stage 3–5</div>
+              </div>
+              <div style={{flex:'0 0 auto', textAlign:'right', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
+                <div className="hr-eyebrow" style={{fontSize:'0.58rem'}}>Progress</div>
+                <div style={{display:'flex', alignItems:'baseline', gap:4, justifyContent:'flex-end'}}>
+                  <span className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#1c1917', lineHeight:1}}>{dayCurrent}</span>
+                  <span className="num" style={{color:'#a8a29e', fontSize:'0.82rem', fontWeight:500}}>/ {CLASS.totalDays}</span>
+                </div>
+                <div className="num" style={{color:'#78716c', fontSize:'0.6rem', marginTop:2, letterSpacing:'0.06em', textTransform:'uppercase'}}>Day</div>
+              </div>
             </div>
-            {/* Bars */}
-            <div style={{display:'flex',flexDirection:'column',gap:9}}>
-              {STAGE_META.map((s, i) => {
-                const count = stageCounts[i];
-                const pct = (count / totalLearners) * 100;
-                return (
-                  <div key={s.num} style={{display:'flex',alignItems:'center',gap:14}}>
-                    <div style={{flex:'0 0 150px',display:'flex',alignItems:'center',gap:8}}>
-                      <span style={{
-                        width:24,height:24,borderRadius:'50%',flexShrink:0,
-                        background:`${s.color}1f`,border:`1px solid ${s.color}55`,
-                        color:s.color,fontSize:'0.7rem',fontWeight:800,
-                        display:'inline-flex',alignItems:'center',justifyContent:'center',
-                      }}>{s.num}</span>
-                      <span style={{color:'#161412',fontSize:'0.78rem',fontWeight:600,letterSpacing:'-0.005em'}}>{s.name}</span>
+
+
+            {/* Progress line with markers */}
+            <div style={{position:'relative', paddingTop:18, paddingLeft:14, paddingRight:34}}>
+              {/* NOW label above the bar */}
+              <div style={{
+                position:'absolute', top:0, left:`${dayProgress}%`, transform:'translateX(-50%)',
+                color:'#059669', fontSize:'0.62rem', fontWeight:600, letterSpacing:'0.1em',
+                textTransform:'uppercase', whiteSpace:'nowrap',
+              }}>↓ Now</div>
+              {/* The bar — milestone dots are positioned ON it (vertically centered) */}
+              <div style={{position:'relative', height:6, background:'#f5f5f4', borderRadius:999}}>
+                <div style={{
+                  position:'absolute', left:0, top:0, bottom:0, width:`${dayProgress}%`,
+                  background:'linear-gradient(to right,#059669,#10b981)', borderRadius:999,
+                  transition:'width 0.8s ease',
+                }}/>
+                {/* Milestone dots — positioned ON the bar line */}
+                {milestones.map(m => {
+                  const x = (m.day / CLASS.totalDays) * 100;
+                  const passed = m.day <= dayCurrent;
+                  const isNow  = Math.abs(m.day - dayCurrent) < 0.5;
+                  if (isNow) return null; // skip — NOW marker takes this slot
+                  return (
+                    <div key={m.day} style={{
+                      position:'absolute', left:`${x}%`, top:'50%',
+                      transform:'translate(-50%,-50%)',
+                      width:10, height:10, borderRadius:'50%',
+                      background:'#ffffff',
+                      border: `2px solid ${passed ? '#0d9488' : '#d6d3d1'}`,
+                      boxShadow: passed ? '0 0 0 1px rgba(13,148,136,0.15)' : 'none',
+                      zIndex:1,
+                    }}/>
+                  );
+                })}
+                {/* NOW marker */}
+                <div style={{
+                  position:'absolute', left:`${dayProgress}%`, top:'50%', transform:'translate(-50%,-50%)',
+                  width:14, height:14, borderRadius:'50%', background:'#059669', border:'3px solid #fff',
+                  boxShadow:'0 0 0 1.5px #059669, 0 2px 8px rgba(5,150,105,0.4)',
+                  zIndex:2,
+                }}/>
+              </div>
+              {/* Labels below the bar */}
+              <div style={{position:'relative', height:28, marginTop:8}}>
+                {milestones.map(m => {
+                  const x = (m.day / CLASS.totalDays) * 100;
+                  const passed = m.day <= dayCurrent;
+                  return (
+                    <div key={m.day} style={{
+                      position:'absolute', left:`${x}%`, top:0, transform:'translateX(-50%)',
+                      textAlign:'center', whiteSpace:'nowrap',
+                    }}>
+                      <div className="num" style={{
+                        color: passed ? '#1c1917' : '#a8a29e',
+                        fontSize:'0.62rem', fontWeight:500,
+                      }}>{m.day}</div>
+                      <div style={{
+                        color:'#a8a29e', fontSize:'0.58rem', marginTop:1,
+                        letterSpacing:'0.04em', textTransform:'uppercase',
+                      }}>{m.label}</div>
                     </div>
-                    <div style={{flex:1,position:'relative',display:'flex',alignItems:'center',gap:10}}>
-                      <div style={{flex:1,height:18,background:'#f5f5f4',borderRadius:6,overflow:'hidden'}}>
-                        <div style={{
-                          width:count?`${Math.max(pct,3)}%`:'0%',height:'100%',
-                          background:`linear-gradient(to right,${s.color},${s.color}cc)`,
-                          borderRadius:6,transition:'width 0.7s',
-                        }}/>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // ─────────────────────────────────────────────────────────────
+      // SECTION 2: Transformation Movement (2-bar Pre vs Now)
+      // ─────────────────────────────────────────────────────────────
+      const renderTransformationMovement = () => {
+        const maxCount = Math.max(...stageCounts, ...prevStageCounts, 1);
+        return (
+          <div className="hr-card" style={{marginBottom:16}}>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:6, flexWrap:'wrap', gap:12}}>
+              <div>
+                <div className="hr-eyebrow" style={{marginBottom:4}}>Visible Learning Evidence</div>
+                <div style={{display:'flex', alignItems:'center', gap:10}}>
+                  <Activity size={18} style={{color:'#059669'}}/>
+                  <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.15rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
+                    Transformation Movement
+                  </h3>
+                </div>
+                <div style={{color:'#78716c', fontSize:'0.82rem', marginTop:6}}>
+                  เปรียบเทียบ <span style={{color:'#1c1917', fontWeight:500}}>ก่อนเรียน (Pre-Class)</span> กับ <span style={{color:'#059669', fontWeight:500}}>ปัจจุบัน (Day {dayCurrent})</span> · จำนวนผู้เรียนที่ขยับขึ้นไปแต่ละ Stage
+                </div>
+              </div>
+              <div style={{display:'flex', gap:14, fontSize:'0.7rem', alignItems:'center'}}>
+                <span style={{display:'inline-flex', alignItems:'center', gap:6, color:'#57534e'}}>
+                  <span style={{width:14, height:6, background:'#e7e5e4', borderRadius:2}}/>Pre-Class
+                </span>
+                <span style={{display:'inline-flex', alignItems:'center', gap:6, color:'#1c1917'}}>
+                  <span style={{width:14, height:6, background:'#059669', borderRadius:2}}/>Now
+                </span>
+              </div>
+            </div>
+
+            <div style={{marginTop:18, display:'flex', flexDirection:'column', gap:14}}>
+              {STAGE_META.map((s, i) => {
+                const now  = stageCounts[i];
+                const prev = prevStageCounts[i];
+                const delta = now - prev;
+                const isGoalStage = s.num >= 3;
+                const accent = isGoalStage ? '#059669' : '#1c1917';
+                const nowPct  = Math.round((now  / totalLearners) * 100);
+                const prevPct = Math.round((prev / totalLearners) * 100);
+                const nowBarW  = (now  / maxCount) * 100;
+                const prevBarW = (prev / maxCount) * 100;
+
+                return (
+                  <div
+                    key={s.num}
+                    onClick={() => { setStageFilter(s.num); setStatusFilter('all'); setTab('individual'); }}
+                    style={{
+                      cursor:'pointer', borderRadius:14, padding:'12px 14px',
+                      border:'1px solid transparent', transition:'background 0.15s, border-color 0.15s',
+                    }}
+                    onMouseEnter={e=>{e.currentTarget.style.background='#fafaf9'; e.currentTarget.style.borderColor='#f0eeec';}}
+                    onMouseLeave={e=>{e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='transparent';}}>
+                    <div style={{display:'flex', alignItems:'center', gap:14}}>
+                      {/* Stage label */}
+                      <div style={{flex:'0 0 160px', display:'flex', alignItems:'center', gap:10}}>
+                        <span className="num" style={{
+                          width:26, height:26, borderRadius:8, flexShrink:0,
+                          background: isGoalStage ? 'rgba(5,150,105,0.10)' : '#f5f5f4',
+                          color: accent, fontSize:'0.78rem', fontWeight:600,
+                          display:'inline-flex', alignItems:'center', justifyContent:'center',
+                        }}>{s.num}</span>
+                        <div style={{minWidth:0}}>
+                          <div style={{color:'#1c1917', fontSize:'0.85rem', fontWeight:500, letterSpacing:'-0.005em'}}>{s.name}</div>
+                          <div style={{color:'#a8a29e', fontSize:'0.66rem'}}>{s.role}</div>
+                        </div>
                       </div>
-                      <span style={{
-                        flex:'0 0 64px',color: count > 0 ? '#161412' : '#a8a29e',
-                        fontSize:'0.82rem',fontWeight:700,fontVariantNumeric:'tabular-nums',
-                      }}>{count} คน <span style={{color:'#a8a29e',fontWeight:500,fontSize:'0.7rem'}}>· {Math.round(pct)}%</span></span>
+
+                      {/* Bars container */}
+                      <div style={{flex:1, display:'flex', flexDirection:'column', gap:6, minWidth:0}}>
+                        {/* Pre-Class bar */}
+                        <div style={{display:'flex', alignItems:'center', gap:10}}>
+                          <span style={{flex:'0 0 56px', color:'#a8a29e', fontSize:'0.62rem', fontWeight:500, letterSpacing:'0.08em', textTransform:'uppercase'}}>Pre</span>
+                          <div style={{flex:1, height:8, background:'#fafaf9', borderRadius:4, overflow:'hidden'}}>
+                            <div style={{
+                              width: prev ? `${Math.max(prevBarW, 1.5)}%` : '0%', height:'100%',
+                              background:'#d6d3d1', borderRadius:4, transition:'width 0.7s ease',
+                            }}/>
+                          </div>
+                          <span className="num" style={{flex:'0 0 64px', color:'#78716c', fontSize:'0.76rem', fontWeight:500, textAlign:'right'}}>
+                            {prev} <span style={{color:'#a8a29e', fontWeight:400}}>· {prevPct}%</span>
+                          </span>
+                        </div>
+                        {/* Now bar */}
+                        <div style={{display:'flex', alignItems:'center', gap:10}}>
+                          <span style={{flex:'0 0 56px', color: accent, fontSize:'0.62rem', fontWeight:600, letterSpacing:'0.08em', textTransform:'uppercase'}}>Now</span>
+                          <div style={{flex:1, height:10, background:'#fafaf9', borderRadius:5, overflow:'hidden', position:'relative'}}>
+                            <div style={{
+                              width: now ? `${Math.max(nowBarW, 1.5)}%` : '0%', height:'100%',
+                              background: isGoalStage
+                                ? 'linear-gradient(to right, #059669, #10b981)'
+                                : 'linear-gradient(to right, #44403c, #1c1917)',
+                              borderRadius:5, transition:'width 0.8s ease',
+                              boxShadow: isGoalStage ? '0 0 12px rgba(5,150,105,0.30)' : 'none',
+                            }}/>
+                          </div>
+                          <span className="num" style={{flex:'0 0 64px', color:'#1c1917', fontSize:'0.82rem', fontWeight:600, textAlign:'right'}}>
+                            {now} <span style={{color:'#a8a29e', fontWeight:400}}>· {nowPct}%</span>
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Delta */}
+                      <div style={{flex:'0 0 96px', textAlign:'right'}}>
+                        {delta > 0 ? (
+                          <span className="num" style={{
+                            display:'inline-flex', alignItems:'center', gap:4,
+                            padding:'4px 10px', borderRadius:999,
+                            background:'rgba(5,150,105,0.10)', color:'#047857',
+                            fontSize:'0.78rem', fontWeight:600,
+                          }}>↑ {delta}</span>
+                        ) : delta < 0 ? (
+                          <span className="num" style={{
+                            display:'inline-flex', alignItems:'center', gap:4,
+                            padding:'4px 10px', borderRadius:999,
+                            background:'rgba(168,162,158,0.14)', color:'#78716c',
+                            fontSize:'0.78rem', fontWeight:600,
+                          }}>↓ {Math.abs(delta)}</span>
+                        ) : (
+                          <span style={{color:'#d6d3d1', fontSize:'0.95rem'}}>—</span>
+                        )}
+                        {delta > 0 && isGoalStage && (
+                          <div style={{color:'#059669', fontSize:'0.6rem', marginTop:3, letterSpacing:'0.06em', textTransform:'uppercase', fontWeight:600}}>
+                            → Goal
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
-            {/* Legend / Phase guide */}
-            <div style={{marginTop:18,paddingTop:14,borderTop:'1px solid #f0eeec',
-              display:'flex',gap:18,flexWrap:'wrap',fontSize:'0.7rem',color:'#78716c'}}>
-              <span style={{display:'inline-flex',alignItems:'center',gap:5}}>
-                <span style={{width:8,height:8,borderRadius:2,background:'#71717a'}}/>Stage 0–2: Pre/In Class
+
+            <div style={{marginTop:16, paddingTop:14, borderTop:'1px solid #f5f5f4',
+              display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:8}}>
+              <span style={{color:'#78716c', fontSize:'0.72rem'}}>
+                <span className="num" style={{color:'#1c1917', fontWeight:600}}>
+                  {LEARNERS.filter(l => l.stage > l.prevStage).length}
+                </span> / {totalLearners} คน ขยับขึ้นจาก Pre-Class แล้ว
               </span>
-              <span style={{display:'inline-flex',alignItems:'center',gap:5}}>
-                <span style={{width:8,height:8,borderRadius:2,background:'#fbbf24'}}/>Stage 3+: Out of Class
-              </span>
-              <span style={{display:'inline-flex',alignItems:'center',gap:5}}>
-                <span style={{width:8,height:8,borderRadius:2,background:'#22c55e'}}/>Stage 4+: Transformation Goal
-              </span>
+              <span style={{color:'#78716c', fontSize:'0.72rem'}}>กดที่ stage เพื่อดูรายชื่อ →</span>
             </div>
           </div>
+        );
+      };
 
-          <div className="hr-2col" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
-            {/* Challenge completion bars */}
-            <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',
-              boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-              <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>
-                Completion ตามประเภทภารกิจ
-              </h3>
-              {CHDATA.map(({type,Icon,pct,color})=>(
-                <div key={type} style={{marginBottom:14}}>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:5}}>
-                    <div style={{display:'flex',alignItems:'center',gap:6}}>
-                      <span style={{color,display:'inline-flex'}}><Icon size={14}/></span>
-                      <span style={{color:'#44403c',fontSize:'0.8rem',fontWeight:500}}>{type}</span>
-                    </div>
-                    <span style={{color,fontSize:'0.82rem',fontWeight:700}}>{pct}%</span>
-                  </div>
-                  <div style={{height:6,background:'#f5f5f4',borderRadius:999}}>
-                    <div style={{width:`${pct}%`,height:'100%',borderRadius:999,background:color}}/>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Right column */}
-            <div style={{display:'flex',flexDirection:'column',gap:16}}>
-              {/* Sparkline */}
-              <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',flex:1,
-                boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:14}}>
+      // ─────────────────────────────────────────────────────────────
+      // SECTION 3: Completion Rate ตามประเภทภารกิจ
+      // ─────────────────────────────────────────────────────────────
+      const renderCompletionRate = () => (
+        <div className="hr-card">
+          <div className="hr-eyebrow" style={{marginBottom:4}}>Visible Evidence</div>
+          <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
+            <CheckCircle2 size={18} style={{color:'#059669'}}/>
+            <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
+              Completion Rate ตามประเภทภารกิจ
+            </h3>
+          </div>
+          <div style={{color:'#78716c', fontSize:'0.78rem', marginBottom:18}}>
+            สัดส่วนภารกิจที่ผู้เรียน 30 คนทำเฉลี่ย
+          </div>
+          {CHDATA.map(({type, Icon, pct, done, total, color}) => (
+            <div key={type} style={{marginBottom:14}}>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6}}>
+                <div style={{display:'flex', alignItems:'center', gap:10}}>
+                  <div style={{
+                    width:30, height:30, borderRadius:8, flexShrink:0,
+                    background:`${color}14`, border:`1px solid ${color}33`, color,
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                  }}><Icon size={14}/></div>
                   <div>
-                    <h3 style={{margin:'0 0 3px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>Activity 7 วันล่าสุด</h3>
-                    <p style={{margin:0,color:'#78716c',fontSize:'0.7rem'}}>% ผู้เรียนที่ Active ในแต่ละวัน</p>
+                    <div style={{color:'#1c1917', fontSize:'0.82rem', fontWeight:500}}>{type}</div>
+                    <div className="num" style={{color:'#a8a29e', fontSize:'0.66rem'}}>เฉลี่ย {done.toFixed(1)}/{total} ต่อคน</div>
                   </div>
-                  <span style={{color:'#047857',fontSize:'0.73rem',fontWeight:600,
-                    background:'rgba(16,185,129,0.10)',border:'1px solid rgba(16,185,129,0.25)',
-                    borderRadius:999,padding:'2px 8px'}}>↑ 14%</span>
                 </div>
-                <SparkLine/>
-                <div style={{display:'flex',justifyContent:'space-between',marginTop:6}}>
-                  {DAYS.map(d=><span key={d} style={{color:'#a8a29e',fontSize:'0.6rem'}}>{d}</span>)}
-                </div>
+                <span className="num" style={{color:'#1c1917', fontSize:'1rem', fontWeight:600}}>{pct}<span style={{color:'#a8a29e', fontSize:'0.7rem'}}>%</span></span>
               </div>
-              {/* Status distribution */}
-              <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'18px 22px',
-                boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-                <h3 style={{margin:'0 0 12px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>สถานะผู้เรียน</h3>
-                <div style={{display:'flex',gap:10,marginBottom:12}}>
-                  {[['Active',active,'#10b981','#047857'],['At Risk',atRisk,'#f59e0b','#b45309'],['Inactive',inactive,'#ef4444','#b91c1c']].map(([l,v,c,tc])=>(
-                    <div key={l} style={{flex:1,textAlign:'center',
-                      background:`${c}14`,border:`1px solid ${c}33`,borderRadius:12,padding:'10px 0'}}>
-                      <div style={{color:tc,fontSize:'1.3rem',fontWeight:800}}>{v}</div>
-                      <div style={{color:'#78716c',fontSize:'0.68rem',marginTop:2}}>{l}</div>
-                    </div>
-                  ))}
-                </div>
-                <div style={{display:'flex',height:6,borderRadius:999,overflow:'hidden',background:'#f5f5f4'}}>
-                  <div style={{width:`${(active/LEARNERS.length)*100}%`,background:'#10b981'}}/>
-                  <div style={{width:`${(atRisk/LEARNERS.length)*100}%`,background:'#f59e0b'}}/>
-                  <div style={{flex:1,background:'#ef4444'}}/>
-                </div>
+              <div style={{height:6, background:'#f5f5f4', borderRadius:999, overflow:'hidden'}}>
+                <div style={{
+                  width:`${pct}%`, height:'100%', borderRadius:999,
+                  background: `linear-gradient(to right, ${color}, ${color}cc)`,
+                  transition:'width 0.7s ease',
+                }}/>
               </div>
             </div>
-          </div>
+          ))}
+        </div>
+      );
 
-          {/* At-risk alert */}
-          {atRisk>0&&(
-            <div style={{background:'rgba(245,158,11,0.08)',border:'1px solid rgba(245,158,11,0.30)',
-              borderRadius:16,padding:'16px 20px',
-              display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}>
-              <div style={{display:'flex',alignItems:'center',gap:10}}>
-                <span style={{color:IconAccent.warning,display:'inline-flex'}}><AlertTriangle size={20}/></span>
-                <div>
-                  <div style={{color:'#b45309',fontWeight:700,fontSize:'0.875rem'}}>
-                    พบผู้เรียน {atRisk} คนที่อาจต้องการความช่วยเหลือ
+      // ─────────────────────────────────────────────────────────────
+      // SECTION 4: At-Risk & Top Performers (side-by-side)
+      // ─────────────────────────────────────────────────────────────
+      const renderListCard = ({title, eyebrow, Icon, accent, accentSoft, list, action, viewAllStatus}) => (
+        <div className="hr-card" style={{borderLeft:`3px solid ${accent}`, background:`linear-gradient(135deg, #ffffff 0%, ${accentSoft} 100%)`}}>
+          <div className="hr-eyebrow" style={{marginBottom:4}}>{eyebrow}</div>
+          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:18}}>
+            <div style={{display:'flex', alignItems:'center', gap:10}}>
+              <Icon size={18} style={{color: accent}}/>
+              <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>{title}</h3>
+            </div>
+            <span className="num" style={{
+              background:`${accent}14`, color: accent, border:`1px solid ${accent}33`,
+              borderRadius:999, padding:'3px 10px', fontSize:'0.74rem', fontWeight:600,
+            }}>{list.length} คน</span>
+          </div>
+          <div style={{display:'flex', flexDirection:'column'}}>
+            {list.length === 0 ? (
+              <div style={{padding:'24px 0', textAlign:'center', color:'#78716c', fontSize:'0.82rem'}}>
+                ยังไม่มีรายการ
+              </div>
+            ) : list.map((l, idx) => {
+              const tScore = transformationScore(l);
+              const eScore = engagementScore(l);
+              return (
+                <div key={l.id} style={{
+                  display:'flex', alignItems:'center', gap:12,
+                  padding:'12px 0', borderBottom: idx < list.length - 1 ? '1px solid #f5f5f4' : 'none',
+                }}>
+                  <div style={{
+                    width:38, height:38, borderRadius:'50%', flexShrink:0,
+                    background:`linear-gradient(135deg, ${l.bg}, ${l.bg}99)`,
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    fontSize:'0.92rem', fontWeight:600, color:'#fff',
+                  }}>{l.av}</div>
+                  <div style={{flex:'1 1 0', minWidth:0}}>
+                    <div style={{color:'#1c1917', fontSize:'0.85rem', fontWeight:500, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{l.name}</div>
+                    <div className="num" style={{color:'#78716c', fontSize:'0.7rem', marginTop:2, display:'flex', gap:8}}>
+                      <span>S{l.stage} {stageMeta(l.stage).name}</span>
+                      <span style={{color:'#d6d3d1'}}>·</span>
+                      <span>T<span style={{color: accent, fontWeight:600, marginLeft:2}}>{tScore}</span></span>
+                      <span style={{color:'#d6d3d1'}}>·</span>
+                      <span>E<span style={{color:'#1c1917', fontWeight:600, marginLeft:2}}>{eScore}</span></span>
+                    </div>
                   </div>
-                  <div style={{color:'#78716c',fontSize:'0.78rem',marginTop:2}}>
-                    ไม่มีกิจกรรมมากกว่า 1 สัปดาห์
+                  <div style={{display:'flex', gap:6, flexShrink:0}}>
+                    {action(l)}
+                    <button
+                      onClick={() => openLearner(l.id)}
+                      className="hr-btn-ghost"
+                      style={{padding:'6px 10px', fontSize:'0.74rem'}}>
+                      Detail
+                    </button>
                   </div>
                 </div>
-              </div>
-              <button onClick={()=>setTab('learners')} style={{
-                padding:'8px 16px',borderRadius:10,cursor:'pointer',flexShrink:0,
-                border:'1px solid rgba(245,158,11,0.45)',background:'rgba(245,158,11,0.14)',
-                color:'#b45309',fontSize:'0.8rem',fontWeight:600}}>ดูรายชื่อ →</button>
-            </div>
+              );
+            })}
+          </div>
+          {list.length > 0 && (
+            <button
+              onClick={() => { setStatusFilter(viewAllStatus); setStageFilter(null); setTab('individual'); }}
+              style={{
+                marginTop:14, width:'100%', padding:'10px', borderRadius:10, cursor:'pointer',
+                background:'transparent', border:`1px dashed ${accent}55`, color: accent,
+                fontSize:'0.78rem', fontWeight:500, fontFamily:'Inter,sans-serif',
+                display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
+                transition:'background 0.15s',
+              }}
+              onMouseEnter={e=>e.currentTarget.style.background=accentSoft}
+              onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+              View all {viewAllStatus === 'atRisk' ? 'At-Risk' : 'Top Performers'} <ChevronRight size={14}/>
+            </button>
           )}
         </div>
       );
 
-      /* ── Stage Health (NEW) ── */
-      const renderStageHealth = () => (
-        <div>
-          {/* Stage Distribution (count per stage) */}
-          <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,
-            padding:'22px 24px',marginBottom:20,
-            boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-            <h3 style={{margin:'0 0 4px',fontWeight:700,fontSize:'1rem',color:'#161412',
-              display:'inline-flex',alignItems:'center',gap:8}}>
-              <Activity size={18} style={{color:'#3b82f6'}}/>
-              จำนวนผู้เรียนในแต่ละ Stage
-            </h3>
-            <p style={{margin:'0 0 18px',color:'#78716c',fontSize:'0.75rem'}}>
-              ภาพรวม Cohort กระจายอยู่ใน Shift Stage ใดบ้าง
-            </p>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:12}}>
-              {STAGE_META.map(s => {
-                const count = LEARNERS.filter(l => l.stage === s.num).length;
-                return (
-                  <div key={s.num} style={{
-                    background:'#fafaf9',border:`1px solid ${count>0?`${s.color}33`:'#e7e5e4'}`,
-                    borderRadius:12,padding:'14px 16px',
+      const renderAtRiskTop = () => (
+        <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16}}>
+          {renderListCard({
+            title: 'At-Risk',
+            eyebrow: 'Need follow-up',
+            Icon: AlertTriangle,
+            accent: '#f59e0b',
+            accentSoft: 'rgba(245,158,11,0.04)',
+            list: atRiskList,
+            viewAllStatus: 'atRisk',
+            action: (l) => (
+              <button className="hr-btn-ghost" style={{padding:'6px 10px', fontSize:'0.74rem',
+                background:'rgba(245,158,11,0.10)', borderColor:'rgba(245,158,11,0.30)', color:'#b45309',
+                display:'inline-flex', alignItems:'center', gap:4}}>
+                <Send size={11}/> Nudge
+              </button>
+            ),
+          })}
+          {renderListCard({
+            title: 'Top Performers',
+            eyebrow: 'Recognize & sustain',
+            Icon: Trophy,
+            accent: '#059669',
+            accentSoft: 'rgba(5,150,105,0.04)',
+            list: topList,
+            viewAllStatus: 'onTrack',
+            action: (l) => (
+              <button className="hr-btn-ghost" style={{padding:'6px 10px', fontSize:'0.74rem',
+                background:'rgba(5,150,105,0.10)', borderColor:'rgba(5,150,105,0.30)', color:'#047857',
+                display:'inline-flex', alignItems:'center', gap:4}}>
+                <Award size={11}/> Praise
+              </button>
+            ),
+          })}
+        </div>
+      );
+
+      // ─────────────────────────────────────────────────────────────
+      // OVERVIEW TAB
+      // ─────────────────────────────────────────────────────────────
+      const renderOverview = () => (
+        <div className="fade-in">
+          {renderClassInfo()}
+          {renderTransformationMovement()}
+          <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16}}>
+            {renderCompletionRate()}
+            <div style={{display:'flex', flexDirection:'column', gap:16}}>
+              {/* Quick aggregate card */}
+              <div className="hr-card">
+                <div className="hr-eyebrow" style={{marginBottom:8}}>Cohort Health · Day {dayCurrent}</div>
+                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:14}}>
+                  {[
+                    {key:'onTrack', label:'On Track', count:statusCounts.onTrack},
+                    {key:'atRisk',  label:'At Risk',  count:statusCounts.atRisk},
+                    {key:'behind',  label:'Behind',   count:statusCounts.behind},
+                  ].map(({key, label, count}) => {
+                    const m = statusMeta[key];
+                    return (
+                      <div key={key} style={{
+                        background:m.bg, border:`1px solid ${m.border}`, borderRadius:14,
+                        padding:'12px 8px', textAlign:'center',
+                      }}>
+                        <div className="num" style={{color:m.color, fontSize:'1.8rem', fontWeight:600, lineHeight:1}}>{count}</div>
+                        <div style={{color:'#78716c', fontSize:'0.68rem', marginTop:4, letterSpacing:'0.04em', textTransform:'uppercase'}}>{label}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{height:6, background:'#f5f5f4', borderRadius:999, overflow:'hidden', display:'flex'}}>
+                  <div style={{width:`${(statusCounts.onTrack/totalLearners)*100}%`, background:'#10b981'}}/>
+                  <div style={{width:`${(statusCounts.atRisk/totalLearners)*100}%`, background:'#f59e0b'}}/>
+                  <div style={{width:`${(statusCounts.behind/totalLearners)*100}%`, background:'#ef4444'}}/>
+                </div>
+                <div className="num" style={{marginTop:10, color:'#78716c', fontSize:'0.7rem', textAlign:'right'}}>
+                  Avg Transformation: <span style={{color:'#1c1917', fontWeight:600}}>
+                    {Math.round(LEARNERS.reduce((a,l)=>a+transformationScore(l),0)/totalLearners)}
+                  </span>
+                </div>
+              </div>
+              {/* Manager Review summary */}
+              <div className="hr-card">
+                <div className="hr-eyebrow" style={{marginBottom:8}}>Manager Review</div>
+                {[
+                  {key:'completed', label:'Reviewed', color:'#047857', count: LEARNERS.filter(l=>l.mgrReview==='completed').length},
+                  {key:'pending',   label:'Pending',  color:'#b45309', count: LEARNERS.filter(l=>l.mgrReview==='pending').length},
+                  {key:'overdue',   label:'Overdue',  color:'#b91c1c', count: LEARNERS.filter(l=>l.mgrReview==='overdue').length},
+                ].map(({key,label,color,count}) => (
+                  <div key={key} style={{
+                    display:'flex', alignItems:'center', justifyContent:'space-between',
+                    padding:'10px 0', borderBottom: key !== 'overdue' ? '1px solid #f5f5f4' : 'none',
                   }}>
-                    <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:10}}>
-                      <span style={{
-                        width:20,height:20,borderRadius:'50%',
-                        background:`${s.color}22`,border:`1px solid ${s.color}55`,color:s.color,
-                        fontSize:'0.62rem',fontWeight:800,
-                        display:'inline-flex',alignItems:'center',justifyContent:'center',
+                    <div style={{display:'flex', alignItems:'center', gap:8}}>
+                      <span style={{width:8, height:8, borderRadius:'50%', background:color}}/>
+                      <span style={{color:'#1c1917', fontSize:'0.85rem'}}>{label}</span>
+                    </div>
+                    <span className="num" style={{color, fontSize:'0.95rem', fontWeight:600}}>{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {renderAtRiskTop()}
+        </div>
+      );
+
+      // ─────────────────────────────────────────────────────────────
+      // INDIVIDUAL TAB
+      // ─────────────────────────────────────────────────────────────
+      const filteredLearners = LEARNERS.filter(l => {
+        if (stageFilter !== null && l.stage !== stageFilter) return false;
+        if (statusFilter !== 'all' && learnerStatus(l) !== statusFilter) return false;
+        return true;
+      }).sort((a, b) => {
+        if (sortBy === 'transformation') return transformationScore(b) - transformationScore(a);
+        if (sortBy === 'engagement')      return engagementScore(b)      - engagementScore(a);
+        if (sortBy === 'stage')            return b.stage - a.stage;
+        if (sortBy === 'streak')           return b.streak - a.streak;
+        return 0;
+      });
+
+      const renderIndividual = () => (
+        <div className="fade-in">
+          {/* Learner Overview Strip — 6 clickable stage cards */}
+          <div className="hr-card" style={{marginBottom:16, padding:'20px 24px'}}>
+            <div className="hr-eyebrow" style={{marginBottom:10}}>Learner Overview</div>
+            <div style={{display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:10}}>
+              {STAGE_META.map((s, i) => {
+                const count = stageCounts[i];
+                const active = stageFilter === s.num;
+                return (
+                  <div
+                    key={s.num}
+                    onClick={() => setStageFilter(active ? null : s.num)}
+                    className={`hr-stage-card ${active ? 'active' : ''}`}
+                    style={{
+                      background:'#fafaf9', border:`1px solid ${active ? '#059669' : '#f0eeec'}`,
+                      borderRadius:14, padding:'14px 12px',
+                    }}>
+                    <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:8}}>
+                      <span className="num" style={{
+                        width:20, height:20, borderRadius:6, flexShrink:0,
+                        background:`${s.color}22`, color: s.color,
+                        fontSize:'0.64rem', fontWeight:600,
+                        display:'inline-flex', alignItems:'center', justifyContent:'center',
                       }}>{s.num}</span>
-                      <span style={{color:'#161412',fontSize:'0.74rem',fontWeight:600}}>{s.name}</span>
+                      <span style={{color:'#1c1917', fontSize:'0.72rem', fontWeight:500, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{s.name}</span>
                     </div>
-                    <div style={{display:'flex',alignItems:'baseline',gap:4}}>
-                      <span style={{
-                        color: count > 0 ? '#161412' : '#a8a29e',
-                        fontSize:'1.8rem',fontWeight:800,letterSpacing:'-0.02em',lineHeight:1,
-                      }}>{count}</span>
-                      <span style={{color:'#a8a29e',fontSize:'0.72rem'}}>คน</span>
+                    <div className="num" style={{color: count > 0 ? '#1c1917' : '#a8a29e', fontSize:'1.4rem', fontWeight:600, letterSpacing:'-0.03em', lineHeight:1}}>
+                      {count}
                     </div>
+                    <div style={{color:'#a8a29e', fontSize:'0.62rem', marginTop:2}}>คน</div>
                   </div>
                 );
               })}
             </div>
+            {stageFilter !== null && (
+              <button
+                onClick={() => setStageFilter(null)}
+                className="hr-btn-ghost"
+                style={{marginTop:12, padding:'6px 12px', fontSize:'0.72rem'}}>
+                ✕ Clear stage filter
+              </button>
+            )}
           </div>
 
-          {/* Stuck learners list */}
-          <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,
-            padding:'22px 24px',
-            boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:16}}>
-              <div>
-                <h3 style={{margin:'0 0 4px',fontWeight:700,fontSize:'1rem',color:'#161412',
-                  display:'inline-flex',alignItems:'center',gap:8}}>
-                  <AlertTriangle size={18} style={{color:'#ef4444'}}/>
-                  ผู้เรียนที่ติด Stage นานเกิน
-                </h3>
-                <p style={{margin:0,color:'#78716c',fontSize:'0.75rem'}}>
-                  ใช้เวลามากกว่าเป้าหมายของ Stage นั้น ๆ · ต้องการการสนับสนุน
-                </p>
-              </div>
-              <span style={{
-                background:stuckLearners.length>0?'rgba(239,68,68,0.10)':'rgba(16,185,129,0.10)',
-                border:stuckLearners.length>0?'1px solid rgba(239,68,68,0.25)':'1px solid rgba(16,185,129,0.25)',
-                color:stuckLearners.length>0?'#b91c1c':'#047857',
-                borderRadius:999,padding:'4px 12px',fontSize:'0.74rem',fontWeight:700,
-              }}>
-                {stuckLearners.length} คน
-              </span>
+          {/* Filter chips + sort */}
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14, gap:12, flexWrap:'wrap'}}>
+            <div style={{display:'flex', gap:8, flexWrap:'wrap'}}>
+              {['all', 'onTrack', 'atRisk', 'behind'].map(k => (
+                <StatusPill key={k} status={k} count={statusCounts[k]}
+                  active={statusFilter === k}
+                  onClick={() => setStatusFilter(k)} />
+              ))}
             </div>
-            {stuckLearners.length === 0 ? (
-              <div style={{textAlign:'center',padding:'30px 0',color:'#78716c',fontSize:'0.85rem'}}>
-                <span style={{display:'inline-flex',alignItems:'center',gap:6,color:'#047857',fontWeight:600}}>
-                  <CheckCircle2 size={18}/> ทุกคนอยู่ใน Stage ตามเป้าหมาย
-                </span>
+            <div style={{display:'flex', alignItems:'center', gap:8}}>
+              <span style={{color:'#78716c', fontSize:'0.74rem'}}>Sort by:</span>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+                style={{
+                  padding:'6px 28px 6px 12px', borderRadius:10, border:'1px solid #e7e5e4',
+                  background:'#fff', color:'#1c1917', fontSize:'0.78rem', cursor:'pointer',
+                  fontFamily:'Inter,sans-serif', appearance:'none',
+                  backgroundImage:'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'10\' height=\'6\' viewBox=\'0 0 10 6\'><path d=\'M1 1l4 4 4-4\' stroke=\'%2378716c\' stroke-width=\'1.5\' fill=\'none\' stroke-linecap=\'round\'/></svg>")',
+                  backgroundRepeat:'no-repeat', backgroundPosition:'right 10px center',
+                }}>
+                <option value="transformation">Transformation Score</option>
+                <option value="engagement">Engagement Score</option>
+                <option value="stage">Stage</option>
+                <option value="streak">Streak</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Learner Table */}
+          <div className="hr-card" style={{padding:0, overflow:'hidden'}}>
+            {/* Table header */}
+            <div style={{
+              display:'grid', gridTemplateColumns:'minmax(220px, 2.2fr) 1.1fr 1fr 1fr 0.8fr 0.7fr 40px',
+              gap:12, padding:'14px 24px', borderBottom:'1px solid #f0eeec',
+              background:'#fafaf9',
+            }}>
+              {['Learner', 'Status', 'Transformation', 'Engagement', 'Manager', 'Streak', ''].map((h, i) => (
+                <div key={i} style={{
+                  color:'#78716c', fontSize:'0.66rem', fontWeight:600, letterSpacing:'0.10em', textTransform:'uppercase',
+                  textAlign: i >= 2 && i <= 5 ? 'center' : 'left',
+                }}>{h}</div>
+              ))}
+            </div>
+
+            {/* Rows */}
+            {filteredLearners.length === 0 ? (
+              <div style={{padding:'40px 24px', textAlign:'center', color:'#78716c'}}>
+                ไม่พบผู้เรียนตามเงื่อนไข
               </div>
-            ) : (
-              <div style={{display:'flex',flexDirection:'column',gap:8}}>
-                {stuckLearners
-                  .sort((a,b) => (b.daysInStage - stageMeta(b.stage).targetDays) - (a.daysInStage - stageMeta(a.stage).targetDays))
-                  .map(l => {
-                    const meta = stageMeta(l.stage);
-                    const over = l.daysInStage - meta.targetDays;
+            ) : filteredLearners.map(l => {
+              const tScore  = transformationScore(l);
+              const eScore  = engagementScore(l);
+              const tPrev   = prevTransformationScore(l);
+              const tDelta  = tScore - tPrev;
+              const ls      = learnerStatus(l);
+              const lm      = statusMeta[ls];
+              return (
+                <div
+                  key={l.id}
+                  onClick={() => openLearner(l.id)}
+                  className="hr-row-hover"
+                  style={{
+                    display:'grid', gridTemplateColumns:'minmax(220px, 2.2fr) 1.1fr 1fr 1fr 0.8fr 0.7fr 40px',
+                    gap:12, padding:'14px 24px', borderBottom:'1px solid #f5f5f4',
+                    alignItems:'center', cursor:'pointer',
+                  }}>
+                  {/* Learner */}
+                  <div style={{display:'flex', alignItems:'center', gap:12, minWidth:0}}>
+                    <div style={{
+                      width:36, height:36, borderRadius:'50%', flexShrink:0,
+                      background:`linear-gradient(135deg, ${l.bg}, ${l.bg}99)`,
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                      fontSize:'0.85rem', fontWeight:600, color:'#fff',
+                    }}>{l.av}</div>
+                    <div style={{minWidth:0}}>
+                      <div style={{color:'#1c1917', fontSize:'0.86rem', fontWeight:500, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{l.name}</div>
+                      <div style={{color:'#78716c', fontSize:'0.7rem', marginTop:1, display:'flex', alignItems:'center', gap:6, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>
+                        {l.role} <span style={{color:'#d6d3d1'}}>·</span> <StageBadge stage={l.stage}/>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Status — clickable to filter */}
+                  <div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setStatusFilter(ls); }}
+                      style={{
+                        padding:'4px 10px', borderRadius:999, cursor:'pointer',
+                        border:`1px solid ${lm.border}`, background: lm.bg, color: lm.color,
+                        fontSize:'0.72rem', fontWeight:500, fontFamily:'Inter,sans-serif',
+                      }}>{lm.label}</button>
+                  </div>
+
+                  {/* Transformation Score */}
+                  <div style={{textAlign:'center'}}>
+                    <div style={{display:'inline-flex', alignItems:'baseline', gap:5}}>
+                      <span className="num" style={{color:'#1c1917', fontSize:'1.05rem', fontWeight:600}}>{tScore}</span>
+                      {tDelta !== 0 && (
+                        <span className="num" style={{
+                          color: tDelta > 0 ? '#047857' : '#b91c1c',
+                          fontSize:'0.68rem', fontWeight:600,
+                        }}>{tDelta > 0 ? '↑' : '↓'}{Math.abs(tDelta)}</span>
+                      )}
+                    </div>
+                    <div style={{height:3, width:64, margin:'4px auto 0', background:'#f5f5f4', borderRadius:999}}>
+                      <div style={{width:`${tScore}%`, height:'100%', background:'#059669', borderRadius:999}}/>
+                    </div>
+                  </div>
+
+                  {/* Engagement Score */}
+                  <div style={{textAlign:'center'}}>
+                    <div className="num" style={{color:'#1c1917', fontSize:'1.05rem', fontWeight:600}}>{eScore}</div>
+                    <div style={{height:3, width:64, margin:'4px auto 0', background:'#f5f5f4', borderRadius:999}}>
+                      <div style={{width:`${eScore}%`, height:'100%', background:'#0d9488', borderRadius:999}}/>
+                    </div>
+                  </div>
+
+                  {/* Manager */}
+                  <div style={{textAlign:'center'}}>
+                    <span style={{
+                      display:'inline-flex', alignItems:'center', gap:4,
+                      padding:'3px 9px', borderRadius:999,
+                      background:`${mgrColor(l.mgrReview)}14`, color:mgrColor(l.mgrReview),
+                      fontSize:'0.7rem', fontWeight:500,
+                    }}>
+                      {l.mgrReview === 'completed' ? '✓' : l.mgrReview === 'pending' ? '○' : '!'} {mgrLabel(l.mgrReview)}
+                    </span>
+                  </div>
+
+                  {/* Streak */}
+                  <div style={{textAlign:'center'}}>
+                    <span className="num" style={{
+                      color: l.streak > 0 ? '#ea580c' : '#a8a29e',
+                      fontSize:'0.95rem', fontWeight:600,
+                      display:'inline-flex', alignItems:'center', gap:3, justifyContent:'center',
+                    }}>
+                      {l.streak > 0 ? <><Flame size={13}/>{l.streak}</> : '—'}
+                    </span>
+                  </div>
+
+                  {/* Chevron */}
+                  <div style={{textAlign:'right', color:'#a8a29e'}}>
+                    <ChevronRight size={16}/>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Footer note */}
+          <div style={{marginTop:12, color:'#78716c', fontSize:'0.72rem', textAlign:'center'}}>
+            แสดง <span className="num" style={{color:'#1c1917', fontWeight:600}}>{filteredLearners.length}</span> / {totalLearners} คน · กดที่ชื่อเพื่อดู Timeline และ Evidence
+          </div>
+        </div>
+      );
+
+      // ─────────────────────────────────────────────────────────────
+      // LEARNER DRAWER (slide-in from right)
+      // ─────────────────────────────────────────────────────────────
+      const renderDrawer = () => {
+        if (!selectedLearner) return null;
+        const l = LEARNERS.find(x => x.id === selectedLearner);
+        if (!l) return null;
+        const tScore = transformationScore(l);
+        const eScore = engagementScore(l);
+        const tPrev  = prevTransformationScore(l);
+        const ls     = learnerStatus(l);
+        const lm     = statusMeta[ls];
+        const meta   = stageMeta(l.stage);
+        const totalMissions = 20;
+        const missionsDone  = l.done;
+        const missionsLeft  = Math.max(0, totalMissions - missionsDone);
+
+        // Timeline events — personalised by learner status
+        const events = [
+          { id:'pre',  date:'30 Apr', icon: FileText, dot:'#a8a29e',
+            title:'Pre-Class Complete',
+            sub:`Pre-Assessment Score: ${50 + l.id % 30}/100`,
+            evidenceLabel:'View self-assessment',
+            evidence: { type:'text', body:`"สิ่งที่ฉันคาดหวังจะเรียนรู้คือการเป็น leader ที่ฟังทีมงานมากขึ้น และสามารถ delegate งานได้ดีกว่านี้..."` } },
+          { id:'inclass', date:'1–2 May', icon: Trophy, dot:'#0d9488',
+            title:'In-Class: Essential Leadership',
+            sub:`Live Quiz: ${7 + l.id % 4}/10 · Mission Plan: Submitted`,
+            evidenceLabel:'View Mission Plan',
+            evidence: { type:'doc', filename:'mission_plan.pdf', body:'PDF · 2 หน้า · Goal: Active Listening Routine 30 วัน' } },
+          { id:'sc1', date:'7 May', icon: Target, dot:'#059669',
+            title:'Summit Challenge #1: Listening Practice',
+            sub:`Status: Completed · Score: ${75 + (l.id*3) % 20}/100`,
+            evidenceLabel:'View Photo & Reflection',
+            evidence: { type:'image', src:'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=520&h=240&fit=crop&q=70',
+              body:`"ในสัปดาห์นี้ฉันใช้เทคนิค Active Listening กับทีม 3 ครั้ง โดยเฉพาะตอน 1-on-1 รู้สึกว่าทีมเปิดใจมากขึ้น..."` } },
+          { id:'mission', date:`${10 + l.id % 6} May`, icon: Activity, dot: l.stage >= 3 ? '#059669' : '#fbbf24',
+            title:'Mission: Active Listening Routine',
+            sub: l.stage >= 3 ? 'Status: Completed · 100%' : `Status: In Progress · ${l.progress}% done`,
+            evidenceLabel: l.stage >= 3 ? 'View weekly log' : 'View progress notes',
+            evidence: { type:'text', body:`Week 1: ทำได้ 4/5 วัน · Week 2: ทำได้ 5/5 · Manager feedback: เริ่มเห็นความเปลี่ยนแปลง` } },
+          { id:'rq', date:`${15 + l.id % 4} May`, icon: Info, dot: l.stage >= 3 ? '#0d9488' : '#a8a29e',
+            title:'Recall Quiz · Week 3',
+            sub: l.stage >= 3 ? `Score: ${80 + l.id % 15}/100 · ${16 + l.id % 4}/20 questions` : 'ยังไม่ได้ทำ',
+            evidenceLabel: l.stage >= 3 ? 'View quiz attempt' : null,
+            evidence: { type:'text', body:'คำตอบที่ผ่าน: 17/20 · จุดที่ตอบผิด: หลักการ Coaching Question (Q5, Q12, Q18)' } },
+          ...(l.stage >= 4 ? [{ id:'manager', date:`${18 + l.id % 5} May`, icon: UserIcon, dot:'#059669',
+            title:'Manager Review: Routine Adoption',
+            sub:'Reviewed by คุณสมศรี วิชาญ',
+            evidenceLabel:'View review notes',
+            evidence: { type:'text', body:`"เริ่มเห็น proactive coaching ในทีม · ลูกทีมพูดถึงการเปลี่ยนแปลงในเชิงบวก · แนะนำให้ขยายไปยัง stakeholder ข้ามทีม"` } }] : []),
+          ...(l.stage >= 5 ? [{ id:'sustain', date:`${22 + l.id % 4} May`, icon: Award, dot:'#0d9488',
+            title:'Habit Formed · Self-Driven',
+            sub:'Streak 14 วัน · Mission ต่อเนื่อง 8 ครั้ง',
+            evidenceLabel:'View dashboard',
+            evidence: { type:'text', body:`Engagement score plateau at ${eScore}+ for 2 weeks. Eligible for Graduate program.` } }] : []),
+        ];
+
+        return (
+          <div>
+            {/* Header */}
+            <div style={{
+              padding:'24px 28px 20px', borderBottom:'1px solid #f5f5f4',
+              position:'sticky', top:0, background:'#fff', zIndex:5,
+            }}>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:18}}>
+                <div className="hr-eyebrow">Learner Detail</div>
+                <button onClick={closeDrawer} style={{
+                  background:'transparent', border:'1px solid #e7e5e4', borderRadius:8, cursor:'pointer',
+                  width:30, height:30, color:'#78716c', fontSize:'0.95rem', fontFamily:'Inter,sans-serif',
+                  display:'flex', alignItems:'center', justifyContent:'center',
+                }}>✕</button>
+              </div>
+              <div style={{display:'flex', alignItems:'center', gap:14}}>
+                <div style={{
+                  width:56, height:56, borderRadius:'50%', flexShrink:0,
+                  background:`linear-gradient(135deg, ${l.bg}, ${l.bg}99)`,
+                  display:'flex', alignItems:'center', justifyContent:'center',
+                  fontSize:'1.35rem', fontWeight:600, color:'#fff',
+                }}>{l.av}</div>
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{color:'#1c1917', fontSize:'1.15rem', fontWeight:600, letterSpacing:'-0.015em'}}>{l.name}</div>
+                  <div style={{color:'#78716c', fontSize:'0.82rem', marginTop:2, display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
+                    {l.role} <span style={{color:'#d6d3d1'}}>·</span> <StageBadge stage={l.stage} size="lg"/>
+                  </div>
+                </div>
+                <span style={{
+                  padding:'4px 12px', borderRadius:999,
+                  background:lm.bg, color:lm.color, border:`1px solid ${lm.border}`,
+                  fontSize:'0.74rem', fontWeight:500, flexShrink:0,
+                }}>{lm.label}</span>
+              </div>
+            </div>
+
+            <div style={{padding:'24px 28px 60px'}}>
+              {/* Mission Stats */}
+              <div style={{
+                background:'#fafaf9', border:'1px solid #f0eeec', borderRadius:14, padding:'16px 18px', marginBottom:18,
+              }}>
+                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:14}}>
+                  <div>
+                    <div className="hr-eyebrow" style={{fontSize:'0.6rem'}}>ภารกิจที่ทำ</div>
+                    <div style={{display:'flex', alignItems:'baseline', gap:4, marginTop:2}}>
+                      <span className="num" style={{color:'#059669', fontSize:'1.6rem', fontWeight:600, letterSpacing:'-0.03em'}}>{missionsDone}</span>
+                      <span className="num" style={{color:'#a8a29e', fontSize:'0.8rem'}}>/ {totalMissions}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="hr-eyebrow" style={{fontSize:'0.6rem'}}>เหลืออีก</div>
+                    <div style={{display:'flex', alignItems:'baseline', gap:4, marginTop:2}}>
+                      <span className="num" style={{color:'#1c1917', fontSize:'1.6rem', fontWeight:600, letterSpacing:'-0.03em'}}>{missionsLeft}</span>
+                      <span style={{color:'#a8a29e', fontSize:'0.8rem'}}>mission</span>
+                    </div>
+                  </div>
+                </div>
+                <div style={{marginTop:14, paddingTop:14, borderTop:'1px solid #e7e5e4',
+                  display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:8}}>
+                  <div style={{display:'flex', alignItems:'center', gap:6, color:'#78716c', fontSize:'0.78rem'}}>
+                    <Clock size={13}/> Active ล่าสุด <span className="num" style={{color:'#1c1917', fontWeight:500}}>{l.last}ที่แล้ว</span>
+                  </div>
+                  <div style={{display:'flex', alignItems:'center', gap:6, color:'#78716c', fontSize:'0.78rem'}}>
+                    <Flame size={13} style={{color:'#ea580c'}}/> Streak <span className="num" style={{color:'#1c1917', fontWeight:500}}>{l.streak} วัน</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Scores */}
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:24}}>
+                <div className="hr-card" style={{padding:'14px 16px', boxShadow:'none', borderRadius:14}}>
+                  <div className="hr-eyebrow" style={{fontSize:'0.6rem'}}>Transformation</div>
+                  <div style={{display:'flex', alignItems:'baseline', gap:6, marginTop:4}}>
+                    <span className="num" style={{color:'#1c1917', fontSize:'1.8rem', fontWeight:600, letterSpacing:'-0.03em'}}>{tScore}</span>
+                    {tScore - tPrev > 0 && (
+                      <span className="num" style={{color:'#047857', fontSize:'0.72rem', fontWeight:600,
+                        background:'rgba(5,150,105,0.10)', padding:'2px 6px', borderRadius:999}}>
+                        ↑ {tScore - tPrev}
+                      </span>
+                    )}
+                  </div>
+                  <div style={{height:5, background:'#f5f5f4', borderRadius:999, marginTop:8, overflow:'hidden'}}>
+                    <div style={{width:`${tScore}%`, height:'100%', background:'linear-gradient(to right, #059669, #10b981)', borderRadius:999, transition:'width 0.7s'}}/>
+                  </div>
+                  <div className="num" style={{color:'#a8a29e', fontSize:'0.66rem', marginTop:6}}>Pre-Class baseline: {tPrev}</div>
+                </div>
+                <div className="hr-card" style={{padding:'14px 16px', boxShadow:'none', borderRadius:14}}>
+                  <div className="hr-eyebrow" style={{fontSize:'0.6rem'}}>Engagement</div>
+                  <div style={{display:'flex', alignItems:'baseline', gap:6, marginTop:4}}>
+                    <span className="num" style={{color:'#1c1917', fontSize:'1.8rem', fontWeight:600, letterSpacing:'-0.03em'}}>{eScore}</span>
+                  </div>
+                  <div style={{height:5, background:'#f5f5f4', borderRadius:999, marginTop:8, overflow:'hidden'}}>
+                    <div style={{width:`${eScore}%`, height:'100%', background:'#0d9488', borderRadius:999, transition:'width 0.7s'}}/>
+                  </div>
+                  <div className="num" style={{color:'#a8a29e', fontSize:'0.66rem', marginTop:6}}>Streak {l.streak}d · {l.status}</div>
+                </div>
+              </div>
+
+              {/* Timeline */}
+              <div style={{marginBottom:24}}>
+                <div className="hr-eyebrow" style={{marginBottom:4}}>Activity Timeline</div>
+                <h4 style={{margin:'0 0 14px', fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'0.95rem', color:'#1c1917'}}>
+                  Journey events เรียงตามวันที่
+                </h4>
+
+                <div style={{display:'flex', flexDirection:'column'}}>
+                  {events.map((ev, idx) => {
+                    const isLast = idx === events.length - 1;
+                    const Ic = ev.icon;
+                    const expanded = openEvidence === ev.id;
                     return (
-                      <div key={l.id} style={{
-                        background:'#fafaf9',border:'1px solid #f0eeec',borderRadius:12,
-                        padding:'12px 14px',
-                        display:'flex',alignItems:'center',gap:12,
-                      }}>
-                        <div style={{width:36,height:36,borderRadius:'50%',flexShrink:0,
-                          background:`linear-gradient(135deg,${l.bg},${l.bg}99)`,
-                          display:'flex',alignItems:'center',justifyContent:'center',
-                          fontSize:'0.85rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
-                        <div style={{flex:'1 1 200px',minWidth:0}}>
-                          <div style={{color:'#161412',fontSize:'0.82rem',fontWeight:600,
-                            overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</div>
-                          <div style={{color:'#78716c',fontSize:'0.66rem',marginTop:1}}>{l.role}</div>
+                      <div key={ev.id} style={{display:'flex', gap:14}}>
+                        {/* Dot column */}
+                        <div style={{display:'flex', flexDirection:'column', alignItems:'center', flexShrink:0, width:24}}>
+                          <div style={{
+                            width:12, height:12, borderRadius:'50%', flexShrink:0,
+                            background: ev.dot, border:'2px solid #fff',
+                            boxShadow:`0 0 0 1.5px ${ev.dot}`,
+                            marginTop:4,
+                          }}/>
+                          {!isLast && <div style={{width:1.5, background:'#e7e5e4', flex:1, marginTop:6, marginBottom:4, minHeight:24}}/>}
                         </div>
-                        <div style={{flex:'0 0 auto'}}>
-                          <StageBadge stage={l.stage}/>
-                        </div>
-                        <div style={{flex:'0 0 110px',textAlign:'center'}}>
-                          <div style={{color:'#ef4444',fontSize:'0.95rem',fontWeight:800}}>
-                            +{over} วัน
+                        {/* Content */}
+                        <div style={{flex:1, paddingBottom: isLast ? 0 : 18, minWidth:0}}>
+                          <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:4}}>
+                            <span className="num" style={{color:'#a8a29e', fontSize:'0.7rem', fontWeight:500, letterSpacing:'0.04em'}}>{ev.date}</span>
+                            <Ic size={12} style={{color:ev.dot}}/>
                           </div>
-                          <div style={{color:'#a8a29e',fontSize:'0.62rem'}}>
-                            ใน Stage {l.stage} · {l.daysInStage}/{meta.targetDays} วัน
-                          </div>
+                          <div style={{color:'#1c1917', fontSize:'0.88rem', fontWeight:500, marginBottom:3}}>{ev.title}</div>
+                          <div className="num" style={{color:'#57534e', fontSize:'0.76rem', marginBottom: ev.evidenceLabel ? 8 : 0}}>{ev.sub}</div>
+                          {ev.evidenceLabel && (
+                            <button
+                              onClick={() => setOpenEvidence(expanded ? null : ev.id)}
+                              className="hr-btn-ghost"
+                              style={{
+                                padding:'5px 12px', fontSize:'0.72rem',
+                                display:'inline-flex', alignItems:'center', gap:5,
+                              }}>
+                              {expanded ? '▾ Hide evidence' : '▸ ' + ev.evidenceLabel}
+                            </button>
+                          )}
+                          {expanded && (
+                            <div className="fade-in" style={{
+                              marginTop:10, padding:'14px 16px',
+                              background:'#fafaf9', border:'1px solid #f0eeec', borderRadius:12,
+                            }}>
+                              {ev.evidence.type === 'image' && (
+                                <div style={{marginBottom:10, borderRadius:8, overflow:'hidden', border:'1px solid #f0eeec'}}>
+                                  <img src={ev.evidence.src} alt="evidence" style={{width:'100%', display:'block'}}/>
+                                </div>
+                              )}
+                              {ev.evidence.type === 'doc' && (
+                                <div style={{
+                                  marginBottom:10, padding:'10px 12px',
+                                  background:'#fff', border:'1px solid #e7e5e4', borderRadius:10,
+                                  display:'flex', alignItems:'center', gap:10,
+                                }}>
+                                  <FileText size={20} style={{color:'#6366f1'}}/>
+                                  <div style={{flex:1, minWidth:0}}>
+                                    <div style={{color:'#1c1917', fontSize:'0.78rem', fontWeight:500}}>{ev.evidence.filename}</div>
+                                    <div className="num" style={{color:'#a8a29e', fontSize:'0.66rem'}}>{ev.evidence.body}</div>
+                                  </div>
+                                </div>
+                              )}
+                              {ev.evidence.type !== 'doc' && (
+                                <div style={{color:'#1c1917', fontSize:'0.82rem', lineHeight:1.55}}>
+                                  {ev.evidence.body}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        <button style={{
-                          padding:'6px 12px',borderRadius:9,cursor:'pointer',flexShrink:0,
-                          border:'1px solid rgba(237,71,36,0.32)',background:'rgba(237,71,36,0.08)',
-                          color:'#c2410c',fontSize:'0.72rem',fontWeight:600,
-                          display:'inline-flex',alignItems:'center',gap:5,
-                        }}>
-                          <Send size={12}/> ส่ง Nudge
-                        </button>
                       </div>
                     );
                   })}
-              </div>
-            )}
-          </div>
-        </div>
-      );
-
-      /* ── Learners ── */
-      const renderLearners = () => (
-        <div>
-          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:18}}>
-            <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
-              {[`ทั้งหมด (${LEARNERS.length})`,`Active (${active})`,`At Risk (${atRisk})`,`Inactive (${inactive})`].map(l=>(
-                <span key={l} style={{padding:'4px 12px',borderRadius:999,fontSize:'0.78rem',
-                  background:'#ffffff',border:'1px solid #e7e5e4',
-                  color:'#57534e'}}>{l}</span>
-              ))}
-            </div>
-            <span style={{color:'#78716c',fontSize:'0.78rem'}}>จัดเรียง: คะแนนสูงสุด</span>
-          </div>
-
-          <div style={{display:'flex',flexDirection:'column',gap:8}}>
-            {LEARNERS.map(l=>(
-              <div key={l.id}
-                onClick={()=>setExpanded(expanded===l.id?null:l.id)}
-                style={{
-                  background:'#ffffff',
-                  border:`1px solid ${expanded===l.id?'rgba(237,71,36,0.45)':'#e7e5e4'}`,
-                  borderRadius:16,padding:'16px 20px',cursor:'pointer',
-                  transition:'border-color 0.2s, box-shadow 0.2s',
-                  boxShadow: expanded===l.id?'0 4px 12px rgba(237,71,36,0.10)':'0 1px 2px rgba(0,0,0,0.04)',
-                }}>
-                <div style={{display:'flex',alignItems:'center',gap:14,flexWrap:'wrap'}}>
-                  <div style={{width:40,height:40,borderRadius:'50%',flexShrink:0,
-                    background:`linear-gradient(135deg,${l.bg},${l.bg}99)`,
-                    display:'flex',alignItems:'center',justifyContent:'center',
-                    fontSize:'0.9rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
-                  <div style={{flex:'1 1 160px',minWidth:0}}>
-                    <div style={{color:'#161412',fontSize:'0.875rem',fontWeight:600,
-                      overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</div>
-                    <div style={{color:'#78716c',fontSize:'0.72rem',marginTop:1}}>{l.role}</div>
-                  </div>
-                  <div style={{flex:'0 0 auto'}}>
-                    <StageBadge stage={l.stage}/>
-                  </div>
-                  <div style={{flex:'0 0 36px',display:'flex',flexDirection:'column',alignItems:'center',gap:2}}
-                    title={`Goal: ${goalLabel(l.goalStatus)}`}>
-                    <Target size={18} style={{color:goalColor(l.goalStatus)}}/>
-                    <span style={{color:goalColor(l.goalStatus),fontSize:'0.55rem',fontWeight:700,letterSpacing:'0.02em'}}>
-                      {l.goalStatus === 'achieved' ? '✓' : l.goalStatus === 'on-track' ? '→' : l.goalStatus === 'off-track' ? '!' : '·'}
-                    </span>
-                  </div>
-                  <div style={{flex:'0 0 36px',display:'flex',flexDirection:'column',alignItems:'center',gap:2}}
-                    title={`Manager: ${mgrLabel(l.mgrReview)}`}>
-                    <UserIcon size={18} style={{color:mgrColor(l.mgrReview)}}/>
-                    <span style={{color:mgrColor(l.mgrReview),fontSize:'0.55rem',fontWeight:700,letterSpacing:'0.02em'}}>
-                      {l.mgrReview === 'completed' ? '✓' : l.mgrReview === 'pending' ? '…' : '!'}
-                    </span>
-                  </div>
-                  <div style={{flex:'0 0 72px',textAlign:'center'}}>
-                    <div style={{color:'#b45309',fontSize:'0.95rem',fontWeight:700}}>{l.pts.toLocaleString()}</div>
-                    <div style={{color:'#a8a29e',fontSize:'0.62rem'}}>pts</div>
-                  </div>
-                  <div style={{flex:'0 0 56px',textAlign:'center'}}>
-                    <div style={{color:l.streak>0?'#ea580c':'#a8a29e',fontSize:'0.875rem',fontWeight:700,
-                      display:'inline-flex',alignItems:'center',gap:3,justifyContent:'center'}}>
-                      {l.streak>0?<><Flame size={14}/>{l.streak}</>:'—'}
-                    </div>
-                    <div style={{color:'#a8a29e',fontSize:'0.62rem'}}>streak</div>
-                  </div>
-                  <div style={{flex:'0 0 72px',textAlign:'right'}}>
-                    <span style={{background:sBg(l.status),borderRadius:999,
-                      padding:'3px 10px',color:sTxt(l.status),fontSize:'0.7rem',fontWeight:600}}>
-                      {sLabel(l.status)}
-                    </span>
-                  </div>
                 </div>
+              </div>
 
-                {expanded===l.id&&(
-                  <div className="fade-in" style={{marginTop:16,paddingTop:16,
-                    borderTop:'1px solid #e7e5e4',
-                    display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:10}}>
-                    {[
-                      {label:`Stage ${l.stage} · ${stageMeta(l.stage).name}`, value:`${l.daysInStage} วัน` + (l.daysInStage > stageMeta(l.stage).targetDays ? ` (เกินเป้า)` : ''), color: stageMeta(l.stage).color},
-                      {label:'Goal Status', value:goalLabel(l.goalStatus), color:goalColor(l.goalStatus)},
-                      {label:'Manager Review', value:mgrLabel(l.mgrReview), color:mgrColor(l.mgrReview)},
-                      {label:'ภารกิจเสร็จ',    value:`${l.done} ภารกิจ`},
-                      {label:'Active ล่าสุด',   value:`${l.last}ที่แล้ว`},
-                      {label:'Streak ปัจจุบัน', value:l.streak>0?`${l.streak} วัน`:'หมดแล้ว'},
-                    ].map(({label,value,color})=>(
-                      <div key={label} style={{background:'#fafaf9',border:'1px solid #f0eeec',borderRadius:12,padding:'12px 14px'}}>
-                        <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>{label}</div>
-                        <div style={{color:color||'#161412',fontSize:'0.86rem',fontWeight:700,marginTop:3}}>{value}</div>
-                      </div>
-                    ))}
-                    {l.status!=='active'&&(
-                      <div style={{background:'rgba(245,158,11,0.10)',border:'1px solid rgba(245,158,11,0.30)',
-                        borderRadius:12,padding:'12px 14px',cursor:'pointer'}}>
-                        <div style={{color:'#a8a29e',fontSize:'0.65rem'}}>การดำเนินการ</div>
-                        <div style={{color:'#b45309',fontSize:'0.82rem',fontWeight:600,marginTop:3,
-                          display:'inline-flex',alignItems:'center',gap:5}}>
-                          <Send size={14}/> ส่ง Reminder
-                        </div>
-                      </div>
-                    )}
+              {/* Manager Review block */}
+              <div className="hr-card" style={{boxShadow:'none', padding:18, marginBottom:14}}>
+                <div className="hr-eyebrow" style={{marginBottom:8}}>Manager Review</div>
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10}}>
+                  <div style={{color:'#1c1917', fontSize:'0.85rem'}}>
+                    Status:{' '}
+                    <span style={{color:mgrColor(l.mgrReview), fontWeight:600}}>{mgrLabel(l.mgrReview)}</span>
+                  </div>
+                  {l.mgrReview === 'completed' && (
+                    <span className="num" style={{color:'#78716c', fontSize:'0.7rem'}}>Last review: 18 May</span>
+                  )}
+                </div>
+                {l.mgrReview === 'completed' ? (
+                  <div style={{color:'#57534e', fontSize:'0.82rem', lineHeight:1.55, padding:'10px 12px',
+                    background:'#fafaf9', borderRadius:10, fontStyle:'italic'}}>
+                    "เริ่มเห็น proactive coaching ในทีม · ลูกทีมพูดถึงการเปลี่ยนแปลงในเชิงบวก"
+                    <div className="num" style={{color:'#a8a29e', fontSize:'0.7rem', marginTop:6, fontStyle:'normal'}}>— คุณสมศรี วิชาญ (Manager)</div>
+                  </div>
+                ) : (
+                  <div style={{color:'#78716c', fontSize:'0.82rem', padding:'10px 12px', background:'#fafaf9', borderRadius:10}}>
+                    {l.mgrReview === 'pending' ? 'รอ Manager review' : 'เกิน due date · ควร follow-up'}
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-        </div>
-      );
 
-      /* ── Challenges ── */
-      const renderChallenges = () => (
-        <div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:14,marginBottom:24}}>
-            {[
-              {Icon:FileText,     label:'ภารกิจทั้งหมด',   value:'32',        sub:'ประเภท', color:'#57534e'},
-              {Icon:CheckCircle2, label:'เสร็จสิ้น (เฉลี่ย)',value:'1,048',     sub:'ครั้ง',  color:IconAccent.success},
-              {Icon:BarChart2,    label:'Avg Completion',    value:`${avgProg}%`,sub:'',     color:'#F26B45'},
-              {Icon:Trophy,       label:'ยอดนิยมสูงสุด',    value:'Flash Card', sub:'',     color:IconAccent.award},
-            ].map(({Icon,label,value,sub,color})=>(
-              <div key={label} style={{background:'#ffffff',
-                border:'1px solid #e7e5e4',borderRadius:16,
-                padding:'18px 20px',display:'flex',alignItems:'center',gap:14,
-                boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-                <div style={{color,display:'inline-flex'}}><Icon size={26}/></div>
-                <div>
-                  <div style={{color:'#78716c',fontSize:'0.72rem'}}>{label}</div>
-                  <div style={{color:'#161412',fontSize:'1.2rem',fontWeight:800,letterSpacing:'-0.02em'}}>
-                    {value}{sub&&<span style={{color:'#a8a29e',fontSize:'0.75rem',fontWeight:400}}> {sub}</span>}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="hr-2col" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
-            <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',
-              boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-              <h3 style={{margin:'0 0 18px',fontWeight:700,fontSize:'0.9rem',color:'#161412'}}>
-                Completion Rate ตามประเภทภารกิจ
-              </h3>
-              {CHDATA.map(({type,Icon,pct,done,total,color})=>(
-                <div key={type} style={{marginBottom:18}}>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
-                    <div style={{display:'flex',alignItems:'center',gap:8}}>
-                      <div style={{width:32,height:32,borderRadius:9,flexShrink:0,
-                        background:`${color}18`,border:`1px solid ${color}40`,color,
-                        display:'flex',alignItems:'center',justifyContent:'center'}}><Icon size={16}/></div>
-                      <div>
-                        <div style={{color:'#161412',fontSize:'0.82rem',fontWeight:600}}>{type}</div>
-                        <div style={{color:'#78716c',fontSize:'0.67rem'}}>เฉลี่ย {done.toFixed(1)}/{total} ต่อคน</div>
-                      </div>
-                    </div>
-                    <span style={{color,fontSize:'0.95rem',fontWeight:800}}>{pct}%</span>
-                  </div>
-                  <div style={{height:6,background:'#f5f5f4',borderRadius:999}}>
-                    <div style={{width:`${pct}%`,height:'100%',borderRadius:999,background:color}}/>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{display:'flex',flexDirection:'column',gap:16}}>
-              <div style={{background:'#ffffff',border:'1px solid #e7e5e4',borderRadius:18,padding:'22px',
-                boxShadow:'0 1px 2px rgba(0,0,0,0.04)'}}>
-                <h3 style={{margin:'0 0 16px',fontWeight:700,fontSize:'0.9rem',color:'#161412',
-                  display:'inline-flex',alignItems:'center',gap:6}}>
-                  <Trophy size={16} style={{color:IconAccent.award}}/> Top Learners
-                </h3>
-                {LEARNERS.slice(0,5).map((l,i)=>(
-                  <div key={l.id} style={{display:'flex',alignItems:'center',gap:10,
-                    padding:'8px 0',borderBottom:'1px solid #f0eeec'}}>
-                    <span style={{width:22,height:22,flexShrink:0,borderRadius:'50%',
-                      display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.65rem',fontWeight:800,
-                      background:i<3?['rgba(251,191,36,0.20)','rgba(148,163,184,0.18)','rgba(180,83,9,0.18)'][i]:'transparent',
-                      color:i<3?['#b45309','#64748b','#b45309'][i]:'#a8a29e'}}>{i+1}</span>
-                    <div style={{width:26,height:26,borderRadius:'50%',flexShrink:0,
-                      background:`linear-gradient(135deg,${l.bg},${l.bg}88)`,
-                      display:'flex',alignItems:'center',justifyContent:'center',
-                      fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
-                    <span style={{flex:1,color:'#161412',fontSize:'0.8rem',fontWeight:500,
-                      overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</span>
-                    <span style={{color:'#b45309',fontSize:'0.82rem',fontWeight:700}}>{l.pts.toLocaleString()}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div style={{background:'rgba(239,68,68,0.08)',border:'1px solid rgba(239,68,68,0.25)',borderRadius:18,padding:'18px 22px'}}>
-                <h3 style={{margin:'0 0 14px',fontWeight:700,fontSize:'0.875rem',color:'#b91c1c',
-                  display:'inline-flex',alignItems:'center',gap:6}}>
-                  <AlertTriangle size={16} style={{color:IconAccent.danger}}/> ต้องการความสนใจ
-                </h3>
-                {LEARNERS.filter(l=>l.status!=='active').map(l=>(
-                  <div key={l.id} style={{display:'flex',alignItems:'center',gap:10,
-                    padding:'7px 0',borderBottom:'1px solid rgba(239,68,68,0.10)'}}>
-                    <div style={{width:26,height:26,borderRadius:'50%',flexShrink:0,
-                      background:`linear-gradient(135deg,${l.bg},${l.bg}88)`,
-                      display:'flex',alignItems:'center',justifyContent:'center',
-                      fontSize:'0.7rem',fontWeight:700,color:'#fff'}}>{l.av}</div>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{color:'#161412',fontSize:'0.78rem',fontWeight:500,
-                        overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{l.name}</div>
-                      <div style={{color:'#78716c',fontSize:'0.65rem'}}>{l.last}ที่แล้ว</div>
-                    </div>
-                    <span style={{color:sTxt(l.status),fontSize:'0.68rem',fontWeight:600,
-                      background:sBg(l.status),borderRadius:999,padding:'2px 8px',flexShrink:0}}>
-                      {sLabel(l.status)}
-                    </span>
-                  </div>
-                ))}
+              {/* Action footer */}
+              <div style={{display:'flex', gap:8}}>
+                <button className="hr-btn-primary" style={{flex:1, display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6}}>
+                  <Send size={13}/> Send to manager for review
+                </button>
+                <button className="hr-btn-ghost" style={{padding:'10px 16px'}}>
+                  Add note
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      );
+        );
+      };
 
+      // ─────────────────────────────────────────────────────────────
+      // MAIN RENDER
+      // ─────────────────────────────────────────────────────────────
       return (
-        <div style={{minHeight:'100vh',background:'#fafaf9',color:'#161412',
-          fontFamily:"'Inter',system-ui,-apple-system,BlinkMacSystemFont,sans-serif",overflowX:'hidden'}}>
-
+        <div style={{
+          minHeight:'100vh', background:'#fafaf9', color:'#1c1917',
+          fontFamily:"'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif", overflowX:'hidden',
+        }}>
           {/* Navbar */}
-          <nav style={{position:'sticky',top:0,zIndex:100,height:60,
-            display:'flex',alignItems:'center',justifyContent:'space-between',
-            padding:'0 max(24px,calc((100vw - 1400px)/2))',
-            background:'rgba(255,255,255,0.92)',backdropFilter:'blur(12px)',
-            borderBottom:'1px solid #e7e5e4'}}>
-            <div style={{display:'flex',alignItems:'center',gap:10}}>
-              <JoinstickLogo size={32} variant="black" />
-              <span className="bp-heading" style={{fontWeight:700,fontSize:'0.9rem',letterSpacing:'0.1em',color:'#161412'}}>JOINSTICK</span>
-              <div style={{width:1,height:16,background:'#e7e5e4'}}/>
-              <span style={{color:'#78716c',fontSize:'0.82rem'}}>HR Dashboard</span>
-              <div style={{display:'inline-flex',alignItems:'center',gap:4,
-                background:'rgba(99,102,241,0.10)',border:'1px solid rgba(99,102,241,0.30)',
-                borderRadius:999,padding:'2px 8px'}}>
-                <span style={{width:5,height:5,borderRadius:'50%',background:'#6366f1',display:'inline-block'}}/>
-                <span style={{color:'#4338ca',fontSize:'0.67rem',fontWeight:600}}>Out of Class</span>
+          <nav style={{
+            position:'sticky', top:0, zIndex:100, height:60,
+            display:'flex', alignItems:'center', justifyContent:'space-between',
+            padding:'0 max(24px, calc((100vw - 1800px)/2))',
+            background:'rgba(255,255,255,0.92)', backdropFilter:'blur(12px)',
+            borderBottom:'1px solid #e7e5e4',
+          }}>
+            <div style={{display:'flex', alignItems:'center', gap:12}}>
+              <JoinstickLogo size={32} variant="black"/>
+              <span style={{fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'0.9rem', letterSpacing:'-0.01em', color:'#1c1917'}}>Joinstick</span>
+              <div style={{width:1, height:16, background:'#e7e5e4'}}/>
+              <span style={{color:'#78716c', fontSize:'0.82rem'}}>HR Dashboard</span>
+              <div style={{display:'inline-flex', alignItems:'center', gap:5,
+                background:'rgba(5,150,105,0.10)', border:'1px solid rgba(5,150,105,0.30)',
+                borderRadius:999, padding:'2px 10px'}}>
+                <span style={{width:5, height:5, borderRadius:'50%', background:'#059669'}}/>
+                <span style={{color:'#047857', fontSize:'0.66rem', fontWeight:600, letterSpacing:'0.04em'}}>OUT OF CLASS</span>
               </div>
             </div>
-            <div style={{display:'flex',alignItems:'center',gap:12}}>
-              <span style={{color:'#78716c',fontSize:'0.78rem',display:'none'}}>Essential Leadership: Lead with your heart</span>
-              <button onClick={onBack} style={{padding:'7px 14px',borderRadius:9,cursor:'pointer',
-                border:'1px solid rgba(20,184,166,0.32)',
-                background:'rgba(20,184,166,0.08)',
-                color:'#0d9488',fontSize:'0.8rem',fontWeight:600,
-                display:'flex',alignItems:'center',gap:6,
-                transition:'background 0.15s, border-color 0.15s',
-              }}
-                onMouseEnter={e=>{e.currentTarget.style.background='rgba(20,184,166,0.16)';e.currentTarget.style.borderColor='rgba(20,184,166,0.55)';}}
-                onMouseLeave={e=>{e.currentTarget.style.background='rgba(20,184,166,0.08)';e.currentTarget.style.borderColor='rgba(20,184,166,0.32)';}}>
+            <div style={{display:'flex', alignItems:'center', gap:10}}>
+              <span className="num" style={{color:'#78716c', fontSize:'0.78rem'}}>
+                {CLASS.name} · <span style={{color:'#1c1917', fontWeight:600}}>Day {dayCurrent}</span> / {CLASS.totalDays}
+              </span>
+              <button onClick={onBack} className="hr-btn-ghost" style={{padding:'7px 14px', fontSize:'0.78rem'}}>
                 ถัดไป →
               </button>
             </div>
           </nav>
 
           {/* Tab bar */}
-          <div style={{borderBottom:'1px solid #e7e5e4',background:'#ffffff',
-            padding:'0 max(24px,calc((100vw - 1400px)/2))'}}>
+          <div style={{borderBottom:'1px solid #e7e5e4', background:'#ffffff',
+            padding:'0 max(24px, calc((100vw - 1800px)/2))'}}>
             <div style={{display:'flex'}}>
-              {[['overview',BarChart2,'Overview'],['stages',Activity,'Stage Health'],['learners',Users,'ผู้เรียน'],['challenges',Target,'ภารกิจ']].map(([id,TabIcon,label])=>(
-                <button key={id} onClick={()=>setTab(id)} style={{
-                  padding:'13px 20px',border:'none',background:'transparent',
-                  color:tab===id?'#161412':'#78716c',fontSize:'0.875rem',fontWeight:tab===id?600:400,
-                  cursor:'pointer',
-                  borderBottom:tab===id?'2px solid #ED4724':'2px solid transparent',
-                  transition:'color 0.15s',
-                  display:'inline-flex',alignItems:'center',gap:8}}>
+              {[['overview', BarChart2, 'Overview'], ['individual', Users, 'Individual']].map(([id, TabIcon, label]) => (
+                <button
+                  key={id} onClick={() => setTab(id)}
+                  className="hr-tab-btn"
+                  style={{
+                    padding:'14px 22px', border:'none', background:'transparent',
+                    color: tab === id ? '#1c1917' : '#78716c',
+                    fontSize:'0.88rem', fontWeight: tab === id ? 600 : 400,
+                    cursor:'pointer', fontFamily:'Inter,sans-serif',
+                    borderBottom: tab === id ? '2px solid #059669' : '2px solid transparent',
+                    display:'inline-flex', alignItems:'center', gap:8, letterSpacing:'-0.005em',
+                  }}>
                   <TabIcon size={16}/> {label}
                 </button>
               ))}
@@ -7490,11 +8007,14 @@
           </div>
 
           {/* Content */}
-          <div style={{padding:'28px max(24px,calc((100vw - 1400px)/2)) 60px'}}>
-            {tab==='overview'   && renderOverview()}
-            {tab==='stages'     && renderStageHealth()}
-            {tab==='learners'   && renderLearners()}
-            {tab==='challenges' && renderChallenges()}
+          <div style={{padding:'24px max(24px, calc((100vw - 1800px)/2)) 60px'}}>
+            {tab === 'overview' ? renderOverview() : renderIndividual()}
+          </div>
+
+          {/* Drawer */}
+          <div className={`hr-drawer-backdrop ${drawerOpen ? 'open' : ''}`} onClick={closeDrawer}/>
+          <div className={`hr-drawer ${drawerOpen ? 'open' : ''}`}>
+            {selectedLearner !== null && renderDrawer()}
           </div>
         </div>
       );
