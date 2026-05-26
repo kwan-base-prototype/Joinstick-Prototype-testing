@@ -527,6 +527,7 @@
     const Mail           = p => <Svg {...p}><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></Svg>;
     const PenSquare      = p => <Svg {...p}><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.375-9.375z"/></Svg>;
     const Briefcase      = p => <Svg {...p}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></Svg>;
+    const LayoutGrid     = p => <Svg {...p}><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></Svg>;
 
     /* ── Semantic color tokens for icon accents ──── */
     const IconAccent = {
@@ -722,7 +723,7 @@
         color:'#22c55e', Icon:Compass, lessonIds:[] },
       { id:4, num:'04', title:'Delivery A Meaningful ONE ON ONE Session', subtitle:'การสนทนาแบบ One-on-One ที่มีคุณค่า',
         desc:'ฝึกใช้ STAR Model เปลี่ยน One-on-One จากเซสชันรายงานงานให้กลายเป็นพื้นที่พัฒนาคน',
-        color:'#06b6d4', Icon:MessageCircle, lessonIds:[3, 4] },
+        color:'#06b6d4', Icon:MessageCircle, lessonIds:[4] },
       { id:5, num:'05', title:'Effective team governance system', subtitle:'ระบบกำกับดูแลทีมที่มีประสิทธิภาพ',
         desc:'วางโครงสร้าง กติกา และจังหวะการประชุมที่ทำให้ทีมเดินงานได้ต่อเนื่อง โปร่งใส และตัดสินใจร่วมกันได้รวดเร็ว',
         color:'#f59e0b', Icon:Settings, lessonIds:[] },
@@ -827,17 +828,56 @@
       steps:['สังเกตพฤติกรรมการสื่อสารในทีมอย่างน้อย 3 สถานการณ์','จัดหมวดหมู่พฤติกรรมตาม Trust Lens ทั้ง 4 ประเภท','เขียนสรุปสั้นๆ พร้อมแนวทางพัฒนา'],
     };
 
-    const podiumData    = [{rank:2,height:96},{rank:1,height:128},{rank:3,height:80}];
-    const engagementLB  = [
-      {rank:11,name:'Eird',   role:'Apprentice',  score:'375',isMe:false},
-      {rank:12,name:'Ninenoi',role:'Apprentice',  score:'375',isMe:true },
-      {rank:13,name:'Intron', role:'Activator',   score:'375',isMe:false},
-      {rank:14,name:'Ping',   role:'Practitioner',score:'375',isMe:false},
+    const engagementPodium = [
+      { rank:3, name:'Marty', score:420, gradient:'linear-gradient(180deg,#7c2d12,#3f1206)', accent:'#dc2626' },
+      { rank:1, name:'Jam',   score:500, gradient:'linear-gradient(180deg,#b45309,#5a2700)', accent:'#fbbf24' },
+      { rank:2, name:'Chai',  score:460, gradient:'linear-gradient(180deg,#52525b,#27272a)', accent:'#a1a1aa' },
+    ];
+    const transformationPodium = [
+      { rank:3, name:'Marty', score:700,  gradient:'linear-gradient(180deg,#7c2d12,#3f1206)', accent:'#dc2626' },
+      { rank:1, name:'Chai',  score:1200, gradient:'linear-gradient(180deg,#b45309,#5a2700)', accent:'#fbbf24' },
+      { rank:2, name:'Jam',   score:900,  gradient:'linear-gradient(180deg,#52525b,#27272a)', accent:'#a1a1aa' },
+    ];
+    const engagementLB7d  = [
+      { rank:1,  name:'Chai',     role:'Apprentice', score:580, delta:+50  },
+      { rank:2,  name:'Marty',    role:'Apprentice', score:520, delta:+30  },
+      { rank:3,  name:'Jam',      role:'Apprentice', score:490, delta:+20  },
+      { rank:4,  name:'Eirdd',    role:'Apprentice', score:410, delta:+10  },
+      { rank:5,  name:'Sophia',   role:'Apprentice', score:360, delta:-50  },
+      { rank:6,  name:'Owen',     role:'Apprentice', score:320, delta:+20  },
+      { rank:7,  name:'Isabella', role:'Apprentice', score:280, delta:-100 },
+      { rank:8,  name:'Liam',     role:'Apprentice', score:240, delta:-100 },
+      { rank:9,  name:'Ninenoi',  role:'Apprentice', score:200, delta:+100, isMe:true },
+      { rank:10, name:'Ava',      role:'Apprentice', score:180, delta:-100 },
+      { rank:11, name:'Jasper',   role:'Apprentice', score:160, delta:-100 },
+      { rank:12, name:'Nerd',     role:'Apprentice', score:150, delta:-80  },
+      { rank:13, name:'Mia',      role:'Apprentice', score:130, delta:-50  },
+      { rank:14, name:'Noah',     role:'Apprentice', score:110, delta:-30  },
+      { rank:15, name:'Zoe',      role:'Apprentice', score:90,  delta:-20  },
+    ];
+    const engagementLBTotal = [
+      { rank:1,  name:'Chai',     role:'Apprentice', score:1880 },
+      { rank:2,  name:'Sophia',   role:'Apprentice', score:1720 },
+      { rank:3,  name:'Liam',     role:'Apprentice', score:1450 },
+      { rank:4,  name:'Nerd',     role:'Apprentice', score:1320 },
+      { rank:5,  name:'Ninenoi',  role:'Apprentice', score:1240, isMe:true },
+      { rank:6,  name:'Ava',      role:'Apprentice', score:1180 },
+      { rank:7,  name:'Isabella', role:'Apprentice', score:1080 },
+      { rank:8,  name:'Jasper',   role:'Apprentice', score:980  },
+      { rank:9,  name:'Mia',      role:'Apprentice', score:920  },
+      { rank:10, name:'Owen',     role:'Apprentice', score:880  },
+      { rank:11, name:'Eirdd',    role:'Apprentice', score:820  },
+      { rank:12, name:'Noah',     role:'Apprentice', score:760  },
+      { rank:13, name:'Zoe',      role:'Apprentice', score:700  },
+      { rank:14, name:'Marty',    role:'Apprentice', score:650  },
+      { rank:15, name:'Jam',      role:'Apprentice', score:600  },
     ];
     const transformLB = [
-      {rank:11,name:'Eird',   role:'Apprentice',score:'76',isMe:false},
-      {rank:12,name:'Ninenoi',role:'Apprentice',score:'74',isMe:true },
-      {rank:13,name:'Intron', role:'Apprentice',score:'73',isMe:false},
+      { rank:7,  name:'Eirdd',    role:'Apprentice', score:540 },
+      { rank:8,  name:'Nerd',     role:'Apprentice', score:500 },
+      { rank:9,  name:'Ninenoi',  role:'Apprentice', score:420, isMe:true },
+      { rank:10, name:'Introny',  role:'Apprentice', score:410 },
+      { rank:11, name:'Alice',    role:'Apprentice', score:300 },
     ];
     const skillScores = [
       {name:'Leadership & Trust',score:85,color:'#3b82f6'},
@@ -1341,27 +1381,6 @@
                 </button>
               </div>
 
-              {/* Social proof — animated counters */}
-              <div className="lp-hero-stats" style={{
-                display:'flex', alignItems:'center', gap:24, marginTop:36,
-                paddingTop:28, borderTop:'1px solid rgba(255,255,255,0.07)',
-                flexWrap:'wrap',
-              }}>
-                {[
-                  { val:`${stats.orgs}+`, label:'องค์กรที่ใช้งาน', color:'#ED4724' },
-                  { val:`${stats.sat}%`,  label:'ผู้ใช้รู้สึกพัฒนาขึ้น', color:'#fbbf24' },
-                  { val:`${stats.rating.toFixed(1)}★`, label:'คะแนนจากผู้ใช้', color:'#fb923c' },
-                ].map(({val,label,color})=>(
-                  <div key={label}>
-                    <div style={{
-                      fontWeight:800,fontSize:'1.35rem',letterSpacing:'-0.02em',
-                      color,
-                      fontVariantNumeric:'tabular-nums',
-                    }}>{val}</div>
-                    <div style={{color:'#71717a',fontSize:'0.75rem',marginTop:2}}>{label}</div>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Right — Phone mockup (floating, live screens) */}
@@ -1774,14 +1793,6 @@
               ))}
 
               <div style={{position:'relative',zIndex:1}}>
-                <div style={{
-                  display:'inline-flex',alignItems:'center',gap:8,
-                  background:'rgba(237,71,36,0.18)',border:'1px solid rgba(237,71,36,0.4)',
-                  borderRadius:999,padding:'5px 14px',marginBottom:18,
-                }}>
-                  <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#ED4724',boxShadow:'0 0 8px rgba(237,71,36,0.8)'}}/>
-                  <span style={{color:'#fda4af',fontSize:'0.7rem',fontWeight:600,letterSpacing:'0.12em'}}>READY TO START</span>
-                </div>
                 <h2 className="bp-heading" style={{
                   fontSize:'clamp(1.8rem,3.2vw,2.4rem)',fontWeight:800,
                   letterSpacing:'-0.01em',margin:'0 0 14px',lineHeight:1.15,
@@ -1882,7 +1893,22 @@
       ];
       const [selectedClassId,   setSelectedClassId  ] = useState(1);
       const [classSwitcherOpen, setClassSwitcherOpen] = useState(false);
+      const [leaderTab,         setLeaderTab        ] = useState('engagement');
+      const [leaderFilter,      setLeaderFilter     ] = useState('7days');
+      const [lessonsFilter,     setLessonsFilter    ] = useState('all');
+      const lbListRef = useRef(null);
       const selectedClass = CLASSES.find(c => c.id === selectedClassId) || CLASSES[0];
+
+      // Auto-center the leaderboard list on the current user
+      useEffect(() => {
+        if (activeTab !== 'leaderboard' || leaderTab !== 'engagement') return;
+        const el = lbListRef.current;
+        if (!el) return;
+        const meRow = el.querySelector('[data-me="true"]');
+        if (meRow) {
+          el.scrollTop = meRow.offsetTop - el.clientHeight/2 + meRow.clientHeight/2;
+        }
+      }, [activeTab, leaderTab, leaderFilter]);
 
       const goBack = () => { setScreen(null); setScreenData(null); };
       const startHarvester = () => {
@@ -3243,270 +3269,309 @@
 
       if (screen === 'shiftStage') {
         const stages = [
-          {num:0, name:'Unaware',        role:'Ignorance',     time:'ก่อนเริ่ม',                 color:'#71717a', tagline:'ยังไม่รู้ว่าต้องเปลี่ยน',           features:['Onboarding'],
+          {num:0, name:'Unaware',        role:'Ignorance',     tags:[],
            desc:'ช่วงเริ่มต้นที่ยังไม่ทันมองตัวเอง ขั้นนี้คือการเปิดมุมมองใหม่ ให้เห็นว่ามีโอกาสพัฒนาตัวเองอยู่ตรงไหนบ้าง ก่อนจะตัดสินใจว่าจะเริ่มเดินทางหรือไม่'},
-          {num:1, name:'Awareness',      role:'Questioner',    time:'Day 1',                    color:'#ef4444', tagline:'เริ่มเห็นช่องว่างของตัวเอง',       features:['Pre-Assessment','Speaker Live'],
+          {num:1, name:'Awareness',      role:'Questioner',    tags:['เริ่มเห็นช่องว่างของตัวเอง'],
            desc:'เริ่มเห็นตัวเองชัดขึ้น เห็นช่องว่างระหว่างที่ทำอยู่ทุกวันกับเป้าหมายที่อยากไปให้ถึง เริ่มตั้งคำถาม สงสัย และเปิดใจรับมุมมองใหม่ ๆ ที่เคยมองข้าม'},
-          {num:2, name:'Acknowledgment', role:'Goal Setter',   time:'Day 2–4',                  color:'#f97316', tagline:'รู้ว่าขาดอะไร · วางแผน',         features:['Goal Setting','Live Quiz','Mission Planning'],
+          {num:2, name:'Acknowledgment', role:'Goal Setter',   tags:['รู้ว่าขาดอะไร','วางแผน'],
            desc:'ยอมรับแล้วว่าต้องพัฒนาเรื่องไหน ตอนนี้คือช่วงตั้งเป้าหมายให้ชัด เป้าหมายที่ทั้งท้าทายและมีความหมายกับตัวเองจริง ๆ จะทำให้พร้อมลงมือทำมากขึ้น'},
-          {num:3, name:'Activation',     role:'Apprentice',    time:'Day 4–14 · 11 วัน',         color:'#fbbf24', tagline:'เริ่มฝึก · ยังต้อง Quick Win',     features:['Mission','Flash Card','Recall Quiz'],
+          {num:3, name:'Activation',     role:'Apprentice',    tags:['เริ่มฝึก','ยังต้อง Quick Win'],
            desc:'เริ่มลงมือฝึกในสถานการณ์ที่ปลอดภัย ไม่กดดันเกินไป ช่วงนี้ต้องการ "ชัยชนะเล็ก ๆ" บ่อย ๆ เพื่อให้รู้สึกว่า "เราทำได้" — ความมั่นใจที่สะสมตรงนี้คือกุญแจสู่ความสำเร็จระยะยาว'},
-          {num:4, name:'Adoption',       role:'Practitioner',  time:'Day 15–45 · 31 วัน',        color:'#22c55e', tagline:'ทำสม่ำเสมอ · สร้าง Routine',     features:['Mission ต่อเนื่อง','Manager Review'],
+          {num:4, name:'Adoption',       role:'Practitioner',  tags:['ทำสม่ำเสมอ','สร้าง Routine'],
            desc:'ทำซ้ำจนเริ่มคล่อง ทักษะใหม่เริ่มฝังตัวจากการฝึกอย่างตั้งใจ ช่วงนี้ต้องการคำแนะนำจากหัวหน้าหรือโค้ชสม่ำเสมอ เพื่อไม่ให้นิสัยเก่ากลับมา'},
-          {num:5, name:'Automate',       role:'Graduates',     time:'Day 46–90 · 45 วัน',        color:'#3b82f6', tagline:'เป็นนิสัย · เป็นตัวตน',           features:['Self-driven','Transformation Rank'],
+          {num:5, name:'Automate',       role:'Graduates',     tags:['เป็นนิสัย','เป็นตัวตน'],
            desc:'พฤติกรรมใหม่กลายเป็นเรื่องปกติ ทำได้เองโดยไม่ต้องคิด ไม่ต้องฝืน นี่คือเป้าหมายสูงสุดของการเปลี่ยนแปลง — เมื่อสิ่งที่เคยต้องฝึกกลายเป็น "ตัวคุณ"'},
         ];
         const currentNum = 4; // Practitioner
         const current    = stages[currentNum];
-        const daysIn     = 22;
-        const daysToNext = 9;
-        const weekExp    = 180;
-        const progressPct = Math.round(((currentNum + 0.7) / stages.length) * 100); // ≈ 78
-
-        // Ring geometry
-        const SIZE     = 220;
-        const STROKE_W = 8;
-        const RADIUS   = 92;
-        const CX       = SIZE / 2;
-        const CY       = SIZE / 2;
-        const C        = 2 * Math.PI * RADIUS;
-
-        // Single progress arc: from top, clockwise, length = progressPct% of circle
-        const progressLen = (progressPct / 100) * C;
 
         return (
           <PhoneFrame statusBg="#0a0a0c">
             <div style={{flex:1,display:'flex',flexDirection:'column',background:'#0a0a0c',overflow:'hidden'}}>
               {/* Header */}
-              <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px 18px 6px',flexShrink:0}}>
-                <button onClick={goBack} style={{width:36,height:36,borderRadius:'50%',
+              <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px 18px 8px',flexShrink:0}}>
+                <button onClick={goBack} style={{width:40,height:40,borderRadius:'50%',
                   background:'#161618',border:'1px solid rgba(255,255,255,0.08)',
-                  cursor:'pointer',color:'#a8a29e',
+                  cursor:'pointer',color:'#d4d4d8',
                   display:'flex',alignItems:'center',justifyContent:'center'}}>
                   <ChevronLeft size={18}/>
                 </button>
                 <div style={{flex:1}}>
-                  <div style={{color:'#fff',fontSize:'0.95rem',fontWeight:800,letterSpacing:'-0.01em'}}>Shift Stage</div>
-                  <div style={{color:'#52525b',fontSize:'0.62rem',letterSpacing:'0.04em'}}>เส้นทางการเปลี่ยนแปลง</div>
+                  <div style={{color:'#fafafa',fontSize:'1.1rem',fontWeight:700,letterSpacing:'-0.01em',lineHeight:1.2}}>
+                    เส้นทางการเปลี่ยนแปลง
+                  </div>
+                  <div style={{color:'#71717a',fontSize:'0.72rem',marginTop:2,letterSpacing:'0.01em'}}>
+                    Shift Stage
+                  </div>
                 </div>
               </div>
 
               {/* Body */}
               <div style={{flex:1,overflowY:'auto',padding:'4px 18px 28px'}}>
 
-                {/* ── HERO RING ── */}
-                <div style={{position:'relative',display:'flex',justifyContent:'center',alignItems:'center',
-                  padding:'20px 0 8px'}}>
-                  {/* Soft halo behind ring */}
+                {/* ── HERO PENTAGON BADGE ── */}
+                <div style={{position:'relative',display:'flex',flexDirection:'column',alignItems:'center',
+                  padding:'24px 0 28px'}}>
+                  {/* Soft halo */}
                   <div aria-hidden="true" style={{
-                    position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',
-                    width:300,height:300,borderRadius:'50%',
-                    background:`radial-gradient(circle, ${current.color}40 0%, ${current.color}10 35%, transparent 65%)`,
-                    filter:'blur(24px)',pointerEvents:'none',
+                    position:'absolute',top:'40%',left:'50%',transform:'translate(-50%,-50%)',
+                    width:240,height:200,
+                    background:'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%)',
+                    filter:'blur(20px)',pointerEvents:'none',
                   }}/>
 
-                  {/* Ring SVG */}
-                  <div style={{position:'relative',width:SIZE,height:SIZE}}>
-                    <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} style={{overflow:'visible'}}>
+                  {/* Pentagon */}
+                  <div style={{position:'relative',width:96,height:96,
+                    display:'inline-flex',alignItems:'center',justifyContent:'center'}}>
+                    <svg viewBox="0 0 100 100" width="96" height="96" style={{position:'absolute',inset:0}}>
                       <defs>
-                        <filter id="ssSegGlow" x="-100%" y="-100%" width="300%" height="300%">
-                          <feGaussianBlur stdDeviation="3">
-                            <animate attributeName="stdDeviation"
-                              values="2;9;2"
-                              keyTimes="0;0.5;1"
-                              dur="3s" repeatCount="indefinite"/>
-                          </feGaussianBlur>
-                          <feMerge>
-                            <feMergeNode/>
-                            <feMergeNode in="SourceGraphic"/>
-                          </feMerge>
-                        </filter>
+                        <linearGradient id="pentaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%"  stopColor="#3f3f46"/>
+                          <stop offset="100%" stopColor="#18181b"/>
+                        </linearGradient>
                       </defs>
-
-                      {/* Background track */}
-                      <circle cx={CX} cy={CY} r={RADIUS} fill="none"
-                        stroke="rgba(255,255,255,0.05)" strokeWidth={STROKE_W}/>
-
-                      {/* Progress arc — single continuous stroke with breathing glow */}
-                      <circle cx={CX} cy={CY} r={RADIUS} fill="none"
-                        stroke={current.color}
-                        strokeWidth={STROKE_W}
-                        strokeLinecap="round"
-                        strokeDasharray={`${progressLen} ${C - progressLen}`}
-                        strokeDashoffset={0}
-                        transform={`rotate(-90 ${CX} ${CY})`}
-                        filter="url(#ssSegGlow)"
-                      >
-                        <animate attributeName="stroke-opacity"
-                          values="0.85;1;0.85"
-                          keyTimes="0;0.5;1"
-                          dur="3s" repeatCount="indefinite"/>
-                      </circle>
+                      <polygon points="50,6 92,36 76,86 24,86 8,36"
+                        fill="url(#pentaGrad)"
+                        stroke="rgba(255,255,255,0.45)" strokeWidth="2" strokeLinejoin="round"/>
                     </svg>
+                    <span style={{position:'relative',color:'#fafafa',
+                      fontSize:'2.4rem',fontWeight:800,letterSpacing:'-0.02em',lineHeight:1}}>
+                      {currentNum}
+                    </span>
+                  </div>
 
-                    {/* Inner content centered in ring */}
-                    <div style={{
-                      position:'absolute',inset:0,
-                      display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-                      pointerEvents:'none',textAlign:'center',
-                    }}>
-                      <div style={{color:'#52525b',fontSize:'0.55rem',fontWeight:700,letterSpacing:'0.14em',marginBottom:2}}>
-                        STAGE
-                      </div>
-                      <div className="bp-heading" style={{
-                        color:'#fff',fontSize:'2.8rem',fontWeight:800,
-                        letterSpacing:'-0.04em',lineHeight:1,
-                      }}>{currentNum}</div>
-                      <div style={{
-                        color:current.color,fontSize:'0.94rem',fontWeight:800,
-                        marginTop:6,letterSpacing:'-0.01em',
-                      }}>{current.name}</div>
-                      <div style={{color:'#71717a',fontSize:'0.66rem',marginTop:1,letterSpacing:'0.02em'}}>
-                        {current.role}
-                      </div>
-                    </div>
+                  <div style={{color:'#fafafa',fontSize:'1.05rem',fontWeight:600,
+                    marginTop:14,letterSpacing:'-0.005em'}}>
+                    {current.role}
                   </div>
                 </div>
 
-                <div style={{height:20}}/>
+                {/* ── DIVIDER ── */}
+                <div style={{height:1,background:'rgba(255,255,255,0.08)',marginBottom:18}}/>
 
-                {/* ── SECTION DIVIDER ── */}
-                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
-                  <span style={{color:'#71717a',fontSize:'0.6rem',fontWeight:800,letterSpacing:'0.14em'}}>JOURNEY</span>
-                  <div style={{flex:1,height:1,background:'rgba(255,255,255,0.06)'}}/>
-                  <span style={{color:'#52525b',fontSize:'0.54rem',fontWeight:600,letterSpacing:'0.04em'}}>
-                    6 stages · 90 วัน
-                  </span>
+                {/* ── JOURNEY HEADER ── */}
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
+                  <div style={{color:'#fafafa',fontSize:'1.1rem',fontWeight:700,letterSpacing:'-0.005em'}}>
+                    Journey
+                  </div>
+                  <div style={{color:'#71717a',fontSize:'0.78rem',fontWeight:500}}>
+                    {stages.length} Stage
+                  </div>
                 </div>
 
-                {/* ── TIMELINE RAIL (newest first) ── */}
-                <div style={{position:'relative',paddingLeft:32}}>
-                  {/* Vertical rail */}
-                  <div aria-hidden="true" style={{
-                    position:'absolute',left:11,top:8,bottom:8,width:1.5,
-                    background:`linear-gradient(180deg, rgba(255,255,255,0.06) 0%, ${current.color}80 ${((stages.length-1-currentNum)/(stages.length-1))*100}%, ${stages[0].color}55 100%)`,
-                  }}/>
-
+                {/* ── STAGE CARDS (newest first) ── */}
+                <div style={{display:'flex',flexDirection:'column',gap:10}}>
                   {[...stages].reverse().map(s => {
-                    const isPast     = s.num <  currentNum;
-                    const isCurrent  = s.num === currentNum;
-                    const isFuture   = s.num >  currentNum;
-                    const isExpanded = ssExpandedNum === s.num;
-
+                    const isCurrent = s.num === currentNum;
+                    const isStart   = s.num === 0;
                     return (
                       <div key={s.num} style={{
-                        position:'relative',
-                        marginBottom: isExpanded ? 16 : 14,
+                        background: isCurrent ? '#161618' : '#0d0d0f',
+                        border:`1px solid ${isCurrent ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.03)'}`,
+                        borderRadius:14,padding:'14px 16px',position:'relative',
+                        boxShadow:isCurrent?'0 6px 18px rgba(0,0,0,0.4)':'none',
                       }}>
-                        {/* Dot */}
-                        {isCurrent ? (
-                          <span className="anim-glow-ring" style={{
-                            position:'absolute',left:-29,top:6,
-                            width:18,height:18,borderRadius:'50%',
-                            background:s.color,
-                            boxShadow:`0 0 0 4px ${s.color}1f`,
-                          }}/>
-                        ) : isPast ? (
+                        {/* "คุณอยู่ตรงนี้" indicator on current stage */}
+                        {isCurrent && (
                           <div style={{
-                            position:'absolute',left:-25,top:6,
-                            width:10,height:10,borderRadius:'50%',
-                            background:s.color,opacity:0.7,
-                            display:'flex',alignItems:'center',justifyContent:'center',
+                            position:'absolute',top:12,right:14,
+                            display:'inline-flex',alignItems:'center',gap:5,
+                            padding:'3px 9px',borderRadius:999,
+                            background:'rgba(34,197,94,0.10)',
+                            border:'1px solid rgba(34,197,94,0.30)',
                           }}>
-                            <svg width="6" height="6" viewBox="0 0 24 24" fill="none" stroke="#0a0a0c" strokeWidth="4">
-                              <polyline points="20 6 9 17 4 12"/>
-                            </svg>
+                            <span className="anim-pulse" style={{
+                              width:6,height:6,borderRadius:'50%',background:'#22c55e',
+                              boxShadow:'0 0 6px #22c55e',
+                            }}/>
+                            <span style={{color:'#86efac',fontSize:'0.66rem',fontWeight:600}}>คุณอยู่ตรงนี้</span>
                           </div>
-                        ) : (
-                          <div style={{
-                            position:'absolute',left:-25,top:6,
-                            width:10,height:10,borderRadius:'50%',
-                            background:'transparent',
-                            border:`1.5px solid ${s.color}55`,
-                          }}/>
                         )}
 
-                        {/* Content */}
-                        {isExpanded ? (
-                          <button
-                            onClick={()=>!isCurrent && setSsExpandedNum(currentNum)}
-                            className="btn-press"
-                            style={{
-                              width:'100%',display:'block',textAlign:'left',
-                              background:`linear-gradient(135deg, ${s.color}1a 0%, ${s.color}05 100%)`,
-                              border:`1px solid ${s.color}55`,
-                              borderRadius:14,padding:'12px 14px',
-                              boxShadow:isCurrent?`0 8px 24px ${s.color}1f`:'none',
-                              position:'relative',cursor:isCurrent?'default':'pointer',
-                            }}>
-                            {isCurrent && (
-                              <div style={{
-                                position:'absolute',top:10,right:12,
-                                display:'inline-flex',alignItems:'center',gap:4,
-                                padding:'2px 7px',borderRadius:999,
-                                background:`${s.color}26`,border:`1px solid ${s.color}66`,
-                              }}>
-                                <span className="anim-pulse" style={{width:4,height:4,borderRadius:'50%',background:s.color}}/>
-                                <span style={{color:s.color,fontSize:'0.52rem',fontWeight:800,letterSpacing:'0.1em'}}>YOU</span>
-                              </div>
-                            )}
-                            <div style={{color:'#fff',fontSize:'0.92rem',fontWeight:800,letterSpacing:'-0.01em',lineHeight:1.2,marginBottom:3}}>
-                              {s.name}
-                            </div>
-                            <div style={{color:s.color,fontSize:'0.64rem',fontWeight:700,letterSpacing:'0.02em',marginBottom:8}}>
-                              {s.role} <span style={{color:'#71717a',fontWeight:500}}>· {s.time}</span>
-                            </div>
-                            <div style={{color:'#d4d4d8',fontSize:'0.74rem',lineHeight:1.5,marginBottom:8,fontStyle:'italic'}}>
-                              {s.tagline}
-                            </div>
-                            <div style={{
-                              color:'#a8a29e',fontSize:'0.7rem',lineHeight:1.65,
-                              paddingTop:9,marginBottom:10,
-                              borderTop:`1px dashed ${s.color}33`,
-                            }}>
-                              {s.desc}
-                            </div>
-                            <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
-                              {s.features.map(f => (
-                                <span key={f} style={{
-                                  display:'inline-flex',alignItems:'center',
-                                  background:'rgba(255,255,255,0.04)',
-                                  border:'1px solid rgba(255,255,255,0.08)',
-                                  borderRadius:999,padding:'2px 8px',
-                                  color:'#a8a29e',fontSize:'0.58rem',fontWeight:600,
-                                }}>{f}</span>
-                              ))}
-                            </div>
-                          </button>
-                        ) : (
-                          <button
-                            onClick={()=>setSsExpandedNum(s.num)}
-                            className="btn-press"
-                            style={{
-                              width:'100%',display:'flex',alignItems:'center',gap:8,
-                              padding:'4px 0',background:'transparent',border:'none',
-                              cursor:'pointer',textAlign:'left',
-                            }}>
-                            <div style={{flex:1,minWidth:0}}>
-                              <div style={{
-                                color:isPast?'#a8a29e':'#52525b',
-                                fontSize:'0.74rem',fontWeight:600,letterSpacing:'-0.01em',lineHeight:1.2,
-                              }}>{s.name}</div>
-                              <div style={{color:isPast?'#52525b':'#3f3f46',fontSize:'0.58rem',marginTop:2,letterSpacing:'0.02em'}}>
-                                {s.role} · {s.time}
-                              </div>
-                            </div>
-                            {isFuture && (
-                              <span style={{color:'#3f3f46',display:'inline-flex'}}>
-                                <Lock size={11} strokeWidth={2}/>
-                              </span>
-                            )}
-                            {isPast && (
-                              <span style={{color:'#52525b',fontSize:'0.7rem',marginRight:2}}>›</span>
-                            )}
-                          </button>
+                        {/* "จุดเริ่มต้น" pill on stage 0 */}
+                        {isStart && (
+                          <div style={{
+                            position:'absolute',top:14,right:14,
+                            padding:'3px 10px',borderRadius:999,
+                            background:'rgba(255,255,255,0.03)',
+                            border:'1px solid rgba(255,255,255,0.06)',
+                            color:'#52525b',fontSize:'0.66rem',fontWeight:500,
+                          }}>จุดเริ่มต้น</div>
+                        )}
+
+                        <div style={{
+                          color: isCurrent ? '#a1a1aa' : '#52525b',
+                          fontSize:'0.7rem',fontWeight:500,letterSpacing:'0.01em',
+                        }}>
+                          Stage {s.num} - {s.name}
+                        </div>
+                        <div style={{
+                          color: isCurrent ? '#fafafa' : '#71717a',
+                          fontSize:'1.05rem',fontWeight:700,letterSpacing:'-0.01em',marginTop:2,
+                        }}>
+                          {s.role}
+                        </div>
+
+                        {s.tags.length > 0 && (
+                          <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:10}}>
+                            {s.tags.map(t => (
+                              <span key={t} style={{
+                                display:'inline-flex',alignItems:'center',
+                                background:'rgba(255,255,255,0.03)',
+                                border:`1px solid rgba(255,255,255,${isCurrent?0.06:0.04})`,
+                                borderRadius:999,padding:'3px 10px',
+                                color: isCurrent ? '#d4d4d8' : '#52525b',
+                                fontSize:'0.66rem',fontWeight:500,
+                              }}>{t}</span>
+                            ))}
+                          </div>
+                        )}
+
+                        {!isStart && (
+                          <div style={{
+                            color: isCurrent ? '#a1a1aa' : '#52525b',
+                            fontSize:'0.76rem',lineHeight:1.6,marginTop:10,
+                          }}>
+                            {s.desc}
+                          </div>
                         )}
                       </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </PhoneFrame>
+        );
+      }
+
+      if (screen === 'moduleDetail') {
+        const mod        = screenData;
+        const lessons    = (mod && mod._lessons) || [];
+        const moduleNum  = mod && mod._moduleNum;
+
+        return (
+          <PhoneFrame statusBg="#0a0a0c">
+            <div style={{flex:1,display:'flex',flexDirection:'column',background:'#0a0a0c',overflow:'hidden'}}>
+              {/* Header */}
+              <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px 20px 6px',flexShrink:0}}>
+                <button onClick={goBack} style={{
+                  width:40,height:40,borderRadius:'50%',
+                  background:'#161618',border:'1px solid rgba(255,255,255,0.08)',
+                  cursor:'pointer',color:'#d4d4d8',
+                  display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,
+                }}>
+                  <ChevronLeft size={18}/>
+                </button>
+                <div style={{color:'#fafafa',fontSize:'1.05rem',fontWeight:600,letterSpacing:'-0.005em'}}>
+                  กลับหน้าบทเรียน
+                </div>
+              </div>
+
+              {/* Body */}
+              <div style={{flex:1,overflowY:'auto',padding:'14px 20px 28px'}}>
+                {/* Module label */}
+                <div style={{color:'#a1a1aa',fontSize:'0.72rem',fontWeight:600,letterSpacing:'0.1em',marginBottom:4}}>
+                  MODULE {moduleNum}
+                </div>
+
+                {/* Title */}
+                <h1 style={{color:'#fafafa',fontSize:'1.6rem',fontWeight:700,
+                  letterSpacing:'-0.015em',lineHeight:1.2,marginBottom:10}}>
+                  {mod && mod.title}
+                </h1>
+
+                {/* Subtitle */}
+                {mod && mod.subtitle && (
+                  <div style={{color:'#fafafa',fontSize:'0.86rem',fontWeight:600,marginBottom:4}}>
+                    {mod.subtitle}
+                  </div>
+                )}
+
+                {/* Description */}
+                {mod && mod.desc && (
+                  <p style={{color:'#a1a1aa',fontSize:'0.8rem',lineHeight:1.6,marginBottom:22}}>
+                    {mod.desc}
+                  </p>
+                )}
+
+                {/* Section header */}
+                <h2 style={{color:'#fafafa',fontSize:'1.05rem',fontWeight:700,marginBottom:12}}>
+                  รายการ Micro Learning
+                </h2>
+
+                {/* Lesson list */}
+                <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                  {lessons.length === 0 && (
+                    <div style={{
+                      padding:'30px 16px',textAlign:'center',
+                      color:'#71717a',fontSize:'0.85rem',
+                    }}>ยังไม่มีบทเรียนในโมดูลนี้</div>
+                  )}
+                  {lessons.map((ml, idx) => {
+                    const isArticle = !ml.youtubeId;
+                    const isShort   = ml.isShort;
+                    // Lock article-type lessons until the user has watched the videos before it
+                    const priorAllWatched = lessons.slice(0, idx).every(l => l.watched);
+                    const isLocked  = isArticle && !priorAllWatched && idx > 0;
+
+                    const typeLabel = isArticle ? 'บทความ' : (isShort ? 'วิดีโอแนวตั้ง' : 'วิดีโอ');
+                    const TypeIcon  = isArticle ? FileText : (isShort ? Smartphone : Video);
+
+                    return (
+                      <button key={ml.id}
+                        onClick={()=>{
+                          if (isLocked) return;
+                          setScreen('mlPlayer'); setScreenData(ml); setMlPlaying(false); setMlChecked(false);
+                        }}
+                        disabled={isLocked}
+                        className={isLocked ? '' : 'btn-press'}
+                        style={{
+                          width:'100%',textAlign:'left',
+                          cursor: isLocked ? 'not-allowed' : 'pointer',
+                          background:'#161618',
+                          border:'1px solid rgba(255,255,255,0.05)',
+                          borderRadius:14,padding:'14px 16px',
+                          display:'flex',alignItems:'center',gap:12,
+                          opacity: isLocked ? 0.55 : 1,
+                        }}>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{
+                            color: isLocked ? '#71717a' : '#fafafa',
+                            fontSize:'1rem',fontWeight:700,letterSpacing:'-0.005em',
+                            lineHeight:1.3,marginBottom:6,
+                            whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',
+                          }}>{ml.title}</div>
+                          <div style={{display:'flex',alignItems:'center',gap:10}}>
+                            <span style={{display:'inline-flex',alignItems:'center',gap:4,
+                              color:'#a1a1aa',fontSize:'0.7rem',fontWeight:500,
+                            }}>
+                              <TypeIcon size={11} strokeWidth={2}/>
+                              {typeLabel}
+                            </span>
+                            <span style={{display:'inline-flex',alignItems:'center',gap:4,
+                              color:'#a1a1aa',fontSize:'0.7rem',fontWeight:500,
+                            }}>
+                              <Clock size={11} strokeWidth={2}/>
+                              {ml.duration}
+                            </span>
+                          </div>
+                        </div>
+
+                        {isLocked ? (
+                          <div style={{
+                            width:40,height:40,borderRadius:10,flexShrink:0,
+                            background:'rgba(255,255,255,0.04)',
+                            border:'1px solid rgba(255,255,255,0.08)',
+                            display:'inline-flex',alignItems:'center',justifyContent:'center',
+                            color:'#71717a',
+                          }}>
+                            <Lock size={15} strokeWidth={2}/>
+                          </div>
+                        ) : (
+                          <ChevronRight size={18} style={{color:'#71717a',flexShrink:0}}/>
+                        )}
+                      </button>
                     );
                   })}
                 </div>
@@ -3582,34 +3647,60 @@
          - nav: absolute bottom-0
       ─────────────────────────────────────────── */
       const renderHome = () => (
-        <div className="space-y-6 animate-in fade-in duration-500 pb-8">
+        <div className="space-y-6 animate-in fade-in duration-500 pb-8" style={{position:'relative'}}>
+
+          {/* Warm gradient glow behind hero */}
+          <div aria-hidden="true" style={{
+            position:'absolute',top:-80,left:-60,right:-60,height:340,zIndex:0,pointerEvents:'none',
+            background:'radial-gradient(120% 80% at 50% 0%, rgba(237,71,36,0.55) 0%, rgba(237,71,36,0.28) 25%, rgba(237,71,36,0.08) 55%, transparent 80%)',
+            filter:'blur(2px)',
+          }}/>
 
           {/* Top Bar */}
-          <div className="flex justify-between items-center pt-2 px-1" style={{position:'relative',gap:8}}>
-            <button onClick={()=>setNotifOpen(true)} className="w-10 h-10 bg-[#161618] rounded-full flex items-center justify-center border border-zinc-800/80 relative cursor-pointer" style={{flexShrink:0}}>
-              <Bell className="text-zinc-500" size={18} fill="currentColor"/>
-              <div className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-[#09090b] anim-pulse"></div>
+          <div className="flex justify-between items-center px-1" style={{position:'relative',gap:8,zIndex:classSwitcherOpen?50:2,marginTop:-12}}>
+            {/* Avatar */}
+            <button aria-label="User Profile" className="btn-press" style={{
+              width:40,height:40,borderRadius:'50%',flexShrink:0,
+              border:'1.5px solid rgba(255,255,255,0.18)',padding:0,cursor:'pointer',
+              background:'#1a1a1d',
+              display:'inline-flex',alignItems:'center',justifyContent:'center',
+              color:'#a1a1aa',
+            }}>
+              <UserIcon size={20} strokeWidth={2}/>
+            </button>
+
+            {/* Bell */}
+            <button onClick={()=>setNotifOpen(true)} className="btn-press" style={{
+              width:40,height:40,borderRadius:'50%',flexShrink:0,
+              background:'rgba(28,28,32,0.7)',border:'1px solid rgba(255,255,255,0.08)',
+              display:'inline-flex',alignItems:'center',justifyContent:'center',
+              cursor:'pointer',position:'relative',
+            }}>
+              <Bell className="text-zinc-200" size={17} strokeWidth={2}/>
+              <div className="anim-pulse" style={{position:'absolute',top:6,right:6,
+                width:8,height:8,background:'#ef4444',borderRadius:'50%',
+                border:'1.5px solid #1a1a1d'}}/>
             </button>
 
             {/* Class switcher pill */}
             <button onClick={()=>setClassSwitcherOpen(o=>!o)} className="btn-press" style={{
-              flex:1,minWidth:0,height:40,padding:'0 12px',borderRadius:999,
-              background:'#161618',border:'1px solid rgba(63,63,70,0.7)',
-              display:'inline-flex',alignItems:'center',gap:8,cursor:'pointer',
+              flex:1,minWidth:0,height:40,padding:'0 14px',borderRadius:999,
+              background:'rgba(28,28,32,0.85)',border:'1px solid rgba(255,255,255,0.08)',
+              display:'inline-flex',alignItems:'center',justifyContent:'space-between',gap:8,
+              cursor:'pointer',backdropFilter:'blur(6px)',
             }}>
-              {selectedClass.stage==='in-class' && (
-                <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',boxShadow:'0 0 6px #22c55e',flexShrink:0}}/>
-              )}
-              <span style={{flex:1,minWidth:0,color:'#e4e4e7',fontSize:'0.72rem',fontWeight:600,
-                whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',textAlign:'left'}}>
-                {selectedClass.name}
+              <span style={{display:'inline-flex',alignItems:'center',gap:8,minWidth:0,flex:1}}>
+                {selectedClass.stage==='in-class' && (
+                  <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',
+                    background:'#22c55e',boxShadow:'0 0 6px #22c55e',flexShrink:0}}/>
+                )}
+                <span style={{flex:1,minWidth:0,color:'#f4f4f5',fontSize:'0.78rem',fontWeight:600,
+                  whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',textAlign:'left'}}>
+                  {selectedClass.name}
+                </span>
               </span>
-              <ChevronDown size={14} style={{color:'#71717a',flexShrink:0,
+              <ChevronDown size={14} style={{color:'#a1a1aa',flexShrink:0,
                 transform:classSwitcherOpen?'rotate(180deg)':'none',transition:'transform 0.2s'}}/>
-            </button>
-
-            <button aria-label="User Profile" className="w-10 h-10 bg-[#161618] rounded-full flex items-center justify-center border border-zinc-800/80 cursor-pointer text-zinc-400" style={{flexShrink:0}}>
-              <UserIcon size={18} strokeWidth={2}/>
             </button>
 
             {/* Class switcher dropdown */}
@@ -3619,7 +3710,7 @@
                   position:'fixed',inset:0,zIndex:30,
                 }}/>
                 <div className="scale-in" style={{
-                  position:'absolute',top:48,left:48,right:48,zIndex:40,
+                  position:'absolute',top:48,left:96,right:0,zIndex:40,
                   background:'#161618',border:'1px solid #3f3f46',borderRadius:16,
                   padding:6,boxShadow:'0 16px 40px rgba(0,0,0,0.6)',
                 }}>
@@ -3675,66 +3766,79 @@
           </div>
 
           {/* Greeting & Gauge */}
-          <div className="text-center mt-6 relative">
-            <h1 className="text-2xl font-semibold text-zinc-300 mb-1">สวัสดี ผู้เรียน</h1>
-            <div className="flex items-center justify-center gap-1.5">
-              <span className="text-2xl font-medium text-blue-400">Practitioner</span>
-              <button
-                aria-label="ดู Shift Stage"
-                onClick={()=>setScreen('shiftStage')}
-                className="btn-press"
-                style={{
-                  background:'transparent',border:'none',padding:2,cursor:'pointer',
-                  display:'inline-flex',alignItems:'center',justifyContent:'center',
-                  color:'#71717a',
-                }}>
-                <Info size={14}/>
-              </button>
-            </div>
+          <div className="text-center mt-4 relative" style={{zIndex:2}}>
+            {/* Greeting */}
+            <h1 className="text-[26px] font-semibold text-white mb-3" style={{letterSpacing:'-0.01em'}}>สวัสดี ผู้เรียน</h1>
 
-            <div className="relative w-full max-w-[340px] mx-auto mt-10 mb-2">
-              <div className="flex justify-between px-8 text-[10px] text-zinc-500 mb-[-15px] relative z-10">
-                <span className="transform -rotate-12">น้อยเกินไป</span>
-                <span className="-mt-4">กำลังดี</span>
-                <span className="transform rotate-12">ยอดเยี่ยม</span>
-              </div>
-              <div className="relative">
-                <div className="absolute top-0 left-0 w-1/2 h-full bg-amber-500/20 blur-3xl rounded-full"></div>
-                <svg viewBox="0 0 200 100" className="w-full drop-shadow-[0_0_8px_rgba(251,191,36,0.5)] relative z-10" style={{overflow:'visible'}}>
+            {/* Practitioner level pill */}
+            <button
+              aria-label="ดู Shift Stage"
+              onClick={()=>setScreen('shiftStage')}
+              className="btn-press"
+              style={{
+                display:'inline-flex',alignItems:'center',gap:8,
+                padding:'6px 14px 6px 8px',borderRadius:999,
+                background:'rgba(20,20,23,0.75)',border:'1px solid rgba(255,255,255,0.08)',
+                cursor:'pointer',backdropFilter:'blur(6px)',
+              }}>
+              <span style={{
+                position:'relative',width:24,height:24,display:'inline-flex',
+                alignItems:'center',justifyContent:'center',flexShrink:0,
+              }}>
+                <svg viewBox="0 0 24 24" width="24" height="24" style={{position:'absolute',inset:0}}>
+                  <polygon points="12,2.5 21.4,9.4 17.9,20.5 6.1,20.5 2.6,9.4"
+                    fill="rgba(255,255,255,0.04)"
+                    stroke="rgba(255,255,255,0.38)" strokeWidth="1.3" strokeLinejoin="round"/>
+                </svg>
+                <span style={{position:'relative',color:'#fafafa',fontSize:'0.72rem',fontWeight:700,lineHeight:1}}>4</span>
+              </span>
+              <span style={{color:'#fafafa',fontSize:'0.95rem',fontWeight:600,letterSpacing:'-0.005em'}}>Practitioner</span>
+              <Info size={13} style={{color:'#a1a1aa'}}/>
+            </button>
+
+            {/* Gauge */}
+            <div className="relative w-full max-w-[320px] mx-auto mt-6">
+              <div className="text-[10px] text-zinc-400 mb-[-4px]" style={{letterSpacing:'0.02em'}}>กำลังดี</div>
+
+              <div className="relative" style={{paddingTop:6}}>
+                <div aria-hidden="true" style={{
+                  position:'absolute',top:0,left:'10%',right:'10%',height:'80%',
+                  background:'radial-gradient(60% 70% at 35% 50%, rgba(251,191,36,0.25), transparent 70%)',
+                  filter:'blur(20px)',pointerEvents:'none',
+                }}/>
+
+                <svg viewBox="0 0 200 110"
+                  className="w-full drop-shadow-[0_0_8px_rgba(251,191,36,0.45)] relative z-10"
+                  style={{overflow:'visible'}}>
                   <defs>
                     <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#fbbf24"/>
-                      <stop offset="70%" stopColor="#f59e0b"/>
+                      <stop offset="0%"  stopColor="#fbbf24"/>
+                      <stop offset="65%" stopColor="#f59e0b"/>
                       <stop offset="100%" stopColor="#3b82f6" stopOpacity="0"/>
                     </linearGradient>
-                    {/* Soft halo around sparkle */}
                     <filter id="glowOuter" x="-200%" y="-200%" width="500%" height="500%">
                       <feGaussianBlur in="SourceGraphic" stdDeviation="3.5"/>
                     </filter>
-                    {/* Crisp sparkle core */}
                     <filter id="glowMid" x="-100%" y="-100%" width="300%" height="300%">
                       <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="b"/>
                       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
                     </filter>
                   </defs>
 
-                  {/* Motion path — full arc, animation will stop at 50% (กำลังดี / top) */}
-                  <path id="gaugeArcMotion" d="M 15 90 A 85 85 0 0 1 185 90" fill="none" stroke="none"/>
+                  <path id="gaugeArcMotion" d="M 15 60 C 35 -10, 165 -10, 185 60" fill="none" stroke="none"/>
 
-                  {/* Track */}
-                  <path d="M 15 90 A 85 85 0 0 1 185 90" fill="none" stroke="#27272a" strokeWidth="3" strokeLinecap="round"/>
-                  {/* Filled arc */}
-                  <path d="M 15 90 A 85 85 0 0 1 129 10.2" fill="none" stroke="url(#gaugeGrad)" strokeWidth="4.5" strokeLinecap="round"/>
+                  <path d="M 15 60 C 35 -10, 165 -10, 185 60"
+                    fill="none" stroke="#27272a" strokeWidth="3" strokeLinecap="round"/>
+                  <path d="M 15 60 C 27 18, 78.6 1.2, 122.28 9.6"
+                    fill="none" stroke="url(#gaugeGrad)" strokeWidth="4.5" strokeLinecap="round"/>
 
-                  {/* Milestone dots */}
-                  <circle cx="20.2"  cy="61"   r="2" fill="#ef4444"/>
-                  <circle cx="45.4"  cy="24.9" r="2" fill="#ef4444"/>
-                  <circle cx="85.3"  cy="6.3"  r="2" fill="#f59e0b"/>
-                  <circle cx="129"   cy="10.2" r="2" fill="#22c55e"/>
-                  <circle cx="165.1" cy="35.4" r="2" fill="#22c55e"/>
-                  <circle cx="183.7" cy="75.3" r="2" fill="#3b82f6"/>
+                  <circle cx="25"     cy="50"    r="1.3" fill="#ef4444"/>
+                  <circle cx="46"     cy="30"    r="1.3" fill="#ef4444"/>
+                  <circle cx="80"     cy="15.5"  r="1.3" fill="#f59e0b"/>
+                  <circle cx="122"    cy="15.5"  r="1.3" fill="#22c55e"/>
+                  <circle cx="156"    cy="30"    r="1.3" fill="#22c55e"/>
+                  <circle cx="176"    cy="50"    r="1.3" fill="#3b82f6"/>
 
-                  {/* ── Sparkle: soft outer halo ── */}
                   <circle r="5" fill="#fbbf24" filter="url(#glowOuter)">
                     <animateMotion dur="5.5s" repeatCount="indefinite" calcMode="spline"
                       keyPoints="0;0.50;0.50;0" keyTimes="0;0.62;0.88;1"
@@ -3747,7 +3851,6 @@
                       dur="5.5s" repeatCount="indefinite"/>
                   </circle>
 
-                  {/* ── Sparkle: bright crisp core ── */}
                   <circle r="2" fill="#fff8e1" filter="url(#glowMid)">
                     <animateMotion dur="5.5s" repeatCount="indefinite" calcMode="spline"
                       keyPoints="0;0.50;0.50;0" keyTimes="0;0.62;0.88;1"
@@ -3764,61 +3867,155 @@
                       dur="5.5s" repeatCount="indefinite"/>
                   </circle>
                 </svg>
-                <div className="absolute bottom-1 left-0 w-full flex flex-col items-center justify-end z-20">
-                  <div className="flex items-center justify-center gap-1.5 mb-1.5">
-                    <h2 className="text-[17px] font-medium text-white">ใช้ได้เลยผู้เรียน</h2>
+
+                <span style={{
+                  position:'absolute',left:26,top:38,transform:'rotate(-32deg)',transformOrigin:'left top',
+                  fontSize:'10px',color:'#f4f4f5',letterSpacing:'0.01em',whiteSpace:'nowrap',pointerEvents:'none',
+                  zIndex:20,
+                  textShadow:'0 0 3px #09090b, 0 0 6px #09090b, 0 0 10px rgba(9,9,11,0.95)',
+                }}>น้อยเกินไป</span>
+                <span style={{
+                  position:'absolute',right:26,top:38,transform:'rotate(32deg)',transformOrigin:'right top',
+                  fontSize:'10px',color:'#f4f4f5',letterSpacing:'0.01em',whiteSpace:'nowrap',pointerEvents:'none',
+                  zIndex:20,
+                  textShadow:'0 0 3px #09090b, 0 0 6px #09090b, 0 0 10px rgba(9,9,11,0.95)',
+                }}>ยอดเยี่ยม</span>
+
+                {/* Status text — tucked inside the bowl of the curve */}
+                <div className="absolute left-0 right-0 flex flex-col items-center pointer-events-none" style={{bottom:6}}>
+                  <div className="flex items-center justify-center gap-1.5 mb-1">
+                    <h2 className="text-[18px] font-medium text-white" style={{letterSpacing:'-0.005em'}}>ใช้ได้เลยผู้เรียน</h2>
                     <div className="w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center text-zinc-500 text-[10px]">i</div>
                   </div>
-                  <p className="text-zinc-400 text-sm leading-relaxed max-w-[260px] mx-auto px-2 text-center">
+                  <p className="text-zinc-400 text-[13px] leading-relaxed max-w-[280px] mx-auto px-2 text-center">
                     คุณเริ่มจะลืมแล้ว แต่เป็นเรื่องปกติ<br/>ลองใส่ใจอีกหน่อยจะดูดีเลย
                   </p>
                 </div>
               </div>
             </div>
+
+            {/* View Engagement Insight CTA */}
+            <button
+              onClick={()=>setActiveTab('home')}
+              className="btn-press"
+              style={{
+                marginTop:18,display:'inline-flex',alignItems:'center',gap:8,
+                padding:'10px 18px',borderRadius:999,
+                background:'rgba(24,24,27,0.85)',
+                border:'1px solid rgba(255,255,255,0.10)',
+                color:'#f4f4f5',fontSize:'0.82rem',fontWeight:600,
+                cursor:'pointer',backdropFilter:'blur(6px)',
+                boxShadow:'0 6px 18px rgba(0,0,0,0.35)',
+              }}>
+              <BarChart2 size={15} strokeWidth={2.2}/>
+              View Engagement Insight
+            </button>
           </div>
 
           {/* Divider */}
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-amber-500/30 to-transparent my-8"></div>
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-zinc-700/40 to-transparent my-6" style={{position:'relative',zIndex:2}}></div>
 
           {/* Suggested Challenges */}
-          <div className="px-1">
+          <div className="px-1" style={{position:'relative',zIndex:2}}>
             <h3 className="text-lg font-medium text-white mb-0.5">ภารกิจที่แนะนำ</h3>
             <p className="text-xs text-zinc-500 mb-4">Suggested Challenge</p>
             <div className="space-y-3">
-              {suggestedChallenges.map(ch=>(
-                <button key={ch.id} onClick={()=>openChallenge(ch)}
-                  className="w-full bg-[#09090b] rounded-2xl p-5 relative overflow-hidden border border-zinc-800/60 shadow-lg text-left cursor-pointer">
-                  <div className="absolute left-[-20px] top-1/2 transform -translate-y-1/2 w-20 h-32 bg-blue-500/20 blur-xl rounded-full"></div>
-                  <div className="relative z-10">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-blue-200 text-xs font-medium opacity-80">{ch.type}</span>
-                      <span className="text-amber-400 text-xs font-medium">+{ch.points} EXP</span>
+              {/* Card 1 — Late mission */}
+              <button onClick={()=>openChallenge(lateChallenge)}
+                className="w-full rounded-2xl text-left cursor-pointer btn-press"
+                style={{
+                  background:'#111114',border:'1px solid rgba(63,63,70,0.55)',
+                  padding:'16px 18px',position:'relative',overflow:'hidden',
+                }}>
+                <div style={{position:'absolute',left:-24,top:'50%',transform:'translateY(-50%)',
+                  width:80,height:120,background:'rgba(239,68,68,0.10)',filter:'blur(22px)',borderRadius:'50%'}}/>
+                <div style={{position:'relative',zIndex:1}}>
+                  <div className="flex justify-between items-center mb-2.5">
+                    <div className="flex items-center gap-1.5">
+                      <span style={{background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.08)',
+                        color:'#a1a1aa',fontSize:'0.65rem',fontWeight:600,padding:'3px 9px',borderRadius:999}}>Anytime</span>
+                      <span style={{background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.08)',
+                        color:'#a1a1aa',fontSize:'0.65rem',fontWeight:600,padding:'3px 9px',borderRadius:999}}>Mission</span>
                     </div>
-                    <h4 className="text-white text-xl font-medium leading-tight pr-4">{ch.title}</h4>
-                    <div className="text-blue-400 text-xs font-medium mt-3">แตะเพื่อเริ่ม →</div>
+                    <span style={{color:'#f87171',fontSize:'0.7rem',fontWeight:600,
+                      display:'inline-flex',alignItems:'center',gap:4}}>
+                      Late <Info size={11}/>
+                    </span>
                   </div>
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-center gap-4 my-6">
-              <div className="h-px flex-1 bg-zinc-800"></div>
-              <span className="text-zinc-500 text-xs tracking-[0.2em] font-medium">L a t e</span>
-              <div className="h-px flex-1 bg-zinc-800"></div>
-            </div>
-
-            <button onClick={()=>openChallenge(lateChallenge)}
-              className="w-full bg-[#09090b] rounded-2xl p-5 relative overflow-hidden border border-zinc-800/60 shadow-lg text-left cursor-pointer mb-8">
-              <div className="absolute left-[-20px] top-1/2 transform -translate-y-1/2 w-20 h-32 bg-zinc-500/10 blur-xl rounded-full"></div>
-              <div className="relative z-10">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-zinc-400 text-xs font-medium">{lateChallenge.type}</span>
-                  <span className="text-red-400 text-xs font-medium">เลย {lateChallenge.daysLate} วัน</span>
+                  <h4 className="text-white text-xl font-medium leading-tight pr-2 mb-3">Leadership Reflection</h4>
+                  <div className="flex items-center justify-between">
+                    <span style={{display:'inline-flex',alignItems:'center',gap:5,
+                      color:'#a1a1aa',fontSize:'0.72rem',fontWeight:500}}>
+                      <Clock size={11}/> 30 min
+                    </span>
+                    <div style={{display:'inline-flex',alignItems:'center',gap:12}}>
+                      <span style={{display:'inline-flex',alignItems:'center',gap:3,
+                        color:'#e4e4e7',fontSize:'0.72rem',fontWeight:600}}>
+                        +20 Shift <Flame size={11} style={{color:'#f97316'}} fill="#f97316"/>
+                      </span>
+                      <span style={{display:'inline-flex',alignItems:'center',gap:3,
+                        color:'#e4e4e7',fontSize:'0.72rem',fontWeight:600}}>
+                        +15 Exp <Flame size={11} style={{color:'#f97316'}} fill="#f97316"/>
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-white text-xl font-medium leading-tight pr-4">{lateChallenge.title}</h4>
-                <div className="text-zinc-500 text-xs font-medium mt-3">แตะเพื่อส่งช้า →</div>
-              </div>
-            </button>
+              </button>
+
+              {/* Card 2+ — Suggested */}
+              {suggestedChallenges.map((ch, idx) => {
+                const category = idx === 0 ? 'Main' : 'Anytime';
+                const tagType  = ch.type;
+                const duration = ch.type === 'Quiz' ? '15 min' : '25 min';
+                const shift    = Math.round(ch.points * 0.4);
+                const exp      = Math.round(ch.points * 0.3);
+                const daysLeft = ch.dueIn ? `${ch.dueIn.replace(' วัน','')} Days Left` : null;
+                return (
+                  <button key={ch.id} onClick={()=>openChallenge(ch)}
+                    className="w-full rounded-2xl text-left cursor-pointer btn-press"
+                    style={{
+                      background:'#111114',border:'1px solid rgba(63,63,70,0.55)',
+                      padding:'16px 18px',position:'relative',overflow:'hidden',
+                    }}>
+                    <div style={{position:'absolute',left:-24,top:'50%',transform:'translateY(-50%)',
+                      width:80,height:120,background:'rgba(59,130,246,0.12)',filter:'blur(22px)',borderRadius:'50%'}}/>
+                    <div style={{position:'relative',zIndex:1}}>
+                      <div className="flex justify-between items-center mb-2.5">
+                        <div className="flex items-center gap-1.5">
+                          <span style={{display:'inline-flex',alignItems:'center',gap:4,
+                            background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.08)',
+                            color:'#a1a1aa',fontSize:'0.65rem',fontWeight:600,padding:'3px 9px',borderRadius:999}}>
+                            <Target size={9} strokeWidth={2.2}/>{category}
+                          </span>
+                          <span style={{background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.08)',
+                            color:'#a1a1aa',fontSize:'0.65rem',fontWeight:600,padding:'3px 9px',borderRadius:999}}>{tagType}</span>
+                        </div>
+                        {daysLeft && (
+                          <span style={{color:'#a1a1aa',fontSize:'0.7rem',fontWeight:500}}>{daysLeft}</span>
+                        )}
+                      </div>
+                      <h4 className="text-white text-xl font-medium leading-tight pr-2 mb-3">{ch.title}</h4>
+                      <div className="flex items-center justify-between">
+                        <span style={{display:'inline-flex',alignItems:'center',gap:5,
+                          color:'#a1a1aa',fontSize:'0.72rem',fontWeight:500}}>
+                          <Clock size={11}/> {duration}
+                        </span>
+                        <div style={{display:'inline-flex',alignItems:'center',gap:12}}>
+                          <span style={{display:'inline-flex',alignItems:'center',gap:3,
+                            color:'#e4e4e7',fontSize:'0.72rem',fontWeight:600}}>
+                            +{shift} Shift <Flame size={11} style={{color:'#f97316'}} fill="#f97316"/>
+                          </span>
+                          <span style={{display:'inline-flex',alignItems:'center',gap:3,
+                            color:'#e4e4e7',fontSize:'0.72rem',fontWeight:600}}>
+                            +{exp} Exp <Flame size={11} style={{color:'#f97316'}} fill="#f97316"/>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       );
@@ -4085,280 +4282,469 @@
         </div>
       );
 
-      const renderLeaderboard = () => (
-        <div className="space-y-6 fade-in pb-8">
-          <div className="flex flex-col items-center mt-2">
-            <div className="w-10 h-10 rounded-full bg-[#161618] flex items-center justify-center mb-4 border border-zinc-800">
-              <Flame className="text-zinc-300" size={20} fill="currentColor"/>
-            </div>
-            <h1 className="text-2xl font-bold text-white tracking-widest uppercase mb-1">Leaderboard</h1>
-            <p className="text-zinc-400 text-sm">Most Engagement</p>
-          </div>
+      const renderLeaderboard = () => {
+        const isEngagement = leaderTab === 'engagement';
+        const fullList = isEngagement
+          ? (leaderFilter === 'total' ? engagementLBTotal : engagementLB7d)
+          : transformLB;
+        const podium   = isEngagement ? engagementPodium : transformationPodium;
 
-          {/* Podium */}
-          <div className="flex justify-center items-end gap-3 mt-12 mb-8 h-40">
-            {podiumData.map((item,idx)=>(
-              <div key={idx} className={`w-[85px] bg-gradient-to-b from-zinc-200 to-transparent rounded-t-2xl flex flex-col items-center justify-end pb-4 relative`}
-                style={{height:item.height}}>
-                <div className="absolute -top-7 w-12 h-12 rounded-full border-[3px] border-black overflow-hidden bg-zinc-800 flex items-center justify-center">
-                  <UserIcon className={item.rank===1?'text-amber-500':'text-zinc-400'} size={24}/>
-                </div>
-                <span className="text-black font-bold text-2xl mt-4 z-10">{item.rank}</span>
-              </div>
-            ))}
-          </div>
+        // Engagement: show everything, no blur. Transformation: 5-row window with ±2 blurred.
+        const meIdx = fullList.findIndex(u => u.isMe);
+        const list = isEngagement
+          ? fullList.map(u => ({...u, _blurred:false}))
+          : (meIdx >= 0
+              ? (() => {
+                  const start = Math.max(0, meIdx - 2);
+                  const end   = Math.min(fullList.length, meIdx + 3);
+                  return fullList.slice(start, end).map(u => ({
+                    ...u,
+                    _blurred: Math.abs(fullList.indexOf(u) - meIdx) === 2,
+                  }));
+                })()
+              : fullList.slice(0, 5).map(u => ({...u, _blurred:false})));
 
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-zinc-500/30 to-transparent my-8"></div>
-
-          {/* Engagement List */}
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-medium text-white flex items-center gap-2">
-                Most Engagement <Info size={14} className="text-zinc-500"/>
-              </h2>
-              <button className="bg-[#161618] border border-zinc-800/80 rounded-full px-4 py-1.5 flex items-center gap-2 text-xs text-zinc-300 hover:bg-zinc-800 transition-colors">
-                This Week <ChevronDown size={14} className="text-zinc-500"/>
-              </button>
-            </div>
-            <div className="space-y-2.5">
-              {engagementLB.map(u=>(
-                <div key={u.rank} className="flex items-center rounded-[2rem] bg-[#111113] relative overflow-hidden h-16">
-                  {u.isMe && <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-zinc-400/80 to-transparent opacity-80 mix-blend-screen"></div>}
-                  <div className={`w-14 flex justify-center z-10 text-base ${u.isMe?'text-white font-medium':'text-zinc-500'}`}>{u.rank}</div>
-                  <div className="w-10 h-10 rounded-full bg-zinc-800 z-10 mr-4 flex items-center justify-center border border-zinc-700">
-                    <UserIcon className={u.isMe?'text-white':'text-zinc-400'} size={18}/>
-                  </div>
-                  <div className="flex-1 z-10 flex items-center justify-between pr-6">
-                    <div>
-                      <div className={`font-semibold ${u.isMe?'text-white':'text-zinc-200'}`}>{u.name}</div>
-                      <div className="text-xs text-zinc-500">{u.role}</div>
-                    </div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-white font-bold text-lg">{u.score}</span>
-                      <span className="text-zinc-500 text-[10px] uppercase font-medium tracking-wider">EXP</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Transformation Rank */}
-          <div className="mt-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-medium text-white flex items-center gap-2">
-                Transformation Rank <Info size={14} className="text-zinc-500"/>
-              </h2>
-            </div>
-            <div className="space-y-2.5">
-              {transformLB.map(u=>(
-                <div key={u.rank} className="flex items-center rounded-[2rem] bg-[#111113] relative overflow-hidden h-16">
-                  {u.isMe && <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-zinc-400/80 to-transparent opacity-80 mix-blend-screen"></div>}
-                  <div className={`w-14 flex justify-center z-10 text-base ${u.isMe?'text-white font-medium':'text-zinc-500'}`}>{u.rank}</div>
-                  <div className="w-10 h-10 rounded-full bg-zinc-800 z-10 mr-4 flex items-center justify-center border border-zinc-700">
-                    <UserIcon className={u.isMe?'text-white':'text-zinc-400'} size={18}/>
-                  </div>
-                  <div className="flex-1 z-10 flex items-center justify-between pr-6">
-                    <div>
-                      <div className={`font-semibold ${u.isMe?'text-white':'text-zinc-200'}`}>{u.name}</div>
-                      <div className="text-xs text-zinc-500">{u.role}</div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-white font-bold text-lg">{u.score}</span>
-                      <span className="text-zinc-500 text-[10px] uppercase font-medium tracking-wider w-12 text-right leading-tight">Shift<br/>Score</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      );
-
-      const renderLessons = () => {
-        const totalLessons   = moduleData.length;
-        const watchedLessons = microlearningData.filter(m=>m.watched).length;
-        const overallPct     = totalLessons ? (watchedLessons/totalLessons)*100 : 0;
+        const ScoreIcon = isEngagement
+          ? ({size=11,color='#fb923c'}) => <Flame size={size} fill="currentColor" style={{color}}/>
+          : ({size=11,color='#a1a1aa'}) => (
+              <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/>
+              </svg>
+            );
 
         return (
-          <div className="fade-in pb-8">
-            {/* Header */}
-            <div className="flex justify-between items-end pb-6 pt-2 px-1">
-              <div>
-                <h1 className="text-2xl font-semibold text-white">บทเรียน</h1>
-                <p className="text-zinc-500 text-xs mt-0.5">Micro Learning · {moduleData.length} Modules</p>
+          <div className="fade-in pb-8" style={{position:'relative'}}>
+            {/* Warm gradient glow */}
+            <div aria-hidden="true" style={{
+              position:'absolute',top:-80,left:-60,right:-60,height:280,zIndex:0,pointerEvents:'none',
+              background:'radial-gradient(120% 80% at 50% 0%, rgba(237,71,36,0.55) 0%, rgba(237,71,36,0.28) 25%, rgba(237,71,36,0.08) 55%, transparent 80%)',
+              filter:'blur(2px)',
+            }}/>
+
+            {/* Top Bar */}
+            <div className="flex justify-between items-center px-1" style={{position:'relative',gap:8,zIndex:2,marginTop:-12}}>
+              <button aria-label="User Profile" className="btn-press" style={{
+                width:40,height:40,borderRadius:'50%',flexShrink:0,
+                border:'1.5px solid rgba(255,255,255,0.18)',padding:0,cursor:'pointer',
+                background:'#1a1a1d',
+                display:'inline-flex',alignItems:'center',justifyContent:'center',
+                color:'#a1a1aa',
+              }}>
+                <UserIcon size={20} strokeWidth={2}/>
+              </button>
+
+              <h1 className="text-[22px] font-semibold flex-1 text-center" style={{letterSpacing:'0.005em'}}>
+                <span style={{color:'#fafafa'}}>Leader </span>
+                <span style={{color:'#a1a1aa',fontWeight:400}}>Board</span>
+              </h1>
+
+              <button className="btn-press" style={{
+                width:40,height:40,borderRadius:'50%',flexShrink:0,
+                background:'rgba(28,28,32,0.7)',border:'1px solid rgba(255,255,255,0.08)',
+                display:'inline-flex',alignItems:'center',justifyContent:'center',
+                cursor:'pointer',position:'relative',
+              }}>
+                <Bell className="text-zinc-200" size={17} strokeWidth={2}/>
+              </button>
+            </div>
+
+            {/* Tab toggle */}
+            <div className="mt-5" style={{position:'relative',zIndex:2}}>
+              <div style={{
+                display:'flex',background:'rgba(28,28,32,0.85)',border:'1px solid rgba(255,255,255,0.06)',
+                borderRadius:999,padding:4,
+              }}>
+                {[
+                  {id:'engagement',     label:'Engagement',     icon:<Flame size={13} fill="currentColor"/>},
+                  {id:'transformation', label:'Transformation', icon:(
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/>
+                    </svg>
+                  )},
+                ].map(t => {
+                  const active = leaderTab === t.id;
+                  return (
+                    <button key={t.id} onClick={()=>setLeaderTab(t.id)}
+                      className="btn-press"
+                      style={{
+                        flex:1,padding:'10px 12px',borderRadius:999,border:'none',cursor:'pointer',
+                        display:'inline-flex',alignItems:'center',justifyContent:'center',gap:6,
+                        background:active?'#f4f4f5':'transparent',
+                        color:active?'#0a0a0c':'#a1a1aa',
+                        fontSize:'0.82rem',fontWeight:600,letterSpacing:'-0.005em',
+                        transition:'background 0.2s, color 0.2s',
+                      }}>
+                      {t.icon}
+                      {t.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Module list (accordion) */}
-            <div className="space-y-4">
-              {moduleData.map((mod, modIdx)=>{
-                const lessons = mod.lessonIds.map(id => microlearningData.find(m=>m.id===id)).filter(Boolean);
-                const doneInMod = lessons.filter(l=>l.watched).length;
-                const modPct = lessons.length ? (doneInMod/lessons.length)*100 : 0;
-                const expanded = expandedModuleId === mod.id;
-                const isLocked = lessons.length === 0;
-
-                const inProgress = !isLocked && doneInMod > 0 && doneInMod < lessons.length;
+            {/* Podium */}
+            <div className="mt-8 flex justify-center items-end gap-3 px-2" style={{position:'relative',zIndex:2,height:170}}>
+              {podium.map(p => {
+                const isFirst = p.rank === 1;
                 return (
-                  <div key={mod.id} className="stagger"
-                    style={{animationDelay:`${modIdx*80}ms`,
-                      background:'#161618',
-                      border:`1px solid ${expanded ? `${mod.color}55` : 'rgba(63,63,70,.5)'}`,
-                      borderRadius:'1.1rem', overflow:'hidden',
-                      transition:'border-color 0.2s',
-                      opacity: isLocked ? 0.55 : 1,
+                  <div key={p.rank} style={{
+                    flex:1,maxWidth:110,display:'flex',flexDirection:'column',alignItems:'center',
+                    position:'relative',
+                  }}>
+                    {/* Avatar circle */}
+                    <div style={{
+                      width:isFirst?70:54,height:isFirst?70:54,borderRadius:'50%',
+                      background:'#1a1a1d',
+                      border:`${isFirst?3:2}px solid ${p.accent}`,
+                      display:'inline-flex',alignItems:'center',justifyContent:'center',
+                      boxShadow:isFirst?`0 0 18px ${p.accent}66`:`0 0 10px ${p.accent}44`,
+                      position:'relative',zIndex:2,
+                      marginBottom:-12,
                     }}>
-                    {/* Module header — clickable (or disabled if locked) */}
-                    <button
-                      onClick={()=>!isLocked && setExpandedModuleId(expanded ? null : mod.id)}
-                      disabled={isLocked}
-                      className={`w-full text-left ${isLocked?'':'cursor-pointer btn-press'}`}
-                      style={{
-                        background:'transparent',border:'none',padding:0,display:'block',
-                        cursor: isLocked ? 'not-allowed' : 'pointer',
-                      }}>
+                      <UserIcon size={isFirst?28:22} style={{color:'#d4d4d8'}} strokeWidth={1.8}/>
+                      {/* Rank badge */}
                       <div style={{
-                        padding: isLocked ? '12px 14px' : '14px 14px',
-                        display:'flex',gap:12,alignItems:'center'}}>
-                        {/* Module number badge */}
-                        <div style={{
-                          width:34,height:34,borderRadius:10,flexShrink:0,
-                          background: isLocked ? 'rgba(255,255,255,0.04)' : `${mod.color}1a`,
-                          border: isLocked ? '1px solid rgba(255,255,255,0.08)' : `1px solid ${mod.color}40`,
-                          display:'flex',alignItems:'center',justifyContent:'center',
-                          color: isLocked ? '#71717a' : mod.color,
-                          fontSize:'0.82rem',fontWeight:800,letterSpacing:'-0.01em',
-                          fontVariantNumeric:'tabular-nums',
-                        }}>{mod.num}</div>
+                        position:'absolute',top:-8,left:'50%',transform:'translateX(-50%)',
+                        background:p.accent,
+                        color:'#0a0a0c',fontSize:'0.72rem',fontWeight:800,
+                        width:22,height:22,borderRadius:'50%',
+                        display:'inline-flex',alignItems:'center',justifyContent:'center',
+                        border:'2px solid #0a0a0c',
+                        zIndex:3,
+                      }}>{p.rank}</div>
+                    </div>
 
-                        {/* Title + status */}
-                        <div style={{flex:1,minWidth:0}}>
-                          <div style={{color:'#f4f4f5',fontSize:'0.88rem',fontWeight:700,
-                            letterSpacing:'-0.005em',lineHeight:1.3,
-                            whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
-                            {mod.title}
-                          </div>
-                          {!isLocked && (
-                            <div style={{color:'#71717a',fontSize:'0.66rem',marginTop:2,letterSpacing:'0.01em'}}>
-                              {inProgress
-                                ? `${doneInMod}/${lessons.length} บทเรียน`
-                                : `${lessons.length} บทเรียน`}
-                            </div>
-                          )}
-                          {isLocked && (
-                            <div style={{color:'#71717a',fontSize:'0.66rem',marginTop:2,fontStyle:'italic'}}>
-                              เร็ว ๆ นี้
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Right icon */}
-                        <div style={{flexShrink:0}}>
-                          {isLocked ? (
-                            <Lock size={14} style={{color:'#52525b'}} strokeWidth={2}/>
-                          ) : (
-                            <div style={{transform:expanded?'rotate(90deg)':'rotate(0)',
-                              transition:'transform 0.25s ease'}}>
-                              <ChevronRight size={16} style={{color:'#71717a'}}/>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Module progress bar — only if in-progress */}
-                      {inProgress && (
-                        <div style={{padding:'0 14px 12px'}}>
-                          <div style={{height:3,width:'100%',background:'rgba(255,255,255,0.05)',
-                            borderRadius:999,overflow:'hidden'}}>
-                            <div style={{height:'100%',borderRadius:999,
-                              width:`${modPct}%`, transition:'width 0.7s',
-                              background:`linear-gradient(to right, ${mod.color}, ${mod.color}aa)`}}/>
-                          </div>
-                        </div>
-                      )}
-                    </button>
-
-                    {/* Expanded content: subtitle + description + lesson list */}
-                    {expanded && (
-                      <div className="fade-in" style={{padding:'0 14px 14px',
-                        borderTop:'1px solid rgba(255,255,255,0.04)'}}>
-                        <div style={{color:'#d4d4d8',fontSize:'0.78rem',fontWeight:600,
-                          margin:'12px 2px 4px',letterSpacing:'-0.005em'}}>
-                          {mod.subtitle}
-                        </div>
-                        <div style={{color:'#a1a1aa',fontSize:'0.74rem',lineHeight:1.6,
-                          margin:'0 2px 14px'}}>
-                          {mod.desc}
-                        </div>
-
-                        <div className="space-y-2.5">
-                          {lessons.map((ml, lessonIdx)=>(
-                            <button key={ml.id}
-                              onClick={()=>{ setScreen('mlPlayer'); setScreenData(ml); setMlPlaying(false); setMlChecked(false); }}
-                              className="w-full text-left cursor-pointer btn-press"
-                              style={{background:'#0f0f11',
-                                border:`1px solid rgba(63,63,70,.55)`,borderRadius:'0.875rem',
-                                padding:'0.7rem 0.85rem',display:'flex',gap:11,alignItems:'center',
-                                transform:'scale(1)',transition:'transform 0.15s, border-color 0.15s'}}
-                              onMouseDown={e=>e.currentTarget.style.transform='scale(0.985)'}
-                              onMouseUp={e=>e.currentTarget.style.transform='scale(1)'}
-                              onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}>
-                              {/* Step number */}
-                              <div style={{width:22,height:22,borderRadius:'50%',flexShrink:0,
-                                background: ml.watched ? '#22c55e' : 'rgba(255,255,255,0.04)',
-                                border: ml.watched ? '1px solid #22c55e' : '1px solid rgba(255,255,255,0.1)',
-                                display:'flex',alignItems:'center',justifyContent:'center',
-                                color: ml.watched ? '#fff' : '#71717a', fontSize:'0.66rem', fontWeight:700}}>
-                                {ml.watched
-                                  ? <CheckCircle2 size={12} style={{color:'#fff'}}/>
-                                  : (lessonIdx+1)}
-                              </div>
-                              {/* Type icon */}
-                              <div style={{width:36,height:36,borderRadius:'0.625rem',background:`${ml.color}18`,
-                                border:`1px solid ${ml.color}35`,flexShrink:0,
-                                display:'flex',alignItems:'center',justifyContent:'center'}}>
-                                {!ml.youtubeId
-                                  ? <FileText size={16} style={{color:ml.color}}/>
-                                  : ml.isShort
-                                    ? <Smartphone size={16} style={{color:ml.color}}/>
-                                    : <Video size={16} style={{color:ml.color}}/>}
-                              </div>
-                              {/* Info */}
-                              <div style={{flex:1,minWidth:0}}>
-                                <div style={{color:'#e4e4e7',fontWeight:500,fontSize:'0.82rem',lineHeight:1.35,
-                                  marginBottom:3,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
-                                  {ml.title}
-                                </div>
-                                <div style={{display:'flex',alignItems:'center',gap:8}}>
-                                  <span style={{color:'#a1a1aa',fontSize:'0.62rem'}}>
-                                    {!ml.youtubeId ? 'บทความ' : ml.isShort ? 'วิดีโอแนวตั้ง' : 'วิดีโอ'}
-                                  </span>
-                                  <span style={{color:'#52525b'}}>·</span>
-                                  <span style={{color:'#71717a',fontSize:'0.62rem',display:'flex',alignItems:'center',gap:3}}>
-                                    <Clock size={9}/> {ml.duration}
-                                  </span>
-                                </div>
-                              </div>
-                              <ChevronRight size={14} style={{color:'#52525b',flexShrink:0}}/>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    {/* Podium card */}
+                    <div style={{
+                      width:'100%',marginTop:8,padding:'18px 8px 10px',
+                      borderRadius:'14px 14px 12px 12px',
+                      background:p.gradient,
+                      border:`1px solid ${p.accent}33`,
+                      display:'flex',flexDirection:'column',alignItems:'center',gap:6,
+                      minHeight:isFirst?92:78,
+                      boxShadow:'0 8px 24px rgba(0,0,0,0.35)',
+                    }}>
+                      <span style={{color:'#fafafa',fontSize:'0.92rem',fontWeight:700,letterSpacing:'-0.005em'}}>{p.name}</span>
+                      <span style={{
+                        background:'rgba(0,0,0,0.35)',padding:'3px 10px',borderRadius:999,
+                        display:'inline-flex',alignItems:'center',gap:4,
+                        color:'#fafafa',fontSize:'0.72rem',fontWeight:600,
+                      }}>
+                        <ScoreIcon size={10} color={isEngagement?'#fb923c':'#fafafa'}/>
+                        {p.score}
+                      </span>
+                    </div>
                   </div>
                 );
               })}
+            </div>
+
+            {/* Most Engagement / Transformation section */}
+            <div className="mt-8 px-1" style={{position:'relative',zIndex:2}}>
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-[17px] font-semibold text-white flex items-center gap-1.5">
+                  {isEngagement ? 'Most Engagement' : 'Most Transformation'}
+                  <Info size={13} className="text-zinc-500"/>
+                </h2>
+                {isEngagement && (
+                  <div style={{
+                    display:'flex',background:'rgba(28,28,32,0.7)',
+                    border:'1px solid rgba(255,255,255,0.06)',borderRadius:999,padding:3,gap:2,
+                  }}>
+                    {[
+                      {id:'7days', label:'สถิติ 7 วัน'},
+                      {id:'total', label:'คะแนนรวม'},
+                    ].map(f => {
+                      const active = leaderFilter === f.id;
+                      return (
+                        <button key={f.id} onClick={()=>setLeaderFilter(f.id)}
+                          className="btn-press"
+                          style={{
+                            padding:'4px 10px',borderRadius:999,border:'none',cursor:'pointer',
+                            background:active?'#f4f4f5':'transparent',
+                            color:active?'#0a0a0c':'#a1a1aa',
+                            fontSize:'0.68rem',fontWeight:600,whiteSpace:'nowrap',
+                            transition:'background 0.2s, color 0.2s',
+                          }}>
+                          {f.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Column headers */}
+              <div style={{
+                display:'flex',alignItems:'center',
+                padding:'8px 16px',borderRadius:999,
+                background:'rgba(28,28,32,0.5)',border:'1px solid rgba(255,255,255,0.04)',
+                marginBottom:8,
+              }}>
+                <span style={{width:50,color:'#71717a',fontSize:'0.66rem',fontWeight:500}}>อันดับ</span>
+                <span style={{flex:1,color:'#71717a',fontSize:'0.66rem',fontWeight:500}}>ผู้เรียน</span>
+                <span style={{color:'#71717a',fontSize:'0.66rem',fontWeight:500}}>คะแนน</span>
+              </div>
+
+              {/* List — locked 5-row scroll viewport on Engagement, slice+blur on Transformation */}
+              <div className="space-y-2 lb-list"
+                ref={isEngagement ? lbListRef : null}
+                style={isEngagement ? {
+                  maxHeight:340,
+                  overflowY:'auto',
+                  paddingRight:4,
+                  /* Fade the top & bottom edges so off-screen rows feel cut */
+                  WebkitMaskImage:'linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%)',
+                  maskImage:'linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%)',
+                } : undefined}>
+                {list.map(u => (
+                  <div key={u.rank} data-me={u.isMe?'true':undefined} style={{
+                    display:'flex',alignItems:'center',
+                    padding:'10px 14px',borderRadius:999,
+                    background: u.isMe ? '#1f1f23' : '#111114',
+                    border:`1px solid ${u.isMe ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.04)'}`,
+                    position:'relative',overflow:'hidden',
+                    filter: u._blurred ? 'blur(4px)' : 'none',
+                    opacity:  u._blurred ? 0.55 : 1,
+                    pointerEvents: u._blurred ? 'none' : 'auto',
+                    transition:'filter 0.2s, opacity 0.2s',
+                  }}>
+                    <span style={{
+                      width:36,color: u.isMe ? '#fafafa' : '#a1a1aa',
+                      fontSize:'0.92rem',fontWeight:700,
+                    }}>{u.rank}</span>
+
+                    <div style={{
+                      width:32,height:32,borderRadius:'50%',flexShrink:0,marginRight:10,
+                      background:'#1a1a1d',
+                      border:'1.5px solid rgba(255,255,255,0.12)',
+                      display:'inline-flex',alignItems:'center',justifyContent:'center',
+                      color:'#a1a1aa',
+                    }}>
+                      <UserIcon size={16} strokeWidth={1.8}/>
+                    </div>
+
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{color:'#fafafa',fontSize:'0.88rem',fontWeight:600,lineHeight:1.2}}>{u.name}</div>
+                      <div style={{display:'inline-flex',alignItems:'center',gap:3,marginTop:2,
+                        background:'rgba(255,255,255,0.05)',padding:'1px 7px 1px 5px',borderRadius:999,
+                      }}>
+                        <span style={{
+                          width:12,height:12,borderRadius:'50%',
+                          background:'rgba(255,255,255,0.08)',
+                          display:'inline-flex',alignItems:'center',justifyContent:'center',
+                          color:'#a1a1aa',fontSize:'0.55rem',fontWeight:700,
+                        }}>2</span>
+                        <span style={{color:'#a1a1aa',fontSize:'0.6rem',fontWeight:500}}>{u.role}</span>
+                      </div>
+                    </div>
+
+                    <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:1}}>
+                      <span style={{display:'inline-flex',alignItems:'center',gap:4,
+                        color:'#fafafa',fontSize:'0.92rem',fontWeight:700,
+                      }}>
+                        <ScoreIcon size={11} color={isEngagement?'#fb923c':'#a1a1aa'}/>
+                        {u.score}
+                      </span>
+                      {isEngagement && u.delta != null && (
+                        <span style={{
+                          color: u.delta > 0 ? '#22c55e' : '#ef4444',
+                          fontSize:'0.66rem',fontWeight:600,lineHeight:1,
+                        }}>
+                          {u.delta > 0 ? '+' : ''}{u.delta}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      const renderLessons = () => {
+        // Each module: if it has any lessons it's available, otherwise it's locked.
+        // Mark module #2 (or any module with watched=false but available lessons) as "new" if recently published.
+        const modulesWithMeta = moduleData.map(mod => {
+          const lessons = mod.lessonIds.map(id => microlearningData.find(m=>m.id===id)).filter(Boolean);
+          const isLocked = lessons.length === 0;
+          // Heuristic: a module is "new" if it has unwatched lessons and it's one of the first available unwatched modules.
+          return { ...mod, _lessons: lessons, _isLocked: isLocked };
+        });
+        const firstNewIdx = modulesWithMeta.findIndex(m => !m._isLocked && m._lessons.some(l => !l.watched));
+        const modulesView = modulesWithMeta.map((m, i) => ({ ...m, _isNew: i === firstNewIdx }));
+
+        const filtered = lessonsFilter === 'locked'
+          ? modulesView.filter(m => m._isLocked)
+          : modulesView;
+
+        return (
+          <div className="fade-in pb-8" style={{position:'relative'}}>
+            {/* Warm gradient glow at top */}
+            <div aria-hidden="true" style={{
+              position:'absolute',top:-80,left:-60,right:-60,height:240,zIndex:0,pointerEvents:'none',
+              background:'radial-gradient(120% 80% at 50% 0%, rgba(237,71,36,0.55) 0%, rgba(237,71,36,0.28) 25%, rgba(237,71,36,0.08) 55%, transparent 80%)',
+              filter:'blur(2px)',
+            }}/>
+
+            {/* Top Bar */}
+            <div className="flex justify-between items-center px-1" style={{position:'relative',gap:8,zIndex:2,marginTop:-12}}>
+              <button aria-label="User Profile" className="btn-press" style={{
+                width:40,height:40,borderRadius:'50%',flexShrink:0,
+                border:'1.5px solid rgba(255,255,255,0.18)',padding:0,cursor:'pointer',
+                background:'#1a1a1d',
+                display:'inline-flex',alignItems:'center',justifyContent:'center',
+                color:'#a1a1aa',
+              }}>
+                <UserIcon size={20} strokeWidth={2}/>
+              </button>
+
+              <h1 className="text-[22px] font-semibold flex-1 text-center" style={{letterSpacing:'0.005em'}}>
+                <span style={{color:'#fafafa'}}>Class </span>
+                <span style={{color:'#a1a1aa',fontWeight:400}}>Library</span>
+              </h1>
+
+              <button className="btn-press" style={{
+                width:40,height:40,borderRadius:'50%',flexShrink:0,
+                background:'rgba(28,28,32,0.7)',border:'1px solid rgba(255,255,255,0.08)',
+                display:'inline-flex',alignItems:'center',justifyContent:'center',
+                cursor:'pointer',position:'relative',
+              }}>
+                <Bell className="text-zinc-200" size={17} strokeWidth={2}/>
+              </button>
+            </div>
+
+            {/* Tab toggle */}
+            <div className="mt-5" style={{position:'relative',zIndex:2}}>
+              <div style={{
+                display:'flex',background:'rgba(28,28,32,0.85)',border:'1px solid rgba(255,255,255,0.06)',
+                borderRadius:999,padding:4,
+              }}>
+                {[
+                  {id:'all',    label:'บทเรียนทั้งหมด'},
+                  {id:'locked', label:'ล็อคอยู่'},
+                ].map(t => {
+                  const active = lessonsFilter === t.id;
+                  return (
+                    <button key={t.id} onClick={()=>setLessonsFilter(t.id)}
+                      className="btn-press"
+                      style={{
+                        flex:1,padding:'10px 12px',borderRadius:999,border:'none',cursor:'pointer',
+                        display:'inline-flex',alignItems:'center',justifyContent:'center',gap:6,
+                        background:active?'#f4f4f5':'transparent',
+                        color:active?'#0a0a0c':'#a1a1aa',
+                        fontSize:'0.82rem',fontWeight:600,letterSpacing:'-0.005em',
+                        transition:'background 0.2s, color 0.2s',
+                      }}>
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Module cards */}
+            <div className="mt-5" style={{position:'relative',zIndex:2,display:'flex',flexDirection:'column',gap:10}}>
+              {filtered.map((mod, idx) => {
+                const lessons   = mod._lessons;
+                const isLocked  = mod._isLocked;
+                const moduleNum = idx + 1;
+
+                return (
+                  <button key={mod.id}
+                    onClick={()=>{
+                      if (isLocked) return;
+                      setScreen('moduleDetail');
+                      setScreenData({ ...mod, _moduleNum:moduleNum, _lessons:lessons });
+                    }}
+                    disabled={isLocked}
+                    className={isLocked ? '' : 'btn-press'}
+                    style={{
+                      width:'100%',textAlign:'left',cursor: isLocked ? 'not-allowed' : 'pointer',
+                      background:'#161618',
+                      border:'1px solid rgba(255,255,255,0.05)',
+                      borderRadius:14,padding:'14px 16px',
+                      position:'relative',
+                      opacity: isLocked ? 0.55 : 1,
+                      display:'flex',alignItems:'center',gap:12,
+                    }}>
+                    <div style={{flex:1,minWidth:0}}>
+                      {/* Top row: MODULE N + count chip + NEW badge */}
+                      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,flexWrap:'wrap'}}>
+                        <span style={{
+                          color:'#a1a1aa',fontSize:'0.68rem',fontWeight:600,letterSpacing:'0.08em',
+                        }}>MODULE {moduleNum}</span>
+
+                        <span style={{
+                          display:'inline-flex',alignItems:'center',gap:5,
+                          background:'rgba(255,255,255,0.05)',
+                          border:'1px solid rgba(255,255,255,0.06)',
+                          borderRadius:999,padding:'2px 9px',
+                          color:'#d4d4d8',fontSize:'0.66rem',fontWeight:500,
+                        }}>
+                          <BookOpen size={11} strokeWidth={2}/>
+                          {lessons.length || 0} บทเรียน
+                        </span>
+
+                        {mod._isNew && !isLocked && (
+                          <span style={{
+                            display:'inline-flex',alignItems:'center',gap:5,
+                            background:'rgba(34,197,94,0.10)',border:'1px solid rgba(34,197,94,0.28)',
+                            borderRadius:999,padding:'2px 9px',
+                            color:'#86efac',fontSize:'0.66rem',fontWeight:600,
+                            marginLeft:'auto',
+                          }}>
+                            <span style={{width:6,height:6,borderRadius:'50%',background:'#22c55e',
+                              boxShadow:'0 0 6px #22c55e'}}/>
+                            บทเรียนใหม่
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Title */}
+                      <div style={{
+                        color: isLocked ? '#71717a' : '#fafafa',
+                        fontSize:'1rem',fontWeight:700,letterSpacing:'-0.005em',lineHeight:1.3,
+                        whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',
+                      }}>
+                        {mod.title}
+                      </div>
+                    </div>
+
+                    {isLocked && (
+                      <div style={{
+                        width:44,height:44,borderRadius:10,flexShrink:0,
+                        background:'rgba(255,255,255,0.04)',
+                        border:'1px solid rgba(255,255,255,0.08)',
+                        display:'inline-flex',alignItems:'center',justifyContent:'center',
+                        color:'#71717a',
+                      }}>
+                        <Lock size={16} strokeWidth={2}/>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+
+              {filtered.length === 0 && (
+                <div style={{
+                  padding:'40px 16px',textAlign:'center',
+                  color:'#71717a',fontSize:'0.85rem',
+                }}>
+                  ไม่มีโมดูลในหมวดนี้
+                </div>
+              )}
             </div>
           </div>
         );
       };
 
       const tabs = [
-        {id:'home',        label:'หน้าหลัก', Icon:Home     },
-        {id:'challenges',  label:'ภารกิจ',   Icon:Target   },
-        {id:'lessons',     label:'บทเรียน',  Icon:Video    },
-        {id:'leaderboard', label:'อันดับ',    Icon:Trophy    },
+        {id:'leaderboard', label:'อันดับ',   primaryLabel:'LEADER BOARD', Icon:Users     },
+        {id:'home',        label:'INSIGHT',  primaryLabel:'INSIGHT',      Icon:BarChart2 },
+        {id:'challenges',  label:'ภารกิจ',   primaryLabel:'CHALLENGES',   Icon:LayoutGrid },
+        {id:'lessons',     label:'บทเรียน',  primaryLabel:'LIBRARY',      Icon:BookOpen   },
       ];
 
       return (
@@ -4466,19 +4852,57 @@
             );
           })()}
 
-          {/* ── Bottom Nav: absolute bottom เหมือน original ── */}
-          <div className="absolute bottom-0 w-full bg-zinc-900/95 backdrop-blur-md border-t border-zinc-800 pt-2 pb-6 px-2 z-50">
-            <div className="flex justify-between items-center py-2">
-              {tabs.map(({id,label,Icon:I})=>{
+          {/* ── Bottom Nav: floating pill with INSIGHT center ── */}
+          <div className="absolute bottom-0 w-full z-50" style={{padding:'0 18px 18px',pointerEvents:'none'}}>
+            <div style={{
+              position:'relative',
+              background:'rgba(28,28,32,0.92)',
+              border:'1px solid rgba(255,255,255,0.06)',
+              borderRadius:999,
+              padding:'10px 16px',
+              display:'flex',alignItems:'center',justifyContent:'space-between',
+              backdropFilter:'blur(14px)',
+              boxShadow:'0 18px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04)',
+              pointerEvents:'auto',
+              gap:6,
+            }}>
+              {tabs.map(({id,label,primaryLabel,Icon:I})=>{
                 const active = activeTab===id;
+                if (active) {
+                  return (
+                    <button key={id} onClick={()=>setActiveTab(id)}
+                      className="btn-press"
+                      style={{
+                        flex:'1 1 0',
+                        display:'flex',flexDirection:'column',alignItems:'center',gap:3,
+                        background:'transparent',border:'none',padding:0,cursor:'pointer',
+                        marginTop:-22,
+                      }}>
+                      <span style={{
+                        width:60,height:60,borderRadius:'50%',
+                        display:'inline-flex',alignItems:'center',justifyContent:'center',
+                        background:'radial-gradient(circle at 30% 30%, #fb7c4e 0%, #ef4f1f 55%, #d63a11 100%)',
+                        border:'3px solid #0e0e10',
+                        boxShadow:'0 10px 26px rgba(239,68,38,0.55), 0 0 0 1px rgba(255,255,255,0.06)',
+                      }}>
+                        <I size={26} strokeWidth={2.4} style={{color:'#fff'}}/>
+                      </span>
+                      <span style={{color:'#fafafa',fontSize:'0.55rem',fontWeight:700,letterSpacing:'0.08em',whiteSpace:'nowrap'}}>{primaryLabel}</span>
+                    </button>
+                  );
+                }
                 return (
                   <button key={id} onClick={()=>setActiveTab(id)}
-                    className="flex flex-col items-center justify-center gap-0.5 transition-colors cursor-pointer border-0 bg-transparent"
-                    style={{flex:1}}>
-                    <I size={20} strokeWidth={active?2.5:2} className={active?'text-white':'text-zinc-600'}/>
-                    <span className={`font-medium ${active?'text-white':'text-zinc-600'}`}
-                      style={{fontSize:'0.6rem'}}>{label}</span>
-                    <div className={`h-1 w-1 rounded-full mt-0.5 ${active?'bg-blue-500':'bg-transparent'}`}/>
+                    aria-label={label}
+                    className="btn-press"
+                    style={{
+                      flex:'1 1 0',
+                      display:'flex',alignItems:'center',justifyContent:'center',
+                      height:44,
+                      background:'transparent',border:'none',padding:0,cursor:'pointer',
+                    }}>
+                    <I size={22} strokeWidth={1.9}
+                      style={{color:'#a1a1aa'}}/>
                   </button>
                 );
               })}
@@ -7195,9 +7619,9 @@
           border: 'rgba(245,158,11,0.32)',
           Icon: FileText,
           desc: 'เตรียมความพร้อมก่อนเข้าคอร์ส ประเมินตัวเอง และตั้งเป้าหมายการเรียนรู้',
-          features: ['Pre-Assessment', 'Goal Setting', 'Onboarding Journey', 'Learning Path'],
+          features: ['Pre-Assessment'],
           mockup: 'checklist',
-          stagger: 0,
+          stagger: 80,
           active: false,
         },
         {
@@ -7211,7 +7635,7 @@
           border: 'rgba(237,71,36,0.32)',
           Icon: GraduationCap,
           desc: 'กิจกรรม Live ระหว่างการเรียน Harvester และ Real-time Engagement',
-          features: ['Live Activities', 'Harvester', 'Real-time Poll', 'Group Challenge'],
+          features: ['Live Activities', 'Harvester'],
           mockup: 'live',
           stagger: 40,
           active: false,
@@ -7599,133 +8023,6 @@
                     </div>
                   );
                 })}
-              </div>
-            </div>
-
-            {/* Shift Stage · Framework section */}
-            <div className="fade-in" style={{
-              animationDelay:'0.55s', opacity:0,
-              marginTop:80, width:'100%', maxWidth:1180,
-            }}>
-              <div style={{textAlign:'center', marginBottom:32}}>
-                <div style={{
-                  display:'inline-flex', alignItems:'center', gap:8,
-                  background:'rgba(251,191,36,0.10)', border:'1px solid rgba(251,191,36,0.30)',
-                  borderRadius:999, padding:'5px 14px', marginBottom:18,
-                }}>
-                  <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',background:'#fbbf24',boxShadow:'0 0 8px rgba(251,191,36,0.7)',display:'inline-block'}}/>
-                  <span className="bp-slogan" style={{color:'#fde68a',fontSize:'0.72rem',fontWeight:500}}>LEARNING FRAMEWORK</span>
-                </div>
-                <h2 className="bp-heading" style={{
-                  fontSize:'clamp(1.5rem,2.8vw,2.1rem)', fontWeight:800,
-                  letterSpacing:'0.01em', margin:'0 0 12px', lineHeight:1.2,
-                  color:'#fff',
-                }}>
-                  เข้าใจ <span style={{color:'#fbbf24'}}>การเปลี่ยนแปลง</span> ทั้ง 6 Stage
-                </h2>
-                <p style={{color:'#a8a29e',fontSize:'0.98rem',margin:'0 auto',lineHeight:1.65, maxWidth:620}}>
-                  Framework ที่ใช้ออกแบบ Learning Journey ของ Joinstick · ตั้งแต่ Unaware → Automate
-                </p>
-              </div>
-
-              {/* ─── Transformation Stage Card (full width) ─── */}
-              <div onClick={()=>go('transform')}
-                className="journey-phase-card"
-                style={{
-                  background:'linear-gradient(160deg, rgba(251,191,36,0.10), rgba(59,130,246,0.06))',
-                  border:'1px solid rgba(251,191,36,0.28)',
-                  borderRadius:24, padding:28,
-                  cursor:'pointer', position:'relative', overflow:'hidden',
-                  boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.25)',
-                }}
-                onMouseEnter={e=>{e.currentTarget.style.background='linear-gradient(160deg, rgba(251,191,36,0.18), rgba(59,130,246,0.12))';e.currentTarget.style.borderColor='rgba(251,191,36,0.55)';e.currentTarget.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 60px rgba(251,191,36,0.20)';}}
-                onMouseLeave={e=>{e.currentTarget.style.background='linear-gradient(160deg, rgba(251,191,36,0.10), rgba(59,130,246,0.06))';e.currentTarget.style.borderColor='rgba(251,191,36,0.28)';e.currentTarget.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.25)';}}>
-
-                {/* Diagonal stripes pattern */}
-                <div aria-hidden="true" style={{
-                  position:'absolute', inset:0, pointerEvents:'none', opacity:0.4,
-                  backgroundImage:'repeating-linear-gradient(45deg, rgba(251,191,36,0.08) 0, rgba(251,191,36,0.08) 1px, transparent 1px, transparent 18px)',
-                }}/>
-                {/* Corner blob */}
-                <div aria-hidden="true" style={{
-                  position:'absolute', top:-60, right:-60, width:220, height:220,
-                  background:'radial-gradient(circle, rgba(251,191,36,0.22) 0%, transparent 65%)',
-                  borderRadius:'50%', pointerEvents:'none',
-                }}/>
-
-                {/* Header */}
-                <div style={{display:'flex',alignItems:'center',gap:14, marginBottom:20, position:'relative', flexWrap:'wrap'}}>
-                  <div style={{
-                    width:56, height:56, borderRadius:16, flexShrink:0,
-                    background:'rgba(251,191,36,0.18)', border:'1px solid rgba(251,191,36,0.42)',
-                    display:'flex',alignItems:'center',justifyContent:'center',
-                    color:'#fde68a',
-                    boxShadow:'0 0 26px rgba(251,191,36,0.30)',
-                  }}><Compass size={26}/></div>
-                  <div style={{flex:1, minWidth:200}}>
-                    <div style={{display:'flex', alignItems:'center', gap:8, flexWrap:'wrap'}}>
-                      <span style={{fontWeight:800,fontSize:'1.18rem',letterSpacing:'-0.01em'}}>Transformation Stage</span>
-                      <span style={{display:'inline-flex',alignItems:'center',gap:4,
-                        background:'rgba(251,191,36,0.14)',border:'1px solid rgba(251,191,36,0.40)',
-                        borderRadius:999,padding:'2px 9px'}}>
-                        <span className="anim-pulse" style={{width:5,height:5,borderRadius:'50%',background:'#fbbf24',boxShadow:'0 0 6px rgba(251,191,36,0.7)',display:'inline-block'}}/>
-                        <span style={{color:'#fde68a',fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.06em'}}>FRAMEWORK</span>
-                      </span>
-                    </div>
-                    <div style={{color:'#a1a1aa',fontSize:'0.82rem',marginTop:4, lineHeight:1.5}}>
-                      6 Stage ของ Learner · จาก Unaware ถึง Automate · พฤติกรรม + ความสามารถ
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mini stage ladder */}
-                <div style={{
-                  background:'rgba(0,0,0,0.32)', borderRadius:14,
-                  padding:18, marginBottom:18, position:'relative',
-                  border:'1px solid rgba(255,255,255,0.05)',
-                }}>
-                  <div style={{
-                    display:'flex', gap:8, flexWrap:'wrap',
-                  }}>
-                    {[
-                      {n:0,l:'Unaware',       r:'Ignorance',    c:'#71717a'},
-                      {n:1,l:'Awareness',     r:'Questioner',   c:'#ef4444'},
-                      {n:2,l:'Acknowledgment',r:'Goal Setter',  c:'#f97316'},
-                      {n:3,l:'Activation',    r:'Apprentice',   c:'#fbbf24'},
-                      {n:4,l:'Adoption',      r:'Practitioner', c:'#22c55e'},
-                      {n:5,l:'Automate',      r:'Graduates',    c:'#3b82f6'},
-                    ].map(s=>(
-                      <div key={s.n} style={{
-                        flex:'1 1 140px', minWidth:120,
-                        background:`${s.c}14`, border:`1px solid ${s.c}44`,
-                        borderRadius:10, padding:'10px 12px',
-                      }}>
-                        <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
-                          <span style={{
-                            width:18,height:18,borderRadius:5,
-                            background:`${s.c}33`, border:`1px solid ${s.c}66`,
-                            color:s.c, fontSize:'0.62rem',fontWeight:800,
-                            display:'flex',alignItems:'center',justifyContent:'center',
-                          }}>{s.n}</span>
-                          <span style={{color:'#fff',fontSize:'0.74rem',fontWeight:700,letterSpacing:'-0.01em'}}>{s.l}</span>
-                        </div>
-                        <div style={{color:'#a1a1aa',fontSize:'0.66rem',fontWeight:500,paddingLeft:24}}>{s.r}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* CTA */}
-                <div style={{
-                  position:'relative',
-                  display:'flex',alignItems:'center',justifyContent:'center',gap:8,
-                  padding:'13px 0', borderRadius:14,
-                  background:'#fbbf24', color:'#1f1300',
-                  fontSize:'0.92rem', fontWeight:800, letterSpacing:'-0.01em',
-                  boxShadow:'0 8px 22px rgba(251,191,36,0.34)',
-                }}>
-                  ดูรายละเอียด Transformation Stage <span>→</span>
-                </div>
               </div>
             </div>
 
