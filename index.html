@@ -537,6 +537,8 @@
     const UserIcon     = p => <Svg {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></Svg>;
     const PlayCircle   = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></Svg>;
     const CheckCircle2 = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></Svg>;
+    const Check        = p => <Svg {...p}><polyline points="20 6 9 17 4 12"/></Svg>;
+    const Download     = p => <Svg {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></Svg>;
     const CheckCircle  = p => <Svg {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></Svg>;
     const XCircle      = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></Svg>;
     const Menu         = p => <Svg {...p}><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></Svg>;
@@ -550,6 +552,8 @@
     const Flame        = p => <Svg {...p}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></Svg>;
     const Trophy       = p => <Svg {...p}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></Svg>;
     const Activity     = p => <Svg {...p}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></Svg>;
+    const TrendingUp   = p => <Svg {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></Svg>;
+    const TrendingDown = p => <Svg {...p}><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></Svg>;
     const Award        = p => <Svg {...p}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></Svg>;
     const Star         = p => <Svg {...p}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Svg>;
     const Zap          = p => <Svg {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Svg>;
@@ -6843,6 +6847,16 @@
       const [sortBy, setSortBy]               = useState('transformation');
       const [sortDir, setSortDir]             = useState('desc');   // 'asc' | 'desc'
       const [pendingAction, setPendingAction] = useState(null);    // { id, type } | null
+      const [showGrowthChart, setShowGrowthChart] = useState(false); // Transformation Movement growth graph
+      const [nudgeDialog, setNudgeDialog]     = useState(null);    // { name, role } | null — nudge-sent confirmation
+      const [messageDialog, setMessageDialog] = useState(null);    // { id, name, role } | null — compose message
+      const [exportToast, setExportToast]     = useState(null);    // { label } | null — mockup export feedback
+
+      const handleExport = () => {
+        const label = tab === 'overview' ? 'รายงาน PDF (Overview)' : 'ไฟล์ CSV (Individual)';
+        setExportToast({ label });
+        setTimeout(() => setExportToast(null), 2600);
+      };
 
       const handleSort = (key) => {
         if (sortBy === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
@@ -6853,7 +6867,10 @@
       const isLearnerBusy   = (id) => pendingAction && pendingAction.id === id;
       const handleLearnerAction = (l, type) => {
         setPendingAction({ id: l.id, type });
-        setTimeout(() => setPendingAction(null), 1000);
+        setTimeout(() => {
+          setPendingAction(null);
+          if (type === 'nudge') setNudgeDialog({ name: l.name, role: l.role });
+        }, 1000);
       };
 
       // ── Class metadata ──
@@ -6970,6 +6987,16 @@
       const transformedCount = stageCounts[3] + stageCounts[4] + stageCounts[5]; // Stage 3+ = "Transformed"
       const avgTransformation = Math.round(LEARNERS.reduce((a,l)=>a+transformationScore(l),0)/totalLearners);
       const avgEngagement     = Math.round(LEARNERS.reduce((a,l)=>a+engagementScore(l),0)/totalLearners);
+      // Trend vs earlier snapshot (Pre-Class / Week-2 baseline)
+      const prevEngagementScore = (l) => Math.min(100, Math.round(
+        Math.min((l.streak * 0.5) / 14, 1) * 30 +
+        (l.status === 'active' ? 40 : l.status === 'at-risk' ? 20 : 0) +
+        Math.min((l.done * 0.5) / 18, 1) * 30
+      ));
+      const avgPrevTransformation = Math.round(LEARNERS.reduce((a,l)=>a+prevTransformationScore(l),0)/totalLearners);
+      const avgPrevEngagement     = Math.round(LEARNERS.reduce((a,l)=>a+prevEngagementScore(l),0)/totalLearners);
+      const engagementDelta      = avgEngagement - avgPrevEngagement;
+      const transformationDelta  = avgTransformation - avgPrevTransformation;
       const statusCounts = {
         all:     totalLearners,
         onTrack: LEARNERS.filter(l => learnerStatus(l) === 'onTrack').length,
@@ -7079,12 +7106,26 @@
               </div>
               <div style={{flex:'0 0 auto', textAlign:'center', paddingRight:18, borderRight:'1px solid #f0eeec', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
                 <div className="hr-eyebrow" style={{fontSize:'0.58rem'}}>Avg Engagement</div>
-                <div className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#0d9488', lineHeight:1}}>{avgEngagement}</div>
+                <div style={{display:'inline-flex', alignItems:'center', justifyContent:'center', gap:5}}>
+                  <span className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#0d9488', lineHeight:1}}>{avgEngagement}</span>
+                  {engagementDelta !== 0 && (
+                    <span title={`${engagementDelta > 0 ? '+' : ''}${engagementDelta} จาก baseline`} style={{color: engagementDelta > 0 ? '#059669' : '#dc2626', display:'inline-flex'}}>
+                      {engagementDelta > 0 ? <TrendingUp size={13}/> : <TrendingDown size={13}/>}
+                    </span>
+                  )}
+                </div>
                 <div className="num" style={{color:'#78716c', fontSize:'0.6rem', letterSpacing:'0.06em', textTransform:'uppercase'}}>Score</div>
               </div>
               <div style={{flex:'0 0 auto', textAlign:'center', paddingRight:18, borderRight:'1px solid #f0eeec', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
                 <div className="hr-eyebrow" style={{fontSize:'0.58rem'}}>Avg Transformation</div>
-                <div className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#059669', lineHeight:1}}>{avgTransformation}</div>
+                <div style={{display:'inline-flex', alignItems:'center', justifyContent:'center', gap:5}}>
+                  <span className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#059669', lineHeight:1}}>{avgTransformation}</span>
+                  {transformationDelta !== 0 && (
+                    <span title={`${transformationDelta > 0 ? '+' : ''}${transformationDelta} จาก Pre-Class`} style={{color: transformationDelta > 0 ? '#059669' : '#dc2626', display:'inline-flex'}}>
+                      {transformationDelta > 0 ? <TrendingUp size={13}/> : <TrendingDown size={13}/>}
+                    </span>
+                  )}
+                </div>
                 <div className="num" style={{color:'#78716c', fontSize:'0.6rem', letterSpacing:'0.06em', textTransform:'uppercase'}}>Score</div>
               </div>
               <div style={{flex:'0 0 auto', textAlign:'center', paddingRight:18, borderRight:'1px solid #f0eeec', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
@@ -7201,15 +7242,110 @@
                   เปรียบเทียบ <span style={{color:'#1c1917', fontWeight:500}}>ก่อนเรียน (Pre-Class)</span> กับ <span style={{color:'#059669', fontWeight:500}}>ปัจจุบัน (Day {dayCurrent})</span> · จำนวนผู้เรียนที่ขยับขึ้นไปแต่ละ Stage
                 </div>
               </div>
-              <div style={{display:'flex', gap:14, fontSize:'0.7rem', alignItems:'center'}}>
+              <div style={{display:'flex', gap:14, fontSize:'0.7rem', alignItems:'center', flexWrap:'wrap'}}>
                 <span style={{display:'inline-flex', alignItems:'center', gap:6, color:'#57534e'}}>
                   <span style={{width:14, height:6, background:'#e7e5e4', borderRadius:2}}/>Pre-Class
                 </span>
                 <span style={{display:'inline-flex', alignItems:'center', gap:6, color:'#1c1917'}}>
                   <span style={{width:14, height:6, background:'#059669', borderRadius:2}}/>Now
                 </span>
+                <button
+                  onClick={() => setShowGrowthChart(v => !v)}
+                  style={{
+                    display:'inline-flex', alignItems:'center', gap:6, cursor:'pointer',
+                    padding:'6px 12px', borderRadius:999, fontFamily:'Inter,sans-serif', fontSize:'0.72rem', fontWeight:600,
+                    border:`1px solid ${showGrowthChart ? 'rgba(5,150,105,0.35)' : '#e7e5e4'}`,
+                    background: showGrowthChart ? 'rgba(5,150,105,0.10)' : '#fff',
+                    color: showGrowthChart ? '#047857' : '#57534e', transition:'all 0.15s',
+                  }}>
+                  <Activity size={13}/>
+                  {showGrowthChart ? 'ซ่อนกราฟ' : 'ดูกราฟการเติบโต'}
+                  <ChevronDown size={13} style={{transform: showGrowthChart ? 'rotate(180deg)' : 'none', transition:'transform 0.2s'}}/>
+                </button>
               </div>
             </div>
+
+            {/* Growth chart panel */}
+            {showGrowthChart && (() => {
+              const W = 720, H = 200, padL = 8, padR = 8, padT = 14, padB = 26;
+              const series = [
+                { d:'Pre',  goal:0,  moved:0  },
+                { d:'D4',   goal:1,  moved:3  },
+                { d:'D8',   goal:4,  moved:8  },
+                { d:'D12',  goal:8,  moved:14 },
+                { d:'D16',  goal:13, moved:18 },
+                { d:'D20',  goal:17, moved:22 },
+                { d:'D25',  goal:20, moved:24 },
+              ];
+              const maxY = totalLearners; // 30
+              const innerW = W - padL - padR, innerH = H - padT - padB;
+              const xAt = i => padL + (i / (series.length - 1)) * innerW;
+              const yAt = v => padT + innerH - (v / maxY) * innerH;
+              const linePath = key => series.map((p,i) => `${i===0?'M':'L'}${xAt(i).toFixed(1)} ${yAt(p[key]).toFixed(1)}`).join(' ');
+              const areaPath = key => `${linePath(key)} L${xAt(series.length-1).toFixed(1)} ${yAt(0).toFixed(1)} L${xAt(0).toFixed(1)} ${yAt(0).toFixed(1)} Z`;
+              const stat = (label, val, color) => (
+                <div style={{flex:'1 1 0', minWidth:120, border:'1px solid #f0eeec', borderRadius:12, padding:'10px 14px'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:6}}>
+                    <span style={{width:9, height:9, borderRadius:3, background:color}}/>
+                    <span style={{color:'#57534e', fontSize:'0.72rem', fontWeight:500}}>{label}</span>
+                  </div>
+                  <div style={{display:'flex', alignItems:'baseline', gap:6, marginTop:4}}>
+                    <span className="num" style={{fontSize:'1.4rem', fontWeight:600, color, letterSpacing:'-0.03em', lineHeight:1}}>{val}</span>
+                    <span className="num" style={{color:'#a8a29e', fontSize:'0.72rem'}}>/ {totalLearners} คน</span>
+                    <span className="num" style={{marginLeft:'auto', display:'inline-flex', alignItems:'center', gap:3, color:'#059669', fontSize:'0.72rem', fontWeight:600}}>
+                      <TrendingUp size={12}/> +{val}
+                    </span>
+                  </div>
+                </div>
+              );
+              return (
+                <div style={{marginTop:14, padding:'16px', background:'#fafaf9', border:'1px solid #f0eeec', borderRadius:16}}>
+                  <div style={{fontSize:'0.78rem', color:'#57534e', marginBottom:12}}>
+                    อัตราการเติบโตของผู้เรียนตลอด <span style={{color:'#1c1917', fontWeight:500}}>{dayCurrent} วัน</span> · จำนวนสะสมที่ขยับขึ้นและที่ถึง Goal Stage (3+)
+                  </div>
+                  <div style={{display:'flex', gap:10, flexWrap:'wrap', marginBottom:14}}>
+                    {stat('ขยับขึ้นจาก Pre-Class', 24, '#1c1917')}
+                    {stat('ถึง Goal Stage (3+)', 20, '#059669')}
+                  </div>
+                  <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%', height:'auto', display:'block', overflow:'visible'}}>
+                    <defs>
+                      <linearGradient id="grad-moved" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#1c1917" stopOpacity="0.16"/>
+                        <stop offset="100%" stopColor="#1c1917" stopOpacity="0"/>
+                      </linearGradient>
+                      <linearGradient id="grad-goal" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#059669" stopOpacity="0.30"/>
+                        <stop offset="100%" stopColor="#059669" stopOpacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    {/* horizontal gridlines */}
+                    {[0, 0.25, 0.5, 0.75, 1].map((t,i) => {
+                      const y = padT + innerH - t * innerH;
+                      return (
+                        <g key={i}>
+                          <line x1={padL} y1={y} x2={W-padR} y2={y} stroke="#eceae8" strokeWidth="1"/>
+                          <text x={padL} y={y-3} fill="#a8a29e" fontSize="9" fontFamily="Inter,sans-serif">{Math.round(t*maxY)}</text>
+                        </g>
+                      );
+                    })}
+                    {/* areas */}
+                    <path d={areaPath('moved')} fill="url(#grad-moved)"/>
+                    <path d={areaPath('goal')}  fill="url(#grad-goal)"/>
+                    {/* lines */}
+                    <path d={linePath('moved')} fill="none" stroke="#44403c" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+                    <path d={linePath('goal')}  fill="none" stroke="#059669" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
+                    {/* end dots */}
+                    <circle cx={xAt(series.length-1)} cy={yAt(series[series.length-1].moved)} r="3.5" fill="#44403c"/>
+                    <circle cx={xAt(series.length-1)} cy={yAt(series[series.length-1].goal)}  r="3.5" fill="#059669"/>
+                    {/* x labels */}
+                    {series.map((p,i) => (
+                      <text key={i} x={xAt(i)} y={H-8} fill="#a8a29e" fontSize="9.5" fontFamily="Inter,sans-serif"
+                        textAnchor={i===0?'start':i===series.length-1?'end':'middle'}>{p.d}</text>
+                    ))}
+                  </svg>
+                </div>
+              );
+            })()}
 
             <div style={{marginTop:18, display:'flex', flexDirection:'column', gap:14}}>
               {STAGE_META.map((s, i) => {
@@ -7228,11 +7364,14 @@
                     key={s.num}
                     onClick={() => { setStageFilter(s.num); setStatusFilter('all'); setTab('individual'); }}
                     style={{
-                      cursor:'pointer', borderRadius:14, padding:'12px 14px',
-                      border:'1px solid transparent', transition:'background 0.15s, border-color 0.15s',
+                      cursor:'pointer', borderRadius:14, padding:'14px 16px',
+                      background: isGoalStage ? 'rgba(5,150,105,0.04)' : '#ffffff',
+                      border:`1px solid ${isGoalStage ? 'rgba(5,150,105,0.18)' : '#f0eeec'}`,
+                      boxShadow:'0 1px 2px rgba(28,25,23,0.04)',
+                      transition:'box-shadow 0.15s, border-color 0.15s, transform 0.15s',
                     }}
-                    onMouseEnter={e=>{e.currentTarget.style.background='#fafaf9'; e.currentTarget.style.borderColor='#f0eeec';}}
-                    onMouseLeave={e=>{e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='transparent';}}>
+                    onMouseEnter={e=>{e.currentTarget.style.boxShadow='0 4px 14px rgba(28,25,23,0.08)'; e.currentTarget.style.borderColor=isGoalStage?'rgba(5,150,105,0.35)':'#e0ddda'; e.currentTarget.style.transform='translateY(-1px)';}}
+                    onMouseLeave={e=>{e.currentTarget.style.boxShadow='0 1px 2px rgba(28,25,23,0.04)'; e.currentTarget.style.borderColor=isGoalStage?'rgba(5,150,105,0.18)':'#f0eeec'; e.currentTarget.style.transform='translateY(0)';}}>
                     <div style={{display:'flex', alignItems:'center', gap:14}}>
                       {/* Stage label */}
                       <div style={{flex:'0 0 160px', display:'flex', alignItems:'center', gap:10}}>
@@ -7579,48 +7718,83 @@
 
       const renderIndividual = () => (
         <div className="fade-in">
-          {/* Learner Overview Strip — 6 clickable stage cards */}
-          <div className="hr-card" style={{marginBottom:16, padding:'20px 24px'}}>
-            <div className="hr-eyebrow" style={{marginBottom:10}}>Learner Overview</div>
-            <div style={{display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:10}}>
-              {STAGE_META.map((s, i) => {
-                const count = stageCounts[i];
-                const active = stageFilter === s.num;
-                return (
-                  <div
-                    key={s.num}
-                    onClick={() => setStageFilter(active ? null : s.num)}
-                    className={`hr-stage-card ${active ? 'active' : ''}`}
-                    style={{
-                      background:'#fafaf9', border:`1px solid ${active ? '#059669' : '#f0eeec'}`,
-                      borderRadius:14, padding:'14px 12px',
-                    }}>
-                    <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:8}}>
-                      <span className="num" style={{
-                        width:20, height:20, borderRadius:6, flexShrink:0,
-                        background:`${s.color}22`, color: s.color,
-                        fontSize:'0.64rem', fontWeight:600,
-                        display:'inline-flex', alignItems:'center', justifyContent:'center',
-                      }}>{s.num}</span>
-                      <span style={{color:'#1c1917', fontSize:'0.72rem', fontWeight:500, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{s.name}</span>
-                    </div>
-                    <div className="num" style={{color: count > 0 ? '#1c1917' : '#a8a29e', fontSize:'1.4rem', fontWeight:600, letterSpacing:'-0.03em', lineHeight:1}}>
-                      {count}
-                    </div>
-                    <div style={{color:'#a8a29e', fontSize:'0.62rem', marginTop:2}}>คน</div>
-                  </div>
-                );
-              })}
-            </div>
-            {stageFilter !== null && (
-              <button
-                onClick={() => setStageFilter(null)}
-                className="hr-btn-ghost"
-                style={{marginTop:12, padding:'6px 12px', fontSize:'0.72rem'}}>
-                ✕ Clear stage filter
-              </button>
-            )}
-          </div>
+          {/* Learner Overview — Stage distribution (breakdown style) */}
+          {(() => {
+            const total   = totalLearners;
+            const movedUp = LEARNERS.filter(l => l.stage > l.prevStage).length;
+            return (
+              <div className="hr-card" style={{marginBottom:16, padding:'20px 24px'}}>
+                <div className="hr-eyebrow" style={{marginBottom:10}}>Learner Overview</div>
+
+                {/* Title + movement badge */}
+                <div style={{display:'flex', alignItems:'center', gap:10}}>
+                  <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:'0.9rem', color:'#1c1917', letterSpacing:'-0.01em'}}>
+                    การกระจายตาม Stage
+                  </h3>
+                  <span className="num" style={{
+                    display:'inline-flex', alignItems:'center', gap:4, padding:'2px 9px', borderRadius:999,
+                    background:'rgba(5,150,105,0.10)', color:'#047857', fontSize:'0.7rem', fontWeight:600,
+                    border:'1px solid rgba(5,150,105,0.22)',
+                  }}>↑ {movedUp} ขยับขึ้น</span>
+                </div>
+
+                {/* Big total */}
+                <div style={{marginTop:8, display:'flex', alignItems:'baseline', gap:8}}>
+                  <span className="num" style={{fontSize:'1.6rem', fontWeight:600, color:'#1c1917', letterSpacing:'-0.03em', lineHeight:1}}>{total}</span>
+                  <span style={{fontSize:'0.82rem', color:'#a8a29e'}}>คน ทั้งหมด</span>
+                </div>
+
+                {/* Stage breakdown — clickable segmented bar */}
+                <div style={{marginTop:16, display:'flex', alignItems:'center', gap:3}}>
+                  {STAGE_META.map((s, i) => {
+                    const count = stageCounts[i];
+                    if (!count) return null;
+                    const active   = stageFilter === s.num;
+                    const filtered = stageFilter !== null && !active;
+                    return (
+                      <div key={s.num}
+                        onClick={() => setStageFilter(active ? null : s.num)}
+                        title={`${s.name}: ${count} คน`}
+                        style={{
+                          height:8, borderRadius:4, background:s.color, cursor:'pointer',
+                          width:`${(count / total) * 100}%`,
+                          opacity: filtered ? 0.28 : 1,
+                          boxShadow: active ? `0 0 0 2px #fff, 0 0 0 3.5px ${s.color}` : 'none',
+                          transition:'opacity 0.15s, box-shadow 0.15s, width 0.7s ease',
+                        }}
+                        onMouseEnter={e=>{ if(!active) e.currentTarget.style.opacity='1'; }}
+                        onMouseLeave={e=>{ if(!active) e.currentTarget.style.opacity = filtered ? '0.28' : '1'; }}/>
+                    );
+                  })}
+                </div>
+
+                {/* Legend — single minimal line */}
+                <div role="list" style={{marginTop:14, display:'flex', flexWrap:'wrap', alignItems:'center', gap:'6px 14px'}}>
+                  {STAGE_META.map((s, i) => {
+                    const count  = stageCounts[i];
+                    const pct    = Math.round((count / total) * 100);
+                    const active = stageFilter === s.num;
+                    return (
+                      <span key={s.num} role="listitem"
+                        onClick={() => setStageFilter(active ? null : s.num)}
+                        style={{
+                          display:'inline-flex', alignItems:'center', gap:6, fontSize:'0.72rem',
+                          cursor:'pointer', whiteSpace:'nowrap',
+                          opacity: (stageFilter !== null && !active) ? 0.4 : 1, transition:'opacity 0.15s',
+                        }}>
+                        <span style={{width:9, height:9, borderRadius:3, flexShrink:0, background: count ? s.color : '#e7e5e4'}} aria-hidden="true"/>
+                        <span style={{color:'#1c1917', fontWeight: active ? 600 : 500}}>{s.name}</span>
+                        <span className="num" style={{color:'#a8a29e'}}>{pct}%</span>
+                      </span>
+                    );
+                  })}
+                  {stageFilter !== null && (
+                    <span onClick={() => setStageFilter(null)} style={{fontSize:'0.7rem', color:'#a8a29e', cursor:'pointer', textDecoration:'underline'}}>ล้าง</span>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Filter chips + sort */}
           <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14, gap:12, flexWrap:'wrap'}}>
@@ -7811,11 +7985,8 @@
                       className="hr-act-btn"
                       title="ส่งข้อความ"
                       aria-label="Message"
-                      disabled={isLearnerBusy(l.id)}
-                      onClick={() => handleLearnerAction(l, 'message')}>
-                      {isActionPending('message', l.id)
-                        ? <Loader2 size={15} className="hr-spin"/>
-                        : <MessageCircle size={15}/>}
+                      onClick={() => setMessageDialog({ id:l.id, name:l.name, role:l.role })}>
+                      <MessageCircle size={15}/>
                     </button>
                     <button
                       className="hr-act-btn"
@@ -8152,22 +8323,41 @@
           {/* Tab bar */}
           <div style={{borderBottom:'1px solid #e7e5e4', background:'#ffffff',
             padding:'0 max(24px, calc((100vw - 1800px)/2))'}}>
-            <div style={{display:'flex'}}>
-              {[['overview', BarChart2, 'Overview'], ['individual', Users, 'Individual']].map(([id, TabIcon, label]) => (
-                <button
-                  key={id} onClick={() => setTab(id)}
-                  className="hr-tab-btn"
-                  style={{
-                    padding:'14px 22px', border:'none', background:'transparent',
-                    color: tab === id ? '#1c1917' : '#78716c',
-                    fontSize:'0.88rem', fontWeight: tab === id ? 600 : 400,
-                    cursor:'pointer', fontFamily:'Inter,sans-serif',
-                    borderBottom: tab === id ? '2px solid #059669' : '2px solid transparent',
-                    display:'inline-flex', alignItems:'center', gap:8, letterSpacing:'-0.005em',
-                  }}>
-                  <TabIcon size={16}/> {label}
-                </button>
-              ))}
+            <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+              <div style={{display:'flex'}}>
+                {[['overview', BarChart2, 'Overview'], ['individual', Users, 'Individual']].map(([id, TabIcon, label]) => (
+                  <button
+                    key={id} onClick={() => setTab(id)}
+                    className="hr-tab-btn"
+                    style={{
+                      padding:'14px 22px', border:'none', background:'transparent',
+                      color: tab === id ? '#1c1917' : '#78716c',
+                      fontSize:'0.88rem', fontWeight: tab === id ? 600 : 400,
+                      cursor:'pointer', fontFamily:'Inter,sans-serif',
+                      borderBottom: tab === id ? '2px solid #059669' : '2px solid transparent',
+                      display:'inline-flex', alignItems:'center', gap:8, letterSpacing:'-0.005em',
+                    }}>
+                    <TabIcon size={16}/> {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Export button — adapts to active tab (mockup) */}
+              <button
+                onClick={handleExport}
+                title={tab === 'overview' ? 'ดาวน์โหลดรายงาน PDF' : 'ดาวน์โหลดตารางเป็น CSV'}
+                style={{
+                  display:'inline-flex', alignItems:'center', gap:8,
+                  padding:'8px 14px', borderRadius:10, cursor:'pointer',
+                  border:'1px solid #e7e5e4', background:'#fff', color:'#1c1917',
+                  fontFamily:'Inter,sans-serif', fontSize:'0.8rem', fontWeight:600, letterSpacing:'-0.005em',
+                  transition:'background 0.15s, border-color 0.15s',
+                }}
+                onMouseEnter={e=>{e.currentTarget.style.background='#fafaf9'; e.currentTarget.style.borderColor='#d6d3d1';}}
+                onMouseLeave={e=>{e.currentTarget.style.background='#fff'; e.currentTarget.style.borderColor='#e7e5e4';}}>
+                <Download size={15} style={{color:'#059669'}}/>
+                {tab === 'overview' ? 'Export PDF' : 'Export CSV'}
+              </button>
             </div>
           </div>
 
@@ -8180,6 +8370,230 @@
           <div className={`hr-drawer-backdrop ${drawerOpen ? 'open' : ''}`} onClick={closeDrawer}/>
           <div className={`hr-drawer ${drawerOpen ? 'open' : ''}`}>
             {selectedLearner !== null && renderDrawer()}
+          </div>
+
+          {/* Nudge-sent confirmation dialog */}
+          {nudgeDialog && (
+            <div
+              onClick={() => setNudgeDialog(null)}
+              style={{
+                position:'fixed', inset:0, zIndex:200, display:'flex', alignItems:'center', justifyContent:'center',
+                background:'rgba(28,25,23,0.40)', backdropFilter:'blur(2px)', padding:20,
+                animation:'fadeIn 0.15s ease',
+              }}>
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  width:'100%', maxWidth:380, background:'#fff', borderRadius:18, padding:'28px 24px 22px',
+                  boxShadow:'0 20px 60px rgba(28,25,23,0.20)', display:'flex', flexDirection:'column', alignItems:'center',
+                  textAlign:'center',
+                }}>
+                <div style={{
+                  width:48, height:48, borderRadius:'50%', background:'rgba(5,150,105,0.12)',
+                  display:'flex', alignItems:'center', justifyContent:'center', marginBottom:14,
+                }}>
+                  <Check size={24} style={{color:'#059669'}}/>
+                </div>
+                <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
+                  ส่งการแจ้งเตือนแล้ว
+                </h3>
+                <p style={{margin:'8px 0 0', color:'#78716c', fontSize:'0.84rem', lineHeight:1.5, maxWidth:300}}>
+                  ส่ง Nudge เตือนไปยัง <span style={{color:'#1c1917', fontWeight:500}}>{nudgeDialog.name}</span>
+                  {nudgeDialog.role ? <span style={{color:'#a8a29e'}}> ({nudgeDialog.role})</span> : null} เรียบร้อยแล้ว
+                  ผู้เรียนจะได้รับการแจ้งเตือนให้กลับมาทำภารกิจต่อ
+                </p>
+                <button
+                  onClick={() => setNudgeDialog(null)}
+                  style={{
+                    marginTop:20, width:'100%', padding:'11px 16px', borderRadius:12, border:'none', cursor:'pointer',
+                    background:'#059669', color:'#fff', fontFamily:'Inter,sans-serif', fontSize:'0.84rem', fontWeight:600,
+                    transition:'background 0.15s',
+                  }}
+                  onMouseEnter={e=>e.currentTarget.style.background='#047857'}
+                  onMouseLeave={e=>e.currentTarget.style.background='#059669'}>
+                  เสร็จสิ้น
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Compose message dialog (email + in-app) */}
+          {messageDialog && (
+            <MessageComposer
+              learner={messageDialog}
+              onClose={() => setMessageDialog(null)}
+            />
+          )}
+
+          {/* Export toast (mockup) */}
+          {exportToast && (
+            <div style={{
+              position:'fixed', right:24, bottom:24, zIndex:210,
+              display:'flex', alignItems:'center', gap:12, maxWidth:340,
+              background:'#1c1917', color:'#fff', borderRadius:14, padding:'14px 18px',
+              boxShadow:'0 16px 40px rgba(28,25,23,0.30)', animation:'fadeIn 0.2s ease',
+            }}>
+              <span style={{
+                width:34, height:34, borderRadius:9, flexShrink:0, display:'inline-flex', alignItems:'center', justifyContent:'center',
+                background:'rgba(5,150,105,0.18)', color:'#34d399',
+              }}><Download size={17}/></span>
+              <div style={{minWidth:0}}>
+                <div style={{fontSize:'0.84rem', fontWeight:600, letterSpacing:'-0.005em'}}>กำลังเตรียม{exportToast.label}</div>
+                <div style={{fontSize:'0.72rem', color:'#a8a29e', marginTop:1}}>ระบบจะเริ่มดาวน์โหลดเมื่อไฟล์พร้อม</div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    /* ── MessageComposer · ส่งข้อความถึงผู้เรียน (อีเมล + ในแอพ) ── */
+    function MessageComposer({ learner, onClose }) {
+      const TEMPLATES = [
+        { label:'ให้กำลังใจ',     text:`สวัสดีคุณ${learner.name} 👋 ทีมงานเห็นความตั้งใจของคุณนะครับ สู้ต่ออีกนิด เป้าหมายอยู่ไม่ไกลแล้ว!` },
+        { label:'เตือนภารกิจค้าง', text:`สวัสดีคุณ${learner.name} ครับ ยังมีภารกิจที่รอให้คุณกลับมาทำต่ออยู่นะครับ ใช้เวลาเพียงไม่กี่นาทีก็ขยับ Stage ได้เลย` },
+        { label:'นัดติดตามผล',     text:`สวัสดีคุณ${learner.name} ครับ ขอนัดพูดคุยติดตามความคืบหน้าสั้น ๆ สะดวกช่วงไหนดีครับ?` },
+      ];
+      const email = `${(learner.name || 'learner').split(' ')[0].toLowerCase()}@company.co.th`;
+      const [channels, setChannels] = useState({ email:true, inApp:true });
+      const [text, setText]         = useState('');
+      const [sending, setSending]   = useState(false);
+      const [sent, setSent]         = useState(false);
+
+      const toggle = (k) => setChannels(c => ({ ...c, [k]: !c[k] }));
+      const anyChannel = channels.email || channels.inApp;
+      const canSend = text.trim().length > 0 && anyChannel && !sending;
+
+      const handleSend = () => {
+        if (!canSend) return;
+        setSending(true);
+        setTimeout(() => { setSending(false); setSent(true); }, 1000);
+      };
+
+      const channelSummary = [channels.email && 'อีเมล', channels.inApp && 'การแจ้งเตือนในแอพ'].filter(Boolean).join(' และ ');
+
+      const ChannelChip = ({ k, Icon, label, sub }) => {
+        const on = channels[k];
+        return (
+          <button onClick={() => toggle(k)} style={{
+            flex:'1 1 0', display:'flex', alignItems:'center', gap:10, textAlign:'left', cursor:'pointer',
+            padding:'10px 12px', borderRadius:12, fontFamily:'Inter,sans-serif',
+            border:`1px solid ${on ? 'rgba(5,150,105,0.35)' : '#e7e5e4'}`,
+            background: on ? 'rgba(5,150,105,0.07)' : '#fff', transition:'all 0.15s',
+          }}>
+            <span style={{
+              width:30, height:30, borderRadius:8, flexShrink:0, display:'inline-flex', alignItems:'center', justifyContent:'center',
+              background: on ? 'rgba(5,150,105,0.12)' : '#f5f5f4', color: on ? '#059669' : '#a8a29e',
+            }}><Icon size={15}/></span>
+            <span style={{minWidth:0, flex:1}}>
+              <span style={{display:'block', fontSize:'0.78rem', fontWeight:600, color:'#1c1917'}}>{label}</span>
+              <span style={{display:'block', fontSize:'0.66rem', color:'#a8a29e', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{sub}</span>
+            </span>
+            <span style={{
+              width:16, height:16, borderRadius:5, flexShrink:0, display:'inline-flex', alignItems:'center', justifyContent:'center',
+              border:`1.5px solid ${on ? '#059669' : '#d6d3d1'}`, background: on ? '#059669' : '#fff', color:'#fff',
+            }}>{on && <Check size={11}/>}</span>
+          </button>
+        );
+      };
+
+      return (
+        <div
+          onClick={onClose}
+          style={{
+            position:'fixed', inset:0, zIndex:200, display:'flex', alignItems:'center', justifyContent:'center',
+            background:'rgba(28,25,23,0.40)', backdropFilter:'blur(2px)', padding:20, animation:'fadeIn 0.15s ease',
+          }}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width:'100%', maxWidth:440, background:'#fff', borderRadius:18,
+              boxShadow:'0 20px 60px rgba(28,25,23,0.20)', overflow:'hidden',
+            }}>
+            {sent ? (
+              <div style={{padding:'28px 24px 22px', display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center'}}>
+                <div style={{width:48, height:48, borderRadius:'50%', background:'rgba(5,150,105,0.12)', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:14}}>
+                  <Check size={24} style={{color:'#059669'}}/>
+                </div>
+                <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>ส่งข้อความแล้ว</h3>
+                <p style={{margin:'8px 0 0', color:'#78716c', fontSize:'0.84rem', lineHeight:1.5, maxWidth:320}}>
+                  ส่งข้อความถึง <span style={{color:'#1c1917', fontWeight:500}}>{learner.name}</span> ผ่าน {channelSummary} เรียบร้อยแล้ว
+                </p>
+                <button onClick={onClose} style={{
+                  marginTop:20, width:'100%', padding:'11px 16px', borderRadius:12, border:'none', cursor:'pointer',
+                  background:'#059669', color:'#fff', fontFamily:'Inter,sans-serif', fontSize:'0.84rem', fontWeight:600,
+                }}>เสร็จสิ้น</button>
+              </div>
+            ) : (
+              <>
+                {/* Header */}
+                <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, padding:'20px 22px 14px', borderBottom:'1px solid #f0eeec'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:12, minWidth:0}}>
+                    <span style={{
+                      width:38, height:38, borderRadius:10, flexShrink:0, display:'inline-flex', alignItems:'center', justifyContent:'center',
+                      background:'rgba(5,150,105,0.10)', color:'#059669',
+                    }}><MessageCircle size={18}/></span>
+                    <div style={{minWidth:0}}>
+                      <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1rem', color:'#1c1917', letterSpacing:'-0.015em', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>
+                        ส่งข้อความถึง {learner.name}
+                      </h3>
+                      {learner.role && <div style={{color:'#a8a29e', fontSize:'0.74rem', marginTop:1}}>{learner.role}</div>}
+                    </div>
+                  </div>
+                  <button onClick={onClose} className="hr-act-btn" aria-label="ปิด" style={{flexShrink:0}}><X size={15}/></button>
+                </div>
+
+                {/* Body */}
+                <div style={{padding:'16px 22px'}}>
+                  <div style={{fontSize:'0.72rem', fontWeight:600, color:'#78716c', letterSpacing:'0.04em', marginBottom:8}}>ช่องทางส่ง</div>
+                  <div style={{display:'flex', gap:10, flexWrap:'wrap'}}>
+                    <ChannelChip k="email"  Icon={Mail}        label="อีเมล"   sub={email}/>
+                    <ChannelChip k="inApp"  Icon={Bell}        label="ในแอพ"   sub="การแจ้งเตือน Joinstick"/>
+                  </div>
+
+                  <div style={{fontSize:'0.72rem', fontWeight:600, color:'#78716c', letterSpacing:'0.04em', margin:'16px 0 8px'}}>ข้อความ</div>
+                  <div style={{display:'flex', gap:6, flexWrap:'wrap', marginBottom:8}}>
+                    {TEMPLATES.map(t => (
+                      <button key={t.label} onClick={() => setText(t.text)} style={{
+                        cursor:'pointer', padding:'4px 10px', borderRadius:999, border:'1px solid #e7e5e4',
+                        background:'#fafaf9', color:'#57534e', fontSize:'0.7rem', fontFamily:'Inter,sans-serif', fontWeight:500,
+                      }}>{t.label}</button>
+                    ))}
+                  </div>
+                  <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="พิมพ์ข้อความถึงผู้เรียน..."
+                    rows={5}
+                    style={{
+                      width:'100%', resize:'vertical', boxSizing:'border-box', padding:'12px 14px', borderRadius:12,
+                      border:'1px solid #e7e5e4', fontFamily:'Inter,sans-serif', fontSize:'0.84rem', color:'#1c1917',
+                      lineHeight:1.5, outline:'none',
+                    }}
+                    onFocus={e=>e.currentTarget.style.borderColor='#059669'}
+                    onBlur={e=>e.currentTarget.style.borderColor='#e7e5e4'}
+                  />
+                </div>
+
+                {/* Footer */}
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, padding:'14px 22px 18px', borderTop:'1px solid #f0eeec'}}>
+                  <span style={{fontSize:'0.7rem', color:'#a8a29e'}}>
+                    {anyChannel ? <>ส่งผ่าน {channelSummary}</> : 'เลือกอย่างน้อย 1 ช่องทาง'}
+                  </span>
+                  <div style={{display:'flex', gap:8}}>
+                    <button onClick={onClose} className="hr-btn-ghost" style={{padding:'9px 16px', fontSize:'0.8rem'}}>ยกเลิก</button>
+                    <button onClick={handleSend} disabled={!canSend} style={{
+                      display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', borderRadius:11, border:'none',
+                      fontFamily:'Inter,sans-serif', fontSize:'0.8rem', fontWeight:600,
+                      cursor: canSend ? 'pointer' : 'default',
+                      background: canSend ? '#059669' : '#e7e5e4', color: canSend ? '#fff' : '#a8a29e', transition:'background 0.15s',
+                    }}>
+                      {sending ? <><Loader2 size={14} className="hr-spin"/> กำลังส่ง...</> : <><Send size={14}/> ส่งข้อความ</>}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       );
@@ -10700,7 +11114,7 @@
 
       /* ── พร้อมใช้งาน — สิงหาคม / กันยายน ── */
       const augHighlight1Day = [
-        'People Manager in Action',
+        'Problem Solving with Critical Thinking',
         'People Manager in Action',
         'Leadership in Action',
       ];
@@ -10880,6 +11294,64 @@
                   <span className="bp-heading" style={{fontSize:'1.15rem',fontWeight:800,letterSpacing:'0.02em'}}>สิงหาคม</span>
                 </div>
 
+                {/* ── FREE TRIAL — moved under สิงหาคม ── */}
+                <div ref={freeTrialRef} style={{
+                  marginBottom:24,
+                  opacity: freeTrialInView ? 1 : 0,
+                  transform:`translateY(${freeTrialInView ? 0 : 16}px)`,
+                  transition:'opacity 0.6s ease, transform 0.6s ease',
+                }}>
+                  <div style={{
+                    position:'relative',
+                    background:'linear-gradient(135deg, rgba(226,232,240,0.08) 0%, rgba(148,163,184,0.04) 100%)',
+                    border:'1px solid rgba(203,213,225,0.30)',
+                    borderRadius:18, padding:'18px 22px',
+                    display:'flex',alignItems:'center',gap:18,flexWrap:'wrap',
+                    boxShadow:'inset 0 1px 0 rgba(255,255,255,0.06)',
+                    overflow:'hidden',
+                  }}>
+                    {/* Subtle corner orb */}
+                    <div style={{
+                      position:'absolute',top:-44,right:-44,width:154,height:154,borderRadius:'50%',
+                      background:`radial-gradient(circle, rgba(203,213,225,0.16) 0%, transparent 70%)`,
+                      pointerEvents:'none',
+                    }}/>
+
+                    {/* Badge + headline */}
+                    <div style={{position:'relative',display:'flex',alignItems:'center',gap:13,flex:'0 0 auto'}}>
+                      <div style={{
+                        width:44,height:44,borderRadius:12,flexShrink:0,
+                        background:'linear-gradient(135deg, rgba(226,232,240,0.28), rgba(148,163,184,0.10))',
+                        border:'1px solid rgba(203,213,225,0.55)',
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        color:'#e2e8f0',
+                        boxShadow:'0 4px 12px rgba(203,213,225,0.18), inset 0 1px 0 rgba(255,255,255,0.16)',
+                      }}>
+                        <span className="ac-sparkle-twinkle" style={{display:'inline-flex'}}>
+                          <Sparkles size={20} strokeWidth={2.2}/>
+                        </span>
+                      </div>
+                      <div>
+                        <div style={{color:'#cbd5e1',fontSize:'0.66rem',fontWeight:800,letterSpacing:'0.14em',marginBottom:2}}>FREE TRIAL</div>
+                        <div style={{color:'#fff',fontSize:'1.05rem',fontWeight:700,letterSpacing:'-0.005em'}}>ทดลองใช้ฟรี 15 วัน</div>
+                      </div>
+                    </div>
+
+                    {/* Note */}
+                    <div style={{position:'relative',flex:'1 1 240px',display:'flex',gap:9,flexWrap:'wrap'}}>
+                      <div style={{
+                        display:'inline-flex',alignItems:'center',gap:6,
+                        color:'#94a3b8',fontSize:'0.8rem',
+                        padding:'7px 4px',
+                      }}>
+                        <Lock size={12} strokeWidth={2}/>
+                        ซื้อ Out-of-Class เพิ่มได้หลังหมดทดลอง
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
                 {/* Highlight Course label */}
                 <div style={{
                   color:CORAL,fontSize:'0.92rem',fontWeight:800,letterSpacing:'0.01em',
@@ -10899,6 +11371,59 @@
                     <HighlightCard key={`d2-${i}`} title={title} badge="2 Day" accent={GOLD}/>
                   ))}
                 </div>
+
+                {/* ── Special Price — moved under สิงหาคม ── */}
+                <div style={{marginTop:28}}>
+                  <div style={{
+                    color:CORAL,fontSize:'0.92rem',fontWeight:800,letterSpacing:'0.01em',
+                    marginBottom:14,
+                  }}>Special Price</div>
+
+                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(240px,1fr))',gap:18}}>
+                    {augSpecialPrice.map((sp,i)=>(
+                      <div key={`sp-${i}`} className={i===1 ? 'ac-breathe' : ''} style={{
+                        position:'relative',
+                        background: i===1
+                          ? 'linear-gradient(120deg, rgba(251,191,36,0.14) 0%, rgba(237,71,36,0.07) 60%, rgba(22,20,18,0) 100%)'
+                          : 'linear-gradient(120deg, rgba(251,124,88,0.12), rgba(255,255,255,0.02))',
+                        border:`1px solid ${i===1 ? 'rgba(251,191,36,0.50)' : 'rgba(251,124,88,0.35)'}`,
+                        borderRadius:18, padding:'24px 26px',
+                        overflow:'hidden',
+                        boxShadow: i===1
+                          ? '0 18px 50px rgba(251,191,36,0.16), inset 0 1px 0 rgba(255,255,255,0.08)'
+                          : '0 10px 30px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.05)',
+                      }}>
+                        <div style={{
+                          position:'absolute',top:-50,right:-50,width:180,height:180,borderRadius:'50%',
+                          background:`radial-gradient(circle, ${i===1 ? GOLD : CORAL}26 0%, transparent 70%)`,
+                          pointerEvents:'none',
+                        }}/>
+                        <div style={{position:'relative',display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
+                          <Compass size={16} strokeWidth={2.3} style={{color:i===1 ? GOLD : CORAL}}/>
+                          <span style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,letterSpacing:'-0.005em'}}>{sp.journey}</span>
+                        </div>
+                        <div style={{position:'relative',display:'flex',alignItems:'baseline',gap:8}}>
+                          <span style={{
+                            fontSize:'2.3rem',fontWeight:800,letterSpacing:'-0.02em',lineHeight:1,
+                            fontVariantNumeric:'tabular-nums',
+                            background: i===1
+                              ? 'linear-gradient(135deg, #fbbf24, #FB7C58)'
+                              : `linear-gradient(135deg, ${CORAL}, ${PEACH})`,
+                            WebkitBackgroundClip:'text',backgroundClip:'text',
+                            WebkitTextFillColor:'transparent',
+                          }}>{(animatedPrices[i] || 0).toLocaleString()}</span>
+                          <span style={{color:'#d4d4d8',fontSize:'1rem',fontWeight:700}}>บาท</span>
+                        </div>
+                        <div style={{position:'relative',color:'#a8a29e',fontSize:'0.82rem',marginTop:6}}>
+                          จากราคา <span style={{textDecoration:'line-through'}}>{sp.original}</span>
+                        </div>
+                        <div style={{position:'relative',color:'#78716c',fontSize:'0.72rem',fontStyle:'italic',marginTop:10}}>
+                          *ยังไม่รวมราคาค่าหลักสูตร
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Vertical divider */}
@@ -10908,6 +11433,7 @@
 
               {/* ── RIGHT — กันยายน ── */}
               <div style={{
+                display:'flex', flexDirection:'column',
                 opacity: packagesInView ? 1 : 0,
                 transform:`translateY(${packagesInView ? 0 : 24}px)`,
                 transition:'opacity 0.7s cubic-bezier(0.22,1,0.36,1) 0.18s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.18s',
@@ -10936,151 +11462,65 @@
                     <HighlightCard key={`pg-${i}`} title={name} accent={GOLD}/>
                   ))}
                 </div>
-              </div>
-            </div>
 
-            {/* ── Special Price — full width row ── */}
-            <div style={{
-              maxWidth:1120,margin:'36px auto 0',
-              opacity: packagesInView ? 1 : 0,
-              transform:`translateY(${packagesInView ? 0 : 24}px)`,
-              transition:'opacity 0.7s cubic-bezier(0.22,1,0.36,1) 0.28s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.28s',
-            }}>
-              {/* Special Price label */}
-              <div style={{
-                color:CORAL,fontSize:'0.92rem',fontWeight:800,letterSpacing:'0.01em',
-                marginBottom:14,
-              }}>Special Price</div>
+                {/* ── Custom Package — Customize ตาม Requirement ── */}
+                <div style={{marginTop:28, flex:'1 1 auto', display:'flex', flexDirection:'column'}}>
+                  <div style={{
+                    color:CORAL,fontSize:'0.92rem',fontWeight:800,letterSpacing:'0.01em',
+                    marginBottom:14,
+                  }}>Custom Package</div>
 
-              {/* Special price cards */}
-              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(280px,1fr))',gap:18}}>
-                {augSpecialPrice.map((sp,i)=>(
-                  <div key={`sp-${i}`} className={i===1 ? 'ac-breathe' : ''} style={{
-                    position:'relative',
-                    background: i===1
-                      ? 'linear-gradient(120deg, rgba(251,191,36,0.14) 0%, rgba(237,71,36,0.07) 60%, rgba(22,20,18,0) 100%)'
-                      : 'linear-gradient(120deg, rgba(251,124,88,0.12), rgba(255,255,255,0.02))',
-                    border:`1px solid ${i===1 ? 'rgba(251,191,36,0.50)' : 'rgba(251,124,88,0.35)'}`,
+                  <div style={{
+                    position:'relative', flex:'1 1 auto', display:'flex', flexDirection:'column',
+                    background:'linear-gradient(120deg, rgba(251,191,36,0.10) 0%, rgba(237,71,36,0.05) 60%, rgba(22,20,18,0) 100%)',
+                    border:'1px dashed rgba(251,191,36,0.45)',
                     borderRadius:18, padding:'24px 26px',
                     overflow:'hidden',
-                    boxShadow: i===1
-                      ? '0 18px 50px rgba(251,191,36,0.16), inset 0 1px 0 rgba(255,255,255,0.08)'
-                      : '0 10px 30px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.05)',
+                    boxShadow:'0 10px 30px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.06)',
                   }}>
                     <div style={{
                       position:'absolute',top:-50,right:-50,width:180,height:180,borderRadius:'50%',
-                      background:`radial-gradient(circle, ${i===1 ? GOLD : CORAL}26 0%, transparent 70%)`,
+                      background:`radial-gradient(circle, ${GOLD}26 0%, transparent 70%)`,
                       pointerEvents:'none',
                     }}/>
+
                     <div style={{position:'relative',display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
-                      <Compass size={16} strokeWidth={2.3} style={{color:i===1 ? GOLD : CORAL}}/>
-                      <span style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,letterSpacing:'-0.005em'}}>{sp.journey}</span>
+                      <Settings size={16} strokeWidth={2.3} style={{color:GOLD}}/>
+                      <span style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,letterSpacing:'-0.005em'}}>ออกแบบ Package เฉพาะองค์กรคุณ</span>
                     </div>
+
                     <div style={{position:'relative',display:'flex',alignItems:'baseline',gap:8}}>
                       <span style={{
                         fontSize:'2.3rem',fontWeight:800,letterSpacing:'-0.02em',lineHeight:1,
-                        fontVariantNumeric:'tabular-nums',
-                        background: i===1
-                          ? 'linear-gradient(135deg, #fbbf24, #FB7C58)'
-                          : `linear-gradient(135deg, ${CORAL}, ${PEACH})`,
+                        background:`linear-gradient(135deg, ${GOLD}, ${CORAL})`,
                         WebkitBackgroundClip:'text',backgroundClip:'text',
                         WebkitTextFillColor:'transparent',
-                      }}>{(animatedPrices[i] || 0).toLocaleString()}</span>
-                      <span style={{color:'#d4d4d8',fontSize:'1rem',fontWeight:700}}>บาท</span>
-                      <span style={{color:'#a8a29e',fontSize:'0.82rem',marginLeft:6}}>
-                        จากราคา <span style={{textDecoration:'line-through'}}>{sp.original}</span>
-                      </span>
+                      }}>Customize</span>
+                      <span style={{color:'#a8a29e',fontSize:'0.82rem',marginLeft:2}}>ตามความต้องการ</span>
                     </div>
-                    <div style={{position:'relative',color:'#78716c',fontSize:'0.72rem',fontStyle:'italic',marginTop:10}}>
-                      *ยังไม่รวมราคาค่าหลักสูตร
+
+                    <div style={{position:'relative',color:'#a8a29e',fontSize:'0.84rem',lineHeight:1.6,marginTop:12}}>
+                      ออกแบบหลักสูตร ระยะเวลา และเส้นทางการเรียนรู้ ให้ตรงกับเป้าหมายและทีมขององค์กรคุณ
                     </div>
+
+                    <button
+                      onClick={() => onNav && onNav('landing')}
+                      style={{
+                        position:'relative',marginTop:'auto',alignSelf:'flex-start',display:'inline-flex',alignItems:'center',gap:8,
+                        padding:'10px 18px',borderRadius:12,cursor:'pointer',
+                        background:`linear-gradient(135deg, ${GOLD}, ${CORAL})`,
+                        border:'none',color:'#1a1208',fontWeight:800,fontSize:'0.86rem',letterSpacing:'0.005em',
+                        boxShadow:'0 8px 22px rgba(251,191,36,0.22)',transition:'transform 0.15s, box-shadow 0.15s',
+                      }}
+                      onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-1px)';e.currentTarget.style.boxShadow='0 12px 28px rgba(251,191,36,0.32)';}}
+                      onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 8px 22px rgba(251,191,36,0.22)';}}>
+                      ปรึกษาทีมงาน →
+                    </button>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
-          </section>
 
-          {/* ── FREE TRIAL — Compact banner (de-emphasized) ── */}
-          <section ref={freeTrialRef} className="mr-section" style={{
-            position:'relative',zIndex:1,
-            padding:'8px max(24px,calc((100vw - 1200px)/2)) 30px',
-            opacity: freeTrialInView ? 1 : 0,
-            transform: `translateY(${freeTrialInView ? 0 : 16}px)`,
-            transition:'opacity 0.6s ease, transform 0.6s ease',
-          }}>
-            <div style={{
-              position:'relative',
-              maxWidth:1080,margin:'0 auto',
-              background:'linear-gradient(135deg, rgba(226,232,240,0.08) 0%, rgba(148,163,184,0.04) 100%)',
-              border:'1px solid rgba(203,213,225,0.30)',
-              borderRadius:18, padding:'18px 22px',
-              display:'flex',alignItems:'center',gap:22,flexWrap:'wrap',
-              boxShadow:'inset 0 1px 0 rgba(255,255,255,0.06)',
-              overflow:'hidden',
-            }}>
-              {/* Subtle corner orb */}
-              <div style={{
-                position:'absolute',top:-44,right:-44,width:154,height:154,borderRadius:'50%',
-                background:`radial-gradient(circle, rgba(203,213,225,0.16) 0%, transparent 70%)`,
-                pointerEvents:'none',
-              }}/>
-
-              {/* Badge + headline */}
-              <div style={{position:'relative',display:'flex',alignItems:'center',gap:13,flex:'0 0 auto'}}>
-                <div style={{
-                  width:44,height:44,borderRadius:12,flexShrink:0,
-                  background:'linear-gradient(135deg, rgba(226,232,240,0.28), rgba(148,163,184,0.10))',
-                  border:'1px solid rgba(203,213,225,0.55)',
-                  display:'flex',alignItems:'center',justifyContent:'center',
-                  color:'#e2e8f0',
-                  boxShadow:'0 4px 12px rgba(203,213,225,0.18), inset 0 1px 0 rgba(255,255,255,0.16)',
-                }}>
-                  <span className="ac-sparkle-twinkle" style={{display:'inline-flex'}}>
-                    <Sparkles size={20} strokeWidth={2.2}/>
-                  </span>
-                </div>
-                <div>
-                  <div style={{color:'#cbd5e1',fontSize:'0.66rem',fontWeight:800,letterSpacing:'0.14em',marginBottom:2}}>FREE TRIAL</div>
-                  <div style={{color:'#fff',fontSize:'1.05rem',fontWeight:700,letterSpacing:'-0.005em'}}>ทดลองใช้ฟรี 15 วัน</div>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div style={{
-                width:1,alignSelf:'stretch',background:'rgba(255,255,255,0.10)',
-                minHeight:40,
-              }}/>
-
-              {/* Compact course chips */}
-              <div style={{position:'relative',flex:'1 1 320px',display:'flex',gap:9,flexWrap:'wrap'}}>
-                {[
-                  {title:'หลักสูตร 2 Day', accent:'#e2e8f0', count:'2 คอร์ส'},
-                  {title:'หลักสูตร 1 Day', accent:'#cbd5e1', count:'3 คอร์ส'},
-                ].map((track,idx)=>(
-                  <div key={idx} style={{
-                    display:'inline-flex',alignItems:'center',gap:7,
-                    background:'rgba(203,213,225,0.08)',
-                    border:'1px solid rgba(203,213,225,0.32)',
-                    color:'#e4e4e7',
-                    padding:'7px 12px',borderRadius:10,
-                    fontSize:'0.86rem',fontWeight:600,
-                  }}>
-                    <GraduationCap size={14} strokeWidth={2.2} style={{color:track.accent}}/>
-                    {track.title}
-                    <span style={{color:'#94a3b8',fontWeight:500,fontSize:'0.8rem'}}>· {track.count}</span>
-                  </div>
-                ))}
-                <div style={{
-                  display:'inline-flex',alignItems:'center',gap:6,
-                  color:'#94a3b8',fontSize:'0.8rem',
-                  padding:'7px 4px',
-                }}>
-                  <Lock size={12} strokeWidth={2}/>
-                  ซื้อ Out-of-Class เพิ่มได้หลังหมดทดลอง
-                </div>
-              </div>
-
-            </div>
           </section>
 
           {/* ── FEATURE COMPARISON ── */}
