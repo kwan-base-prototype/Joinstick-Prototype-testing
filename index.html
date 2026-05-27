@@ -42,7 +42,7 @@
                           transition: opacity 0.42s ease; }
     .hr-drawer-backdrop.open { opacity:1; pointer-events:auto; }
     .hr-drawer { position:fixed; top:0; right:0; bottom:0; width:560px; max-width:96vw;
-                 background:#ffffff; z-index:201; overflow-y:auto;
+                 background:#ffffff; z-index:201; overflow-y:auto; overscroll-behavior:contain;
                  box-shadow:-32px 0 64px rgba(28,25,23,0.12);
                  transform: translateX(100%);
                  transition: transform 0.42s cubic-bezier(0.32,0.72,0,1); }
@@ -3874,128 +3874,53 @@
             {/* Greeting */}
             <h1 className="text-[26px] font-semibold text-white mb-3" style={{letterSpacing:'-0.01em'}}>สวัสดี ผู้เรียน</h1>
 
-            {/* Practitioner level pill */}
+            {/* Stage ring hero */}
             <button
               aria-label="ดู Shift Stage"
               onClick={()=>setScreen('shiftStage')}
               className="btn-press"
               style={{
-                display:'inline-flex',alignItems:'center',gap:8,
-                padding:'6px 14px 6px 8px',borderRadius:999,
-                background:'rgba(20,20,23,0.75)',border:'1px solid rgba(255,255,255,0.08)',
-                cursor:'pointer',backdropFilter:'blur(6px)',
+                position:'relative',display:'inline-flex',alignItems:'center',justifyContent:'center',
+                width:206,height:206,marginTop:18,background:'transparent',border:'none',cursor:'pointer',
               }}>
-              <span style={{
-                position:'relative',width:24,height:24,display:'inline-flex',
-                alignItems:'center',justifyContent:'center',flexShrink:0,
-              }}>
-                <svg viewBox="0 0 24 24" width="24" height="24" style={{position:'absolute',inset:0}}>
-                  <polygon points="12,2.5 21.4,9.4 17.9,20.5 6.1,20.5 2.6,9.4"
-                    fill="rgba(255,255,255,0.04)"
-                    stroke="rgba(255,255,255,0.38)" strokeWidth="1.3" strokeLinejoin="round"/>
-                </svg>
-                <span style={{position:'relative',color:'#fafafa',fontSize:'0.72rem',fontWeight:700,lineHeight:1}}>4</span>
-              </span>
-              <span style={{color:'#fafafa',fontSize:'0.95rem',fontWeight:600,letterSpacing:'-0.005em'}}>Practitioner</span>
-              <Info size={13} style={{color:'#a1a1aa'}}/>
+              {/* Green glow halo */}
+              <div aria-hidden="true" style={{
+                position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',
+                width:200,height:200,borderRadius:'50%',
+                background:'radial-gradient(circle, rgba(34,197,94,0.30) 0%, rgba(34,197,94,0.10) 45%, transparent 70%)',
+                filter:'blur(8px)',pointerEvents:'none',
+              }}/>
+
+              {/* Progress ring */}
+              <svg viewBox="0 0 100 100" width="206" height="206"
+                style={{position:'absolute',inset:0,transform:'rotate(-90deg)'}}>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#27272a" strokeWidth="3"/>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round"
+                  strokeDasharray={`${2*Math.PI*45*0.75} ${2*Math.PI*45}`}
+                  strokeDashoffset="0"
+                  style={{filter:'drop-shadow(0 0 3px rgba(34,197,94,0.9))'}}/>
+              </svg>
+
+              {/* Center content */}
+              <div style={{position:'relative',display:'flex',flexDirection:'column',alignItems:'center'}}>
+                <JoinstickLogo size={56} variant="white"/>
+                <span style={{color:'#fafafa',fontSize:'1.3rem',fontWeight:700,letterSpacing:'-0.01em',marginTop:8}}>Practitioner</span>
+                <span style={{display:'flex',flexDirection:'column',alignItems:'center',marginTop:4}}>
+                  <ChevronDown size={20} strokeWidth={2.5} style={{color:'#52525b'}}/>
+                  <ChevronDown size={20} strokeWidth={2.5} style={{color:'#3f3f46',marginTop:-12}}/>
+                </span>
+              </div>
             </button>
 
-            {/* Gauge */}
-            <div className="relative w-full max-w-[320px] mx-auto mt-6">
-              <div className="text-[10px] text-zinc-400 mb-[-4px]" style={{letterSpacing:'0.02em'}}>กำลังดี</div>
-
-              <div className="relative" style={{paddingTop:6}}>
-                <div aria-hidden="true" style={{
-                  position:'absolute',top:0,left:'10%',right:'10%',height:'80%',
-                  background:'radial-gradient(60% 70% at 35% 50%, rgba(251,191,36,0.25), transparent 70%)',
-                  filter:'blur(20px)',pointerEvents:'none',
-                }}/>
-
-                <svg viewBox="0 0 200 110"
-                  className="w-full drop-shadow-[0_0_8px_rgba(251,191,36,0.45)] relative z-10"
-                  style={{overflow:'visible'}}>
-                  <defs>
-                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%"  stopColor="#fbbf24"/>
-                      <stop offset="65%" stopColor="#f59e0b"/>
-                      <stop offset="100%" stopColor="#3b82f6" stopOpacity="0"/>
-                    </linearGradient>
-                    <filter id="glowOuter" x="-200%" y="-200%" width="500%" height="500%">
-                      <feGaussianBlur in="SourceGraphic" stdDeviation="3.5"/>
-                    </filter>
-                    <filter id="glowMid" x="-100%" y="-100%" width="300%" height="300%">
-                      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="b"/>
-                      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
-                  </defs>
-
-                  <path id="gaugeArcMotion" d="M 15 60 C 35 -10, 165 -10, 185 60" fill="none" stroke="none"/>
-
-                  <path d="M 15 60 C 35 -10, 165 -10, 185 60"
-                    fill="none" stroke="#27272a" strokeWidth="3" strokeLinecap="round"/>
-                  <path d="M 15 60 C 27 18, 78.6 1.2, 122.28 9.6"
-                    fill="none" stroke="url(#gaugeGrad)" strokeWidth="4.5" strokeLinecap="round"/>
-
-                  <circle cx="25"     cy="50"    r="1.3" fill="#ef4444"/>
-                  <circle cx="46"     cy="30"    r="1.3" fill="#ef4444"/>
-                  <circle cx="80"     cy="15.5"  r="1.3" fill="#f59e0b"/>
-                  <circle cx="122"    cy="15.5"  r="1.3" fill="#22c55e"/>
-                  <circle cx="156"    cy="30"    r="1.3" fill="#22c55e"/>
-                  <circle cx="176"    cy="50"    r="1.3" fill="#3b82f6"/>
-
-                  <circle r="5" fill="#fbbf24" filter="url(#glowOuter)">
-                    <animateMotion dur="5.5s" repeatCount="indefinite" calcMode="spline"
-                      keyPoints="0;0.50;0.50;0" keyTimes="0;0.62;0.88;1"
-                      keySplines="0.42 0 0.58 1;0 0 1 1;0 0 1 1">
-                      <mpath href="#gaugeArcMotion"/>
-                    </animateMotion>
-                    <animate attributeName="opacity"
-                      values="0;0;0.55;0.7;0.7;0.3;0"
-                      keyTimes="0;0.04;0.22;0.62;0.88;0.94;1"
-                      dur="5.5s" repeatCount="indefinite"/>
-                  </circle>
-
-                  <circle r="2" fill="#fff8e1" filter="url(#glowMid)">
-                    <animateMotion dur="5.5s" repeatCount="indefinite" calcMode="spline"
-                      keyPoints="0;0.50;0.50;0" keyTimes="0;0.62;0.88;1"
-                      keySplines="0.42 0 0.58 1;0 0 1 1;0 0 1 1">
-                      <mpath href="#gaugeArcMotion"/>
-                    </animateMotion>
-                    <animate attributeName="opacity"
-                      values="0;0;0.9;1;1;0.5;0"
-                      keyTimes="0;0.04;0.22;0.62;0.88;0.94;1"
-                      dur="5.5s" repeatCount="indefinite"/>
-                    <animate attributeName="r"
-                      values="1.5;2;2.8;2.2;1.5"
-                      keyTimes="0;0.62;0.72;0.88;1"
-                      dur="5.5s" repeatCount="indefinite"/>
-                  </circle>
-                </svg>
-
-                <span style={{
-                  position:'absolute',left:26,top:38,transform:'rotate(-32deg)',transformOrigin:'left top',
-                  fontSize:'10px',color:'#f4f4f5',letterSpacing:'0.01em',whiteSpace:'nowrap',pointerEvents:'none',
-                  zIndex:20,
-                  textShadow:'0 0 3px #09090b, 0 0 6px #09090b, 0 0 10px rgba(9,9,11,0.95)',
-                }}>น้อยเกินไป</span>
-                <span style={{
-                  position:'absolute',right:26,top:38,transform:'rotate(32deg)',transformOrigin:'right top',
-                  fontSize:'10px',color:'#f4f4f5',letterSpacing:'0.01em',whiteSpace:'nowrap',pointerEvents:'none',
-                  zIndex:20,
-                  textShadow:'0 0 3px #09090b, 0 0 6px #09090b, 0 0 10px rgba(9,9,11,0.95)',
-                }}>ยอดเยี่ยม</span>
-
-                {/* Status text — tucked inside the bowl of the curve */}
-                <div className="absolute left-0 right-0 flex flex-col items-center pointer-events-none" style={{bottom:6}}>
-                  <div className="flex items-center justify-center gap-1.5 mb-1">
-                    <h2 className="text-[18px] font-medium text-white" style={{letterSpacing:'-0.005em'}}>ใช้ได้เลยผู้เรียน</h2>
-                    <div className="w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center text-zinc-500 text-[10px]">i</div>
-                  </div>
-                  <p className="text-zinc-400 text-[13px] leading-relaxed max-w-[280px] mx-auto px-2 text-center">
-                    คุณเริ่มจะลืมแล้ว แต่เป็นเรื่องปกติ<br/>ลองใส่ใจอีกหน่อยจะดูดีเลย
-                  </p>
-                </div>
+            {/* Status text */}
+            <div className="flex flex-col items-center mt-5">
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <h2 className="text-[18px] font-medium text-white" style={{letterSpacing:'-0.005em'}}>ใช้ได้เลยผู้เรียน</h2>
+                <div className="w-4 h-4 rounded-full border border-zinc-600 flex items-center justify-center text-zinc-500 text-[10px]">i</div>
               </div>
+              <p className="text-zinc-400 text-[13px] leading-relaxed max-w-[280px] mx-auto px-2 text-center">
+                คุณเริ่มจะลืมแล้ว แต่เป็นเรื่องปกติ<br/>ลองใส่ใจอีกหน่อยจะดูดีเลย
+              </p>
             </div>
 
             {/* View Engagement Insight CTA */}
@@ -6850,9 +6775,13 @@
       const [nudgeDialog, setNudgeDialog]     = useState(null);    // { name, role } | null — nudge-sent confirmation
       const [messageDialog, setMessageDialog] = useState(null);    // { id, name, role } | null — compose message
       const [exportToast, setExportToast]     = useState(null);    // { label } | null — mockup export feedback
+      const [investCell, setInvestCell]       = useState('2-2');   // Insight tab — selected 9-box persona cell (`${tb}-${eb}`)
+      const [dotInfo, setDotInfo]             = useState(null);    // Insight tab — learner whose 9-box dot popover is open
+      const [actionExpand, setActionExpand]   = useState(null);    // Insight tab — Recommended Action Plan: expanded grade row
+      const [execOpen, setExecOpen]           = useState(true);    // Insight tab — Executive Summary collapse toggle
 
       const handleExport = () => {
-        const label = tab === 'overview' ? 'รายงาน PDF (Overview)' : 'ไฟล์ CSV (Individual)';
+        const label = tab === 'individual' ? 'ไฟล์ CSV (Individual)' : tab === 'insight' ? 'รายงาน Insight Summary (PDF)' : 'รายงาน PDF (Overview)';
         setExportToast({ label });
         setTimeout(() => setExportToast(null), 2600);
       };
@@ -6905,16 +6834,16 @@
         {id:4, name:'นุชนาถ พิทักษ์',         role:'Project Manager',    av:'น',bg:'#0f766e',progress:86,done:14,pts:1820,last:'3 ชม.',       streak:9, status:'active',  stage:4,prevStage:2,daysInStage:6, goalStatus:'on-track', mgrReview:'completed'},
         // Stage 4 — Adoption (continued)
         {id:5, name:'ธนพล วัฒนา',             role:'Sales Manager',      av:'ธ',bg:'#059669',progress:85,done:14,pts:1740,last:'2 ชม.',       streak:9, status:'active',  stage:4,prevStage:1,daysInStage:18,goalStatus:'on-track', mgrReview:'completed'},
-        {id:6, name:'ปิยะ มงคล',              role:'Marketing Lead',     av:'ป',bg:'#10b981',progress:82,done:13,pts:1680,last:'4 ชม.',       streak:8, status:'active',  stage:4,prevStage:2,daysInStage:14,goalStatus:'on-track', mgrReview:'completed'},
-        {id:7, name:'ชนกานต์ ปัญญา',          role:'Product Manager',    av:'ช',bg:'#14b8a6',progress:80,done:12,pts:1580,last:'6 ชม.',       streak:7, status:'active',  stage:4,prevStage:1,daysInStage:16,goalStatus:'on-track', mgrReview:'pending'},
-        {id:8, name:'อนันต์ ชัยพร',           role:'Sr Engineering Mgr', av:'อ',bg:'#0d9488',progress:78,done:12,pts:1540,last:'5 ชม.',       streak:7, status:'active',  stage:4,prevStage:0,daysInStage:12,goalStatus:'on-track', mgrReview:'completed'},
+        {id:6, name:'ปิยะ มงคล',              role:'Marketing Lead',     av:'ป',bg:'#10b981',progress:82,done:9, pts:1680,last:'1 วัน',       streak:4, status:'active',  stage:4,prevStage:2,daysInStage:14,goalStatus:'on-track', mgrReview:'completed'},
+        {id:7, name:'ชนกานต์ ปัญญา',          role:'Product Manager',    av:'ช',bg:'#14b8a6',progress:80,done:9, pts:1580,last:'1 วัน',       streak:3, status:'active',  stage:4,prevStage:1,daysInStage:16,goalStatus:'on-track', mgrReview:'pending'},
+        {id:8, name:'อนันต์ ชัยพร',           role:'Sr Engineering Mgr', av:'อ',bg:'#0d9488',progress:78,done:9, pts:1540,last:'1 วัน',       streak:4, status:'active',  stage:4,prevStage:0,daysInStage:12,goalStatus:'on-track', mgrReview:'completed'},
         {id:9, name:'รัตนา เกียรติ',          role:'Operations Mgr',     av:'ร',bg:'#22c55e',progress:76,done:11,pts:1500,last:'7 ชม.',       streak:5, status:'active',  stage:4,prevStage:2,daysInStage:11,goalStatus:'on-track', mgrReview:'completed'},
         {id:10,name:'ธีรพงศ์ วิทยา',          role:'Engineering Lead',   av:'ธ',bg:'#16a34a',progress:74,done:11,pts:1460,last:'8 ชม.',       streak:6, status:'active',  stage:4,prevStage:1,daysInStage:9, goalStatus:'on-track', mgrReview:'pending'},
         {id:11,name:'สุนิสา ภาคิน',           role:'Brand Director',     av:'ส',bg:'#15803d',progress:72,done:10,pts:1420,last:'10 ชม.',      streak:4, status:'active',  stage:4,prevStage:2,daysInStage:13,goalStatus:'on-track', mgrReview:'completed'},
         // Stage 3 — Activation (9)
-        {id:12,name:'รสริน อภิชาติ',          role:'Customer Success',   av:'ร',bg:'#facc15',progress:68,done:9, pts:1360,last:'8 ชม.',       streak:5, status:'active',  stage:3,prevStage:1,daysInStage:7, goalStatus:'on-track', mgrReview:'completed'},
-        {id:13,name:'สุรชัย จันทรา',          role:'DevOps Engineer',    av:'ส',bg:'#fbbf24',progress:65,done:9, pts:1280,last:'1 วัน',       streak:6, status:'active',  stage:3,prevStage:0,daysInStage:8, goalStatus:'on-track', mgrReview:'completed'},
-        {id:14,name:'ไพศาล ก้าวหน้า',         role:'Operations Manager', av:'ไ',bg:'#eab308',progress:63,done:8, pts:1240,last:'1 วัน',       streak:5, status:'active',  stage:3,prevStage:2,daysInStage:9, goalStatus:'on-track', mgrReview:'completed'},
+        {id:12,name:'รสริน อภิชาติ',          role:'Customer Success',   av:'ร',bg:'#facc15',progress:68,done:13,pts:1360,last:'2 ชม.',       streak:9, status:'active',  stage:3,prevStage:1,daysInStage:7, goalStatus:'on-track', mgrReview:'completed'},
+        {id:13,name:'สุรชัย จันทรา',          role:'DevOps Engineer',    av:'ส',bg:'#fbbf24',progress:65,done:12,pts:1280,last:'3 ชม.',       streak:8, status:'active',  stage:3,prevStage:0,daysInStage:8, goalStatus:'on-track', mgrReview:'completed'},
+        {id:14,name:'ไพศาล ก้าวหน้า',         role:'Operations Manager', av:'ไ',bg:'#eab308',progress:63,done:13,pts:1240,last:'4 ชม.',       streak:8, status:'active',  stage:3,prevStage:2,daysInStage:9, goalStatus:'on-track', mgrReview:'completed'},
         {id:15,name:'นันทพร เอกชัย',          role:'Brand Manager',      av:'น',bg:'#facc15',progress:60,done:8, pts:1180,last:'2 วัน',       streak:3, status:'active',  stage:3,prevStage:2,daysInStage:11,goalStatus:'on-track', mgrReview:'pending'},
         {id:16,name:'ภัทรพล ฉลองชัย',         role:'Frontend Developer', av:'ภ',bg:'#fde047',progress:58,done:7, pts:1120,last:'2 วัน',       streak:4, status:'active',  stage:3,prevStage:1,daysInStage:12,goalStatus:'on-track', mgrReview:'completed'},
         {id:17,name:'ฐานิดา พรหมเทพ',         role:'QA Engineer',        av:'ฐ',bg:'#fbbf24',progress:56,done:7, pts:1080,last:'2 วัน',       streak:2, status:'active',  stage:3,prevStage:2,daysInStage:13,goalStatus:'off-track',mgrReview:'pending'},
@@ -6922,15 +6851,15 @@
         {id:19,name:'มงคล อุดมศักดิ์',        role:'IT Director',        av:'ม',bg:'#eab308',progress:52,done:6, pts:1010,last:'2 วัน',       streak:2, status:'active',  stage:3,prevStage:2,daysInStage:10,goalStatus:'on-track', mgrReview:'completed'},
         {id:20,name:'ศรีสุดา วงศ์ทอง',         role:'Customer Success Mgr',av:'ศ',bg:'#ca8a04',progress:50,done:6, pts:980, last:'3 วัน',      streak:1, status:'at-risk', stage:3,prevStage:1,daysInStage:13,goalStatus:'off-track',mgrReview:'overdue'},
         // Stage 2 — Acknowledgment (5)
-        {id:21,name:'พิมพ์ใจ รุ่งเรือง',      role:'Business Analyst',   av:'พ',bg:'#f97316',progress:48,done:6, pts:920, last:'3 วัน',       streak:1, status:'at-risk', stage:2,prevStage:2,daysInStage:3, goalStatus:'off-track',mgrReview:'pending'},
+        {id:21,name:'พิมพ์ใจ รุ่งเรือง',      role:'Business Analyst',   av:'พ',bg:'#f97316',progress:48,done:6, pts:920, last:'1 วัน',       streak:2, status:'active',  stage:2,prevStage:2,daysInStage:3, goalStatus:'off-track',mgrReview:'pending'},
         {id:22,name:'กิตติพงศ์ วิภาวรรณ',     role:'Account Director',   av:'ก',bg:'#fb923c',progress:46,done:5, pts:880, last:'3 วัน',       streak:2, status:'active',  stage:2,prevStage:1,daysInStage:2, goalStatus:'on-track', mgrReview:'completed'},
-        {id:23,name:'มาริสา จำเริญ',          role:'Data Analyst',       av:'ม',bg:'#ea580c',progress:44,done:5, pts:840, last:'4 วัน',       streak:1, status:'at-risk', stage:2,prevStage:0,daysInStage:5, goalStatus:'off-track',mgrReview:'pending'},
+        {id:23,name:'มาริสา จำเริญ',          role:'Data Analyst',       av:'ม',bg:'#ea580c',progress:44,done:5, pts:840, last:'1 วัน',       streak:2, status:'active',  stage:2,prevStage:0,daysInStage:5, goalStatus:'off-track',mgrReview:'pending'},
         {id:24,name:'ธิดา ปทุมราช',           role:'HR Specialist',      av:'ธ',bg:'#f97316',progress:42,done:5, pts:800, last:'4 วัน',       streak:2, status:'active',  stage:2,prevStage:1,daysInStage:3, goalStatus:'on-track', mgrReview:'completed'},
         {id:25,name:'อรุณ จิตใจดี',           role:'UX Designer',        av:'อ',bg:'#fb923c',progress:40,done:4, pts:760, last:'5 วัน',       streak:0, status:'inactive',stage:2,prevStage:2,daysInStage:7, goalStatus:'set',      mgrReview:'overdue'},
         // Stage 1 — Awareness (3)
-        {id:26,name:'ชัยพร เกียรติคุณ',       role:'Sales Rep',          av:'ช',bg:'#ef4444',progress:35,done:4, pts:680, last:'5 วัน',       streak:0, status:'at-risk', stage:1,prevStage:1,daysInStage:8, goalStatus:'off-track',mgrReview:'pending'},
-        {id:27,name:'วรพล สุวรรณรัตน์',       role:'Backend Developer',  av:'ว',bg:'#dc2626',progress:32,done:3, pts:620, last:'6 วัน',       streak:0, status:'at-risk', stage:1,prevStage:0,daysInStage:10,goalStatus:'set',      mgrReview:'overdue'},
-        {id:28,name:'สุดารัตน์ อิ่มเอม',      role:'Content Strategist', av:'ส',bg:'#b91c1c',progress:28,done:3, pts:540, last:'8 วัน',       streak:0, status:'inactive',stage:1,prevStage:1,daysInStage:11,goalStatus:'set',      mgrReview:'overdue'},
+        {id:26,name:'ชัยพร เกียรติคุณ',       role:'Sales Rep',          av:'ช',bg:'#ef4444',progress:35,done:5, pts:680, last:'1 วัน',       streak:2, status:'active',  stage:1,prevStage:1,daysInStage:8, goalStatus:'off-track',mgrReview:'pending'},
+        {id:27,name:'วรพล สุวรรณรัตน์',       role:'Backend Developer',  av:'ว',bg:'#dc2626',progress:32,done:12,pts:620, last:'6 ชม.',       streak:8, status:'active',  stage:1,prevStage:0,daysInStage:10,goalStatus:'set',      mgrReview:'overdue'},
+        {id:28,name:'สุดารัตน์ อิ่มเอม',      role:'Content Strategist', av:'ส',bg:'#b91c1c',progress:28,done:13,pts:540, last:'5 ชม.',       streak:9, status:'active',  stage:1,prevStage:1,daysInStage:11,goalStatus:'set',      mgrReview:'overdue'},
         // Stage 0 — Unaware (2) — critical at-risk
         {id:29,name:'กัญญา ศิริวงศ์',         role:'Finance Lead',       av:'ก',bg:'#a8a29e',progress:18,done:2, pts:340, last:'12 วัน',      streak:0, status:'inactive',stage:0,prevStage:0,daysInStage:7, goalStatus:'set',      mgrReview:'overdue'},
         {id:30,name:'ปรีชา ตั้งใจ',           role:'Solution Architect', av:'ป',bg:'#78716c',progress:12,done:1, pts:200, last:'14 วัน',      streak:0, status:'inactive',stage:0,prevStage:0,daysInStage:14,goalStatus:'set',      mgrReview:'overdue'},
@@ -7028,6 +6957,16 @@
         const onKey = (e) => { if (e.key === 'Escape' && drawerOpen) closeDrawer(); };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
+      }, [drawerOpen]);
+
+      // Lock background scroll while the drawer is open — scroll only inside the drawer
+      useEffect(() => {
+        if (!drawerOpen) return;
+        const html = document.documentElement, body = document.body;
+        const prevHtml = html.style.overflow, prevBody = body.style.overflow;
+        html.style.overflow = 'hidden';
+        body.style.overflow = 'hidden';
+        return () => { html.style.overflow = prevHtml; body.style.overflow = prevBody; };
       }, [drawerOpen]);
 
       // ── Small reusable components ──
@@ -7597,7 +7536,7 @@
               <button className="hr-btn-ghost" style={{padding:'6px 10px', fontSize:'0.74rem',
                 background:'rgba(245,158,11,0.10)', borderColor:'rgba(245,158,11,0.30)', color:'#b45309',
                 display:'inline-flex', alignItems:'center', gap:4}}>
-                <Send size={11}/> Nudge
+                <Send size={11}/> Notify
               </button>
             ),
           })}
@@ -7687,6 +7626,674 @@
           {renderAtRiskTop()}
         </div>
       );
+
+      // ─────────────────────────────────────────────────────────────
+      // INSIGHT SUMMARY TAB
+      // ─────────────────────────────────────────────────────────────
+      const renderInsight = () => {
+        const movedUp        = LEARNERS.filter(l => l.stage > l.prevStage).length;
+        const transformedPct = Math.round((transformedCount / totalLearners) * 100);
+
+        // ── 9-Box Investment Map ──
+        // axes — tb: 0 Low · 1 Mid · 2 High (Transformation) · eb: 0 Low · 1 Mid · 2 High (Engagement)
+        const band = (s) => s >= 70 ? 2 : s >= 45 ? 1 : 0;
+        // Grade meta (A/B/C/F + guard) — maps to Investment decision
+        const GRADE = {
+          A:     {letter:'A', shape:'square', label:'Invest & Grow',        note:'คุ้มค่าสูงสุด ต่อยอดทันที',          color:'#059669', bg:'rgba(5,150,105,0.10)',   bd:'rgba(5,150,105,0.34)'},
+          B:     {letter:'B', shape:'circle', label:'Support to Finish',    note:'ใกล้คุ้ม ลงทุนเพิ่มเล็กน้อยคุ้ม',     color:'#22c55e', bg:'rgba(34,197,94,0.10)',   bd:'rgba(34,197,94,0.36)'},
+          C:     {letter:'C', shape:'square', label:'Diagnose & Unblock',   note:'ยังไม่คุ้ม ต้องแก้ก่อนถึงจะตัดสิน',     color:'#eab308', bg:'rgba(234,179,8,0.12)',   bd:'rgba(234,179,8,0.44)'},
+          F:     {letter:'F', shape:'square', label:'Reassess',             note:'ยังไม่ควรลงทุนเพิ่ม',                color:'#ef4444', bg:'rgba(239,68,68,0.10)',   bd:'rgba(239,68,68,0.34)'},
+          guard: {letter:'',  shape:'square', label:'Unstable Transformer', note:'ระบบป้องกันไว้',                     color:'#a8a29e', bg:'rgba(168,162,158,0.10)', bd:'rgba(168,162,158,0.42)'},
+        };
+        // Persona per cell — key `${tb}-${eb}`
+        const PERSONAS = {
+          '2-2': {name:'High Performer',       grade:'A', meaning:'Engagement สูงและ Transform สูง เป็นกลุ่มที่คุ้มค่าต่อการลงทุนมากที่สุด',                      nextStep:'ควรมี Next Program / Advanced Challenge / Success Case',           decision:'Invest & Grow'},
+          '2-1': {name:'Fast Learner',         grade:'A', meaning:'ใช้ Journey ไม่เยอะเกินไป แต่ Transform ได้สูง เรียนรู้เร็วและจับแก่นได้ดี',                      nextStep:'ควรมี Next Program หรือ Challenge ต่อ เพื่อรักษา Momentum',          decision:'Invest & Grow'},
+          '2-0': {name:'Unstable Transformer', grade:'guard', meaning:'Transform สูงแต่ Engagement ต่ำผิดปกติ — ระบบตั้งค่าป้องกันไว้ เพื่อตรวจสอบความถูกต้องของข้อมูล', nextStep:'ตรวจสอบความถูกต้องของข้อมูล / ยืนยันหลักฐานการเปลี่ยนแปลง',        decision:'ระบบป้องกันไว้'},
+          '1-2': {name:'Driven Achiever',      grade:'B', meaning:'Engagement สูง แต่ Transform ยังอยู่ระดับกลาง แปลว่ามีความพยายามสูง ต้องการเวลาอีกหน่อยเพื่อให้ Graduate', nextStep:'ให้เวลาให้การพัฒนาตัวเองเพิ่ม และนัด Follow up เพื่อประเมินพฤติกรรมและความสามารถ', decision:'Support to Finish'},
+          '1-1': {name:'Steady Grower',        grade:'B', meaning:'ตั้งใจพอสมควรและ Transform ได้ระดับหนึ่ง มีการเติบโตที่มั่นคง อยู่ในกลุ่มมาตรฐานที่ต่อยอดได้',     nextStep:'เสริมแรงจูงใจ ให้เวลาในการพัฒนาเพิ่ม และนัด Follow up เพื่อประเมินพฤติกรรมและความสามารถ', decision:'Support to Finish'},
+          '1-0': {name:'Unstable Transformer', grade:'guard', meaning:'Transform ระดับกลางแต่ Engagement ต่ำผิดปกติ — ระบบตั้งค่าป้องกันไว้',                        nextStep:'ตรวจสอบความถูกต้องของข้อมูล / ยืนยันหลักฐานการเปลี่ยนแปลง',        decision:'ระบบป้องกันไว้'},
+          '0-2': {name:'Wrong Walker',         grade:'C', meaning:'มีความตั้งใจมากจากการมีส่วนร่วมมาก แต่พัฒนาไม่สูงเนื่องจากขาดความสามารถในการเรียนรู้',          nextStep:'วิเคราะห์ Improve Module / Coaching / ปรับ Journey ให้เฉพาะบุคคล',  decision:'Diagnose & Unblock'},
+          '0-1': {name:'Stuck Learner',        grade:'C', meaning:'มีความตั้งใจแต่ยังไม่เห็นการเปลี่ยนแปลง อาจติด Blockage จากปัจจัยภายนอก เช่น งาน Overload จนไม่มีเวลาพัฒนาตัวเอง', nextStep:'Diagnose & Clear Blockage',                                       decision:'Diagnose & Unblock'},
+          '0-0': {name:'Ignorance',            grade:'F', meaning:'Engagement ต่ำและยังไม่ Transform เป็นกลุ่มที่ยังไม่พร้อมลงทุนต่อทันที',                          nextStep:'Re-engage ก่อน เช่น Reminder / HR Follow-up / Manager Notify',      decision:'Re-engage First'},
+        };
+        // Effective bands — Engagement ต่ำ (Low) ไม่สามารถ "Transform" ได้จริง จึงถูกจัดลงแถว Low เสมอ
+        // → ช่อง Unstable Transformer (tb≥1, eb=0) จะว่างตลอด ไม่มีใครตกไปอยู่ได้
+        const effBands = (l) => {
+          const eb = band(engagementScore(l));
+          const tb = eb === 0 ? 0 : band(transformationScore(l));
+          return { tb, eb };
+        };
+        const cellKey    = (l) => { const { tb, eb } = effBands(l); return `${tb}-${eb}`; };
+        const classified = LEARNERS.map(l => ({ l, key: cellKey(l) }));
+        const cellList   = (key) => classified.filter(c => c.key === key).map(c => c.l).sort((a, b) => transformationScore(b) - transformationScore(a));
+        const cellCount  = (key) => classified.filter(c => c.key === key).length;
+        // dot position within a cell — by actual Engagement (x) & Transformation (y) score inside the band sub-range
+        const bandRange  = (b) => b === 0 ? [0, 45] : b === 1 ? [45, 70] : [70, 100];
+        const dotPos = (l) => {
+          const { tb, eb } = effBands(l);
+          const es = engagementScore(l), ts = transformationScore(l);
+          const er = bandRange(eb), tr = bandRange(tb);
+          const xr = Math.max(0, Math.min(1, (es - er[0]) / (er[1] - er[0])));
+          const yr = Math.max(0, Math.min(1, (ts - tr[0]) / (tr[1] - tr[0])));
+          return { x: 8 + xr * 84, y: 8 + (1 - yr) * 84 };  // y inverted: high transform = top
+        };
+        // grade rollup (Investment decision summary)
+        const GRADE_KEYS = { A:['2-2','2-1'], B:['1-2','1-1'], C:['0-2','0-1'], F:['0-0'], guard:['2-0','1-0'] };
+        const gradeCount = (g) => GRADE_KEYS[g].reduce((a, k) => a + cellCount(k), 0);
+        const gradeList  = (g) => GRADE_KEYS[g].flatMap(k => cellList(k)).sort((a, b) => transformationScore(b) - transformationScore(a));
+        const bandRow = [ {b:2,label:'High',desc:'จบ Stage 5'}, {b:1,label:'Mid',desc:'Diff สูง'}, {b:0,label:'Low',desc:'Diff ต่ำ'} ];
+        const bandCol = [ {b:0,label:'Low',desc:'Main < 50%'}, {b:1,label:'Mid',desc:'Main + Milestone'}, {b:2,label:'High',desc:'+ Anytime Challenge'} ];
+
+        // ── Key Impact Metrics ──
+        const stageRate    = (n) => Math.round((stageCounts[n] / totalLearners) * 100);
+        const activeCount  = LEARNERS.filter(l => l.status === 'active').length;
+        const engageRate   = Math.round((activeCount / totalLearners) * 100);
+        const qualityRate  = Math.round(CHDATA.reduce((a, c) => a + c.pct, 0) / CHDATA.length);
+
+        // ── Module Performance (Essential Leadership) ──
+        const MODULES = [
+          {name:'The Foundation Of Trust',                  pct:88, color:'#059669', gap:'Trust',              next:'Trust & Psychological Safety (Advanced)'},
+          {name:'Team Diversity & Leveraging Strengths',    pct:84, color:'#0d9488', gap:'Diversity',          next:'Inclusive Leadership Workshop'},
+          {name:'360 Degree Management Strategy',           pct:77, color:'#0891b2', gap:'Management',         next:'People Manager in Action'},
+          {name:'Delivery A Meaningful ONE ON ONE Session', pct:71, color:'#6366f1', gap:'Coaching',           next:'Coaching for Manager'},
+          {name:'Effective team governance system',         pct:64, color:'#8b5cf6', gap:'Decision Ownership', next:'Business Decision-Making'},
+          {name:'Situational Leadership Style',             pct:57, color:'#f59e0b', gap:'Delegation',         next:'Essential Leadership Advanced'},
+        ];
+        const sortedMod  = [...MODULES].sort((a, b) => b.pct - a.pct);
+        const topMod     = sortedMod[0];
+        const improveMod = sortedMod[sortedMod.length - 1];
+        const weakMods   = [...sortedMod].slice(-3).reverse();  // 3 module อ่อนสุด (อ่อน → ดีขึ้น) สำหรับเสนอคลาสถัดไป
+
+        // ── Recommended Action Plan — action ต่อไปตามกลุ่มการลงทุน (เกรด) ──
+        const ACTIONS = [
+          {grade:'A', action:'เสนอ Next Program / Advanced Challenge ต่อยอดทันที'},
+          {grade:'B', action:'ให้ Mission เพิ่ม + นัด Follow-up เพื่อดันให้ถึงเป้า'},
+          {grade:'C', action:'วิเคราะห์ Module Gap รายบุคคล แล้วแก้จุดที่ติดก่อน'},
+          {grade:'F', action:'HR / Manager Follow-up เพื่อ Re-engage ก่อนลงทุนเพิ่ม'},
+        ];
+
+        const selP    = PERSONAS[investCell];
+        const selG    = GRADE[selP.grade];
+        const selList = cellList(investCell);
+
+        const execText =
+          `หลังเริ่ม Transformation Journey มา ${dayCurrent} จาก ${CLASS.totalDays} วัน พบว่าผู้เรียน ` +
+          `${transformedCount} จาก ${totalLearners} คน (${transformedPct}%) มีสัญญาณ Transformation ในระดับ Mid–High (Stage 3 ขึ้นไป) ` +
+          `โดยมี ${gradeCount('A')} คนอยู่ในเกรด A (Invest & Grow) ที่ควรลงทุนต่อผ่าน Next Program ` +
+          `และมี ${gradeCount('F')} คนที่ต้อง Re-engage / Reassess ก่อน · ` +
+          `Avg Transformation ${avgTransformation} (${transformationDelta >= 0 ? '+' : ''}${transformationDelta}) · Avg Engagement ${avgEngagement} (${engagementDelta >= 0 ? '+' : ''}${engagementDelta})`;
+        const handleCopySummary = () => {
+          if (navigator.clipboard) navigator.clipboard.writeText(execText).catch(() => {});
+          setExportToast({ label: 'Executive Summary (คัดลอกแล้ว)' });
+          setTimeout(() => setExportToast(null), 2600);
+        };
+
+        return (
+          <div className="fade-in">
+            {/* ── 1 · Program Snapshot ── */}
+            <div className="hr-card" style={{
+              marginBottom:16, padding:'22px 26px', border:'1px solid rgba(5,150,105,0.22)',
+              background:'linear-gradient(135deg, rgba(5,150,105,0.05) 0%, rgba(13,148,136,0.03) 55%, #ffffff 100%)',
+            }}>
+              <div className="hr-eyebrow" style={{marginBottom:10}}>Program Snapshot</div>
+              <div style={{display:'flex', alignItems:'center', gap:12, flexWrap:'wrap'}}>
+                <div style={{
+                  width:36, height:36, borderRadius:10, flexShrink:0,
+                  background:'linear-gradient(135deg, #059669, #0d9488)', color:'#fff',
+                  display:'flex', alignItems:'center', justifyContent:'center',
+                }}><BookOpen size={18}/></div>
+                <div style={{flex:'1 1 200px'}}>
+                  <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.15rem', color:'#1c1917', letterSpacing:'-0.02em'}}>{CLASS.name}</h3>
+                  <div style={{color:'#78716c', fontSize:'0.78rem', marginTop:2}}>{CLASS.tagline}</div>
+                </div>
+                <div style={{display:'inline-flex', alignItems:'center', gap:6, padding:'6px 12px', borderRadius:999,
+                  background:'rgba(5,150,105,0.10)', border:'1px solid rgba(5,150,105,0.30)'}}>
+                  <span style={{width:6, height:6, borderRadius:'50%', background:'#059669'}}/>
+                  <span className="num" style={{color:'#047857', fontSize:'0.72rem', fontWeight:600}}>อยู่ระหว่าง Journey · Day {dayCurrent}/{CLASS.totalDays}</span>
+                </div>
+              </div>
+              <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:10, marginTop:16}}>
+                {[
+                  {Icon:BookOpen,  label:'คลาส',          value:CLASS.name},
+                  {Icon:Calendar,  label:'วันที่เรียน (Onsite)', value:CLASS.onsite},
+                  {Icon:Users,     label:'จำนวน Learner',  value:`${CLASS.totalLearners} คน`},
+                  {Icon:Clock,     label:'สถานะ Journey',  value:`Day ${dayCurrent} / ${CLASS.totalDays} (${dayProgress}%)`},
+                ].map(({Icon, label, value}) => (
+                  <div key={label} style={{background:'#fff', border:'1px solid #e7e5e4', borderRadius:14, padding:'12px 14px'}}>
+                    <div style={{display:'flex', alignItems:'center', gap:6, color:'#a8a29e', marginBottom:6}}>
+                      <Icon size={13}/>
+                      <span style={{fontSize:'0.64rem', letterSpacing:'0.04em', textTransform:'uppercase'}}>{label}</span>
+                    </div>
+                    <div style={{color:'#1c1917', fontSize:'0.9rem', fontWeight:600, letterSpacing:'-0.01em'}}>{value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── 2 · Executive Summary ── */}
+            <div className="hr-card" style={{marginBottom:16}}>
+              <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, marginBottom: execOpen ? 12 : 0}}>
+                <div
+                  onClick={() => setExecOpen(o => !o)}
+                  style={{cursor:'pointer', flex:'1 1 0', minWidth:0}}>
+                  <div className="hr-eyebrow" style={{marginBottom:6}}>Executive Summary</div>
+                  <div style={{display:'flex', alignItems:'center', gap:10}}>
+                    <Sparkles size={18} style={{color:'#0d9488'}}/>
+                    <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>สรุปสำหรับผู้บริหาร</h3>
+                    <ChevronDown size={16} style={{color:'#a8a29e', transform: execOpen ? 'rotate(0deg)' : 'rotate(-90deg)', transition:'transform 0.2s'}}/>
+                  </div>
+                </div>
+                {execOpen && (
+                  <button
+                    onClick={handleCopySummary}
+                    className="hr-btn-ghost"
+                    style={{padding:'8px 14px', fontSize:'0.78rem', display:'inline-flex', alignItems:'center', gap:7, flexShrink:0}}>
+                    <FileText size={14} style={{color:'#059669'}}/> คัดลอกสรุป
+                  </button>
+                )}
+              </div>
+              {execOpen && (
+                <div style={{
+                  background:'#fafaf9', border:'1px solid #f0efed', borderLeft:'3px solid #059669', borderRadius:12,
+                  padding:'16px 18px', color:'#44403c', fontSize:'0.9rem', lineHeight:1.7,
+                }}>
+                  หลังเริ่ม Transformation Journey มา <span style={{color:'#1c1917', fontWeight:600}}>{dayCurrent} จาก {CLASS.totalDays} วัน</span> พบว่าผู้เรียน
+                  {' '}<span style={{color:'#1c1917', fontWeight:600}}>{transformedCount} จาก {totalLearners} คน ({transformedPct}%)</span> มีสัญญาณ Transformation ในระดับ Mid–High (Stage 3 ขึ้นไป)
+                  {' '}โดยมี <span style={{color:'#047857', fontWeight:600}}>{gradeCount('A')} คน</span> ได้เกรด <span style={{fontWeight:600}}>A · Invest &amp; Grow</span> ที่ควรลงทุนต่อผ่าน Next Program
+                  {' '}และมี <span style={{color:'#b91c1c', fontWeight:600}}>{gradeCount('F')} คน</span> ที่ต้อง <span style={{fontWeight:600}}>Re-engage / Reassess</span> ก่อน
+                  {' '}ภาพรวม Avg Transformation อยู่ที่ <span className="num" style={{color:'#047857', fontWeight:600}}>{avgTransformation}</span> ({transformationDelta >= 0 ? '+' : ''}{transformationDelta} จากช่วงต้น)
+                  {' '}และ Avg Engagement <span className="num" style={{color:'#1c1917', fontWeight:600}}>{avgEngagement}</span> ({engagementDelta >= 0 ? '+' : ''}{engagementDelta})
+                </div>
+              )}
+            </div>
+
+            {/* ── 3 · Grid Investment Map ── */}
+            <div className="hr-card" style={{marginBottom:16}}>
+              <div className="hr-eyebrow" style={{marginBottom:4}}>Grid Investment Map</div>
+              <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
+                <LayoutGrid size={18} style={{color:'#059669'}}/>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>9-Box · Transformation × Engagement</h3>
+              </div>
+              <div style={{color:'#78716c', fontSize:'0.78rem', marginBottom:14}}>
+                ใครน่าลงทุนต่อ · ใครควร support · ใครต้อง re-engage ก่อน — กดที่ช่องเพื่อดูรายละเอียดด้านล่าง
+              </div>
+
+              <div style={{display:'flex', gap:12}}>
+                {/* Y axis label */}
+                <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, width:22}}>
+                  <span style={{color:'#a8a29e', fontSize:'1rem', fontWeight:700, lineHeight:1}}>↑</span>
+                  <span style={{writingMode:'vertical-rl', transform:'rotate(180deg)', color:'#a8a29e', fontSize:'0.66rem', letterSpacing:'0.1em', textTransform:'uppercase', whiteSpace:'nowrap'}}>
+                    Transformation
+                  </span>
+                </div>
+
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{display:'flex'}}>
+                    {/* row band labels */}
+                    <div style={{display:'flex', flexDirection:'column', gap:8, marginRight:8}}>
+                      {bandRow.map(r => (
+                        <div key={r.b} style={{height:118, width:66, display:'flex', flexDirection:'column', alignItems:'flex-end', justifyContent:'center', textAlign:'right'}}>
+                          <span style={{color:'#57534e', fontSize:'0.72rem', fontWeight:700}}>{r.label}</span>
+                          <span style={{color:'#a8a29e', fontSize:'0.6rem', marginTop:2}}>{r.desc}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {/* 3×3 cells */}
+                    <div style={{flex:1, display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8}}>
+                      {bandRow.map(r => bandCol.map(c => {
+                        const key = `${r.b}-${c.b}`;
+                        const p = PERSONAS[key];
+                        const g = GRADE[p.grade];
+                        const cellLearners = cellList(key);
+                        const isSel = investCell === key;
+                        return (
+                          <div
+                            key={key}
+                            onClick={() => { setInvestCell(key); setDotInfo(null); }}
+                            style={{
+                              height:118, borderRadius:14, cursor:'pointer', textAlign:'left',
+                              padding:'11px 13px', position:'relative',
+                              zIndex: (dotInfo && cellKey(dotInfo) === key) ? 30 : 1,
+                              background: isSel ? g.bg : `${g.color}0a`,
+                              border: `1.5px solid ${isSel ? g.bd : '#f0efed'}`,
+                              boxShadow: isSel ? `0 0 0 3px ${g.color}1f` : 'none',
+                              transition:'background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s',
+                              display:'flex', flexDirection:'column',
+                            }}
+                            onMouseEnter={e=>{ e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.borderColor=g.bd; }}
+                            onMouseLeave={e=>{ e.currentTarget.style.transform='translateY(0)'; if(!isSel) e.currentTarget.style.borderColor='#f0efed'; }}>
+                            <div>
+                              <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:5}}>
+                                <span style={{width:15, height:15, borderRadius:g.shape==='circle'?'50%':4, background:g.color, color:'#fff', fontSize:'0.56rem', fontWeight:700, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>{g.letter}</span>
+                                <span style={{color:'#1c1917', fontSize:'0.78rem', fontWeight:600, letterSpacing:'-0.01em', lineHeight:1.2}}>{p.name}</span>
+                              </div>
+                              <div style={{color:g.color, fontSize:'0.62rem', fontWeight:600}}>{p.decision}</div>
+                            </div>
+                            {/* learner dots — positioned by actual Engagement (x) × Transformation (y) · click to identify */}
+                            <div style={{position:'relative', flex:1, marginTop:6}}>
+                              {cellLearners.map(l => {
+                                const d = dotPos(l);
+                                const isActiveDot = dotInfo && dotInfo.id === l.id;
+                                return (
+                                  <span key={l.id} title={`${l.name} · T${transformationScore(l)} · E${engagementScore(l)}`}
+                                    onClick={(e) => { e.stopPropagation(); setDotInfo(prev => prev && prev.id === l.id ? null : l); }}
+                                    style={{
+                                      position:'absolute', left:`${d.x}%`, top:`${d.y}%`, transform:'translate(-50%,-50%)',
+                                      width: isActiveDot ? 12 : 9, height: isActiveDot ? 12 : 9, borderRadius:'50%', background:g.color,
+                                      border:'1.5px solid #fff', cursor:'pointer',
+                                      boxShadow: isActiveDot ? `0 0 0 3px ${g.color}66` : '0 1px 2px rgba(28,25,23,0.18)',
+                                      zIndex: isActiveDot ? 2 : 1, transition:'width 0.12s, height 0.12s, box-shadow 0.12s',
+                                    }}/>
+                                );
+                              })}
+                              {/* dot popover — who is this & open full detail */}
+                              {dotInfo && cellKey(dotInfo) === key && (() => {
+                                const d = dotPos(dotInfo);
+                                const placeRight = d.x < 50;
+                                return (
+                                  <div onClick={(e) => e.stopPropagation()}
+                                    style={{
+                                      position:'absolute', top:`${d.y}%`, left:`${d.x}%`,
+                                      transform:`translate(${placeRight ? '8px' : 'calc(-100% - 8px)'}, -50%)`,
+                                      zIndex:40, width:210, background:'#fff', borderRadius:12,
+                                      border:'1px solid #e7e5e4', boxShadow:'0 12px 32px rgba(28,25,23,0.18)',
+                                      padding:'12px 13px', cursor:'default', textAlign:'left',
+                                    }}>
+                                    <div style={{display:'flex', alignItems:'center', gap:9}}>
+                                      <div style={{
+                                        width:34, height:34, borderRadius:'50%', flexShrink:0,
+                                        background:`linear-gradient(135deg, ${dotInfo.bg}, ${dotInfo.bg}99)`,
+                                        display:'flex', alignItems:'center', justifyContent:'center',
+                                        fontSize:'0.86rem', fontWeight:600, color:'#fff',
+                                      }}>{dotInfo.av}</div>
+                                      <div style={{flex:'1 1 0', minWidth:0}}>
+                                        <div style={{color:'#1c1917', fontSize:'0.84rem', fontWeight:600, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{dotInfo.name}</div>
+                                        <div style={{color:'#78716c', fontSize:'0.7rem', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{dotInfo.role}</div>
+                                      </div>
+                                    </div>
+                                    <div className="num" style={{display:'flex', gap:10, marginTop:9, color:'#78716c', fontSize:'0.72rem'}}>
+                                      <span>S{dotInfo.stage} {stageMeta(dotInfo.stage).name}</span>
+                                      <span>T<span style={{color:g.color, fontWeight:600, marginLeft:2}}>{transformationScore(dotInfo)}</span></span>
+                                      <span>E<span style={{color:'#1c1917', fontWeight:600, marginLeft:2}}>{engagementScore(dotInfo)}</span></span>
+                                    </div>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); const id = dotInfo.id; setDotInfo(null); openLearner(id); }}
+                                      style={{
+                                        marginTop:11, width:'100%', padding:'8px 12px', borderRadius:9, cursor:'pointer', border:'none',
+                                        background:'#1c1917', color:'#fafaf9', fontFamily:'Poppins,sans-serif', fontSize:'0.76rem', fontWeight:600,
+                                        display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
+                                      }}>
+                                      ดูข้อมูลของ {dotInfo.name.split(' ')[0]} <ChevronRight size={13}/>
+                                    </button>
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                        );
+                      }))}
+                    </div>
+                  </div>
+                  {/* X band labels + axis */}
+                  <div style={{display:'flex', marginTop:8}}>
+                    <div style={{width:74, flexShrink:0}}/>
+                    <div style={{flex:1, display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8}}>
+                      {bandCol.map(c => (
+                        <div key={c.b} style={{textAlign:'center'}}>
+                          <div style={{color:'#57534e', fontSize:'0.7rem', fontWeight:700}}>{c.label}</div>
+                          <div style={{color:'#a8a29e', fontSize:'0.6rem', marginTop:1}}>{c.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginTop:16, marginLeft:74}}>
+                    <span style={{color:'#a8a29e', fontSize:'0.66rem', letterSpacing:'0.1em', textTransform:'uppercase'}}>Engagement</span>
+                    <span style={{color:'#a8a29e', fontSize:'1rem', fontWeight:700, lineHeight:1}}>→</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── 4 · Investment Group Summary ── */}
+            <div className="hr-card" style={{marginBottom:16}}>
+              <div className="hr-eyebrow" style={{marginBottom:4}}>Investment Group Summary</div>
+              <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:16}}>
+                <Users size={18} style={{color:'#0891b2'}}/>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>ภาพรวมการลงทุนตามเกรด</h3>
+              </div>
+              {/* grade rollup */}
+              <div style={{display:'grid', gridTemplateColumns:'repeat(5, 1fr)', gap:10, marginBottom:18}}>
+                {['A','B','C','F','guard'].map(k => {
+                  const g = GRADE[k];
+                  return (
+                    <div key={k} style={{borderRadius:14, padding:'14px 14px', background:'#fff', border:`1.5px solid ${g.bd}`}}>
+                      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8}}>
+                        <span style={{width:18, height:18, borderRadius:g.shape==='circle'?'50%':5, background:g.color, color:'#fff', fontSize:'0.64rem', fontWeight:700, display:'inline-flex', alignItems:'center', justifyContent:'center'}}>{g.letter}</span>
+                        <span className="num" style={{color:g.color, fontSize:'1.4rem', fontWeight:600, lineHeight:1}}>{gradeCount(k)}</span>
+                      </div>
+                      <div style={{color:'#1c1917', fontSize:'0.78rem', fontWeight:600, letterSpacing:'-0.01em'}}>{g.label}</div>
+                      <div style={{color:'#78716c', fontSize:'0.66rem', marginTop:2, lineHeight:1.4}}>{g.note}</div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* selected persona detail + learner list */}
+              <div style={{borderRadius:14, border:`1px solid ${selG.bd}`, background:`${selG.color}06`, overflow:'hidden'}}>
+                <div style={{padding:'14px 16px', borderBottom:`1px solid ${selG.bd}`}}>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, flexWrap:'wrap'}}>
+                    <div style={{display:'flex', alignItems:'center', gap:9}}>
+                      <span style={{width:20, height:20, borderRadius:selG.shape==='circle'?'50%':5, background:selG.color, color:'#fff', fontSize:'0.66rem', fontWeight:700, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>{selG.letter}</span>
+                      <span style={{color:'#1c1917', fontSize:'0.95rem', fontWeight:600, letterSpacing:'-0.01em'}}>{selP.name}</span>
+                      <span style={{padding:'2px 10px', borderRadius:999, background:selG.bg, border:`1px solid ${selG.bd}`, color:selG.color, fontSize:'0.68rem', fontWeight:600}}>{selP.decision}</span>
+                    </div>
+                    <span className="num" style={{color:selG.color, fontSize:'0.78rem', fontWeight:600}}>{selList.length} คน</span>
+                  </div>
+                  <div style={{marginTop:12, display:'flex', flexDirection:'column', gap:8}}>
+                    <div style={{display:'flex', gap:8}}>
+                      <span style={{color:'#a8a29e', fontSize:'0.72rem', fontWeight:600, width:74, flexShrink:0}}>ความหมาย</span>
+                      <span style={{color:'#44403c', fontSize:'0.82rem', lineHeight:1.55}}>{selP.meaning}</span>
+                    </div>
+                    <div style={{display:'flex', gap:8}}>
+                      <span style={{color:'#a8a29e', fontSize:'0.72rem', fontWeight:600, width:74, flexShrink:0}}>Next Step</span>
+                      <span style={{color:'#44403c', fontSize:'0.82rem', lineHeight:1.55}}>{selP.nextStep}</span>
+                    </div>
+                  </div>
+                </div>
+                {selList.length === 0 ? (
+                  <div style={{padding:'24px', textAlign:'center', color:'#78716c', fontSize:'0.82rem'}}>ยังไม่มีผู้เรียนในช่องนี้</div>
+                ) : (
+                  <div style={{padding:'4px 16px 8px'}}>
+                    {selList.map((l, idx) => (
+                      <div key={l.id} style={{
+                        display:'flex', alignItems:'center', gap:12, padding:'11px 0',
+                        borderBottom: idx < selList.length - 1 ? '1px solid #f0efed' : 'none',
+                      }}>
+                        <div style={{
+                          width:36, height:36, borderRadius:'50%', flexShrink:0,
+                          background:`linear-gradient(135deg, ${l.bg}, ${l.bg}99)`,
+                          display:'flex', alignItems:'center', justifyContent:'center',
+                          fontSize:'0.9rem', fontWeight:600, color:'#fff',
+                        }}>{l.av}</div>
+                        <div style={{flex:'1 1 0', minWidth:0}}>
+                          <div style={{color:'#1c1917', fontSize:'0.85rem', fontWeight:500, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{l.name}</div>
+                          <div className="num" style={{color:'#78716c', fontSize:'0.7rem', marginTop:2, display:'flex', gap:8}}>
+                            <span>S{l.stage} {stageMeta(l.stage).name}</span>
+                            <span style={{color:'#d6d3d1'}}>·</span>
+                            <span>T<span style={{color:selG.color, fontWeight:600, marginLeft:2}}>{transformationScore(l)}</span></span>
+                            <span style={{color:'#d6d3d1'}}>·</span>
+                            <span>E<span style={{color:'#1c1917', fontWeight:600, marginLeft:2}}>{engagementScore(l)}</span></span>
+                          </div>
+                        </div>
+                        <button onClick={() => openLearner(l.id)} className="hr-btn-ghost" style={{padding:'6px 10px', fontSize:'0.74rem', flexShrink:0}}>
+                          Detail
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ── 5 · Key Impact Metrics ── */}
+            <div className="hr-card" style={{marginBottom:16}}>
+              <div className="hr-eyebrow" style={{marginBottom:4}}>Key Impact Metrics</div>
+              <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
+                <Target size={18} style={{color:'#059669'}}/>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>ตัวเลขสำคัญ — คลาสนี้คุ้มไหม</h3>
+              </div>
+              <div style={{color:'#78716c', fontSize:'0.78rem', marginBottom:18}}>3 KPI หลักก่อนลงรายละเอียด</div>
+              <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:14}}>
+                {/* Transformation Rate */}
+                <div style={{border:'1px solid #e7e5e4', borderRadius:16, padding:'16px 18px'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:7, marginBottom:8}}>
+                    <TrendingUp size={15} style={{color:'#059669'}}/>
+                    <span style={{color:'#57534e', fontSize:'0.76rem', fontWeight:500}}>Transformation Rate</span>
+                  </div>
+                  <div style={{display:'flex', alignItems:'baseline', gap:6}}>
+                    <span className="num" style={{color:'#1c1917', fontSize:'2rem', fontWeight:600, lineHeight:1, letterSpacing:'-0.03em'}}>{transformedPct}%</span>
+                    <span style={{color:'#a8a29e', fontSize:'0.72rem'}}>Stage 3+</span>
+                  </div>
+                  <div style={{marginTop:12, display:'flex', flexDirection:'column', gap:6}}>
+                    {[3, 4, 5].map(n => {
+                      const m = stageMeta(n);
+                      return (
+                        <div key={n} style={{display:'flex', alignItems:'center', gap:8}}>
+                          <span style={{color:'#78716c', fontSize:'0.7rem', width:78, flexShrink:0}}>S{n} {m.name}</span>
+                          <div style={{flex:1, height:5, background:'#f5f5f4', borderRadius:999, overflow:'hidden'}}>
+                            <div style={{width:`${stageRate(n)}%`, height:'100%', background:m.color}}/>
+                          </div>
+                          <span className="num" style={{color:'#1c1917', fontSize:'0.72rem', fontWeight:600, width:30, textAlign:'right'}}>{stageRate(n)}%</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                {/* Engagement Rate */}
+                <div style={{border:'1px solid #e7e5e4', borderRadius:16, padding:'16px 18px'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:7, marginBottom:8}}>
+                    <Activity size={15} style={{color:'#0891b2'}}/>
+                    <span style={{color:'#57534e', fontSize:'0.76rem', fontWeight:500}}>Engagement Rate</span>
+                  </div>
+                  <div style={{display:'flex', alignItems:'baseline', gap:6}}>
+                    <span className="num" style={{color:'#1c1917', fontSize:'2rem', fontWeight:600, lineHeight:1, letterSpacing:'-0.03em'}}>{engageRate}%</span>
+                    <span className="num" style={{display:'inline-flex', alignItems:'center', gap:2, color: engagementDelta >= 0 ? '#047857' : '#b91c1c', fontSize:'0.72rem', fontWeight:600}}>
+                      {engagementDelta >= 0 ? <TrendingUp size={11}/> : <TrendingDown size={11}/>}
+                      {engagementDelta >= 0 ? '+' : ''}{engagementDelta}
+                    </span>
+                  </div>
+                  <div style={{marginTop:12, height:6, background:'#f5f5f4', borderRadius:999, overflow:'hidden'}}>
+                    <div style={{width:`${engageRate}%`, height:'100%', background:'linear-gradient(to right, #0891b2, #06b6d4)'}}/>
+                  </div>
+                  <div className="num" style={{marginTop:10, color:'#78716c', fontSize:'0.7rem'}}>
+                    Active <span style={{color:'#1c1917', fontWeight:600}}>{activeCount}</span> / {totalLearners} · Avg Engagement <span style={{color:'#1c1917', fontWeight:600}}>{avgEngagement}</span>
+                  </div>
+                </div>
+                {/* Quality Completion Rate */}
+                <div style={{border:'1px solid #e7e5e4', borderRadius:16, padding:'16px 18px'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:7, marginBottom:8}}>
+                    <CheckCircle2 size={15} style={{color:'#8b5cf6'}}/>
+                    <span style={{color:'#57534e', fontSize:'0.76rem', fontWeight:500}}>Quality Completion Rate</span>
+                  </div>
+                  <div style={{display:'flex', alignItems:'baseline', gap:6}}>
+                    <span className="num" style={{color:'#1c1917', fontSize:'2rem', fontWeight:600, lineHeight:1, letterSpacing:'-0.03em'}}>{qualityRate}%</span>
+                    <span style={{color:'#a8a29e', fontSize:'0.72rem'}}>เฉลี่ยทุกภารกิจ</span>
+                  </div>
+                  <div style={{marginTop:12, height:6, background:'#f5f5f4', borderRadius:999, overflow:'hidden'}}>
+                    <div style={{width:`${qualityRate}%`, height:'100%', background:'linear-gradient(to right, #8b5cf6, #a78bfa)'}}/>
+                  </div>
+                  <div className="num" style={{marginTop:10, color:'#78716c', fontSize:'0.7rem'}}>
+                    วัดคุณภาพงานที่ส่ง ไม่ใช่แค่จำนวนคนเข้าเรียน
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── 6 · Module Performance Summary ── */}
+            <div className="hr-card">
+              <div className="hr-eyebrow" style={{marginBottom:4}}>Module Performance Summary</div>
+              <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
+                <BookOpen size={18} style={{color:'#0d9488'}}/>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>Module ของหลักสูตร {CLASS.name}</h3>
+              </div>
+              <div style={{color:'#78716c', fontSize:'0.78rem', marginBottom:18}}>กลุ่มนี้เก่งเรื่องอะไร และอ่อนเรื่องอะไร — ใช้เชื่อมไปสู่ Journey ถัดไป</div>
+
+              <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:18}}>
+                <div style={{borderRadius:14, padding:'14px 16px', background:'rgba(5,150,105,0.06)', border:'1px solid rgba(5,150,105,0.28)'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:6}}>
+                    <Trophy size={14} style={{color:'#047857'}}/>
+                    <span style={{color:'#047857', fontSize:'0.66rem', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase'}}>Top Module</span>
+                  </div>
+                  <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:8}}>
+                    <span style={{color:'#1c1917', fontSize:'0.92rem', fontWeight:600, letterSpacing:'-0.01em'}}>{topMod.name}</span>
+                    <span className="num" style={{color:'#047857', fontSize:'1.1rem', fontWeight:600}}>{topMod.pct}%</span>
+                  </div>
+                </div>
+                <div style={{borderRadius:14, padding:'14px 16px', background:'rgba(245,158,11,0.07)', border:'1px solid rgba(245,158,11,0.34)'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:6}}>
+                    <AlertTriangle size={14} style={{color:'#b45309'}}/>
+                    <span style={{color:'#b45309', fontSize:'0.66rem', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase'}}>Improve Module</span>
+                  </div>
+                  <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:8}}>
+                    <span style={{color:'#1c1917', fontSize:'0.92rem', fontWeight:600, letterSpacing:'-0.01em'}}>{improveMod.name}</span>
+                    <span className="num" style={{color:'#b45309', fontSize:'1.1rem', fontWeight:600}}>{improveMod.pct}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {sortedMod.map((m, i) => {
+                const isTop = m.name === topMod.name, isLow = m.name === improveMod.name;
+                return (
+                  <div key={m.name} style={{marginBottom: i < sortedMod.length - 1 ? 13 : 0}}>
+                    <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6}}>
+                      <div style={{display:'flex', alignItems:'center', gap:8}}>
+                        <span style={{color:'#1c1917', fontSize:'0.82rem', fontWeight:500}}>{m.name}</span>
+                        {isTop && <span style={{padding:'1px 8px', borderRadius:999, background:'rgba(5,150,105,0.10)', color:'#047857', fontSize:'0.6rem', fontWeight:600, letterSpacing:'0.04em'}}>TOP</span>}
+                        {isLow && <span style={{padding:'1px 8px', borderRadius:999, background:'rgba(245,158,11,0.12)', color:'#b45309', fontSize:'0.6rem', fontWeight:600, letterSpacing:'0.04em'}}>IMPROVE</span>}
+                      </div>
+                      <span className="num" style={{color:'#1c1917', fontSize:'0.92rem', fontWeight:600}}>{m.pct}<span style={{color:'#a8a29e', fontSize:'0.68rem'}}>%</span></span>
+                    </div>
+                    <div style={{height:6, background:'#f5f5f4', borderRadius:999, overflow:'hidden'}}>
+                      <div style={{width:`${m.pct}%`, height:'100%', borderRadius:999, background:`linear-gradient(to right, ${m.color}, ${m.color}cc)`, transition:'width 0.7s ease'}}/>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* ── 7 · Recommended Next Class ── */}
+            <div className="hr-card" style={{marginTop:16}}>
+              <div className="hr-eyebrow" style={{marginBottom:4}}>Recommended Next Class</div>
+              <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
+                <BookOpen size={18} style={{color:'#059669'}}/>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>คลาสถัดไปที่แนะนำ — จาก Module Gap</h3>
+              </div>
+              <div style={{color:'#78716c', fontSize:'0.78rem', marginBottom:18}}>
+                ใช้ Data ของ Module ที่อ่อนที่สุด เสนอคลาสต่อให้ HR ตัดสินใจลงทุนได้ด้วยเหตุผลจากตัวเลขจริง
+              </div>
+
+              {/* primary recommendation — improve module */}
+              <div style={{
+                borderRadius:14, padding:'16px 18px', marginBottom:14,
+                background:'linear-gradient(135deg, rgba(5,150,105,0.07) 0%, #ffffff 100%)',
+                border:'1px solid rgba(5,150,105,0.30)',
+              }}>
+                <div style={{display:'flex', alignItems:'center', gap:7, marginBottom:8}}>
+                  <Sparkles size={14} style={{color:'#047857'}}/>
+                  <span style={{color:'#047857', fontSize:'0.66rem', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase'}}>คลาสที่ควรลงทุนต่อ (Priority)</span>
+                </div>
+                <div style={{color:'#44403c', fontSize:'0.86rem', lineHeight:1.6}}>
+                  เพราะ <span style={{fontWeight:600, color:'#1c1917'}}>{improveMod.name}</span> ทำได้เพียง
+                  {' '}<span className="num" style={{color:'#b45309', fontWeight:600}}>{improveMod.pct}%</span> (Gap ด้าน {improveMod.gap})
+                  {' '}→ แนะนำคลาส
+                </div>
+                <div style={{display:'flex', alignItems:'center', gap:8, marginTop:10}}>
+                  <ChevronRight size={16} style={{color:'#059669'}}/>
+                  <span style={{fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1rem', color:'#047857', letterSpacing:'-0.01em'}}>{improveMod.next}</span>
+                </div>
+              </div>
+
+              {/* gap → next class mapping */}
+              <div style={{display:'flex', flexDirection:'column', gap:2}}>
+                {weakMods.map((m, i) => (
+                  <div key={m.name} style={{
+                    display:'flex', alignItems:'center', gap:12, padding:'11px 0',
+                    borderBottom: i < weakMods.length - 1 ? '1px solid #f5f5f4' : 'none',
+                  }}>
+                    <div style={{flex:'1 1 0', minWidth:0}}>
+                      <div style={{color:'#1c1917', fontSize:'0.82rem', fontWeight:500}}>{m.name}</div>
+                      <div className="num" style={{color:'#a8a29e', fontSize:'0.68rem', marginTop:2}}>Gap: {m.gap} · {m.pct}%</div>
+                    </div>
+                    <ChevronRight size={14} style={{color:'#d6d3d1', flexShrink:0}}/>
+                    <div style={{flexShrink:0, display:'inline-flex', alignItems:'center', padding:'6px 12px', borderRadius:999,
+                      background:'rgba(5,150,105,0.08)', border:'1px solid rgba(5,150,105,0.24)', color:'#047857', fontSize:'0.76rem', fontWeight:600}}>
+                      {m.next}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── 8 · Recommended Action Plan ── */}
+            <div className="hr-card" style={{marginTop:16}}>
+              <div className="hr-eyebrow" style={{marginBottom:4}}>Recommended Action Plan</div>
+              <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
+                <Lightbulb size={18} style={{color:'#0d9488'}}/>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>แผน Action ต่อไป — ตามกลุ่มการลงทุน</h3>
+              </div>
+              <div style={{color:'#78716c', fontSize:'0.78rem', marginBottom:18}}>ไม่จบแค่สรุปผล — แต่ละกลุ่มมีแนวทางทำงานต่อชัดเจน</div>
+
+              <div style={{border:'1px solid #e7e5e4', borderRadius:14, overflow:'hidden'}}>
+                {/* header */}
+                <div style={{display:'grid', gridTemplateColumns:'1.4fr 0.5fr 2fr', gap:12, padding:'10px 16px', background:'#fafaf9', borderBottom:'1px solid #e7e5e4'}}>
+                  <span style={{color:'#78716c', fontSize:'0.68rem', fontWeight:600, letterSpacing:'0.04em', textTransform:'uppercase'}}>กลุ่ม</span>
+                  <span style={{color:'#78716c', fontSize:'0.68rem', fontWeight:600, letterSpacing:'0.04em', textTransform:'uppercase', textAlign:'center'}}>จำนวน</span>
+                  <span style={{color:'#78716c', fontSize:'0.68rem', fontWeight:600, letterSpacing:'0.04em', textTransform:'uppercase'}}>Action ต่อไป</span>
+                </div>
+                {ACTIONS.map((a, i) => {
+                  const g = GRADE[a.grade];
+                  const isOpen = actionExpand === a.grade;
+                  const list = gradeList(a.grade);
+                  return (
+                    <div key={a.grade} style={{borderBottom: i < ACTIONS.length - 1 ? '1px solid #f5f5f4' : 'none'}}>
+                      <div
+                        onClick={() => setActionExpand(p => p === a.grade ? null : a.grade)}
+                        className="hr-row-hover"
+                        style={{
+                          display:'grid', gridTemplateColumns:'1.4fr 0.5fr 2fr', gap:12, padding:'13px 16px', alignItems:'center',
+                          cursor:'pointer', background: isOpen ? '#fafaf9' : 'transparent', transition:'background 0.15s',
+                        }}>
+                        <div style={{display:'flex', alignItems:'center', gap:8}}>
+                          <span style={{width:16, height:16, borderRadius:g.shape==='circle'?'50%':4, background:g.color, color:'#fff', fontSize:'0.58rem', fontWeight:700, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>{g.letter}</span>
+                          <span style={{color:'#1c1917', fontSize:'0.82rem', fontWeight:600}}>{g.label}</span>
+                        </div>
+                        <span className="num" style={{textAlign:'center', color:g.color, fontSize:'0.95rem', fontWeight:600}}>{gradeCount(a.grade)}</span>
+                        <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:8}}>
+                          <span style={{color:'#44403c', fontSize:'0.82rem', lineHeight:1.5}}>{a.action}</span>
+                          <ChevronDown size={15} style={{color:'#a8a29e', flexShrink:0, transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.2s'}}/>
+                        </div>
+                      </div>
+                      {isOpen && (
+                        <div style={{padding:'2px 16px 12px', background:'#fafaf9'}}>
+                          {list.length === 0 ? (
+                            <div style={{padding:'14px 0', textAlign:'center', color:'#78716c', fontSize:'0.8rem'}}>ยังไม่มีผู้เรียนในกลุ่มนี้</div>
+                          ) : list.map((l, idx) => (
+                            <div key={l.id} style={{
+                              display:'flex', alignItems:'center', gap:12, padding:'9px 0',
+                              borderBottom: idx < list.length - 1 ? '1px solid #f0efed' : 'none',
+                            }}>
+                              <div style={{
+                                width:32, height:32, borderRadius:'50%', flexShrink:0,
+                                background:`linear-gradient(135deg, ${l.bg}, ${l.bg}99)`,
+                                display:'flex', alignItems:'center', justifyContent:'center',
+                                fontSize:'0.8rem', fontWeight:600, color:'#fff',
+                              }}>{l.av}</div>
+                              <div style={{flex:'1 1 0', minWidth:0}}>
+                                <div style={{color:'#1c1917', fontSize:'0.83rem', fontWeight:500, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{l.name}</div>
+                                <div className="num" style={{color:'#78716c', fontSize:'0.68rem', marginTop:1, display:'flex', gap:7}}>
+                                  <span>S{l.stage} {stageMeta(l.stage).name}</span>
+                                  <span style={{color:'#d6d3d1'}}>·</span>
+                                  <span>T<span style={{color:g.color, fontWeight:600, marginLeft:2}}>{transformationScore(l)}</span></span>
+                                  <span style={{color:'#d6d3d1'}}>·</span>
+                                  <span>E<span style={{color:'#1c1917', fontWeight:600, marginLeft:2}}>{engagementScore(l)}</span></span>
+                                </div>
+                              </div>
+                              <button onClick={(e) => { e.stopPropagation(); openLearner(l.id); }} className="hr-btn-ghost" style={{padding:'5px 10px', fontSize:'0.72rem', flexShrink:0}}>
+                                Detail
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      };
 
       // ─────────────────────────────────────────────────────────────
       // INDIVIDUAL TAB
@@ -7971,8 +8578,8 @@
                     {(ls === 'atRisk' || ls === 'behind') && (
                       <button
                         className="hr-act-btn"
-                        title="ส่ง Nudge เตือน"
-                        aria-label="Nudge"
+                        title="ส่ง Notify เตือน"
+                        aria-label="Notify"
                         disabled={isLearnerBusy(l.id)}
                         onClick={() => handleLearnerAction(l, 'nudge')}>
                         {isActionPending('nudge', l.id)
@@ -8324,7 +8931,7 @@
             padding:'0 max(24px, calc((100vw - 1800px)/2))'}}>
             <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
               <div style={{display:'flex'}}>
-                {[['overview', BarChart2, 'Overview'], ['individual', Users, 'Individual']].map(([id, TabIcon, label]) => (
+                {[['overview', BarChart2, 'Overview'], ['individual', Users, 'Individual'], ['insight', Sparkles, 'Insight Summary']].map(([id, TabIcon, label]) => (
                   <button
                     key={id} onClick={() => setTab(id)}
                     className="hr-tab-btn"
@@ -8344,7 +8951,7 @@
               {/* Export button — adapts to active tab (mockup) */}
               <button
                 onClick={handleExport}
-                title={tab === 'overview' ? 'ดาวน์โหลดรายงาน PDF' : 'ดาวน์โหลดตารางเป็น CSV'}
+                title={tab === 'individual' ? 'ดาวน์โหลดตารางเป็น CSV' : 'ดาวน์โหลดรายงาน PDF'}
                 style={{
                   display:'inline-flex', alignItems:'center', gap:8,
                   padding:'8px 14px', borderRadius:10, cursor:'pointer',
@@ -8355,14 +8962,14 @@
                 onMouseEnter={e=>{e.currentTarget.style.background='#fafaf9'; e.currentTarget.style.borderColor='#d6d3d1';}}
                 onMouseLeave={e=>{e.currentTarget.style.background='#fff'; e.currentTarget.style.borderColor='#e7e5e4';}}>
                 <Download size={15} style={{color:'#059669'}}/>
-                {tab === 'overview' ? 'Export PDF' : 'Export CSV'}
+                {tab === 'individual' ? 'Export CSV' : 'Export PDF'}
               </button>
             </div>
           </div>
 
           {/* Content */}
           <div style={{padding:'24px max(24px, calc((100vw - 1800px)/2)) 60px'}}>
-            {tab === 'overview' ? renderOverview() : renderIndividual()}
+            {tab === 'overview' ? renderOverview() : tab === 'insight' ? renderInsight() : renderIndividual()}
           </div>
 
           {/* Drawer */}
@@ -8397,7 +9004,7 @@
                   ส่งการแจ้งเตือนแล้ว
                 </h3>
                 <p style={{margin:'8px 0 0', color:'#78716c', fontSize:'0.84rem', lineHeight:1.5, maxWidth:300}}>
-                  ส่ง Nudge เตือนไปยัง <span style={{color:'#1c1917', fontWeight:500}}>{nudgeDialog.name}</span>
+                  ส่ง Notify เตือนไปยัง <span style={{color:'#1c1917', fontWeight:500}}>{nudgeDialog.name}</span>
                   {nudgeDialog.role ? <span style={{color:'#a8a29e'}}> ({nudgeDialog.role})</span> : null} เรียบร้อยแล้ว
                   ผู้เรียนจะได้รับการแจ้งเตือนให้กลับมาทำภารกิจต่อ
                 </p>
