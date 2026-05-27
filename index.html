@@ -7,24 +7,24 @@
   <title>Joinstick — Learner App Demo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Dancing+Script:wght@500;600;700&display=swap');
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-    body { font-family: 'Inter', 'IBM Plex Sans Thai', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #161412; }
+    body { font-family: 'Poppins', 'IBM Plex Sans Thai', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #161412; }
     .bp-heading { font-family: 'Poppins', 'IBM Plex Sans Thai', sans-serif; letter-spacing: 0.04em; }
     .bp-slogan { font-family: 'Poppins', 'IBM Plex Sans Thai', sans-serif; letter-spacing: 0.4em; font-weight: 500; }
-    :lang(th), [lang="th"] { font-family: 'IBM Plex Sans Thai', 'Inter', sans-serif; }
+    :lang(th), [lang="th"] { font-family: 'IBM Plex Sans Thai', 'Poppins', sans-serif; }
     /* ── HR Dashboard (Soft Bento Modern) ── */
     .num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
     .hr-card { background:#ffffff; border:1px solid #e7e5e4; border-radius:20px; padding:24px;
                box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(28,25,23,0.04); }
     .hr-eyebrow { color:#a8a29e; font-size:0.65rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; }
-    .hr-title { font-family:'Inter',sans-serif; font-size:1.8rem; font-weight:600; letter-spacing:-0.025em; color:#1c1917; }
+    .hr-title { font-family:'Poppins',sans-serif; font-size:1.8rem; font-weight:600; letter-spacing:-0.025em; color:#1c1917; }
     .hr-kpi  { font-family:'JetBrains Mono',monospace; font-weight:600; letter-spacing:-0.04em; color:#1c1917; font-variant-numeric:tabular-nums; }
     .hr-btn-primary { background:#1c1917; color:#fafaf9; border:none; border-radius:10px; padding:10px 18px;
-                      font-size:0.82rem; font-weight:500; cursor:pointer; transition:background 0.15s; font-family:'Inter',sans-serif; }
+                      font-size:0.82rem; font-weight:500; cursor:pointer; transition:background 0.15s; font-family:'Poppins',sans-serif; }
     .hr-btn-primary:hover { background:#292524; }
     .hr-btn-ghost { background:#fafaf9; border:1px solid #e7e5e4; color:#1c1917; border-radius:10px; padding:8px 14px;
-                    font-size:0.78rem; font-weight:500; cursor:pointer; transition:background 0.15s,border-color 0.15s; font-family:'Inter',sans-serif; }
+                    font-size:0.78rem; font-weight:500; cursor:pointer; transition:background 0.15s,border-color 0.15s; font-family:'Poppins',sans-serif; }
     .hr-btn-ghost:hover { background:#f5f5f4; border-color:#d6d3d1; }
     .hr-row-hover:hover { background:#fafaf9; }
     .hr-act-btn { width:32px; height:32px; border-radius:9px; border:1px solid #e7e5e4; background:#fff;
@@ -1331,7 +1331,7 @@
           minHeight: '100vh',
           background: '#161412',
           color: '#fff',
-          fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+          fontFamily: "'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
           overflowX: 'hidden',
           opacity: exiting ? 0 : 1,
           transform: exiting ? 'scale(0.98)' : 'scale(1)',
@@ -1449,34 +1449,33 @@
               </div>
 
               <h1 className="bp-heading" style={{
-                fontSize:'clamp(2.4rem,5.5vw,3.8rem)', fontWeight:800,
-                lineHeight:1.05, letterSpacing:'0.01em',
+                fontSize:'clamp(1.7rem,3.4vw,2.5rem)', fontWeight:800,
+                lineHeight:1.18, letterSpacing:'0.01em',
                 margin:'0 0 22px',
                 position:'relative',
+                color:'#fafaf9',
+                textShadow:'0 2px 24px rgba(0,0,0,0.45)',
               }}>
-                เรียนรู้ที่<br/>
-                <span className="anim-gradient-text" style={{position:'relative',display:'inline-block'}}>
-                  ทรงพลังกว่าเดิม
-                  {/* Underline accent */}
-                  <span style={{
-                    position:'absolute', left:0, right:0, bottom:-6,
-                    height:4, borderRadius:4,
-                    background:'linear-gradient(90deg, transparent, #ED4724 30%, #fbbf24 70%, transparent)',
-                    opacity:0.6,
-                    transformOrigin:'left center',
-                    animation:'underlineGrow 1.2s 0.6s cubic-bezier(0.22,1,0.36,1) forwards',
-                    transform:'scaleX(0)',
-                  }}/>
-                </span>
+                <span style={{
+                  background:'linear-gradient(120deg, #ED4724 0%, #fbbf24 100%)',
+                  WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
+                  backgroundClip:'text',
+                  filter:'drop-shadow(0 0 18px rgba(237,71,36,0.45))',
+                }}>Join</span> in the transformation<br/>that makes learning <span style={{
+                  background:'linear-gradient(120deg, #fbbf24 0%, #ED4724 100%)',
+                  WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
+                  backgroundClip:'text',
+                  filter:'drop-shadow(0 0 18px rgba(251,191,36,0.45))',
+                }}>stick</span>
               </h1>
 
               <p style={{
                 color:'#a8a29e', fontSize:'clamp(1rem,2vw,1.125rem)',
                 lineHeight:1.7, margin:'0 0 36px', fontWeight:400,
               }}>
-                แพลตฟอร์ม Learning & Development ที่ออกแบบมาสำหรับคนทำงาน
-                ผ่านภารกิจ Micro Learning และ Flash Card
-                ที่เชื่อมกับการทำงานจริงของคุณ
+                Learning & Development Platform
+                ที่ออกแบบทุก Journey ให้การเรียนรู้ต่อเนื่อง วัดผลได้
+                สู่การเติบโตในที่ใช้ในการทำงานได้จริง
               </p>
 
               <div className="lp-hero-buttons" style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'center'}}>
@@ -7066,7 +7065,7 @@
               border:`1px solid ${active ? '#1c1917' : m.border}`,
               background: active ? '#1c1917' : (isAll ? '#fff' : m.bg),
               color: active ? '#fafaf9' : m.color,
-              fontSize:'0.78rem', fontWeight:500, fontFamily:'Inter,sans-serif',
+              fontSize:'0.78rem', fontWeight:500, fontFamily:'Poppins,sans-serif',
               display:'inline-flex', alignItems:'center', gap:6,
             }}>
             {m.label}
@@ -7096,7 +7095,7 @@
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'stretch', gap:20, flexWrap:'wrap', marginBottom:16}}>
               <div style={{flex:'1 1 240px', minWidth:0, display:'flex', flexDirection:'column', justifyContent:'center'}}>
                 <div className="hr-eyebrow" style={{marginBottom:5, fontSize:'0.6rem'}}>Course · Cohort 2026</div>
-                <div style={{fontFamily:'Inter,sans-serif', fontSize:'1.35rem', fontWeight:600, letterSpacing:'-0.02em', color:'#1c1917', lineHeight:1.15}}>{CLASS.name}</div>
+                <div style={{fontFamily:'Poppins,sans-serif', fontSize:'1.35rem', fontWeight:600, letterSpacing:'-0.02em', color:'#1c1917', lineHeight:1.15}}>{CLASS.name}</div>
                 <div style={{marginTop:5, display:'inline-flex', alignItems:'center', gap:5, color:'#78716c', fontSize:'0.74rem'}}>
                   <Calendar size={11} style={{color:'#a8a29e'}}/>
                   <span>Onsite</span>
@@ -7234,7 +7233,7 @@
                 <div className="hr-eyebrow" style={{marginBottom:4}}>Visible Learning Evidence</div>
                 <div style={{display:'flex', alignItems:'center', gap:10}}>
                   <Activity size={18} style={{color:'#059669'}}/>
-                  <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.15rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
+                  <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.15rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
                     Transformation Movement
                   </h3>
                 </div>
@@ -7253,7 +7252,7 @@
                   onClick={() => setShowGrowthChart(v => !v)}
                   style={{
                     display:'inline-flex', alignItems:'center', gap:6, cursor:'pointer',
-                    padding:'6px 12px', borderRadius:999, fontFamily:'Inter,sans-serif', fontSize:'0.72rem', fontWeight:600,
+                    padding:'6px 12px', borderRadius:999, fontFamily:'Poppins,sans-serif', fontSize:'0.72rem', fontWeight:600,
                     border:`1px solid ${showGrowthChart ? 'rgba(5,150,105,0.35)' : '#e7e5e4'}`,
                     background: showGrowthChart ? 'rgba(5,150,105,0.10)' : '#fff',
                     color: showGrowthChart ? '#047857' : '#57534e', transition:'all 0.15s',
@@ -7324,7 +7323,7 @@
                       return (
                         <g key={i}>
                           <line x1={padL} y1={y} x2={W-padR} y2={y} stroke="#eceae8" strokeWidth="1"/>
-                          <text x={padL} y={y-3} fill="#a8a29e" fontSize="9" fontFamily="Inter,sans-serif">{Math.round(t*maxY)}</text>
+                          <text x={padL} y={y-3} fill="#a8a29e" fontSize="9" fontFamily="Poppins,sans-serif">{Math.round(t*maxY)}</text>
                         </g>
                       );
                     })}
@@ -7339,7 +7338,7 @@
                     <circle cx={xAt(series.length-1)} cy={yAt(series[series.length-1].goal)}  r="3.5" fill="#059669"/>
                     {/* x labels */}
                     {series.map((p,i) => (
-                      <text key={i} x={xAt(i)} y={H-8} fill="#a8a29e" fontSize="9.5" fontFamily="Inter,sans-serif"
+                      <text key={i} x={xAt(i)} y={H-8} fill="#a8a29e" fontSize="9.5" fontFamily="Poppins,sans-serif"
                         textAnchor={i===0?'start':i===series.length-1?'end':'middle'}>{p.d}</text>
                     ))}
                   </svg>
@@ -7473,7 +7472,7 @@
           <div className="hr-eyebrow" style={{marginBottom:4}}>Visible Evidence</div>
           <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
             <CheckCircle2 size={18} style={{color:'#059669'}}/>
-            <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
+            <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
               Completion Rate ตามประเภทภารกิจ
             </h3>
           </div>
@@ -7517,7 +7516,7 @@
           <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:18}}>
             <div style={{display:'flex', alignItems:'center', gap:10}}>
               <Icon size={18} style={{color: accent}}/>
-              <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>{title}</h3>
+              <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>{title}</h3>
             </div>
             <span className="num" style={{
               background:`${accent}14`, color: accent, border:`1px solid ${accent}33`,
@@ -7572,7 +7571,7 @@
               style={{
                 marginTop:14, width:'100%', padding:'10px', borderRadius:10, cursor:'pointer',
                 background:'transparent', border:`1px dashed ${accent}55`, color: accent,
-                fontSize:'0.78rem', fontWeight:500, fontFamily:'Inter,sans-serif',
+                fontSize:'0.78rem', fontWeight:500, fontFamily:'Poppins,sans-serif',
                 display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
                 transition:'background 0.15s',
               }}
@@ -7728,7 +7727,7 @@
 
                 {/* Title + movement badge */}
                 <div style={{display:'flex', alignItems:'center', gap:10}}>
-                  <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:700, fontSize:'0.9rem', color:'#1c1917', letterSpacing:'-0.01em'}}>
+                  <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:700, fontSize:'0.9rem', color:'#1c1917', letterSpacing:'-0.01em'}}>
                     การกระจายตาม Stage
                   </h3>
                   <span className="num" style={{
@@ -7811,7 +7810,7 @@
                 style={{
                   padding:'6px 28px 6px 12px', borderRadius:10, border:'1px solid #e7e5e4',
                   background:'#fff', color:'#1c1917', fontSize:'0.78rem', cursor:'pointer',
-                  fontFamily:'Inter,sans-serif', appearance:'none',
+                  fontFamily:'Poppins,sans-serif', appearance:'none',
                   backgroundImage:'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'10\' height=\'6\' viewBox=\'0 0 10 6\'><path d=\'M1 1l4 4 4-4\' stroke=\'%2378716c\' stroke-width=\'1.5\' fill=\'none\' stroke-linecap=\'round\'/></svg>")',
                   backgroundRepeat:'no-repeat', backgroundPosition:'right 10px center',
                 }}>
@@ -7915,7 +7914,7 @@
                       style={{
                         padding:'4px 10px', borderRadius:999, cursor:'pointer',
                         border:`1px solid ${lm.border}`, background: lm.bg, color: lm.color,
-                        fontSize:'0.72rem', fontWeight:500, fontFamily:'Inter,sans-serif',
+                        fontSize:'0.72rem', fontWeight:500, fontFamily:'Poppins,sans-serif',
                       }}>{lm.label}</button>
                   </div>
 
@@ -8076,7 +8075,7 @@
                 <div className="hr-eyebrow">Learner Detail</div>
                 <button onClick={closeDrawer} style={{
                   background:'transparent', border:'1px solid #e7e5e4', borderRadius:8, cursor:'pointer',
-                  width:30, height:30, color:'#78716c', fontSize:'0.95rem', fontFamily:'Inter,sans-serif',
+                  width:30, height:30, color:'#78716c', fontSize:'0.95rem', fontFamily:'Poppins,sans-serif',
                   display:'flex', alignItems:'center', justifyContent:'center',
                 }}>✕</button>
               </div>
@@ -8166,7 +8165,7 @@
               {/* Timeline */}
               <div style={{marginBottom:24}}>
                 <div className="hr-eyebrow" style={{marginBottom:4}}>Activity Timeline</div>
-                <h4 style={{margin:'0 0 14px', fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'0.95rem', color:'#1c1917'}}>
+                <h4 style={{margin:'0 0 14px', fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'0.95rem', color:'#1c1917'}}>
                   Journey events เรียงตามวันที่
                 </h4>
 
@@ -8288,7 +8287,7 @@
       return (
         <div style={{
           minHeight:'100vh', background:'#fafaf9', color:'#1c1917',
-          fontFamily:"'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif", overflowX:'hidden',
+          fontFamily:"'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif", overflowX:'hidden',
         }}>
           {/* Navbar */}
           <nav style={{
@@ -8300,7 +8299,7 @@
           }}>
             <div style={{display:'flex', alignItems:'center', gap:12}}>
               <JoinstickLogo size={32} variant="black"/>
-              <span style={{fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'0.9rem', letterSpacing:'-0.01em', color:'#1c1917'}}>Joinstick</span>
+              <span style={{fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'0.9rem', letterSpacing:'-0.01em', color:'#1c1917'}}>Joinstick</span>
               <div style={{width:1, height:16, background:'#e7e5e4'}}/>
               <span style={{color:'#78716c', fontSize:'0.82rem'}}>HR Dashboard</span>
               <div style={{display:'inline-flex', alignItems:'center', gap:5,
@@ -8333,7 +8332,7 @@
                       padding:'14px 22px', border:'none', background:'transparent',
                       color: tab === id ? '#1c1917' : '#78716c',
                       fontSize:'0.88rem', fontWeight: tab === id ? 600 : 400,
-                      cursor:'pointer', fontFamily:'Inter,sans-serif',
+                      cursor:'pointer', fontFamily:'Poppins,sans-serif',
                       borderBottom: tab === id ? '2px solid #059669' : '2px solid transparent',
                       display:'inline-flex', alignItems:'center', gap:8, letterSpacing:'-0.005em',
                     }}>
@@ -8350,7 +8349,7 @@
                   display:'inline-flex', alignItems:'center', gap:8,
                   padding:'8px 14px', borderRadius:10, cursor:'pointer',
                   border:'1px solid #e7e5e4', background:'#fff', color:'#1c1917',
-                  fontFamily:'Inter,sans-serif', fontSize:'0.8rem', fontWeight:600, letterSpacing:'-0.005em',
+                  fontFamily:'Poppins,sans-serif', fontSize:'0.8rem', fontWeight:600, letterSpacing:'-0.005em',
                   transition:'background 0.15s, border-color 0.15s',
                 }}
                 onMouseEnter={e=>{e.currentTarget.style.background='#fafaf9'; e.currentTarget.style.borderColor='#d6d3d1';}}
@@ -8394,7 +8393,7 @@
                 }}>
                   <Check size={24} style={{color:'#059669'}}/>
                 </div>
-                <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
                   ส่งการแจ้งเตือนแล้ว
                 </h3>
                 <p style={{margin:'8px 0 0', color:'#78716c', fontSize:'0.84rem', lineHeight:1.5, maxWidth:300}}>
@@ -8406,7 +8405,7 @@
                   onClick={() => setNudgeDialog(null)}
                   style={{
                     marginTop:20, width:'100%', padding:'11px 16px', borderRadius:12, border:'none', cursor:'pointer',
-                    background:'#059669', color:'#fff', fontFamily:'Inter,sans-serif', fontSize:'0.84rem', fontWeight:600,
+                    background:'#059669', color:'#fff', fontFamily:'Poppins,sans-serif', fontSize:'0.84rem', fontWeight:600,
                     transition:'background 0.15s',
                   }}
                   onMouseEnter={e=>e.currentTarget.style.background='#047857'}
@@ -8477,7 +8476,7 @@
         return (
           <button onClick={() => toggle(k)} style={{
             flex:'1 1 0', display:'flex', alignItems:'center', gap:10, textAlign:'left', cursor:'pointer',
-            padding:'10px 12px', borderRadius:12, fontFamily:'Inter,sans-serif',
+            padding:'10px 12px', borderRadius:12, fontFamily:'Poppins,sans-serif',
             border:`1px solid ${on ? 'rgba(5,150,105,0.35)' : '#e7e5e4'}`,
             background: on ? 'rgba(5,150,105,0.07)' : '#fff', transition:'all 0.15s',
           }}>
@@ -8515,13 +8514,13 @@
                 <div style={{width:48, height:48, borderRadius:'50%', background:'rgba(5,150,105,0.12)', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:14}}>
                   <Check size={24} style={{color:'#059669'}}/>
                 </div>
-                <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>ส่งข้อความแล้ว</h3>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>ส่งข้อความแล้ว</h3>
                 <p style={{margin:'8px 0 0', color:'#78716c', fontSize:'0.84rem', lineHeight:1.5, maxWidth:320}}>
                   ส่งข้อความถึง <span style={{color:'#1c1917', fontWeight:500}}>{learner.name}</span> ผ่าน {channelSummary} เรียบร้อยแล้ว
                 </p>
                 <button onClick={onClose} style={{
                   marginTop:20, width:'100%', padding:'11px 16px', borderRadius:12, border:'none', cursor:'pointer',
-                  background:'#059669', color:'#fff', fontFamily:'Inter,sans-serif', fontSize:'0.84rem', fontWeight:600,
+                  background:'#059669', color:'#fff', fontFamily:'Poppins,sans-serif', fontSize:'0.84rem', fontWeight:600,
                 }}>เสร็จสิ้น</button>
               </div>
             ) : (
@@ -8534,7 +8533,7 @@
                       background:'rgba(5,150,105,0.10)', color:'#059669',
                     }}><MessageCircle size={18}/></span>
                     <div style={{minWidth:0}}>
-                      <h3 style={{margin:0, fontFamily:'Inter,sans-serif', fontWeight:600, fontSize:'1rem', color:'#1c1917', letterSpacing:'-0.015em', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>
+                      <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1rem', color:'#1c1917', letterSpacing:'-0.015em', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>
                         ส่งข้อความถึง {learner.name}
                       </h3>
                       {learner.role && <div style={{color:'#a8a29e', fontSize:'0.74rem', marginTop:1}}>{learner.role}</div>}
@@ -8556,7 +8555,7 @@
                     {TEMPLATES.map(t => (
                       <button key={t.label} onClick={() => setText(t.text)} style={{
                         cursor:'pointer', padding:'4px 10px', borderRadius:999, border:'1px solid #e7e5e4',
-                        background:'#fafaf9', color:'#57534e', fontSize:'0.7rem', fontFamily:'Inter,sans-serif', fontWeight:500,
+                        background:'#fafaf9', color:'#57534e', fontSize:'0.7rem', fontFamily:'Poppins,sans-serif', fontWeight:500,
                       }}>{t.label}</button>
                     ))}
                   </div>
@@ -8567,7 +8566,7 @@
                     rows={5}
                     style={{
                       width:'100%', resize:'vertical', boxSizing:'border-box', padding:'12px 14px', borderRadius:12,
-                      border:'1px solid #e7e5e4', fontFamily:'Inter,sans-serif', fontSize:'0.84rem', color:'#1c1917',
+                      border:'1px solid #e7e5e4', fontFamily:'Poppins,sans-serif', fontSize:'0.84rem', color:'#1c1917',
                       lineHeight:1.5, outline:'none',
                     }}
                     onFocus={e=>e.currentTarget.style.borderColor='#059669'}
@@ -8584,7 +8583,7 @@
                     <button onClick={onClose} className="hr-btn-ghost" style={{padding:'9px 16px', fontSize:'0.8rem'}}>ยกเลิก</button>
                     <button onClick={handleSend} disabled={!canSend} style={{
                       display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', borderRadius:11, border:'none',
-                      fontFamily:'Inter,sans-serif', fontSize:'0.8rem', fontWeight:600,
+                      fontFamily:'Poppins,sans-serif', fontSize:'0.8rem', fontWeight:600,
                       cursor: canSend ? 'pointer' : 'default',
                       background: canSend ? '#059669' : '#e7e5e4', color: canSend ? '#fff' : '#a8a29e', transition:'background 0.15s',
                     }}>
@@ -8777,7 +8776,7 @@
           minHeight: '100vh',
           background: '#161412',
           color: '#fff',
-          fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+          fontFamily: "'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
           opacity: exiting ? 0 : 1,
           transform: exiting ? 'scale(0.98)' : 'scale(1)',
           transition: 'opacity 0.48s ease, transform 0.48s ease',
@@ -9408,7 +9407,7 @@
       return (
         <div style={{
           minHeight:'100vh', background:'#161412', color:'#fff',
-          fontFamily:"'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+          fontFamily:"'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
         }}>
           {/* Ambient blobs */}
           <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
@@ -10047,7 +10046,7 @@
       return (
         <div style={{
           minHeight:'100vh', background:'#161412', color:'#fff',
-          fontFamily:"'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+          fontFamily:"'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
         }}>
           {/* Ambient blobs — change tint based on selected stage */}
           <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0,transition:'all 0.6s ease'}}>
@@ -10563,7 +10562,7 @@
       return (
         <div style={{
           minHeight:'100vh', background:'#161412', color:'#fff',
-          fontFamily:"'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+          fontFamily:"'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
         }}>
           {/* Ambient blobs */}
           <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0}}>
@@ -11185,7 +11184,7 @@
       return (
         <div style={{
           minHeight:'100vh', background:'#161412', color:'#fff',
-          fontFamily:"'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+          fontFamily:"'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
           position:'relative',
         }}>
           {/* Ambient warm blobs — fixed full-viewport, clipped naturally by viewport */}
@@ -11718,7 +11717,7 @@
 
     /* ── JourneyNav ─ fixed overlay outside phone ── */
     function JourneyNav({ onJourney, onNext, nextLabel, nextColor }) {
-      const font = "'Inter', system-ui, sans-serif";
+      const font = "'Poppins', system-ui, sans-serif";
       return (
         <>
           {/* ← Back to Journey Timeline */}
