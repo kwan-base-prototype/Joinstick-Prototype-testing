@@ -16,7 +16,28 @@
     /* ── HR Dashboard (Soft Bento Modern) ── */
     .num { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
     .hr-card { background:#ffffff; border:1px solid #e7e5e4; border-radius:20px; padding:24px;
-               box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(28,25,23,0.04); }
+               box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(28,25,23,0.04);
+               transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease, border-color 0.2s ease; }
+    .hr-card:hover { transform: translateY(-3px); box-shadow:0 2px 6px rgba(0,0,0,0.05), 0 18px 40px rgba(28,25,23,0.10); border-color:#dcd9d6; }
+    /* ── Dashboard entrance: staggered rise reveal ── */
+    @keyframes hrRise { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+    .hr-reveal > * { opacity:0; animation: hrRise 0.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .hr-reveal > *:nth-child(1)  { animation-delay:0.04s; }
+    .hr-reveal > *:nth-child(2)  { animation-delay:0.10s; }
+    .hr-reveal > *:nth-child(3)  { animation-delay:0.16s; }
+    .hr-reveal > *:nth-child(4)  { animation-delay:0.22s; }
+    .hr-reveal > *:nth-child(5)  { animation-delay:0.28s; }
+    .hr-reveal > *:nth-child(6)  { animation-delay:0.34s; }
+    .hr-reveal > *:nth-child(7)  { animation-delay:0.40s; }
+    .hr-reveal > *:nth-child(n+8){ animation-delay:0.46s; }
+    /* ── NOW marker live pulse ── */
+    .hr-now-dot { position:relative; }
+    .hr-now-dot::after { content:''; position:absolute; inset:-3px; border-radius:50%;
+      border:2px solid #059669; animation: hrPing 1.9s cubic-bezier(0,0,0.2,1) infinite; pointer-events:none; }
+    @keyframes hrPing { 0% { transform:scale(0.75); opacity:0.85; } 100% { transform:scale(2.8); opacity:0; } }
+    /* ── KPI trend icon gentle rise ── */
+    @keyframes hrTrendBob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-3px); } }
+    .hr-trend { animation: hrTrendBob 1.7s ease-in-out infinite; }
     .hr-eyebrow { color:#a8a29e; font-size:0.65rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; }
     .hr-title { font-family:'Poppins',sans-serif; font-size:1.8rem; font-weight:600; letter-spacing:-0.025em; color:#1c1917; }
     .hr-kpi  { font-family:'JetBrains Mono',monospace; font-weight:600; letter-spacing:-0.04em; color:#1c1917; font-variant-numeric:tabular-nums; }
@@ -124,6 +145,12 @@
       50%      { transform: translateY(-14px); }
     }
     .anim-float { animation: float 6s ease-in-out infinite; }
+    /* ── Chevron "level up" hint (gentle upward glide) ── */
+    @keyframes chevNudge {
+      0%, 100% { transform: translateY(0);    opacity: 0.35; }
+      50%      { transform: translateY(-4px); opacity: 1;    }
+    }
+    .chev-bounce { animation: chevNudge 1.6s ease-in-out infinite; }
 
     /* ── Float (slow, larger drift for blobs) ── */
     @keyframes driftBlob {
@@ -463,6 +490,9 @@
       .phone-scale     { transform: scale(0.86) !important; transform-origin: top center !important; }
       .mr-hero         { padding: 32px 18px !important; }
       .mr-section      { padding-left: 18px !important; padding-right: 18px !important; }
+      .ts-detail-grid  { grid-template-columns: 1fr !important; gap: 18px !important; }
+      .ts-detail-grid > div:first-child { border-right: none !important; padding-right: 0 !important; border-bottom: 1px solid rgba(255,255,255,0.08) !important; padding-bottom: 18px !important; }
+      .ts-signal-grid  { grid-template-columns: 1fr !important; }
       .journey-nav-btn { top: 12px !important; padding: 6px 12px !important; font-size: 0.72rem !important; }
       .journey-nav-btn.left  { left: 12px !important; }
       .journey-nav-btn.right { right: 12px !important; }
@@ -546,6 +576,7 @@
     const ChevronRight = p => <Svg {...p}><path d="m9 18 6-6-6-6"/></Svg>;
     const ChevronLeft  = p => <Svg {...p}><path d="m15 18-6-6 6-6"/></Svg>;
     const ChevronDown  = p => <Svg {...p}><path d="m6 9 6 6 6-6"/></Svg>;
+    const ChevronUp    = p => <Svg {...p}><path d="m18 15-6-6-6 6"/></Svg>;
     const Bell         = p => <Svg {...p}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></Svg>;
     const Info         = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></Svg>;
     const Plus         = p => <Svg {...p}><path d="M5 12h14"/><path d="M12 5v14"/></Svg>;
@@ -585,6 +616,7 @@
     const LayoutGrid     = p => <Svg {...p}><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></Svg>;
     const Loader2        = p => <Svg {...p}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></Svg>;
     const Trash2         = p => <Svg {...p}><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></Svg>;
+    const Coin           = p => <Svg {...p}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></Svg>;
 
     /* ── Semantic color tokens for icon accents ──── */
     const IconAccent = {
@@ -637,19 +669,18 @@
 
     const challengeData = {
       anytime: [
-        { id:10, type:'Flash Card',   title:'Trust Lenses Vocabulary',       points:20, status:'ยังไม่เริ่ม' },
-        { id:11, type:'Recall Quiz',  title:'Communication Styles Check',    points:25, status:'กำลังทำ'    },
-        { id:12, type:'Flash Card',   title:'Leadership Styles A–Z',         points:20, status:'ยังไม่เริ่ม' },
+        { id:10, category:'Anytime', type:'Flash Card',   title:'Trust Lenses Vocabulary',     points:20, engagement:10, duration:'10 นาที', status:'ยังไม่เริ่ม' },
+        { id:11, category:'Anytime', type:'Recall Quiz',  title:'Communication Styles Check',  points:25, engagement:10, duration:'10 นาที', status:'เสร็จสิ้น'  },
+        { id:12, category:'Anytime', type:'Flash Card',   title:'Leadership Styles A–Z',       points:20, engagement:10, duration:'10 นาที', status:'ยังไม่เริ่ม' },
       ],
       main: [
-        { id:1,  type:'Quiz',    title:"Identify your team's trust lenses",  points:30, timeLeft:'3 วัน', status:'ยังไม่เริ่ม' },
-        { id:2,  type:'Mission', title:'Observe & report trust behaviors',   points:50, timeLeft:'2 วัน', status:'กำลังทำ'    },
-        { id:3,  type:'Quiz',    title:'Leadership Decision Making',         points:30, timeLeft:null,    status:'เสร็จสิ้น'  },
-        { id:4,  type:'Mission', title:'Team Conflict Resolution Log',       points:50, timeLeft:'1 วัน', status:'กำลังทำ'   },
+        { id:1,  category:'Main', type:'Quiz',    title:"Identify your team's lenses",   points:20, engagement:15, duration:'30 นาที',                 status:'กำลังทำ'    },
+        { id:3,  category:'Main', type:'Quiz',    title:'Leadership Decision Making',    points:20, engagement:15, duration:'10 นาที', timeLeft:'3 วัน', status:'ยังไม่เริ่ม' },
+        { id:4,  category:'Main', type:'Mission', title:'Team Conflict Resolution Log',  points:20, engagement:15, duration:'30 นาที',                 status:'หมดเวลา'   },
       ],
       milestone: [
-        { id:5,  type:'Mission',        title:'Create a Trust Action Plan',      points:100, timeLeft:'7 วัน', status:'Lock' },
-        { id:6,  type:'Micro Learning', title:'Advanced Leadership Strategies',  points:75,  timeLeft:'7 วัน', status:'Lock' },
+        { id:5,  category:'Milestone', type:'Mission',        title:'Create a Trust Action Plan',      points:100, engagement:30, duration:'45 นาที', timeLeft:'7 วัน', status:'Lock' },
+        { id:6,  category:'Milestone', type:'Micro Learning', title:'Advanced Leadership Strategies',  points:75,  engagement:25, duration:'20 นาที', timeLeft:'7 วัน', status:'Lock' },
       ],
     };
 
@@ -942,9 +973,12 @@
       {name:'Problem Solving',   score:90,color:'#22c55e'},
     ];
 
+    /* ── Shared app background: warm glow at top → dark (continuous, full-frame) ── */
+    const APP_BG = 'radial-gradient(130% 55% at 50% -8%, rgba(237,71,36,0.5) 0%, rgba(237,71,36,0.13) 32%, #0b0708 62%, #09090b 100%)';
+
     /* ── Phone mockup wrapper ────────────────────── */
     function PhoneFrame({ children, statusBg }) {
-      const sBar = statusBg || '#09090b';
+      const sBar = statusBg || APP_BG;
       const PHONE_W = 390;
       const PHONE_H = 844;
       const HALO   = 24; // outer ring/shadow halo to keep on-screen
@@ -983,7 +1017,7 @@
             height: PHONE_H,
             transform: `scale(${scale})`,
             transformOrigin: 'center center',
-            background: '#09090b',
+            background: sBar,
             borderRadius: 52,
             border: '2px solid rgba(255,255,255,0.18)',
             boxShadow: [
@@ -1011,20 +1045,33 @@
               padding: '0 28px',
               position: 'relative',
               zIndex: 10,
-              background: sBar,
+              background: 'transparent',
             }}>
               <span style={{color:'#fff',fontSize:'0.8125rem',fontWeight:600}}>9:41</span>
-              {/* Notch */}
+              {/* Dynamic Island */}
               <div style={{
                 position: 'absolute',
-                top: 0,
+                top: 9,
                 left: '50%',
                 transform: 'translateX(-50%)',
-                width: 120,
-                height: 34,
-                background: sBar,
-                borderRadius: '0 0 20px 20px',
-              }}/>
+                width: 116,
+                height: 33,
+                background: '#000',
+                borderRadius: 999,
+                zIndex: 11,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                padding: '0 11px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.6), inset 0 0 0 0.5px rgba(255,255,255,0.05)',
+              }}>
+                {/* Camera lens */}
+                <div style={{
+                  width: 9, height: 9, borderRadius: '50%',
+                  background: 'radial-gradient(circle at 35% 30%, #2b3550 0%, #0a0c12 60%, #000 100%)',
+                  boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.08), 0 0 3px rgba(60,110,220,0.35)',
+                }}/>
+              </div>
               <div style={{display:'flex',gap:6,alignItems:'center'}}>
                 <svg width="17" height="12" viewBox="0 0 17 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1" opacity=".4"/><rect x="4.5" y="2" width="3" height="10" rx="1" opacity=".6"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
                 <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><path d="M8 2.4C10.6 2.4 12.9 3.5 14.5 5.3L16 3.7C14 1.4 11.2 0 8 0S2 1.4 0 3.7L1.5 5.3C3.1 3.5 5.4 2.4 8 2.4z" opacity=".4"/><path d="M8 5.5C9.8 5.5 11.4 6.3 12.6 7.5L14.1 5.9C12.5 4.3 10.4 3.3 8 3.3S3.5 4.3 1.9 5.9L3.4 7.5C4.6 6.3 6.2 5.5 8 5.5z" opacity=".7"/><circle cx="8" cy="10" r="2"/></svg>
@@ -1317,14 +1364,85 @@
       }, [featuresInView]);
 
       const features = [
-        { Icon:Target,    title:'Mission-Based Learning',   desc:'ภารกิจที่ออกแบบให้เหมาะกับคุณโดยเฉพาะ เรียนรู้ผ่านการลงมือทำจริง ไม่ใช่แค่อ่านทฤษฎี', color:'#ED4724', tag:'PRACTICE' },
-        { Icon:Zap,       title:'Micro Learning',           desc:'เนื้อหา 5–10 นาที เรียนได้ทุกที่ ทุกเวลา ไม่เสียเวลา ไม่ต้องจัดตาราง',                    color:'#f59e0b', tag:'BITESIZE' },
-        { Icon:BarChart2, title:'Real-time Progress',       desc:'ติดตามพัฒนาการของตัวเอง เห็นชัดว่าเรียนได้มากแค่ไหน และต้องพัฒนาอะไรต่อไป',          color:'#06b6d4', tag:'INSIGHT'  },
-        { Icon:Trophy,    title:'Leaderboard & Rewards',    desc:'แข่งขันกับเพื่อนร่วมองค์กร สะสมคะแนน รับ Badge และสร้างแรงจูงใจในการเรียนรู้',         color:'#a78bfa', tag:'REWARD'   },
-        { Icon:FileText,  title:'Visible Learning Evidence',desc:'เห็นข้อมูลจริงว่าพนักงานทำภารกิจอะไร ส่งงานอะไร ตอบคำถามอย่างไร · ไม่ใช่แค่ดูจำนวนคนเข้าเรียน',     color:'#10b981', tag:'EVIDENCE' },
-        { Icon:Activity,  title:'Transformation Tracking',  desc:'ไม่ใช่จบคลาสแล้วจบ · ติดตามต่อ 90 วันว่าแต่ละคนยังจำได้ นำไปใช้จริง และพัฒนาถึง Stage ไหน',           color:'#14b8a6', tag:'JOURNEY'  },
-        { Icon:Award,     title:'Impact & Action Plan',     desc:'วัดผล training ที่ลงทุนไป · เห็นว่าใครเก่งขึ้น ใครมี gap และต้อง follow-up หรือให้ manager ช่วยดูแล', color:'#6366f1', tag:'IMPACT'   },
+        { Icon:Compass,       title:'Personalize Transformation Path',     desc:'เพราะแต่ละคนมี Gap ที่แตกต่างกัน Learner จึงจะได้รับ Journey ที่แตกต่างกัน ตามจุดเริ่มต้น ทักษะ และเป้าหมายของตัวเอง', color:'#ED4724', tag:'LEARNER', tags:null },
+        { Icon:Sparkles,      title:'Humanize & Simple UI',                desc:'ออกแบบ Journey และ UI ที่ไม่ซับซ้อน มีความเป็นมนุษย์ เพื่อให้ Learner เข้าใจได้ง่ายและฝึกได้อย่าง Practical', color:'#ED4724', tag:'LEARNER', tags:null },
+        { Icon:Trophy,        title:'Gamified Transformation',             desc:'การเปลี่ยนแปลงที่สนุก มีกลไกเสริมแรงจูงใจให้ Learner สนุกและเสพติดการเรียนรู้', color:'#ED4724', tag:'LEARNER', tags:['Level System','Class Leaderboard','Pacer','Forgetting Status'] },
+        { Icon:GraduationCap, title:'Competency-Centric Mechanic',         desc:'กลไกที่ตอบโจทย์ระดับความสามารถที่แตกต่างกันในแกนมิติ ออกแบบโดยทีม Learning Design และ Subject Matter Expert', color:'#ED4724', tag:'LEARNER', tags:null },
+        { Icon:BarChart2,     title:'Real-time Transformation Visibility', desc:'เห็น Progress ของ Transformation ของ Learner ทุกคนแบบ Real-time ผ่าน HR Dashboard · รู้ว่าแต่ละคนอยู่ Shift Stage ไหน ตั้งแต่ Day 1 จนถึง Automate', color:'#3b82f6', tag:'HR', tags:null },
+        { Icon:FileText,      title:'Learning Evidence',                   desc:'เห็นหลักฐานของการเรียนรู้และการเปลี่ยนแปลง · ระบบเก็บทุกภารกิจที่ Learner ทำ ทั้งคลิป งานเขียน หรือสิ่งที่ Learner ตอบ ใช้เป็นหลักฐานจริงประกอบการตัดสินใจ', color:'#3b82f6', tag:'HR', tags:null },
+        { Icon:Activity,      title:'Visible Impact & Next Steps',         desc:'เห็นว่าใคร Transform หรือ Shift บ้าง มากน้อยแค่ไหน และตอนนี้ HR ควรลงทุนกับ Learner คนไหนต่อ พร้อม Next Steps รายบุคคลที่นำไปใช้ได้ทันที', color:'#3b82f6', tag:'HR', tags:null },
       ];
+
+      const featureGroups = [
+        { key:'LEARNER', label:'สำหรับ Learner', color:'#ED4724', grad:'#f59e0b' },
+        { key:'HR',      label:'สำหรับ HR',      color:'#3b82f6', grad:'#22d3ee' },
+      ];
+
+      const renderFeatureCard = ({Icon,title,desc,color,tag,tags}, i) => {
+        const grad = color === '#ED4724' ? '#f59e0b' : '#22d3ee';
+        return (
+        <div key={title}
+          className="feature-card anim-wiggle-hover"
+          style={{
+            position:'relative',
+            flex:'1 1 240px', minWidth:240, maxWidth:'calc(25% - 15px)',
+            background:'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
+            border:'1px solid rgba(255,255,255,0.08)',
+            borderRadius:20, padding:'28px 24px 26px',
+            overflow:'hidden',
+            opacity: featuresInView ? 1 : 0,
+            transform: featuresInView ? 'translateY(0)' : 'translateY(24px)',
+            transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${i*0.1}s, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${i*0.1}s, border-color 0.25s, background 0.25s, box-shadow 0.35s`,
+          }}
+          onMouseEnter={e=>{
+            e.currentTarget.style.borderColor = `${color}59`;
+            e.currentTarget.style.boxShadow   = `0 22px 55px ${color}2e`;
+          }}
+          onMouseLeave={e=>{
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+            e.currentTarget.style.boxShadow   = 'none';
+          }}>
+          {/* Corner accent glow (two-tone) */}
+          <div style={{
+            position:'absolute', top:-55, right:-55,
+            width:170, height:170, borderRadius:'50%',
+            background:`radial-gradient(circle, ${grad}26 0%, ${color}12 40%, transparent 72%)`,
+            pointerEvents:'none',
+          }}/>
+
+          {/* Icon wrapper — gradient chip */}
+          <div className="feature-icon-wrap" style={{
+            width:54, height:54, borderRadius:15,
+            background:`linear-gradient(135deg, ${color} 0%, ${grad} 100%)`,
+            display:'flex',alignItems:'center',justifyContent:'center',
+            color:'#fff', marginBottom:18,
+            boxShadow:`0 10px 24px ${color}4d, inset 0 1px 0 rgba(255,255,255,0.28)`,
+          }}>
+            <span className="anim-wiggle-target" style={{display:'inline-flex'}}>
+              <Icon size={26} strokeWidth={2}/>
+            </span>
+          </div>
+
+          <h3 style={{fontWeight:700,fontSize:'1.05rem',margin:'0 0 8px',letterSpacing:'-0.01em',color:'#fff'}}>{title}</h3>
+          <p style={{color:'#a8a29e',fontSize:'0.875rem',lineHeight:1.65,margin:0}}>{desc}</p>
+
+          {/* Optional tag chips */}
+          {tags && (
+            <div style={{display:'flex',flexWrap:'wrap',gap:7,marginTop:12}}>
+              {tags.map(t=>(
+                <span key={t} style={{
+                  display:'inline-flex',alignItems:'center',
+                  background:`${color}12`, border:`1px solid ${color}33`,
+                  color:'#d4d4d8', borderRadius:7, padding:'3px 9px',
+                  fontSize:'0.7rem', fontWeight:600,
+                }}>{t}</span>
+              ))}
+            </div>
+          )}
+
+        </div>
+        );
+      };
 
       return (
         <div style={{
@@ -1776,76 +1894,25 @@
                 เพราะการเรียนรู้ที่ดีที่สุดคือการเรียนรู้ที่เกิดขึ้นจริง<br/>ในชีวิตการทำงาน
               </p>
             </div>
-            <div style={{
-              display:'flex', flexWrap:'wrap', justifyContent:'center', gap:20,
-            }}>
-              {features.map(({Icon,title,desc,color,tag},i)=>(
-                <div key={title}
-                  className="feature-card anim-wiggle-hover"
-                  style={{
-                    position:'relative',
-                    flex:'1 1 240px', minWidth:240, maxWidth:'calc(25% - 15px)',
-                    background:'rgba(255,255,255,0.03)',
-                    border:'1px solid rgba(255,255,255,0.07)',
-                    borderRadius:20, padding:'28px 24px 26px',
-                    overflow:'hidden',
-                    opacity: featuresInView ? 1 : 0,
-                    transform: featuresInView ? 'translateY(0)' : 'translateY(24px)',
-                    transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${i*0.12}s, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${i*0.12}s, border-color 0.25s, background 0.25s, box-shadow 0.35s`,
-                  }}
-                  onMouseEnter={e=>{
-                    e.currentTarget.style.borderColor = `${color}66`;
-                    e.currentTarget.style.background  = `${color}0d`;
-                    e.currentTarget.style.boxShadow   = `0 24px 60px ${color}26`;
-                  }}
-                  onMouseLeave={e=>{
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)';
-                    e.currentTarget.style.background  = 'rgba(255,255,255,0.03)';
-                    e.currentTarget.style.boxShadow   = 'none';
-                  }}>
-                  {/* Corner accent gradient */}
-                  <div style={{
-                    position:'absolute', top:-40, right:-40,
-                    width:140, height:140, borderRadius:'50%',
-                    background:`radial-gradient(circle, ${color}20 0%, transparent 70%)`,
-                    pointerEvents:'none',
-                  }}/>
-
-                  {/* Tag chip */}
-                  <span style={{
-                    position:'absolute', top:18, right:18,
-                    background:`${color}14`,
-                    color, border:`1px solid ${color}40`,
-                    fontSize:'0.6rem', fontWeight:700, letterSpacing:'0.08em',
-                    padding:'3px 8px', borderRadius:6,
-                  }}>{tag}</span>
-
-                  {/* Icon wrapper with colored glow */}
-                  <div className="feature-icon-wrap" style={{
-                    width:54, height:54, borderRadius:14,
-                    background:`${color}1a`,
-                    border:`1px solid ${color}40`,
-                    display:'flex',alignItems:'center',justifyContent:'center',
-                    color, marginBottom:18,
-                    boxShadow:`0 8px 24px ${color}22`,
-                  }}>
-                    <span className="anim-wiggle-target" style={{display:'inline-flex'}}>
-                      <Icon size={26} strokeWidth={1.8}/>
+            <div style={{display:'flex',flexDirection:'column',gap:40,maxWidth:1200,margin:'0 auto'}}>
+              {featureGroups.map(g=>(
+                <div key={g.key}>
+                  {/* Group header + divider line */}
+                  <div style={{display:'flex',alignItems:'center',gap:16,marginBottom:22}}>
+                    <span style={{display:'inline-flex',alignItems:'center',gap:9,flexShrink:0}}>
+                      <span style={{width:9,height:9,borderRadius:'50%',background:`linear-gradient(135deg, ${g.color}, ${g.grad})`,boxShadow:`0 0 10px ${g.color}`}}/>
+                      <span style={{
+                        background:`linear-gradient(90deg, ${g.color}, ${g.grad})`,
+                        WebkitBackgroundClip:'text', backgroundClip:'text', color:'transparent',
+                        fontSize:'0.92rem',fontWeight:800,letterSpacing:'0.12em',
+                      }}>{g.label}</span>
                     </span>
+                    <span style={{flex:1,height:2,borderRadius:2,
+                      background:`linear-gradient(90deg, ${g.color} 0%, ${g.grad} 38%, ${g.grad}33 68%, transparent 100%)`}}/>
                   </div>
-
-                  <h3 style={{fontWeight:700,fontSize:'1.05rem',margin:'0 0 8px',letterSpacing:'-0.01em',color:'#fff'}}>{title}</h3>
-                  <p style={{color:'#a8a29e',fontSize:'0.875rem',lineHeight:1.65,margin:0}}>{desc}</p>
-
-                  {/* Read more link */}
-                  <div style={{
-                    marginTop:16, paddingTop:14,
-                    borderTop:'1px solid rgba(255,255,255,0.06)',
-                    color, fontSize:'0.78rem', fontWeight:600,
-                    display:'flex',alignItems:'center',gap:6,
-                    opacity:0.85,
-                  }}>เรียนรู้เพิ่มเติม
-                    <span style={{transition:'transform 0.3s'}}>→</span>
+                  {/* Cards in this group */}
+                  <div style={{display:'flex',flexWrap:'wrap',justifyContent:'center',gap:20}}>
+                    {features.filter(f=>f.tag===g.key).map((f,i)=>renderFeatureCard(f,i))}
                   </div>
                 </div>
               ))}
@@ -1970,6 +2037,12 @@
 
       // notifications
       const [notifOpen, setNotifOpen] = useState(false);
+
+      // challenge board filter
+      const [challengeFilter, setChallengeFilter] = useState('all');
+
+      // shift-stage journey: which stage card is expanded (default: current = 4)
+      const [shiftOpen, setShiftOpen] = useState(4);
 
       // microlearning player
       const [mlPlaying, setMlPlaying] = useState(false);
@@ -3035,9 +3108,9 @@
 
         // Ending screen
         if (isEnding) return (
-          <PhoneFrame statusBg="#1a0404">
+          <PhoneFrame statusBg={APP_BG}>
             <div className="scale-in" style={{flex:1,display:'flex',flexDirection:'column',
-              background:'linear-gradient(135deg,#7f1d1d 0%,#450a0a 55%,#1a0404 100%)',
+              background:'transparent',
               position:'relative',overflow:'hidden'}}>
               <div style={{position:'absolute',top:-40,right:-40,width:200,height:200,borderRadius:'50%',
                 background:'rgba(239,68,68,0.15)',filter:'blur(48px)',pointerEvents:'none'}}/>
@@ -3110,9 +3183,9 @@
         };
 
         return (
-          <PhoneFrame statusBg="#1a0404">
+          <PhoneFrame statusBg={APP_BG}>
             <div style={{flex:1,display:'flex',flexDirection:'column',
-              background:'linear-gradient(135deg,#7f1d1d 0%,#450a0a 55%,#1a0404 100%)',
+              background:'transparent',
               position:'relative',overflow:'hidden'}}>
               <div style={{position:'absolute',top:-40,right:-40,width:180,height:180,borderRadius:'50%',
                 background:'rgba(239,68,68,0.12)',filter:'blur(40px)',pointerEvents:'none'}}/>
@@ -3390,13 +3463,13 @@
         const current    = stages[currentNum];
 
         return (
-          <PhoneFrame statusBg="#0a0a0c">
-            <div style={{flex:1,display:'flex',flexDirection:'column',background:'#0a0a0c',overflow:'hidden'}}>
+          <PhoneFrame statusBg={APP_BG}>
+            <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',overflow:'hidden'}}>
               {/* Header */}
               <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px 18px 8px',flexShrink:0}}>
-                <button onClick={goBack} style={{width:40,height:40,borderRadius:'50%',
+                <button onClick={goBack} style={{width:40,height:40,borderRadius:12,
                   background:'#161618',border:'1px solid rgba(255,255,255,0.08)',
-                  cursor:'pointer',color:'#d4d4d8',
+                  cursor:'pointer',color:'#d4d4d8',flexShrink:0,
                   display:'flex',alignItems:'center',justifyContent:'center'}}>
                   <ChevronLeft size={18}/>
                 </button>
@@ -3416,12 +3489,12 @@
                 {/* ── HERO PENTAGON BADGE ── */}
                 <div style={{position:'relative',display:'flex',flexDirection:'column',alignItems:'center',
                   padding:'24px 0 28px'}}>
-                  {/* Soft halo */}
+                  {/* Soft top spotlight */}
                   <div aria-hidden="true" style={{
-                    position:'absolute',top:'40%',left:'50%',transform:'translate(-50%,-50%)',
-                    width:240,height:200,
-                    background:'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%)',
-                    filter:'blur(20px)',pointerEvents:'none',
+                    position:'absolute',top:'30%',left:'50%',transform:'translate(-50%,-50%)',
+                    width:300,height:220,
+                    background:'radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 40%, transparent 70%)',
+                    filter:'blur(22px)',pointerEvents:'none',
                   }}/>
 
                   {/* Pentagon */}
@@ -3463,82 +3536,109 @@
                   </div>
                 </div>
 
-                {/* ── STAGE CARDS (newest first) ── */}
-                <div style={{display:'flex',flexDirection:'column',gap:10}}>
-                  {[...stages].reverse().map(s => {
+                {/* ── STAGE CARDS w/ timeline rail (newest first) ── */}
+                <div style={{display:'flex',flexDirection:'column'}}>
+                  {[...stages].reverse().map((s, idx, arr) => {
                     const isCurrent = s.num === currentNum;
                     const isStart   = s.num === 0;
+                    const isDone    = s.num < currentNum;
+                    const isFuture  = s.num > currentNum;
+                    const isOpen    = shiftOpen === s.num;
+                    const isFirst   = idx === 0;
+                    const isLast    = idx === arr.length - 1;
+                    const NODE_TOP  = 22; // vertical center of node, aligned with card label
+
                     return (
-                      <div key={s.num} style={{
-                        background: isCurrent ? '#161618' : '#0d0d0f',
-                        border:`1px solid ${isCurrent ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.03)'}`,
-                        borderRadius:14,padding:'14px 16px',position:'relative',
-                        boxShadow:isCurrent?'0 6px 18px rgba(0,0,0,0.4)':'none',
-                      }}>
-                        {/* "คุณอยู่ตรงนี้" indicator on current stage */}
-                        {isCurrent && (
-                          <div style={{
-                            position:'absolute',top:12,right:14,
-                            display:'inline-flex',alignItems:'center',gap:5,
-                            padding:'3px 9px',borderRadius:999,
-                            background:'rgba(34,197,94,0.10)',
-                            border:'1px solid rgba(34,197,94,0.30)',
-                          }}>
-                            <span className="anim-pulse" style={{
-                              width:6,height:6,borderRadius:'50%',background:'#22c55e',
-                              boxShadow:'0 0 6px #22c55e',
-                            }}/>
-                            <span style={{color:'#86efac',fontSize:'0.66rem',fontWeight:600}}>คุณอยู่ตรงนี้</span>
-                          </div>
-                        )}
-
-                        {/* "จุดเริ่มต้น" pill on stage 0 */}
-                        {isStart && (
-                          <div style={{
-                            position:'absolute',top:14,right:14,
-                            padding:'3px 10px',borderRadius:999,
-                            background:'rgba(255,255,255,0.03)',
-                            border:'1px solid rgba(255,255,255,0.06)',
-                            color:'#52525b',fontSize:'0.66rem',fontWeight:500,
-                          }}>จุดเริ่มต้น</div>
-                        )}
-
-                        <div style={{
-                          color: isCurrent ? '#a1a1aa' : '#52525b',
-                          fontSize:'0.7rem',fontWeight:500,letterSpacing:'0.01em',
-                        }}>
-                          Stage {s.num} - {s.name}
-                        </div>
-                        <div style={{
-                          color: isCurrent ? '#fafafa' : '#71717a',
-                          fontSize:'1.05rem',fontWeight:700,letterSpacing:'-0.01em',marginTop:2,
-                        }}>
-                          {s.role}
+                      <div key={s.num} style={{display:'flex',gap:12,position:'relative'}}>
+                        {/* ── Timeline rail column ── */}
+                        <div style={{width:26,flexShrink:0,position:'relative'}}>
+                          {/* connecting line above node */}
+                          {!isFirst && <div style={{position:'absolute',left:12,top:0,height:NODE_TOP,width:2,background:'rgba(255,255,255,0.10)'}}/>}
+                          {/* connecting line below node */}
+                          {!isLast && <div style={{position:'absolute',left:12,top:NODE_TOP,bottom:0,width:2,background:'rgba(255,255,255,0.10)'}}/>}
+                          {/* node */}
+                          {isCurrent ? (
+                            <span style={{position:'absolute',left:13,top:NODE_TOP,transform:'translate(-50%,-50%)',
+                              width:16,height:16,borderRadius:'50%',background:'#fafafa',
+                              boxShadow:'0 0 0 4px rgba(250,250,250,0.12), 0 0 8px rgba(255,255,255,0.5)'}}/>
+                          ) : isDone ? (
+                            <span style={{position:'absolute',left:13,top:NODE_TOP,transform:'translate(-50%,-50%)',
+                              width:20,height:20,borderRadius:'50%',background:'#0a0a0c',
+                              border:'1.5px solid rgba(255,255,255,0.22)',
+                              display:'inline-flex',alignItems:'center',justifyContent:'center'}}>
+                              <Check size={11} strokeWidth={3} style={{color:'#71717a'}}/>
+                            </span>
+                          ) : (
+                            <span style={{position:'absolute',left:13,top:NODE_TOP,transform:'translate(-50%,-50%)',
+                              width:14,height:14,borderRadius:'50%',background:'#0a0a0c',
+                              border:'1.5px solid rgba(255,255,255,0.18)'}}/>
+                          )}
                         </div>
 
-                        {s.tags.length > 0 && (
-                          <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:10}}>
-                            {s.tags.map(t => (
-                              <span key={t} style={{
-                                display:'inline-flex',alignItems:'center',
-                                background:'rgba(255,255,255,0.03)',
-                                border:`1px solid rgba(255,255,255,${isCurrent?0.06:0.04})`,
-                                borderRadius:999,padding:'3px 10px',
-                                color: isCurrent ? '#d4d4d8' : '#52525b',
-                                fontSize:'0.66rem',fontWeight:500,
-                              }}>{t}</span>
-                            ))}
-                          </div>
-                        )}
-
-                        {!isStart && (
-                          <div style={{
-                            color: isCurrent ? '#a1a1aa' : '#52525b',
-                            fontSize:'0.76rem',lineHeight:1.6,marginTop:10,
+                        {/* ── Stage card ── */}
+                        <button onClick={()=>setShiftOpen(isOpen ? -1 : s.num)}
+                          style={{
+                            flex:1,minWidth:0,textAlign:'left',cursor:'pointer',
+                            background: isCurrent ? '#161618' : '#0d0d0f',
+                            border:`1px solid ${isCurrent ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.05)'}`,
+                            borderRadius:14,padding:'14px 16px',position:'relative',
+                            marginBottom:10,
+                            boxShadow:isCurrent?'0 6px 18px rgba(0,0,0,0.4)':'none',
+                            transition:'border-color 0.2s, background 0.2s',
                           }}>
-                            {s.desc}
+                          {/* top row: label/role + right adornment */}
+                          <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:10}}>
+                            <div style={{minWidth:0}}>
+                              <div style={{color: isCurrent ? '#a1a1aa' : '#52525b',
+                                fontSize:'0.7rem',fontWeight:500,letterSpacing:'0.01em'}}>
+                                Stage {s.num} - {s.name}
+                              </div>
+                              <div style={{color: (isCurrent||isOpen) ? '#fafafa' : '#a1a1aa',
+                                fontSize:'1.05rem',fontWeight:700,letterSpacing:'-0.01em',marginTop:2}}>
+                                {s.role}
+                              </div>
+                            </div>
+
+                            {isCurrent ? (
+                              <div style={{flexShrink:0,display:'inline-flex',alignItems:'center',gap:5,
+                                padding:'3px 9px',borderRadius:999,
+                                background:'rgba(34,197,94,0.10)',border:'1px solid rgba(34,197,94,0.30)'}}>
+                                <span className="anim-pulse" style={{width:6,height:6,borderRadius:'50%',
+                                  background:'#22c55e',boxShadow:'0 0 6px #22c55e'}}/>
+                                <span style={{color:'#86efac',fontSize:'0.66rem',fontWeight:600}}>คุณอยู่ตรงนี้</span>
+                              </div>
+                            ) : isStart ? (
+                              <div style={{flexShrink:0,padding:'3px 10px',borderRadius:999,
+                                background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)',
+                                color:'#52525b',fontSize:'0.66rem',fontWeight:500}}>จุดเริ่มต้น</div>
+                            ) : (
+                              <ChevronRight size={16} style={{color:'#52525b',flexShrink:0,marginTop:2,
+                                transform: isOpen ? 'rotate(90deg)' : 'none',transition:'transform 0.2s'}}/>
+                            )}
                           </div>
-                        )}
+
+                          {/* expanded content: tags + description */}
+                          {isOpen && (
+                            <>
+                              {s.tags.length > 0 && (
+                                <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:10}}>
+                                  {s.tags.map(t => (
+                                    <span key={t} style={{display:'inline-flex',alignItems:'center',
+                                      background:'rgba(255,255,255,0.03)',
+                                      border:`1px solid rgba(255,255,255,${isCurrent?0.08:0.05})`,
+                                      borderRadius:999,padding:'3px 10px',
+                                      color: isCurrent ? '#d4d4d8' : '#a1a1aa',
+                                      fontSize:'0.66rem',fontWeight:500}}>{t}</span>
+                                  ))}
+                                </div>
+                              )}
+                              <div style={{color: isCurrent ? '#a1a1aa' : '#71717a',
+                                fontSize:'0.76rem',lineHeight:1.6,marginTop:10}}>
+                                {s.desc}
+                              </div>
+                            </>
+                          )}
+                        </button>
                       </div>
                     );
                   })}
@@ -3555,8 +3655,8 @@
         const moduleNum  = mod && mod._moduleNum;
 
         return (
-          <PhoneFrame statusBg="#0a0a0c">
-            <div style={{flex:1,display:'flex',flexDirection:'column',background:'#0a0a0c',overflow:'hidden'}}>
+          <PhoneFrame statusBg={APP_BG}>
+            <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',overflow:'hidden'}}>
               {/* Header */}
               <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px 20px 6px',flexShrink:0}}>
                 <button onClick={goBack} style={{
@@ -3753,13 +3853,6 @@
       const renderHome = () => (
         <div className="space-y-6 animate-in fade-in duration-500 pb-8" style={{position:'relative'}}>
 
-          {/* Warm gradient glow behind hero */}
-          <div aria-hidden="true" style={{
-            position:'absolute',top:-80,left:-60,right:-60,height:340,zIndex:0,pointerEvents:'none',
-            background:'radial-gradient(120% 80% at 50% 0%, rgba(237,71,36,0.55) 0%, rgba(237,71,36,0.28) 25%, rgba(237,71,36,0.08) 55%, transparent 80%)',
-            filter:'blur(2px)',
-          }}/>
-
           {/* Top Bar */}
           <div className="flex justify-between items-center px-1" style={{position:'relative',gap:8,zIndex:classSwitcherOpen?50:2,marginTop:-12}}>
             {/* Avatar */}
@@ -3771,19 +3864,6 @@
               color:'#a1a1aa',
             }}>
               <UserIcon size={20} strokeWidth={2}/>
-            </button>
-
-            {/* Bell */}
-            <button onClick={()=>setNotifOpen(true)} className="btn-press" style={{
-              width:40,height:40,borderRadius:'50%',flexShrink:0,
-              background:'rgba(28,28,32,0.7)',border:'1px solid rgba(255,255,255,0.08)',
-              display:'inline-flex',alignItems:'center',justifyContent:'center',
-              cursor:'pointer',position:'relative',
-            }}>
-              <Bell className="text-zinc-200" size={17} strokeWidth={2}/>
-              <div className="anim-pulse" style={{position:'absolute',top:6,right:6,
-                width:8,height:8,background:'#ef4444',borderRadius:'50%',
-                border:'1.5px solid #1a1a1d'}}/>
             </button>
 
             {/* Class switcher pill */}
@@ -3805,6 +3885,19 @@
               </span>
               <ChevronDown size={14} style={{color:'#a1a1aa',flexShrink:0,
                 transform:classSwitcherOpen?'rotate(180deg)':'none',transition:'transform 0.2s'}}/>
+            </button>
+
+            {/* Bell */}
+            <button onClick={()=>setNotifOpen(true)} className="btn-press" style={{
+              width:40,height:40,borderRadius:'50%',flexShrink:0,
+              background:'rgba(28,28,32,0.7)',border:'1px solid rgba(255,255,255,0.08)',
+              display:'inline-flex',alignItems:'center',justifyContent:'center',
+              cursor:'pointer',position:'relative',
+            }}>
+              <Bell className="text-zinc-200" size={17} strokeWidth={2}/>
+              <div className="anim-pulse" style={{position:'absolute',top:6,right:6,
+                width:8,height:8,background:'#ef4444',borderRadius:'50%',
+                border:'1.5px solid #1a1a1d'}}/>
             </button>
 
             {/* Class switcher dropdown */}
@@ -3906,8 +3999,8 @@
                 <JoinstickLogo size={56} variant="white"/>
                 <span style={{color:'#fafafa',fontSize:'1.3rem',fontWeight:700,letterSpacing:'-0.01em',marginTop:8}}>Practitioner</span>
                 <span style={{display:'flex',flexDirection:'column',alignItems:'center',marginTop:4}}>
-                  <ChevronDown size={20} strokeWidth={2.5} style={{color:'#52525b'}}/>
-                  <ChevronDown size={20} strokeWidth={2.5} style={{color:'#3f3f46',marginTop:-12}}/>
+                  <ChevronUp className="chev-bounce" size={20} strokeWidth={2.5} style={{color:'#4ade80',filter:'drop-shadow(0 0 4px rgba(34,197,94,0.7))',animationDelay:'0.18s'}}/>
+                  <ChevronUp className="chev-bounce" size={20} strokeWidth={2.5} style={{color:'#22c55e',marginTop:-12}}/>
                 </span>
               </div>
             </button>
@@ -4057,120 +4150,169 @@
           'Recall Quiz':   { bg:'rgba(99,102,241,.15)',  border:'rgba(99,102,241,.4)',  color:'#a5b4fc', label:'Recall Quiz'   },
           'Micro Learning':{ bg:'rgba(16,185,129,.15)',  border:'rgba(16,185,129,.4)',  color:'#6ee7b7', label:'Micro Learning'},
         };
-        const statusStyle = {
-          'ยังไม่เริ่ม':{ bg:'rgba(59,130,246,.15)',  color:'#93c5fd',  label:'ยังไม่เริ่ม' },
-          'กำลังทำ':    { bg:'rgba(245,158,11,.15)',  color:'#fcd34d',  label:'กำลังทำ'    },
-          'เสร็จสิ้น':  { bg:'rgba(34,197,94,.15)',   color:'#86efac',  label:'เสร็จสิ้น'  },
-          'Lock':       { bg:'rgba(63,63,70,.3)',      color:'#71717a',  label:'ล็อก'       },
-        };
 
         const canOpen = ch => ch.status !== 'Lock';
 
-        const ChallengeCard = ({ ch, compact, delay=0 }) => {
+        // Resolve the top-right status badge shown on each card
+        const statusBadge = ch => {
+          if (ch.status==='กำลังทำ')   return { label:'กำลังทำ',  color:'#fcd34d', dot:'#facc15', glow:true };
+          if (ch.status==='หมดเวลา')   return { label:'เลยเวลาที่กำหนด',  color:'#f87171', dot:'#ef4444' };
+          if (ch.status==='เสร็จสิ้น') return { label:'เสร็จสิ้น', color:'#86efac', dot:'#22c55e' };
+          if (ch.status==='Lock')      return { label:'ล็อคอยู่', color:'#71717a', icon:'lock' };
+          if (ch.timeLeft)             return { label:`เหลือเวลาอีก ${ch.timeLeft}`, color:'#a1a1aa' };
+          return { label:'ยังไม่เริ่ม', color:'#93c5fd' };
+        };
+
+        // Metric chips (duration / EXP / engagement)
+        const Metrics = ({ ch, dim }) => (
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8}}>
+            <span style={{display:'inline-flex',alignItems:'center',gap:4,color: dim?'#52525b':'#a1a1aa',fontSize:'0.7rem',fontWeight:500,whiteSpace:'nowrap',flexShrink:0}}>
+              <Clock size={12} strokeWidth={2} style={{flexShrink:0}}/>{ch.duration}
+            </span>
+            <div style={{display:'flex',alignItems:'center',gap:12,flexShrink:0}}>
+              <span style={{display:'inline-flex',alignItems:'center',gap:3,color: dim?'#6b5a3a':'#fb923c',fontSize:'0.7rem',fontWeight:600,whiteSpace:'nowrap'}}>
+                <Flame size={12} fill="currentColor" strokeWidth={1.6} style={{flexShrink:0}}/>+{ch.points}
+              </span>
+              <span style={{display:'inline-flex',alignItems:'center',gap:3,color: dim?'#5b5340':'#fbbf24',fontSize:'0.7rem',fontWeight:600,whiteSpace:'nowrap'}}>
+                <Coin size={12} strokeWidth={2} style={{flexShrink:0}}/>+{ch.engagement}
+              </span>
+            </div>
+          </div>
+        );
+
+        // ── Compact card for the Anytime rail ──
+        const AnytimeCard = ({ ch, delay=0 }) => {
           const ts = typeStyle[ch.type] || typeStyle['Quiz'];
-          const ss = statusStyle[ch.status] || statusStyle['Available'];
-          const tappable = canOpen(ch);
+          const done = ch.status==='เสร็จสิ้น';
           return (
-            <button
-              onClick={() => tappable ? openChallenge(ch) : null}
+            <button onClick={()=>openChallenge(ch)} className="btn-press"
               style={{
-                background: ch.status==='Lock' ? '#111113' : '#161618',
-                border: `1px solid ${ch.status==='Lock' ? 'rgba(63,63,70,.4)' : 'rgba(63,63,70,.7)'}`,
-                borderRadius: '1rem',
-                padding: compact ? '0.75rem' : '1rem 1.125rem',
-                textAlign: 'left',
-                cursor: tappable ? 'pointer' : 'default',
-                opacity: ch.status==='Lock' ? 0.6 : 1,
-                width: compact ? 160 : '100%',
-                flexShrink: 0,
-                position: 'relative',
-                overflow: 'hidden',
-                transform: 'scale(1)',
-                transition: 'transform 0.15s, opacity 0.15s',
-                animation: `fadeIn 0.3s ease forwards ${delay}ms`,
-                animationFillMode: 'both',
-              }}
-              onMouseDown={e => tappable && (e.currentTarget.style.transform='scale(0.97)')}
-              onMouseUp={e => e.currentTarget.style.transform='scale(1)'}
-              onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}>
-              {/* Glow */}
-              {tappable && <div style={{position:'absolute',left:-16,top:'50%',transform:'translateY(-50%)',width:48,height:80,background:ts.bg,filter:'blur(18px)',borderRadius:'50%'}}/>}
-              <div style={{position:'relative',zIndex:1}}>
-                {/* Top row */}
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6,flexWrap:'wrap',gap:4}}>
-                  <span style={{background:ts.bg,border:`1px solid ${ts.border}`,color:ts.color,fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:999}}>{ts.label}</span>
-                  <span style={{color:'#fcd34d',fontSize:'0.65rem',fontWeight:600}}>+{ch.points} EXP</span>
-                </div>
-                {/* Title */}
-                <div style={{color: ch.status==='Lock'?'#52525b':'#e4e4e7',fontWeight:500,fontSize:compact?'0.8rem':'0.9375rem',lineHeight:1.35,marginBottom:8,
-                  overflow:compact?'hidden':'visible',display:compact?'-webkit-box':'block',WebkitLineClamp:compact?2:10,WebkitBoxOrient:'vertical'}}>
-                  {ch.status==='Lock' && <Lock size={12} style={{display:'inline',marginRight:4,verticalAlign:'middle'}}/>}
-                  {ch.title}
-                </div>
-                {/* Bottom row */}
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span className={ch.status==='กำลังทำ'?'glow-amber':''} style={{background:ss.bg,color:ss.color,fontSize:'0.65rem',fontWeight:600,padding:'2px 8px',borderRadius:999}}>{ss.label}</span>
-                  {ch.timeLeft && <span style={{color: ch.status==='Late'?'#f87171':'#71717a',fontSize:'0.65rem'}}>{ch.timeLeft}</span>}
-                </div>
+                background:'#161618', border:'1px solid rgba(63,63,70,.7)', borderRadius:'1rem',
+                padding:'0.875rem', textAlign:'left', cursor:'pointer', width:168, flexShrink:0,
+                position:'relative', overflow:'hidden', opacity: done?0.6:1,
+                animation:`fadeIn 0.3s ease forwards ${delay}ms`, animationFillMode:'both',
+              }}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:10}}>
+                <span style={{background:ts.bg,border:`1px solid ${ts.border}`,color:ts.color,fontSize:'0.62rem',fontWeight:600,padding:'2px 8px',borderRadius:999}}>{ts.label}</span>
+                {done && (
+                  <span style={{width:20,height:20,borderRadius:'50%',border:'1.5px solid #52525b',display:'inline-flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                    <Check size={11} strokeWidth={3} style={{color:'#a1a1aa'}}/>
+                  </span>
+                )}
               </div>
+              <div style={{color: done?'#71717a':'#fafafa',fontWeight:600,fontSize:'0.95rem',lineHeight:1.3,marginBottom:14,
+                display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden',minHeight:'2.5rem'}}>
+                {ch.title}
+              </div>
+              <Metrics ch={ch} dim={done}/>
             </button>
           );
         };
 
+        // ── Full-width task card ──
+        const TaskCard = ({ ch, delay=0 }) => {
+          const tappable = canOpen(ch);
+          const sb = statusBadge(ch);
+          const locked = ch.status==='Lock';
+          const Tag = ({ children }) => (
+            <span style={{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.08)',color:'#d4d4d8',fontSize:'0.65rem',fontWeight:600,padding:'2px 9px',borderRadius:999}}>{children}</span>
+          );
+          return (
+            <button onClick={()=>tappable?openChallenge(ch):null} className={tappable?'btn-press':''}
+              style={{
+                background: locked?'#111113':'#161618',
+                border:`1px solid ${locked?'rgba(63,63,70,.4)':'rgba(63,63,70,.7)'}`,
+                borderRadius:'1.125rem', padding:'1rem 1.125rem', textAlign:'left', width:'100%',
+                cursor: tappable?'pointer':'default', opacity: locked?0.6:1,
+                animation:`fadeIn 0.3s ease forwards ${delay}ms`, animationFillMode:'both',
+              }}>
+              {/* Top row: tags + status */}
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8,marginBottom:14}}>
+                <div style={{display:'flex',gap:6}}>
+                  <Tag>{ch.category}</Tag>
+                  <Tag>{ch.type}</Tag>
+                </div>
+                <span className={sb.glow?'glow-amber':''} style={{display:'inline-flex',alignItems:'center',gap:5,color:sb.color,fontSize:'0.68rem',fontWeight:600,flexShrink:0}}>
+                  {sb.dot && <span style={{width:7,height:7,borderRadius:'50%',background:sb.dot,boxShadow:`0 0 6px ${sb.dot}`}}/>}
+                  {sb.icon==='lock' && <Lock size={11} strokeWidth={2.2}/>}
+                  {sb.label}
+                </span>
+              </div>
+              {/* Title */}
+              <div style={{color: locked?'#71717a':'#fafafa',fontWeight:600,fontSize:'1.0625rem',lineHeight:1.3,marginBottom:16}}>
+                {ch.title}
+              </div>
+              {/* Metrics */}
+              <Metrics ch={ch} dim={locked}/>
+            </button>
+          );
+        };
+
+        const tabFilters = [
+          { key:'all',    label:'ภารกิจทั้งหมด' },
+          { key:'locked', label:'ล็อคอยู่'      },
+        ];
+        const visibleTasks = challengeFilter==='locked' ? challengeData.milestone : challengeData.main;
+
         return (
-          <div className="fade-in pb-8">
+          <div className="fade-in pb-8" style={{position:'relative'}}>
             {/* Header */}
-            <div className="flex justify-between items-end pb-4 pt-2 px-1">
-              <div>
-                <h1 className="text-2xl font-semibold text-white">ภารกิจ</h1>
-                <p className="text-zinc-500 text-xs mt-0.5">Challenge</p>
-              </div>
-              <div style={{background:'rgba(59,130,246,.12)',border:'1px solid rgba(59,130,246,.3)',borderRadius:999,padding:'4px 12px',display:'flex',alignItems:'center',gap:6}}>
-                <Target size={12} className="text-blue-400"/>
-                <span style={{color:'#93c5fd',fontSize:'0.7rem',fontWeight:600}}>Stage 2</span>
-              </div>
+            <div className="flex justify-between items-center" style={{position:'relative',zIndex:2,marginTop:-4,marginBottom:26}}>
+              <button aria-label="User Profile" className="btn-press" style={{
+                width:40,height:40,borderRadius:'50%',flexShrink:0,padding:0,cursor:'pointer',
+                background:'rgba(0,0,0,0.25)',border:'1.5px solid rgba(255,255,255,0.25)',
+                display:'inline-flex',alignItems:'center',justifyContent:'center',color:'#fff',
+              }}>
+                <UserIcon size={20} strokeWidth={2}/>
+              </button>
+              <h1 style={{color:'#fff',fontSize:'1.375rem',letterSpacing:'0.01em'}}>
+                <span style={{fontWeight:600}}>Challenge </span><span style={{fontWeight:300}}>Board</span>
+              </h1>
+              <button onClick={()=>setNotifOpen(true)} className="btn-press" style={{
+                width:40,height:40,borderRadius:'50%',flexShrink:0,cursor:'pointer',position:'relative',
+                background:'rgba(0,0,0,0.25)',border:'1px solid rgba(255,255,255,0.18)',
+                display:'inline-flex',alignItems:'center',justifyContent:'center',
+              }}>
+                <Bell size={17} strokeWidth={2} style={{color:'#fff'}}/>
+                <div className="anim-pulse" style={{position:'absolute',top:7,right:8,width:7,height:7,background:'#facc15',borderRadius:'50%'}}/>
+              </button>
             </div>
 
             {/* ── Anytime Section ── */}
-            <div className="mb-6">
+            <div style={{position:'relative',zIndex:1}} className="mb-5">
               <div className="flex items-center gap-2 mb-3 px-1">
-                <Zap size={14} className="text-cyan-400"/>
+                <Zap size={15} strokeWidth={2.4} style={{color:'#fff'}}/>
                 <span className="text-white text-sm font-semibold">Anytime</span>
-                <span className="text-zinc-600 text-xs">· ทำเมื่อไรก็ได้</span>
+                <span className="text-zinc-500 text-xs">ทำเมื่อไหร่ก็ได้</span>
               </div>
-              <div style={{display:'flex',gap:10,overflowX:'auto',paddingBottom:4,paddingLeft:4,paddingRight:4}}>
+              <div style={{display:'flex',gap:12,overflowX:'auto',paddingBottom:4,paddingLeft:2,paddingRight:2}}>
                 {challengeData.anytime.map((ch,i)=>(
-                  <ChallengeCard key={ch.id} ch={ch} compact={true} delay={i*70}/>
+                  <AnytimeCard key={ch.id} ch={ch} delay={i*70}/>
                 ))}
               </div>
             </div>
 
-            {/* ── Main Challenge Section ── */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3 px-1">
-                <Target size={14} className="text-blue-400"/>
-                <span className="text-white text-sm font-semibold">Main Challenge</span>
-                <span className="text-zinc-600 text-xs">· ภารกิจหลัก</span>
-              </div>
-              <div className="space-y-3">
-                {challengeData.main.map((ch,i)=>(
-                  <ChallengeCard key={ch.id} ch={ch} compact={false} delay={i*80}/>
-                ))}
-              </div>
+            {/* ── Filter toggle ── */}
+            <div style={{display:'flex',background:'#161618',border:'1px solid rgba(63,63,70,.6)',borderRadius:999,padding:4,marginBottom:18,position:'relative',zIndex:1}}>
+              {tabFilters.map(({key,label})=>{
+                const active = challengeFilter===key;
+                return (
+                  <button key={key} onClick={()=>setChallengeFilter(key)}
+                    style={{flex:1,padding:'9px 0',borderRadius:999,border:'none',cursor:'pointer',
+                      background: active?'rgba(82,82,91,.5)':'transparent',
+                      color: active?'#fff':'#71717a',fontSize:'0.8rem',fontWeight:600,
+                      transition:'background 0.2s, color 0.2s'}}>
+                    {label}
+                  </button>
+                );
+              })}
             </div>
 
-            {/* ── Milestone Section ── */}
-            <div>
-              <div className="flex items-center gap-2 mb-3 px-1">
-                <Award size={14} className="text-amber-400"/>
-                <span className="text-white text-sm font-semibold">Milestone</span>
-                <span className="text-zinc-600 text-xs">· ภารกิจพิเศษ</span>
-              </div>
-              <div className="space-y-3">
-                {challengeData.milestone.map((ch,i)=>(
-                  <ChallengeCard key={ch.id} ch={ch} compact={false} delay={i*80}/>
-                ))}
-              </div>
+            {/* ── Task list ── */}
+            <div className="space-y-3" style={{position:'relative',zIndex:1}}>
+              {visibleTasks.map((ch,i)=>(
+                <TaskCard key={ch.id} ch={ch} delay={i*80}/>
+              ))}
             </div>
           </div>
         );
@@ -4343,13 +4485,6 @@
 
         return (
           <div className="fade-in pb-8" style={{position:'relative'}}>
-            {/* Warm gradient glow */}
-            <div aria-hidden="true" style={{
-              position:'absolute',top:-80,left:-60,right:-60,height:280,zIndex:0,pointerEvents:'none',
-              background:'radial-gradient(120% 80% at 50% 0%, rgba(237,71,36,0.55) 0%, rgba(237,71,36,0.28) 25%, rgba(237,71,36,0.08) 55%, transparent 80%)',
-              filter:'blur(2px)',
-            }}/>
-
             {/* Top Bar */}
             <div className="flex justify-between items-center px-1" style={{position:'relative',gap:8,zIndex:2,marginTop:-12}}>
               <button aria-label="User Profile" className="btn-press" style={{
@@ -4610,12 +4745,6 @@
 
         return (
           <div className="fade-in pb-8" style={{position:'relative'}}>
-            {/* Warm gradient glow at top */}
-            <div aria-hidden="true" style={{
-              position:'absolute',top:-80,left:-60,right:-60,height:240,zIndex:0,pointerEvents:'none',
-              background:'radial-gradient(120% 80% at 50% 0%, rgba(237,71,36,0.55) 0%, rgba(237,71,36,0.28) 25%, rgba(237,71,36,0.08) 55%, transparent 80%)',
-              filter:'blur(2px)',
-            }}/>
 
             {/* Top Bar */}
             <div className="flex justify-between items-center px-1" style={{position:'relative',gap:8,zIndex:2,marginTop:-12}}>
@@ -4777,7 +4906,7 @@
       ];
 
       return (
-        <PhoneFrame>
+        <PhoneFrame statusBg={APP_BG}>
           {/* ── Content: flex-1 scroll พร้อม pb-28 เผื่อ nav ── */}
           <div className="flex-1 overflow-y-auto px-6 pt-4 pb-28">
             {activeTab==='home'        && renderHome()}
@@ -5008,11 +5137,11 @@
       /* ── Invite ── */
       const renderInvite = () => (
         <div style={{flex:1,display:'flex',flexDirection:'column',
-          background:'linear-gradient(160deg,#161412 0%,#1f1814 50%,#161412 100%)',
+          background:'transparent',
           position:'relative',overflow:'hidden'}}>
-          <div style={{position:'absolute',top:-80,left:-80,width:260,height:260,
-            background:'radial-gradient(circle,rgba(237,71,36,0.18) 0%,transparent 65%)',
-            borderRadius:'50%',pointerEvents:'none'}}/>
+          <div style={{position:'absolute',bottom:60,right:-60,width:220,height:220,
+            background:'radial-gradient(circle,rgba(237,71,36,0.10) 0%,transparent 65%)',
+            borderRadius:'50%',pointerEvents:'none',display:'none'}}/>
           <div style={{position:'absolute',bottom:60,right:-60,width:220,height:220,
             background:'radial-gradient(circle,rgba(237,71,36,0.10) 0%,transparent 65%)',
             borderRadius:'50%',pointerEvents:'none'}}/>
@@ -5128,7 +5257,7 @@
 
       /* ── Class Overview ── */
       const renderOverview = () => (
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',overflow:'hidden'}}>
           <div style={{display:'flex',alignItems:'center',gap:12,padding:'12px 20px',
             borderBottom:'1px solid rgba(255,255,255,0.06)',flexShrink:0}}>
             <button onClick={()=>setScreen('invite')} style={{
@@ -5234,7 +5363,7 @@
 
       /* ── Pre-Test Intro ── */
       const renderPreTestIntro = () => (
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',
           position:'relative',overflow:'hidden'}}>
           <div style={{position:'absolute',top:-60,right:-60,width:200,height:200,
             background:'radial-gradient(circle,rgba(237,71,36,0.12) 0%,transparent 65%)',
@@ -5308,7 +5437,7 @@
       const renderPreTest = () => {
         const q = preTestQuestions[ptStep];
         return (
-          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent'}}>
             <div style={{padding:'16px 20px 0',flexShrink:0}}>
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
                 <button onClick={()=>{
@@ -5392,8 +5521,8 @@
         const level = levels[Math.min(3,Math.floor(score/3))];
         const focusAreas = ['The Foundation Of Trust','Team Diversity & Leveraging Strengths','Situational Leadership Style'];
         return (
-          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflowY:'auto',paddingBottom:32}}>
-            <div style={{background:'linear-gradient(135deg,#2a1d14,#3a2418)',
+          <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',overflowY:'auto',paddingBottom:32}}>
+            <div style={{background:'transparent',
               padding:'32px 20px',textAlign:'center',position:'relative',overflow:'hidden'}}>
               <div style={{position:'absolute',top:-30,left:-30,width:120,height:120,
                 borderRadius:'50%',background:'rgba(237,71,36,0.10)'}}/>
@@ -5617,7 +5746,7 @@
 
       /* ── 1. Check-in ── */
       const renderCheckin=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',
           position:'relative',overflow:'hidden'}}>
           <div style={{position:'absolute',top:-60,left:-60,width:200,height:200,
             background:'radial-gradient(circle,rgba(237,71,36,0.14) 0%,transparent 65%)',
@@ -5716,11 +5845,11 @@
         const otherActs = ACTS.filter(a => !a.live);
         const onlinePct = Math.round((SESSION.online / SESSION.participants) * 100);
         return (
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',overflow:'hidden'}}>
           {/* ── Header — speaker-led, alive ── */}
           <div style={{
             padding:'12px 18px 14px',flexShrink:0,position:'relative',
-            background:'linear-gradient(180deg, rgba(237,71,36,0.14) 0%, rgba(237,71,36,0.04) 100%)',
+            background:'transparent',
             borderBottom:'1px solid rgba(237,71,36,0.18)',
             zIndex:5,
           }}>
@@ -6073,7 +6202,7 @@
 
       /* ── 3. Live Poll ── */
       const renderPoll=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',overflow:'hidden'}}>
           <Hdr title="Live Poll" onBack={()=>setScreen('dashboard')}/>
           <div style={{flex:1,overflowY:'auto',padding:'20px'}}>
             <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:14}}>
@@ -6150,7 +6279,7 @@
 
       /* ── 4. Group Challenge ── */
       const renderGroup=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',overflow:'hidden'}}>
           <Hdr title="Group Challenge" onBack={()=>setScreen('dashboard')}/>
           <div style={{flex:1,overflowY:'auto',padding:'20px'}}>
             <div style={{display:'inline-flex',alignItems:'center',gap:6,
@@ -6250,7 +6379,7 @@
             {name:'คุณวิไลวรรณ',pts:300},{name:'คุณประภาส',pts:200},
           ].sort((a,b)=>b.pts-a.pts);
           return(
-            <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
+            <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',overflow:'hidden'}}>
               <Hdr title="Live Quiz · จบแล้ว!" onBack={()=>setScreen('dashboard')}/>
               <div style={{flex:1,overflowY:'auto',padding:'20px'}}>
                 <div style={{textAlign:'center',marginBottom:20,
@@ -6287,7 +6416,7 @@
         }
         const q=QUIZ[qStep];
         return(
-          <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412'}}>
+          <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent'}}>
             <div style={{padding:'16px 20px 0',flexShrink:0}}>
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
                 <button onClick={()=>setScreen('dashboard')} style={{width:32,height:32,borderRadius:'50%',
@@ -6381,7 +6510,7 @@
 
       /* ── 6. Q&A ── */
       const renderQnA=()=>(
-        <div style={{flex:1,display:'flex',flexDirection:'column',background:'#161412',overflow:'hidden'}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',background:'transparent',overflow:'hidden'}}>
           <Hdr title="Q&A" onBack={()=>setScreen('dashboard')}/>
           <div style={{flex:1,overflowY:'auto',padding:'16px 20px'}}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
@@ -6459,7 +6588,7 @@
 
         if (isEnding) return (
           <div className="scale-in" style={{flex:1,display:'flex',flexDirection:'column',
-            background:'linear-gradient(135deg,#7f1d1d 0%,#450a0a 55%,#1a0404 100%)',
+            background:'transparent',
             position:'relative',overflow:'hidden'}}>
             <div style={{position:'absolute',top:-40,right:-40,width:200,height:200,borderRadius:'50%',
               background:'rgba(239,68,68,0.15)',filter:'blur(48px)',pointerEvents:'none'}}/>
@@ -6525,7 +6654,7 @@
 
         return (
           <div style={{flex:1,display:'flex',flexDirection:'column',
-            background:'linear-gradient(135deg,#7f1d1d 0%,#450a0a 55%,#1a0404 100%)',
+            background:'transparent',
             position:'relative',overflow:'hidden'}}>
             <div style={{position:'absolute',top:-40,right:-40,width:180,height:180,borderRadius:'50%',
               background:'rgba(239,68,68,0.12)',filter:'blur(40px)',pointerEvents:'none'}}/>
@@ -6721,7 +6850,7 @@
       ];
 
       return (
-        <PhoneFrame statusBg={screen==='harvester' ? '#1a0404' : undefined}>
+        <PhoneFrame statusBg={APP_BG}>
           {screen==='checkin'    && renderCheckin()}
           {screen==='dashboard'  && renderDashboard()}
           {screen==='poll'       && renderPoll()}
@@ -7047,7 +7176,7 @@
                 <div style={{display:'inline-flex', alignItems:'center', justifyContent:'center', gap:5}}>
                   <span className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#0d9488', lineHeight:1}}>{avgEngagement}</span>
                   {engagementDelta !== 0 && (
-                    <span title={`${engagementDelta > 0 ? '+' : ''}${engagementDelta} จาก baseline`} style={{color: engagementDelta > 0 ? '#059669' : '#dc2626', display:'inline-flex'}}>
+                    <span className={engagementDelta > 0 ? 'hr-trend' : ''} title={`${engagementDelta > 0 ? '+' : ''}${engagementDelta} จาก baseline`} style={{color: engagementDelta > 0 ? '#059669' : '#dc2626', display:'inline-flex'}}>
                       {engagementDelta > 0 ? <TrendingUp size={13}/> : <TrendingDown size={13}/>}
                     </span>
                   )}
@@ -7059,7 +7188,7 @@
                 <div style={{display:'inline-flex', alignItems:'center', justifyContent:'center', gap:5}}>
                   <span className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#059669', lineHeight:1}}>{avgTransformation}</span>
                   {transformationDelta !== 0 && (
-                    <span title={`${transformationDelta > 0 ? '+' : ''}${transformationDelta} จาก Pre-Class`} style={{color: transformationDelta > 0 ? '#059669' : '#dc2626', display:'inline-flex'}}>
+                    <span className={transformationDelta > 0 ? 'hr-trend' : ''} title={`${transformationDelta > 0 ? '+' : ''}${transformationDelta} จาก Pre-Class`} style={{color: transformationDelta > 0 ? '#059669' : '#dc2626', display:'inline-flex'}}>
                       {transformationDelta > 0 ? <TrendingUp size={13}/> : <TrendingDown size={13}/>}
                     </span>
                   )}
@@ -7126,7 +7255,7 @@
                   );
                 })}
                 {/* NOW marker */}
-                <div style={{
+                <div className="hr-now-dot" style={{
                   position:'absolute', left:`${dayProgress}%`, top:'50%', transform:'translate(-50%,-50%)',
                   width:14, height:14, borderRadius:'50%', background:'#059669', border:'3px solid #fff',
                   boxShadow:'0 0 0 1.5px #059669, 0 2px 8px rgba(5,150,105,0.4)',
@@ -7562,8 +7691,194 @@
       // ─────────────────────────────────────────────────────────────
       // OVERVIEW TAB
       // ─────────────────────────────────────────────────────────────
+      // ── 9-Box Investment Map (self-contained; shown at top of Overview) ──
+      const renderInvestmentMap = () => {
+        const band = (s) => s >= 70 ? 2 : s >= 45 ? 1 : 0;
+        const GRADE = {
+          A:     {letter:'A', shape:'square', label:'Invest & Grow',        note:'คุ้มค่าสูงสุด ต่อยอดทันที',          color:'#059669', bg:'rgba(5,150,105,0.10)',   bd:'rgba(5,150,105,0.34)'},
+          B:     {letter:'B', shape:'circle', label:'Support to Finish',    note:'ใกล้คุ้ม ลงทุนเพิ่มเล็กน้อยคุ้ม',     color:'#22c55e', bg:'rgba(34,197,94,0.10)',   bd:'rgba(34,197,94,0.36)'},
+          C:     {letter:'C', shape:'square', label:'Diagnose & Unblock',   note:'ยังไม่คุ้ม ต้องแก้ก่อนถึงจะตัดสิน',     color:'#eab308', bg:'rgba(234,179,8,0.12)',   bd:'rgba(234,179,8,0.44)'},
+          F:     {letter:'F', shape:'square', label:'Reassess',             note:'ยังไม่ควรลงทุนเพิ่ม',                color:'#ef4444', bg:'rgba(239,68,68,0.10)',   bd:'rgba(239,68,68,0.34)'},
+          guard: {letter:'',  shape:'square', label:'Unstable Transformer', note:'ระบบป้องกันไว้',                     color:'#a8a29e', bg:'rgba(168,162,158,0.10)', bd:'rgba(168,162,158,0.42)'},
+        };
+        const PERSONAS = {
+          '2-2': {name:'High Performer',       grade:'A',     decision:'Invest & Grow'},
+          '2-1': {name:'Fast Learner',         grade:'A',     decision:'Invest & Grow'},
+          '2-0': {name:'Unstable Transformer', grade:'guard', decision:'ระบบป้องกันไว้'},
+          '1-2': {name:'Driven Achiever',      grade:'B',     decision:'Support to Finish'},
+          '1-1': {name:'Steady Grower',        grade:'B',     decision:'Support to Finish'},
+          '1-0': {name:'Unstable Transformer', grade:'guard', decision:'ระบบป้องกันไว้'},
+          '0-2': {name:'Wrong Walker',         grade:'C',     decision:'Diagnose & Unblock'},
+          '0-1': {name:'Stuck Learner',        grade:'C',     decision:'Diagnose & Unblock'},
+          '0-0': {name:'Ignorance',            grade:'F',     decision:'Re-engage First'},
+        };
+        const effBands = (l) => { const eb = band(engagementScore(l)); const tb = eb === 0 ? 0 : band(transformationScore(l)); return { tb, eb }; };
+        const cellKey  = (l) => { const { tb, eb } = effBands(l); return `${tb}-${eb}`; };
+        const classified = LEARNERS.map(l => ({ l, key: cellKey(l) }));
+        const cellList = (key) => classified.filter(c => c.key === key).map(c => c.l).sort((a, b) => transformationScore(b) - transformationScore(a));
+        const bandRange = (b) => b === 0 ? [0, 45] : b === 1 ? [45, 70] : [70, 100];
+        const dotPos = (l) => {
+          const { tb, eb } = effBands(l);
+          const es = engagementScore(l), ts = transformationScore(l);
+          const er = bandRange(eb), tr = bandRange(tb);
+          const xr = Math.max(0, Math.min(1, (es - er[0]) / (er[1] - er[0])));
+          const yr = Math.max(0, Math.min(1, (ts - tr[0]) / (tr[1] - tr[0])));
+          return { x: 8 + xr * 84, y: 8 + (1 - yr) * 84 };
+        };
+        const bandRow = [ {b:2,label:'High',desc:'จบ Stage 5'}, {b:1,label:'Mid',desc:'Diff สูง'}, {b:0,label:'Low',desc:'Diff ต่ำ'} ];
+        const bandCol = [ {b:0,label:'Low',desc:'Main < 50%'}, {b:1,label:'Mid',desc:'Main + Milestone'}, {b:2,label:'High',desc:'+ Anytime Challenge'} ];
+
+        return (
+            <div className="hr-card" style={{marginBottom:16}}>
+              <div className="hr-eyebrow" style={{marginBottom:4}}>Grid Investment Map</div>
+              <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
+                <LayoutGrid size={18} style={{color:'#059669'}}/>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>9-Box · Transformation × Engagement</h3>
+              </div>
+              <div style={{color:'#78716c', fontSize:'0.78rem', marginBottom:14}}>
+                ใครน่าลงทุนต่อ · ใครควร support · ใครต้อง re-engage ก่อน — กดที่ช่องเพื่อดูรายละเอียดด้านล่าง
+              </div>
+
+              <div style={{display:'flex', gap:12}}>
+                {/* Y axis label */}
+                <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, width:22}}>
+                  <span style={{color:'#a8a29e', fontSize:'1rem', fontWeight:700, lineHeight:1}}>↑</span>
+                  <span style={{writingMode:'vertical-rl', transform:'rotate(180deg)', color:'#a8a29e', fontSize:'0.66rem', letterSpacing:'0.1em', textTransform:'uppercase', whiteSpace:'nowrap'}}>
+                    Transformation
+                  </span>
+                </div>
+
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{display:'flex'}}>
+                    {/* row band labels */}
+                    <div style={{display:'flex', flexDirection:'column', gap:8, marginRight:8}}>
+                      {bandRow.map(r => (
+                        <div key={r.b} style={{height:118, width:66, display:'flex', flexDirection:'column', alignItems:'flex-end', justifyContent:'center', textAlign:'right'}}>
+                          <span style={{color:'#57534e', fontSize:'0.72rem', fontWeight:700}}>{r.label}</span>
+                          <span style={{color:'#a8a29e', fontSize:'0.6rem', marginTop:2}}>{r.desc}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {/* 3×3 cells */}
+                    <div style={{flex:1, display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8}}>
+                      {bandRow.map(r => bandCol.map(c => {
+                        const key = `${r.b}-${c.b}`;
+                        const p = PERSONAS[key];
+                        const g = GRADE[p.grade];
+                        const cellLearners = cellList(key);
+                        const isSel = investCell === key;
+                        return (
+                          <div
+                            key={key}
+                            onClick={() => { setInvestCell(key); setDotInfo(null); }}
+                            style={{
+                              height:118, borderRadius:14, cursor:'pointer', textAlign:'left',
+                              padding:'11px 13px', position:'relative',
+                              zIndex: (dotInfo && cellKey(dotInfo) === key) ? 30 : 1,
+                              background: isSel ? g.bg : `${g.color}0a`,
+                              border: `1.5px solid ${isSel ? g.bd : '#f0efed'}`,
+                              boxShadow: isSel ? `0 0 0 3px ${g.color}1f` : 'none',
+                              transition:'background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s',
+                              display:'flex', flexDirection:'column',
+                            }}
+                            onMouseEnter={e=>{ e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.borderColor=g.bd; }}
+                            onMouseLeave={e=>{ e.currentTarget.style.transform='translateY(0)'; if(!isSel) e.currentTarget.style.borderColor='#f0efed'; }}>
+                            <div>
+                              <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:5}}>
+                                <span style={{width:15, height:15, borderRadius:g.shape==='circle'?'50%':4, background:g.color, color:'#fff', fontSize:'0.56rem', fontWeight:700, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>{g.letter}</span>
+                                <span style={{color:'#1c1917', fontSize:'0.78rem', fontWeight:600, letterSpacing:'-0.01em', lineHeight:1.2}}>{p.name}</span>
+                              </div>
+                              <div style={{color:g.color, fontSize:'0.62rem', fontWeight:600}}>{p.decision}</div>
+                            </div>
+                            {/* learner dots */}
+                            <div style={{position:'relative', flex:1, marginTop:6}}>
+                              {cellLearners.map(l => {
+                                const d = dotPos(l);
+                                const isActiveDot = dotInfo && dotInfo.id === l.id;
+                                return (
+                                  <span key={l.id} title={`${l.name} · T${transformationScore(l)} · E${engagementScore(l)}`}
+                                    onClick={(e) => { e.stopPropagation(); setDotInfo(prev => prev && prev.id === l.id ? null : l); }}
+                                    style={{
+                                      position:'absolute', left:`${d.x}%`, top:`${d.y}%`, transform:'translate(-50%,-50%)',
+                                      width: isActiveDot ? 12 : 9, height: isActiveDot ? 12 : 9, borderRadius:'50%', background:g.color,
+                                      border:'1.5px solid #fff', cursor:'pointer',
+                                      boxShadow: isActiveDot ? `0 0 0 3px ${g.color}66` : '0 1px 2px rgba(28,25,23,0.18)',
+                                      zIndex: isActiveDot ? 2 : 1, transition:'width 0.12s, height 0.12s, box-shadow 0.12s',
+                                    }}/>
+                                );
+                              })}
+                              {/* dot popover */}
+                              {dotInfo && cellKey(dotInfo) === key && (() => {
+                                const d = dotPos(dotInfo);
+                                const placeRight = d.x < 50;
+                                return (
+                                  <div onClick={(e) => e.stopPropagation()}
+                                    style={{
+                                      position:'absolute', top:`${d.y}%`, left:`${d.x}%`,
+                                      transform:`translate(${placeRight ? '8px' : 'calc(-100% - 8px)'}, -50%)`,
+                                      zIndex:40, width:210, background:'#fff', borderRadius:12,
+                                      border:'1px solid #e7e5e4', boxShadow:'0 12px 32px rgba(28,25,23,0.18)',
+                                      padding:'12px 13px', cursor:'default', textAlign:'left',
+                                    }}>
+                                    <div style={{display:'flex', alignItems:'center', gap:9}}>
+                                      <div style={{
+                                        width:34, height:34, borderRadius:'50%', flexShrink:0,
+                                        background:`linear-gradient(135deg, ${dotInfo.bg}, ${dotInfo.bg}99)`,
+                                        display:'flex', alignItems:'center', justifyContent:'center',
+                                        fontSize:'0.86rem', fontWeight:600, color:'#fff',
+                                      }}>{dotInfo.av}</div>
+                                      <div style={{flex:'1 1 0', minWidth:0}}>
+                                        <div style={{color:'#1c1917', fontSize:'0.84rem', fontWeight:600, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{dotInfo.name}</div>
+                                        <div style={{color:'#78716c', fontSize:'0.7rem', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{dotInfo.role}</div>
+                                      </div>
+                                    </div>
+                                    <div className="num" style={{display:'flex', gap:10, marginTop:9, color:'#78716c', fontSize:'0.72rem'}}>
+                                      <span>S{dotInfo.stage} {stageMeta(dotInfo.stage).name}</span>
+                                      <span>T<span style={{color:g.color, fontWeight:600, marginLeft:2}}>{transformationScore(dotInfo)}</span></span>
+                                      <span>E<span style={{color:'#1c1917', fontWeight:600, marginLeft:2}}>{engagementScore(dotInfo)}</span></span>
+                                    </div>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); const id = dotInfo.id; setDotInfo(null); openLearner(id); }}
+                                      style={{
+                                        marginTop:11, width:'100%', padding:'8px 12px', borderRadius:9, cursor:'pointer', border:'none',
+                                        background:'#1c1917', color:'#fafaf9', fontFamily:'Poppins,sans-serif', fontSize:'0.76rem', fontWeight:600,
+                                        display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
+                                      }}>
+                                      ดูข้อมูลของ {dotInfo.name.split(' ')[0]} <ChevronRight size={13}/>
+                                    </button>
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                        );
+                      }))}
+                    </div>
+                  </div>
+                  {/* X band labels + axis */}
+                  <div style={{display:'flex', marginTop:8}}>
+                    <div style={{width:74, flexShrink:0}}/>
+                    <div style={{flex:1, display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8}}>
+                      {bandCol.map(c => (
+                        <div key={c.b} style={{textAlign:'center'}}>
+                          <div style={{color:'#57534e', fontSize:'0.7rem', fontWeight:700}}>{c.label}</div>
+                          <div style={{color:'#a8a29e', fontSize:'0.6rem', marginTop:1}}>{c.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginTop:16, marginLeft:74}}>
+                    <span style={{color:'#a8a29e', fontSize:'0.66rem', letterSpacing:'0.1em', textTransform:'uppercase'}}>Engagement</span>
+                    <span style={{color:'#a8a29e', fontSize:'1rem', fontWeight:700, lineHeight:1}}>→</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+        );
+      };
+
       const renderOverview = () => (
-        <div className="fade-in">
+        <div className="fade-in hr-reveal">
           {renderClassInfo()}
           {renderTransformationMovement()}
           <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16}}>
@@ -7730,7 +8045,7 @@
         };
 
         return (
-          <div className="fade-in">
+          <div className="fade-in hr-reveal">
             {/* ── 1 · Program Snapshot ── */}
             <div className="hr-card" style={{
               marginBottom:16, padding:'22px 26px', border:'1px solid rgba(5,150,105,0.22)',
@@ -7809,151 +8124,7 @@
             </div>
 
             {/* ── 3 · Grid Investment Map ── */}
-            <div className="hr-card" style={{marginBottom:16}}>
-              <div className="hr-eyebrow" style={{marginBottom:4}}>Grid Investment Map</div>
-              <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
-                <LayoutGrid size={18} style={{color:'#059669'}}/>
-                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>9-Box · Transformation × Engagement</h3>
-              </div>
-              <div style={{color:'#78716c', fontSize:'0.78rem', marginBottom:14}}>
-                ใครน่าลงทุนต่อ · ใครควร support · ใครต้อง re-engage ก่อน — กดที่ช่องเพื่อดูรายละเอียดด้านล่าง
-              </div>
-
-              <div style={{display:'flex', gap:12}}>
-                {/* Y axis label */}
-                <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, width:22}}>
-                  <span style={{color:'#a8a29e', fontSize:'1rem', fontWeight:700, lineHeight:1}}>↑</span>
-                  <span style={{writingMode:'vertical-rl', transform:'rotate(180deg)', color:'#a8a29e', fontSize:'0.66rem', letterSpacing:'0.1em', textTransform:'uppercase', whiteSpace:'nowrap'}}>
-                    Transformation
-                  </span>
-                </div>
-
-                <div style={{flex:1, minWidth:0}}>
-                  <div style={{display:'flex'}}>
-                    {/* row band labels */}
-                    <div style={{display:'flex', flexDirection:'column', gap:8, marginRight:8}}>
-                      {bandRow.map(r => (
-                        <div key={r.b} style={{height:118, width:66, display:'flex', flexDirection:'column', alignItems:'flex-end', justifyContent:'center', textAlign:'right'}}>
-                          <span style={{color:'#57534e', fontSize:'0.72rem', fontWeight:700}}>{r.label}</span>
-                          <span style={{color:'#a8a29e', fontSize:'0.6rem', marginTop:2}}>{r.desc}</span>
-                        </div>
-                      ))}
-                    </div>
-                    {/* 3×3 cells */}
-                    <div style={{flex:1, display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8}}>
-                      {bandRow.map(r => bandCol.map(c => {
-                        const key = `${r.b}-${c.b}`;
-                        const p = PERSONAS[key];
-                        const g = GRADE[p.grade];
-                        const cellLearners = cellList(key);
-                        const isSel = investCell === key;
-                        return (
-                          <div
-                            key={key}
-                            onClick={() => { setInvestCell(key); setDotInfo(null); }}
-                            style={{
-                              height:118, borderRadius:14, cursor:'pointer', textAlign:'left',
-                              padding:'11px 13px', position:'relative',
-                              zIndex: (dotInfo && cellKey(dotInfo) === key) ? 30 : 1,
-                              background: isSel ? g.bg : `${g.color}0a`,
-                              border: `1.5px solid ${isSel ? g.bd : '#f0efed'}`,
-                              boxShadow: isSel ? `0 0 0 3px ${g.color}1f` : 'none',
-                              transition:'background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s',
-                              display:'flex', flexDirection:'column',
-                            }}
-                            onMouseEnter={e=>{ e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.borderColor=g.bd; }}
-                            onMouseLeave={e=>{ e.currentTarget.style.transform='translateY(0)'; if(!isSel) e.currentTarget.style.borderColor='#f0efed'; }}>
-                            <div>
-                              <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:5}}>
-                                <span style={{width:15, height:15, borderRadius:g.shape==='circle'?'50%':4, background:g.color, color:'#fff', fontSize:'0.56rem', fontWeight:700, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>{g.letter}</span>
-                                <span style={{color:'#1c1917', fontSize:'0.78rem', fontWeight:600, letterSpacing:'-0.01em', lineHeight:1.2}}>{p.name}</span>
-                              </div>
-                              <div style={{color:g.color, fontSize:'0.62rem', fontWeight:600}}>{p.decision}</div>
-                            </div>
-                            {/* learner dots — positioned by actual Engagement (x) × Transformation (y) · click to identify */}
-                            <div style={{position:'relative', flex:1, marginTop:6}}>
-                              {cellLearners.map(l => {
-                                const d = dotPos(l);
-                                const isActiveDot = dotInfo && dotInfo.id === l.id;
-                                return (
-                                  <span key={l.id} title={`${l.name} · T${transformationScore(l)} · E${engagementScore(l)}`}
-                                    onClick={(e) => { e.stopPropagation(); setDotInfo(prev => prev && prev.id === l.id ? null : l); }}
-                                    style={{
-                                      position:'absolute', left:`${d.x}%`, top:`${d.y}%`, transform:'translate(-50%,-50%)',
-                                      width: isActiveDot ? 12 : 9, height: isActiveDot ? 12 : 9, borderRadius:'50%', background:g.color,
-                                      border:'1.5px solid #fff', cursor:'pointer',
-                                      boxShadow: isActiveDot ? `0 0 0 3px ${g.color}66` : '0 1px 2px rgba(28,25,23,0.18)',
-                                      zIndex: isActiveDot ? 2 : 1, transition:'width 0.12s, height 0.12s, box-shadow 0.12s',
-                                    }}/>
-                                );
-                              })}
-                              {/* dot popover — who is this & open full detail */}
-                              {dotInfo && cellKey(dotInfo) === key && (() => {
-                                const d = dotPos(dotInfo);
-                                const placeRight = d.x < 50;
-                                return (
-                                  <div onClick={(e) => e.stopPropagation()}
-                                    style={{
-                                      position:'absolute', top:`${d.y}%`, left:`${d.x}%`,
-                                      transform:`translate(${placeRight ? '8px' : 'calc(-100% - 8px)'}, -50%)`,
-                                      zIndex:40, width:210, background:'#fff', borderRadius:12,
-                                      border:'1px solid #e7e5e4', boxShadow:'0 12px 32px rgba(28,25,23,0.18)',
-                                      padding:'12px 13px', cursor:'default', textAlign:'left',
-                                    }}>
-                                    <div style={{display:'flex', alignItems:'center', gap:9}}>
-                                      <div style={{
-                                        width:34, height:34, borderRadius:'50%', flexShrink:0,
-                                        background:`linear-gradient(135deg, ${dotInfo.bg}, ${dotInfo.bg}99)`,
-                                        display:'flex', alignItems:'center', justifyContent:'center',
-                                        fontSize:'0.86rem', fontWeight:600, color:'#fff',
-                                      }}>{dotInfo.av}</div>
-                                      <div style={{flex:'1 1 0', minWidth:0}}>
-                                        <div style={{color:'#1c1917', fontSize:'0.84rem', fontWeight:600, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{dotInfo.name}</div>
-                                        <div style={{color:'#78716c', fontSize:'0.7rem', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{dotInfo.role}</div>
-                                      </div>
-                                    </div>
-                                    <div className="num" style={{display:'flex', gap:10, marginTop:9, color:'#78716c', fontSize:'0.72rem'}}>
-                                      <span>S{dotInfo.stage} {stageMeta(dotInfo.stage).name}</span>
-                                      <span>T<span style={{color:g.color, fontWeight:600, marginLeft:2}}>{transformationScore(dotInfo)}</span></span>
-                                      <span>E<span style={{color:'#1c1917', fontWeight:600, marginLeft:2}}>{engagementScore(dotInfo)}</span></span>
-                                    </div>
-                                    <button
-                                      onClick={(e) => { e.stopPropagation(); const id = dotInfo.id; setDotInfo(null); openLearner(id); }}
-                                      style={{
-                                        marginTop:11, width:'100%', padding:'8px 12px', borderRadius:9, cursor:'pointer', border:'none',
-                                        background:'#1c1917', color:'#fafaf9', fontFamily:'Poppins,sans-serif', fontSize:'0.76rem', fontWeight:600,
-                                        display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
-                                      }}>
-                                      ดูข้อมูลของ {dotInfo.name.split(' ')[0]} <ChevronRight size={13}/>
-                                    </button>
-                                  </div>
-                                );
-                              })()}
-                            </div>
-                          </div>
-                        );
-                      }))}
-                    </div>
-                  </div>
-                  {/* X band labels + axis */}
-                  <div style={{display:'flex', marginTop:8}}>
-                    <div style={{width:74, flexShrink:0}}/>
-                    <div style={{flex:1, display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8}}>
-                      {bandCol.map(c => (
-                        <div key={c.b} style={{textAlign:'center'}}>
-                          <div style={{color:'#57534e', fontSize:'0.7rem', fontWeight:700}}>{c.label}</div>
-                          <div style={{color:'#a8a29e', fontSize:'0.6rem', marginTop:1}}>{c.desc}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginTop:16, marginLeft:74}}>
-                    <span style={{color:'#a8a29e', fontSize:'0.66rem', letterSpacing:'0.1em', textTransform:'uppercase'}}>Engagement</span>
-                    <span style={{color:'#a8a29e', fontSize:'1rem', fontWeight:700, lineHeight:1}}>→</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {renderInvestmentMap()}
 
             {/* ── 4 · Investment Group Summary ── */}
             <div className="hr-card" style={{marginBottom:16}}>
@@ -8323,7 +8494,7 @@
       });
 
       const renderIndividual = () => (
-        <div className="fade-in">
+        <div className="fade-in hr-reveal" key={'ind'}>
           {/* Learner Overview — Stage distribution (breakdown style) */}
           {(() => {
             const total   = totalLearners;
@@ -8969,7 +9140,9 @@
 
           {/* Content */}
           <div style={{padding:'24px max(24px, calc((100vw - 1800px)/2)) 60px'}}>
-            {tab === 'overview' ? renderOverview() : tab === 'insight' ? renderInsight() : renderIndividual()}
+            <div key={tab}>
+              {tab === 'overview' ? renderOverview() : tab === 'insight' ? renderInsight() : renderIndividual()}
+            </div>
           </div>
 
           {/* Drawer */}
@@ -10483,6 +10656,9 @@
           name: 'Unaware',
           role: 'Ignorance',
           desc: 'ไม่รู้ตัวว่าตัวเองขาด',
+          duration: 'ก่อนเริ่ม',
+          feature: 'Onboarding',
+          summary: 'ยังไม่ตระหนักว่าตัวเองขาดอะไร ไม่มีทั้งความรู้และคำศัพท์ที่จะอธิบายเรื่องนี้ ทำสิ่งเดิม ๆ โดยไม่รู้ว่ามีทางที่ดีกว่า มีอคติเข้าข้างวิธีเดิม ๆ หาก Feedback มาก็มักจะปฏิเสธหรือมองข้าม',
           timeSales: '—',
           timeStage: 'Before journey',
           location: 'Pre Class',
@@ -10504,6 +10680,14 @@
           name: 'Awareness',
           role: 'Questioner',
           desc: 'รู้ตัวว่าตัวเองขาดความสามารถ',
+          duration: 'Day 1',
+          feature: ['Pre-Assessment', 'Speaker Live'],
+          summary: 'เริ่มเห็นความผิดพลาดของตัวเองและตั้งคำถามกับความสามารถที่มี ตระหนักว่าตัวเอง "ไม่รู้" (Conscious Incompetence) เห็นช่องว่างระหว่างสิ่งที่ทำกับสิ่งที่ควรเป็น แต่ยังลังเล ยังไม่มี Commitment ที่จะเปลี่ยน เริ่มหาข้อมูล อ่าน ถาม เพื่อนร่วมงาน และเปรียบเทียบตัวเองกับมาตรฐานที่อยากเป็น',
+          signals: [
+            { title:'Sensing Gap', desc:'ตระหนักรู้ว่าตัวเองไม่รู้ (Conscious Incompetence) เห็นช่องว่างระหว่างสิ่งที่ทำกับสิ่งที่ควรเป็น' },
+            { title:'Ambivalence', desc:'ลังเล ยังไม่มี Commitment รู้ว่าของเดิมอาจไม่พอ แต่ยังไม่แน่ใจว่าจะเปลี่ยนหรือไม่' },
+            { title:'Curious & Information-seeking', desc:'เริ่มตั้งคำถามกับความสามารถที่มี เสาะหาข้อมูล อ่าน ถามเพื่อนร่วมงาน เปรียบเทียบกับมาตรฐาน' },
+          ],
           timeSales: '1–3 Days',
           timeStage: '1–3 Days (Day 1–3)',
           location: 'In Class',
@@ -10526,6 +10710,15 @@
           name: 'Acknowledgment',
           role: 'Goal Setter',
           desc: 'รู้ตัวว่าตัวเองขาดอะไรบ้าง และอธิบายว่าตัวเองขาดอะไร',
+          duration: 'Day 2 – 4',
+          feature: ['Goal Setting', 'Live Quiz', 'Mission Planning'],
+          summary: 'ระบุได้ชัดเจนว่าตัวเองขาด Knowledge / Skill / Mindset อะไร เข้าใจเนื้อหาเชิง Concept อธิบายให้คนอื่นฟังได้ถูกต้อง ตั้งเป้าหมายและวางแผนได้อย่างมี Commitment พูดเป้าหมายของตัวเองให้คนอื่นเข้าใจและวัดผลได้ พร้อมเริ่มหาทรัพยากร (Mentor, คอร์ส, เครื่องมือ) แต่ยังไม่ได้เริ่มลงมือทำในชีวิตจริง',
+          signals: [
+            { title:'Gap Mapping', desc:'ระบุได้ว่าตัวเองขาด Knowledge / Skill / Mindset อะไร อย่างเฉพาะเจาะจง' },
+            { title:'Committed Planning', desc:'ตั้งเป้าหมายและวางแผนได้อย่างมี Commitment พูดเป้าหมายให้คนอื่นเข้าใจและวัดผลได้ พร้อมลงมือ' },
+            { title:'Conceptual Understanding', desc:'เข้าใจเนื้อหา/ทักษะที่ต้องการ Conceptually อธิบายได้ถูกต้อง แต่ยังไม่ได้ Apply จริง' },
+            { title:'Resource Gathering', desc:'เริ่มหาทรัพยากร เครื่องมือ หรือคนที่จะช่วยให้แผนสำเร็จ เช่น หา Mentor หรือเข้าคอร์ส' },
+          ],
           timeSales: '1–3 Days',
           timeStage: '1–3 Days (Day 1–3)',
           location: 'In Class',
@@ -10549,6 +10742,16 @@
           name: 'Activation',
           role: 'Apprentice',
           desc: 'เริ่มฝึกแล้วแต่ยังต้องอาศัยหลักการ',
+          duration: 'Day 4 – 14 · 11 วัน',
+          feature: ['Mission', 'Flash Card', 'Recall Quiz'],
+          summary: 'เริ่มลงมือทำพฤติกรรมใหม่หรือหยุดพฤติกรรมเก่าในงานจริง แต่ยังไม่สม่ำเสมอ ต้องคิดทุก Step และทำตามกฎอย่างเคร่งครัด ใช้พลังสมองเยอะจึงเหนื่อยง่ายและกลับไปนิสัยเดิมได้ในยามอ่อนล้า ความเชื่อมั่นแกว่ง — สูงเมื่อสำเร็จ ต่ำเมื่อล้มเหลว ต้องการ Quick Win เป็นระยะ และเริ่มขอ Feedback จากหัวหน้า/เพื่อนร่วมงานเพื่อปรับให้เหมาะกับ Context เริ่มมี Why ที่เป็นของตัวเอง',
+          signals: [
+            { title:'Start new / Stop old', desc:'เริ่มต้นพฤติกรรมใหม่ หรือหยุดพฤติกรรมเก่า ลงมือทำแล้ว แต่ยังไม่สม่ำเสมอ' },
+            { title:'Rule-bound Novice', desc:'ต้องคิดทุก Step และทำตามกฎอย่างเคร่งครัด ไม่รู้ว่าต้องปรับอะไรเมื่อ Context เปลี่ยน' },
+            { title:'Fragile Self-efficacy', desc:'ความเชื่อมั่นในตัวเองแกว่ง สูงเมื่อทำสำเร็จ ต่ำเมื่อล้มเหลว ยังต้องการ Quick Win เพื่อประคอง' },
+            { title:'Intrinsic Drive Emerging', desc:'มี Why ที่เป็นของตัวเองชัดขึ้น พูดถึงเหตุผลส่วนตัว ไม่ใช่แค่ทำเพราะถูกบอก' },
+            { title:'Seeking Feedback', desc:'เริ่มขอ Feedback จากหัวหน้าหรือเพื่อนร่วมงานเพื่อปรับวิธีการให้เหมาะกับ Context' },
+          ],
           timeSales: '10–14 Days',
           timeStage: '10 Days (Day 4–14)',
           location: 'Out of Class',
@@ -10572,6 +10775,15 @@
           name: 'Adoption',
           role: 'Practitioner',
           desc: 'ทำอย่างสม่ำเสมอ ได้เป็นอย่างดี',
+          duration: 'Day 15 – 45 · 31 วัน',
+          feature: ['Mission ต่อเนื่อง', 'Manager Review'],
+          summary: 'ทำได้สม่ำเสมอ Maintain Velocity ได้แม้ไม่มี Motivation บริบทเปลี่ยน หรือไม่มีคนดูแล สร้าง Routine และ Structure รองรับพฤติกรรม ไม่พึ่งแค่ Willpower อีกต่อไป Apply K/S/M ในสถานการณ์จริงได้ดีบ้างไม่ดีบ้าง เริ่มเห็น Pattern ที่ไม่ต้องคิดและปรับวิธีตาม Context ได้ Growth Mindset เริ่มมั่นคง — ยอมรับความผิดพลาดและเรียนรู้ต่อโดยไม่เสีย Confidence',
+          signals: [
+            { title:'Discipline & System-building', desc:'ทำเป็นประจำสม่ำเสมอแม้ไม่มี Motivation หรือคนดูแล สร้าง Routine/Structure รองรับพฤติกรรม ไม่พึ่งแค่ Willpower' },
+            { title:'Competent Application', desc:'นำ K/S/M ไป Integrate หรือ Apply ในสถานการณ์จริงได้ดีบ้าง ไม่ดีบ้าง · ปรับวิธีตาม Context ได้' },
+            { title:'Pattern Recognition', desc:'ยังต้องคิดเยอะ แต่เริ่มมี Pattern บางอย่างที่ไม่ต้องคิดแล้ว เห็นจุดร่วมของสถานการณ์ต่าง ๆ' },
+            { title:'Stable Growth Mindset', desc:'ทัศนคติของการเติบโตเริ่มมั่นคง ยอมรับความผิดพลาดและเรียนรู้ต่อโดยไม่เสีย Confidence' },
+          ],
           timeSales: '45 Days',
           timeStage: '30 Days (Day 15–45)',
           location: 'Out of Class',
@@ -10595,6 +10807,16 @@
           name: 'Automate',
           role: 'Graduates',
           desc: 'ทำจนเป็นนิสัย ทำได้อย่างชำนาญ ทำได้โดยแทบไม่รู้สึกว่าต้องใส่ Effort',
+          duration: 'Day 46 – 90 · 45 วัน',
+          feature: ['Self-driven', 'HR Dashboard', 'Transformation Rank'],
+          summary: 'พฤติกรรมกลายเป็นนิสัย ทำได้แบบอัตโนมัติโดยไม่ต้องใส่ Effort หรือใช้น้อยมาก พูดถึงพฤติกรรมนั้นในฐานะ "ตัวตน" (เช่น "ฉันเป็นคนที่...") ไม่ใช่ "สิ่งที่กำลังฝึก" Apply ในบริบทจริงได้อย่างคล่องแคล่ว ตัดสินใจถูกแม้ในสถานการณ์ที่ไม่มีกฎตายตัว สอน Coach คนอื่นได้ และส่งต่อพฤติกรรมให้ทีมจนเกิด Multiplier Effect ในระดับองค์กร',
+          signals: [
+            { title:'Habit & Identity', desc:'ทำเป็นนิสัยอัตโนมัติ พูดถึงพฤติกรรมในฐานะ "ตัวตน" เช่น "ฉันเป็นคนที่..." ไม่ใช่ "สิ่งที่กำลังฝึก"' },
+            { title:'Proficient & Fluent', desc:'Apply ในบริบทจริงได้เป็นอย่างดีและคล่องแคล่ว "ชำนาญ"' },
+            { title:'Intuitive Decision', desc:'ตัดสินใจถูกได้แม้ในสถานการณ์ที่ไม่มีกฎเกณฑ์ตายตัว เห็น Pattern โดยไม่ต้องวิเคราะห์ทุกขั้นตอน' },
+            { title:'Teaching & Coaching', desc:'สอนคนอื่นได้ชัดเจน ปรับวิธีสอนตามคนเรียน และเริ่ม Coach ทีมในเรื่องนั้นได้' },
+            { title:'Multiplier Effect', desc:'ส่งต่อสิ่งที่ตัวเองเป็นให้ทีม สร้างวัฒนธรรมที่ทุกคนทำพฤติกรรมนี้ตาม ขยายผลให้องค์กร' },
+          ],
           timeSales: '3 Months',
           timeStage: '45 Days (Day 46–90)',
           location: 'Out of Class',
@@ -10850,121 +11072,99 @@
                     borderRadius:'50%',pointerEvents:'none',
                   }}/>
 
-                  {/* Hero */}
-                  <div style={{
-                    display:'flex',alignItems:'center',gap:18,marginBottom:14,position:'relative',
+                  {/* Two-pane: metadata sidebar + content */}
+                  <div className="ts-detail-grid" style={{
+                    display:'grid',gridTemplateColumns:'minmax(200px, 270px) 1fr',gap:26,
+                    position:'relative',
                   }}>
-                    {/* Huge stage number */}
-                    <div style={{
-                      width:84,height:84,borderRadius:18,flexShrink:0,
-                      background:`${selected.color}26`, border:`2.5px solid ${selected.color}`,
-                      color:selected.color, fontWeight:900,fontSize:'2.5rem',
-                      display:'flex',alignItems:'center',justifyContent:'center',
-                      boxShadow:`0 0 32px ${selected.color}80, 0 0 12px ${selected.color}`,
-                      letterSpacing:'-0.02em',
-                    }}>{selected.num}</div>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{
-                        display:'flex',alignItems:'center',gap:10,flexWrap:'wrap',marginBottom:6,
-                      }}>
-                        <h2 className="bp-heading" style={{
-                          fontSize:'clamp(1.5rem,3vw,2rem)',fontWeight:900,
-                          color:'#fff',letterSpacing:'-0.02em',margin:0,lineHeight:1.05,
-                        }}>{selected.name}</h2>
-                        <span style={{
-                          background:`${selected.color}1a`, border:`1px solid ${selected.color}66`,
-                          color:selected.color, borderRadius:7, padding:'4px 11px',
-                          fontSize:'0.74rem',fontWeight:800,letterSpacing:'0.04em',
-                        }}>{selected.role.toUpperCase()}</span>
-                        {/* Phase chip */}
-                        <span style={{
-                          display:'inline-flex',alignItems:'center',gap:6,
-                          background:selectedPhase.soft, border:`1px solid ${selectedPhase.bd}`,
-                          color:selectedPhase.fg, borderRadius:7, padding:'4px 11px',
-                          fontSize:'0.72rem',fontWeight:700,letterSpacing:'0.04em',
-                        }}>
-                          <span style={{width:5,height:5,borderRadius:'50%',background:'currentColor'}}/>
-                          {selected.location.toUpperCase()}
-                        </span>
-                      </div>
-                      <p style={{
-                        color:'#d4d4d8',fontSize:'0.95rem',lineHeight:1.55,
-                        margin:0,fontWeight:500,
-                      }}>{selected.desc}</p>
-                    </div>
-                  </div>
-
-                  {/* Two-column detail: Behavior + Proficiency */}
-                  <div style={{
-                    display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginTop:6,
-                  }}>
-                    {/* Behavior */}
-                    <div style={{
-                      background:'rgba(0,0,0,0.28)',
-                      border:`1px solid ${selected.color}33`,
-                      borderRadius:12,padding:'14px 16px',
-                    }}>
-                      <div style={{
-                        display:'flex',alignItems:'center',gap:8,marginBottom:10,
-                        paddingBottom:8,borderBottom:`1px solid ${selected.color}22`,
-                      }}>
-                        <span style={{
-                          width:24,height:24,borderRadius:7,flexShrink:0,
-                          background:`${selected.color}26`,border:`1px solid ${selected.color}66`,
+                    {/* ── LEFT: metadata sidebar ── */}
+                    <div style={{borderRight:`1px solid ${selected.color}22`,paddingRight:24}}>
+                      {/* badge + name + role */}
+                      <div style={{display:'flex',alignItems:'center',gap:14,marginBottom:14}}>
+                        <div style={{
+                          width:64,height:64,borderRadius:16,flexShrink:0,
+                          background:`${selected.color}26`,border:`2.5px solid ${selected.color}`,
+                          color:selected.color,fontWeight:900,fontSize:'1.9rem',
                           display:'flex',alignItems:'center',justifyContent:'center',
-                          color:selected.color,
-                        }}><FileText size={13}/></span>
-                        <span style={{
-                          color:selected.color,fontSize:'0.72rem',fontWeight:800,
-                          letterSpacing:'0.1em',
-                        }}>BEHAVIOR · พฤติกรรม</span>
-                      </div>
-                      <div style={{display:'flex',flexDirection:'column',gap:11}}>
-                        {selected.behavior.map(b => (
-                          <div key={b.title} style={{position:'relative',paddingLeft:14}}>
-                            <span style={{
-                              position:'absolute',left:0,top:8,
-                              width:6,height:6,borderRadius:'50%',background:selected.color,
-                              boxShadow:`0 0 8px ${selected.color}`,
-                            }}/>
-                            <div style={{color:'#fff',fontSize:'0.86rem',fontWeight:700,letterSpacing:'-0.01em',marginBottom:2,lineHeight:1.3}}>{b.title}</div>
-                            <div style={{color:'#a8a29e',fontSize:'0.76rem',lineHeight:1.5}}>{b.desc}</div>
+                          boxShadow:`0 0 28px ${selected.color}66, 0 0 10px ${selected.color}`,
+                          letterSpacing:'-0.02em',
+                        }}>{selected.num}</div>
+                        <div style={{minWidth:0}}>
+                          <h2 className="bp-heading" style={{
+                            fontSize:'1.4rem',fontWeight:900,color:'#fff',
+                            letterSpacing:'-0.02em',margin:0,lineHeight:1.1,
+                          }}>{selected.name}</h2>
+                          <div style={{color:selected.color,fontSize:'0.82rem',fontWeight:700,marginTop:2}}>
+                            {selected.role}
                           </div>
-                        ))}
+                        </div>
+                      </div>
+
+                      {/* one-line desc */}
+                      <p style={{color:'#d4d4d8',fontSize:'0.86rem',lineHeight:1.5,margin:'0 0 14px',fontWeight:500}}>
+                        {selected.desc}
+                      </p>
+
+                      {/* phase pill */}
+                      <span style={{
+                        display:'inline-flex',alignItems:'center',gap:6,
+                        background:selectedPhase.soft,border:`1px solid ${selectedPhase.bd}`,
+                        color:selectedPhase.fg,borderRadius:7,padding:'4px 11px',
+                        fontSize:'0.72rem',fontWeight:700,letterSpacing:'0.03em',
+                      }}>
+                        <span style={{width:5,height:5,borderRadius:'50%',background:'currentColor'}}/>
+                        {selected.location}
+                      </span>
+
+                      {/* duration */}
+                      <div style={{marginTop:16}}>
+                        <div style={{color:'#71717a',fontSize:'0.68rem',fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:5}}>ระยะเวลา</div>
+                        <div style={{color:'#e4e4e7',fontSize:'0.84rem',fontWeight:600}}>{selected.duration}</div>
+                      </div>
+
+                      {/* related feature */}
+                      <div style={{marginTop:14}}>
+                        <div style={{color:'#71717a',fontSize:'0.68rem',fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:6}}>ฟีเจอร์ที่เกี่ยวข้อง</div>
+                        <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+                          {(Array.isArray(selected.feature) ? selected.feature : [selected.feature]).map(f => (
+                            <span key={f} style={{
+                              display:'inline-flex',alignItems:'center',
+                              background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.12)',
+                              color:'#d4d4d8',borderRadius:8,padding:'5px 12px',
+                              fontSize:'0.78rem',fontWeight:600,
+                            }}>{f}</span>
+                          ))}
+                        </div>
                       </div>
                     </div>
 
-                    {/* Proficiency */}
-                    <div style={{
-                      background:'rgba(0,0,0,0.28)',
-                      border:`1px solid ${selected.color}33`,
-                      borderRadius:12,padding:'14px 16px',
-                    }}>
-                      <div style={{
-                        display:'flex',alignItems:'center',gap:8,marginBottom:10,
-                        paddingBottom:8,borderBottom:`1px solid ${selected.color}22`,
-                      }}>
-                        <span style={{
-                          width:24,height:24,borderRadius:7,flexShrink:0,
-                          background:`${selected.color}26`,border:`1px solid ${selected.color}66`,
-                          display:'flex',alignItems:'center',justifyContent:'center',
-                          color:selected.color,
-                        }}><Target size={13}/></span>
-                        <span style={{
-                          color:selected.color,fontSize:'0.72rem',fontWeight:800,
-                          letterSpacing:'0.1em',
-                        }}>PROFICIENCY · ความสามารถ</span>
+                    {/* ── RIGHT: summary + signals ── */}
+                    <div style={{minWidth:0}}>
+                      <p style={{color:'#d4d4d8',fontSize:'0.92rem',lineHeight:1.7,margin:'0 0 18px'}}>
+                        {selected.summary}
+                      </p>
+
+                      <div style={{color:'#a8a29e',fontSize:'0.78rem',fontWeight:700,letterSpacing:'0.04em',marginBottom:12}}>
+                        สัญญาณที่สังเกตได้
                       </div>
-                      <div style={{display:'flex',flexDirection:'column',gap:11}}>
-                        {selected.proficiency.map(p => (
-                          <div key={p.title} style={{position:'relative',paddingLeft:14}}>
-                            <span style={{
-                              position:'absolute',left:0,top:8,
-                              width:6,height:6,borderRadius:'50%',background:selected.color,
-                              boxShadow:`0 0 8px ${selected.color}`,
-                            }}/>
-                            <div style={{color:'#fff',fontSize:'0.86rem',fontWeight:700,letterSpacing:'-0.01em',marginBottom:2,lineHeight:1.3}}>{p.title}</div>
-                            <div style={{color:'#a8a29e',fontSize:'0.76rem',lineHeight:1.5}}>{p.desc}</div>
+
+                      <div className="ts-signal-grid" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+                        {(selected.signals || [...selected.behavior, ...selected.proficiency]).map(item => (
+                          <div key={item.title} style={{
+                            background:'rgba(0,0,0,0.28)',
+                            border:`1px solid ${selected.color}33`,
+                            borderRadius:12,padding:'13px 15px',position:'relative',
+                          }}>
+                            <div style={{display:'flex',alignItems:'flex-start',gap:9}}>
+                              <span style={{
+                                width:7,height:7,borderRadius:'50%',background:selected.color,
+                                boxShadow:`0 0 8px ${selected.color}`,flexShrink:0,marginTop:6,
+                              }}/>
+                              <div style={{minWidth:0}}>
+                                <div style={{color:'#fff',fontSize:'0.86rem',fontWeight:700,letterSpacing:'-0.01em',marginBottom:3,lineHeight:1.3}}>{item.title}</div>
+                                <div style={{color:'#a8a29e',fontSize:'0.76rem',lineHeight:1.5}}>{item.desc}</div>
+                              </div>
+                            </div>
                           </div>
                         ))}
                       </div>
