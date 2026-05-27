@@ -424,6 +424,7 @@
     /* Tablet (≤1024px) */
     @media (max-width: 1024px) {
       .lp-pills        { display: none !important; }
+      .lp-burger-wrap  { display: block !important; }
       .lp-nav          { padding: 0 20px !important; }
       .mr-preview-grid { grid-template-columns: 1fr !important; }
       .hr-2col         { grid-template-columns: 1fr !important; }
@@ -529,6 +530,8 @@
     const CheckCircle2 = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></Svg>;
     const CheckCircle  = p => <Svg {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></Svg>;
     const XCircle      = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></Svg>;
+    const Menu         = p => <Svg {...p}><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></Svg>;
+    const X            = p => <Svg {...p}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></Svg>;
     const ChevronRight = p => <Svg {...p}><path d="m9 18 6-6-6-6"/></Svg>;
     const ChevronLeft  = p => <Svg {...p}><path d="m15 18-6-6 6-6"/></Svg>;
     const ChevronDown  = p => <Svg {...p}><path d="m6 9 6 6 6-6"/></Svg>;
@@ -1133,6 +1136,7 @@
     /* ── GlobalPills · Persistent top-nav across pages ─── */
     function GlobalPills({ activeLabel, onNav }) {
       const [hoverTab, setHoverTab] = useState(null);
+      const [menuOpen, setMenuOpen] = useState(false);
       const tabs = [
         { label: 'Home',                   scene: 'landing'   },
         { label: 'Features',               scene: 'phases'    },
@@ -1141,45 +1145,109 @@
         { label: 'Available Course',       scene: 'available' },
       ];
       return (
-        <div className="lp-pills" style={{
-          display:'flex', alignItems:'center', gap:4, padding:5,
-          background:'rgba(255,255,255,0.04)',
-          border:'1px solid rgba(255,255,255,0.06)',
-          borderRadius:999,
-          backdropFilter:'blur(8px)',
-          boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04)',
-        }}>
-          {tabs.map(({label, scene}) => {
-            const isActive = label === activeLabel;
-            const isHover  = hoverTab === label;
-            const isClickable = !!scene;
-            return (
-              <span
-                key={label}
-                onClick={() => { if (isClickable && onNav) onNav(scene); }}
-                onMouseEnter={() => setHoverTab(label)}
-                onMouseLeave={() => setHoverTab(null)}
-                style={{
-                  position:'relative',
-                  padding:'8px 16px',
-                  borderRadius:999,
-                  fontSize:'0.8125rem',
-                  fontWeight: isActive ? 600 : 500,
-                  cursor: isClickable ? 'pointer' : 'default',
-                  whiteSpace:'nowrap',
-                  color: isActive ? '#fff' : (isHover && isClickable ? '#e4e4e7' : '#a1a1aa'),
-                  background: isActive
-                    ? '#ED4724'
-                    : (isHover && isClickable ? 'rgba(255,255,255,0.06)' : 'transparent'),
-                  boxShadow: isActive ? '0 4px 14px rgba(237,71,36,0.4)' : 'none',
-                  transition:'all 0.22s cubic-bezier(0.4,0,0.2,1)',
-                  letterSpacing:'-0.005em',
-                  opacity: isClickable ? 1 : 0.55,
-                }}
-              >{label}</span>
-            );
-          })}
-        </div>
+        <>
+          {/* Desktop — pill tab group (hidden ≤1024px) */}
+          <div className="lp-pills" style={{
+            display:'flex', alignItems:'center', gap:4, padding:5,
+            background:'rgba(255,255,255,0.04)',
+            border:'1px solid rgba(255,255,255,0.06)',
+            borderRadius:999,
+            backdropFilter:'blur(8px)',
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04)',
+          }}>
+            {tabs.map(({label, scene}) => {
+              const isActive = label === activeLabel;
+              const isHover  = hoverTab === label;
+              const isClickable = !!scene;
+              return (
+                <span
+                  key={label}
+                  onClick={() => { if (isClickable && onNav) onNav(scene); }}
+                  onMouseEnter={() => setHoverTab(label)}
+                  onMouseLeave={() => setHoverTab(null)}
+                  style={{
+                    position:'relative',
+                    padding:'8px 16px',
+                    borderRadius:999,
+                    fontSize:'0.8125rem',
+                    fontWeight: isActive ? 600 : 500,
+                    cursor: isClickable ? 'pointer' : 'default',
+                    whiteSpace:'nowrap',
+                    color: isActive ? '#fff' : (isHover && isClickable ? '#e4e4e7' : '#a1a1aa'),
+                    background: isActive
+                      ? '#ED4724'
+                      : (isHover && isClickable ? 'rgba(255,255,255,0.06)' : 'transparent'),
+                    boxShadow: isActive ? '0 4px 14px rgba(237,71,36,0.4)' : 'none',
+                    transition:'all 0.22s cubic-bezier(0.4,0,0.2,1)',
+                    letterSpacing:'-0.005em',
+                    opacity: isClickable ? 1 : 0.55,
+                  }}
+                >{label}</span>
+              );
+            })}
+          </div>
+
+          {/* Mobile/Tablet — hamburger menu (shown ≤1024px) */}
+          <div className="lp-burger-wrap" style={{position:'relative', display:'none', marginLeft:'auto', flexShrink:0}}>
+            <button
+              aria-label="เมนู"
+              onClick={() => setMenuOpen(o => !o)}
+              className="btn-press"
+              style={{
+                display:'flex', alignItems:'center', justifyContent:'center',
+                width:42, height:42, borderRadius:11,
+                background: menuOpen ? 'rgba(237,71,36,0.16)' : 'rgba(255,255,255,0.05)',
+                border:`1px solid ${menuOpen ? 'rgba(237,71,36,0.45)' : 'rgba(255,255,255,0.10)'}`,
+                color:'#fff', cursor:'pointer',
+                transition:'background 0.2s, border-color 0.2s',
+              }}>
+              {menuOpen ? <X size={20} strokeWidth={2.4}/> : <Menu size={20} strokeWidth={2.4}/>}
+            </button>
+
+            {menuOpen && (
+              <>
+                {/* Backdrop to dismiss */}
+                <div onClick={() => setMenuOpen(false)} style={{position:'fixed', inset:0, zIndex:90}}/>
+                {/* Dropdown */}
+                <div style={{
+                  position:'absolute', top:'calc(100% + 10px)', right:0, zIndex:120,
+                  minWidth:224,
+                  background:'rgba(28,25,23,0.97)',
+                  backdropFilter:'blur(16px)',
+                  border:'1px solid rgba(255,255,255,0.10)',
+                  borderRadius:16, padding:8,
+                  boxShadow:'0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
+                  display:'flex', flexDirection:'column', gap:2,
+                }}>
+                  {tabs.map(({label, scene}) => {
+                    const isActive = label === activeLabel;
+                    const isClickable = !!scene;
+                    return (
+                      <span
+                        key={label}
+                        onClick={() => { if (isClickable && onNav) onNav(scene); setMenuOpen(false); }}
+                        style={{
+                          padding:'12px 14px', borderRadius:10,
+                          fontSize:'0.9rem',
+                          fontWeight: isActive ? 700 : 500,
+                          cursor: isClickable ? 'pointer' : 'default',
+                          whiteSpace:'nowrap',
+                          color: isActive ? '#fff' : '#a1a1aa',
+                          background: isActive ? '#ED4724' : 'transparent',
+                          boxShadow: isActive ? '0 4px 14px rgba(237,71,36,0.4)' : 'none',
+                          opacity: isClickable ? 1 : 0.55,
+                          transition:'background 0.15s, color 0.15s',
+                        }}
+                        onMouseEnter={e => { if (!isActive && isClickable) { e.currentTarget.style.background='rgba(255,255,255,0.06)'; e.currentTarget.style.color='#fff'; } }}
+                        onMouseLeave={e => { if (!isActive && isClickable) { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='#a1a1aa'; } }}
+                      >{label}</span>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
+        </>
       );
     }
 
@@ -10468,7 +10536,7 @@
       /* ── Price count-up ── */
       useEffect(() => {
         if (!packagesInView) return;
-        const targets = [145000, 285000];
+        const targets = [10000, 15000];
         const start = performance.now();
         const dur = 1400;
         let raf;
@@ -10533,43 +10601,75 @@
         },
       ];
 
-      const packages = [
-        {
-          tier: 'Package 45 วัน',
-          stars: 2,
-          days: 45,
-          price: 145000,
-          priceLabel: '145,000',
-          accent: CORAL,
-          accentSoft: 'rgba(251,124,88,0.14)',
-          accentBorder: 'rgba(251,124,88,0.42)',
-          glow: 'rgba(251,124,88,0.18)',
-          recommended: false,
-          classes: [
-            '1 Day · Problem Solving with Critical Thinking',
-            '1 Day · People Manager in Action',
-            '1 Day · Leadership in Action for New Manager',
-          ],
-          journeyLabel: '45 Day Journey',
-        },
-        {
-          tier: 'Package 90 วัน',
-          stars: 3,
-          days: 90,
-          price: 285000,
-          priceLabel: '285,000',
-          accent: GOLD,
-          accentSoft: 'rgba(251,191,36,0.14)',
-          accentBorder: 'rgba(251,191,36,0.45)',
-          glow: 'rgba(251,191,36,0.22)',
-          recommended: true,
-          classes: [
-            '2 Days · Business Decision-Making with Critical Thinking',
-            '2 Days · Essential Leadership for New Manager',
-          ],
-          journeyLabel: '90 Day Journey',
-        },
+      /* ── พร้อมใช้งาน — สิงหาคม / กันยายน ── */
+      const augHighlight1Day = [
+        'People Manager in Action',
+        'People Manager in Action',
+        'Leadership in Action',
       ];
+      const augHighlight2Day = [
+        'Business Decision-Making with Critical Thinking',
+        'Essential Leadership',
+      ];
+      const augSpecialPrice = [
+        { journey: '45 Day Journey', original: '13,000' },
+        { journey: '90 Day Journey', original: '19,000' },
+      ];
+      const sepPrograms = [
+        'LEADERSHIP EXCELLENCE SERIES',
+        'SUPER THINKING SERIES',
+        'GENERATIVE AI SERIES',
+        'POWERFUL COMMUNICATION SERIES',
+      ];
+
+      /* Reusable card — used for both Highlight Course and September programs */
+      const HighlightCard = ({ title, badge, accent, BadgeIcon = Clock }) => (
+        <div
+          onMouseEnter={e=>{
+            e.currentTarget.style.transform='translateY(-4px)';
+            e.currentTarget.style.borderColor=`${accent}66`;
+            e.currentTarget.style.boxShadow=`0 16px 38px ${accent}26, inset 0 1px 0 rgba(255,255,255,0.08)`;
+          }}
+          onMouseLeave={e=>{
+            e.currentTarget.style.transform='translateY(0)';
+            e.currentTarget.style.borderColor='rgba(255,255,255,0.10)';
+            e.currentTarget.style.boxShadow='inset 0 1px 0 rgba(255,255,255,0.05)';
+          }}
+          style={{
+            position:'relative',
+            display:'flex',flexDirection:'column',
+            justifyContent: badge ? 'flex-start' : 'center',
+            minHeight:130,
+            background:'linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))',
+            border:'1px solid rgba(255,255,255,0.10)',
+            borderRadius:16, padding:'15px 16px 16px',
+            boxShadow:'inset 0 1px 0 rgba(255,255,255,0.05)',
+            overflow:'hidden',
+            transition:'transform 0.28s cubic-bezier(0.22,1,0.36,1), border-color 0.25s, box-shadow 0.25s',
+          }}>
+          {/* Top accent line */}
+          <div style={{position:'absolute',top:0,left:0,right:0,height:2.5,
+            background:`linear-gradient(90deg, ${accent}, ${accent}00)`}}/>
+          {/* Corner glow */}
+          <div style={{position:'absolute',top:-44,right:-44,width:120,height:120,borderRadius:'50%',
+            background:`radial-gradient(circle, ${accent}26 0%, transparent 70%)`,pointerEvents:'none'}}/>
+          {/* Title — on top */}
+          <div style={{position:'relative',color:'#fff',fontSize:'0.92rem',fontWeight:700,lineHeight:1.4}}>{title}</div>
+          {/* Badge (optional) — below title */}
+          {badge && (
+            <div style={{position:'relative',display:'flex',alignItems:'center',justifyContent:'flex-start',marginTop:'auto',paddingTop:14}}>
+              <span style={{
+                display:'inline-flex',alignItems:'center',gap:4,
+                background:`${accent}1f`,border:`1px solid ${accent}55`,color:accent,
+                fontSize:'0.6rem',fontWeight:800,letterSpacing:'0.05em',
+                padding:'4px 9px',borderRadius:999,
+              }}>
+                <BadgeIcon size={10} strokeWidth={2.6}/> {badge}
+              </span>
+            </div>
+          )}
+        </div>
+      );
 
       return (
         <div style={{
@@ -10649,190 +10749,157 @@
             position:'relative',zIndex:1,
             padding:'10px max(24px,calc((100vw - 1200px)/2)) 36px',
           }}>
-            <div style={{
-              display:'grid',
-              gridTemplateColumns:'repeat(auto-fit, minmax(360px, 1fr))',
-              gap:24,
-              maxWidth:1080,margin:'0 auto',
-            }}>
-              {packages.map((p,idx)=>(
-                <div key={idx}
-                  className={p.recommended ? 'ac-breathe' : ''}
-                  style={{
-                  position:'relative',
-                  display:'flex',flexDirection:'column',
-                  background: p.recommended
-                    ? 'linear-gradient(160deg, rgba(251,191,36,0.14) 0%, rgba(237,71,36,0.08) 55%, rgba(22,20,18,0) 100%)'
-                    : 'linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))',
-                  border: `1px solid ${p.recommended ? 'rgba(251,191,36,0.55)' : 'rgba(255,255,255,0.10)'}`,
-                  borderRadius:24, padding:'40px 34px 32px',
-                  overflow:'hidden',
-                  boxShadow: p.recommended
-                    ? `0 32px 80px ${p.glow}, 0 0 0 1px rgba(251,191,36,0.10), inset 0 1px 0 rgba(255,255,255,0.10)`
-                    : '0 14px 40px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04)',
-                  opacity: packagesInView ? 1 : 0,
-                  transform: `translateY(${packagesInView ? 0 : 28}px)`,
-                  transition: `opacity 0.7s cubic-bezier(0.22,1,0.36,1) ${idx*0.14}s, transform 0.7s cubic-bezier(0.22,1,0.36,1) ${idx*0.14}s`,
-                }}>
-                  {p.recommended && (
-                    <div style={{
-                      position:'absolute',top:22,right:22,
-                      display:'inline-flex',alignItems:'center',gap:6,
-                      background:'linear-gradient(135deg, #fbbf24, #ED4724)',
-                      color:'#161412',fontSize:'0.66rem',fontWeight:800,letterSpacing:'0.14em',
-                      padding:'6px 12px',borderRadius:8,
-                      boxShadow:'0 8px 22px rgba(251,191,36,0.45)',
-                      overflow:'hidden',
-                    }}>
-                      <Sparkles size={11} strokeWidth={2.6}/> MOST POPULAR
-                      <div className="ac-ribbon-shimmer"/>
-                    </div>
-                  )}
+            <style>{`
+              .ac-ready-grid {
+                display:grid;
+                grid-template-columns: minmax(0,1.3fr) 1px minmax(0,1fr);
+                gap:36px;
+                max-width:1120px; margin:0 auto;
+                align-items:stretch;
+              }
+              .ac-ready-divider { width:1px; }
+              @media (max-width: 860px) {
+                .ac-ready-grid { grid-template-columns:1fr; gap:28px; }
+                .ac-ready-divider { display:none; }
+              }
+            `}</style>
 
-                  {/* Corner glow */}
-                  <div style={{
-                    position:'absolute',top:-80,right:-80,width:260,height:260,borderRadius:'50%',
-                    background:`radial-gradient(circle, ${p.accent}30 0%, transparent 70%)`,
-                    pointerEvents:'none',
-                  }}/>
-                  {p.recommended && (
+            <div className="ac-ready-grid">
+              {/* ── LEFT — สิงหาคม ── */}
+              <div style={{
+                opacity: packagesInView ? 1 : 0,
+                transform:`translateY(${packagesInView ? 0 : 24}px)`,
+                transition:'opacity 0.7s cubic-bezier(0.22,1,0.36,1) 0.05s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.05s',
+              }}>
+                {/* Month pill */}
+                <div style={{
+                  display:'flex',alignItems:'center',justifyContent:'center',gap:8,
+                  background:'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))',
+                  border:'1px solid rgba(255,255,255,0.12)',
+                  borderRadius:14, padding:'13px 18px', marginBottom:24,
+                  boxShadow:'inset 0 1px 0 rgba(255,255,255,0.06)',
+                }}>
+                  <Calendar size={16} strokeWidth={2.2} style={{color:CORAL}}/>
+                  <span className="bp-heading" style={{fontSize:'1.15rem',fontWeight:800,letterSpacing:'0.02em'}}>สิงหาคม</span>
+                </div>
+
+                {/* Highlight Course label */}
+                <div style={{
+                  color:CORAL,fontSize:'0.92rem',fontWeight:800,letterSpacing:'0.01em',
+                  marginBottom:14,
+                }}>Highlight Course</div>
+
+                {/* 1 Day row */}
+                <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px,1fr))',gap:12,marginBottom:12}}>
+                  {augHighlight1Day.map((title,i)=>(
+                    <HighlightCard key={`d1-${i}`} title={title} badge="1 Day" accent={CORAL}/>
+                  ))}
+                </div>
+
+                {/* 2 Day row */}
+                <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px,1fr))',gap:12}}>
+                  {augHighlight2Day.map((title,i)=>(
+                    <HighlightCard key={`d2-${i}`} title={title} badge="2 Day" accent={GOLD}/>
+                  ))}
+                </div>
+              </div>
+
+              {/* Vertical divider */}
+              <div className="ac-ready-divider" style={{
+                background:'linear-gradient(180deg, transparent, rgba(255,255,255,0.14) 12%, rgba(255,255,255,0.14) 88%, transparent)',
+              }}/>
+
+              {/* ── RIGHT — กันยายน ── */}
+              <div style={{
+                opacity: packagesInView ? 1 : 0,
+                transform:`translateY(${packagesInView ? 0 : 24}px)`,
+                transition:'opacity 0.7s cubic-bezier(0.22,1,0.36,1) 0.18s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.18s',
+              }}>
+                {/* Month pill */}
+                <div style={{
+                  display:'flex',alignItems:'center',justifyContent:'center',gap:8,
+                  background:'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))',
+                  border:'1px solid rgba(255,255,255,0.12)',
+                  borderRadius:14, padding:'13px 18px', marginBottom:24,
+                  boxShadow:'inset 0 1px 0 rgba(255,255,255,0.06)',
+                }}>
+                  <Calendar size={16} strokeWidth={2.2} style={{color:GOLD}}/>
+                  <span className="bp-heading" style={{fontSize:'1.15rem',fontWeight:800,letterSpacing:'0.02em'}}>กันยายน</span>
+                </div>
+
+                {/* All Program label */}
+                <div style={{
+                  color:CORAL,fontSize:'0.92rem',fontWeight:800,letterSpacing:'0.01em',
+                  marginBottom:14,
+                }}>All Program from BASE Playhouse</div>
+
+                {/* Program series cards */}
+                <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px,1fr))',gap:12}}>
+                  {sepPrograms.map((name,i)=>(
+                    <HighlightCard key={`pg-${i}`} title={name} accent={GOLD}/>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ── Special Price — full width row ── */}
+            <div style={{
+              maxWidth:1120,margin:'36px auto 0',
+              opacity: packagesInView ? 1 : 0,
+              transform:`translateY(${packagesInView ? 0 : 24}px)`,
+              transition:'opacity 0.7s cubic-bezier(0.22,1,0.36,1) 0.28s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.28s',
+            }}>
+              {/* Special Price label */}
+              <div style={{
+                color:CORAL,fontSize:'0.92rem',fontWeight:800,letterSpacing:'0.01em',
+                marginBottom:14,
+              }}>Special Price</div>
+
+              {/* Special price cards */}
+              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(280px,1fr))',gap:18}}>
+                {augSpecialPrice.map((sp,i)=>(
+                  <div key={`sp-${i}`} className={i===1 ? 'ac-breathe' : ''} style={{
+                    position:'relative',
+                    background: i===1
+                      ? 'linear-gradient(120deg, rgba(251,191,36,0.14) 0%, rgba(237,71,36,0.07) 60%, rgba(22,20,18,0) 100%)'
+                      : 'linear-gradient(120deg, rgba(251,124,88,0.12), rgba(255,255,255,0.02))',
+                    border:`1px solid ${i===1 ? 'rgba(251,191,36,0.50)' : 'rgba(251,124,88,0.35)'}`,
+                    borderRadius:18, padding:'24px 26px',
+                    overflow:'hidden',
+                    boxShadow: i===1
+                      ? '0 18px 50px rgba(251,191,36,0.16), inset 0 1px 0 rgba(255,255,255,0.08)'
+                      : '0 10px 30px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.05)',
+                  }}>
                     <div style={{
-                      position:'absolute',bottom:-60,left:-60,width:200,height:200,borderRadius:'50%',
-                      background:`radial-gradient(circle, rgba(237,71,36,0.18) 0%, transparent 70%)`,
+                      position:'absolute',top:-50,right:-50,width:180,height:180,borderRadius:'50%',
+                      background:`radial-gradient(circle, ${i===1 ? GOLD : CORAL}26 0%, transparent 70%)`,
                       pointerEvents:'none',
                     }}/>
-                  )}
-
-                  {/* Stars */}
-                  <div style={{position:'relative',display:'flex',gap:4,marginBottom:12}}>
-                    {Array.from({length:3}).map((_,i)=>(
-                      <Star key={i} size={18} strokeWidth={2}
-                        style={{
-                          color: i < p.stars ? p.accent : 'rgba(255,255,255,0.18)',
-                          fill: i < p.stars ? p.accent : 'transparent',
-                          filter: i < p.stars ? `drop-shadow(0 0 6px ${p.accent}66)` : 'none',
-                          opacity: packagesInView ? 1 : 0,
-                          transform: `scale(${packagesInView ? 1 : 0.4}) rotate(${packagesInView ? 0 : -25}deg)`,
-                          transition: `opacity 0.45s ease-out ${0.3 + idx*0.14 + i*0.09}s, transform 0.55s cubic-bezier(0.34,1.6,0.64,1) ${0.3 + idx*0.14 + i*0.09}s`,
-                        }}/>
-                    ))}
-                  </div>
-
-                  {/* Tier */}
-                  <h3 className="bp-heading" style={{
-                    position:'relative',
-                    fontSize:'1.7rem',fontWeight:800,margin:0,letterSpacing:'-0.015em',color:'#fff',
-                  }}>{p.tier}</h3>
-                  <div style={{position:'relative',color:'#a8a29e',fontSize:'0.85rem',marginTop:4,marginBottom:24}}>
-                    Transformation Journey · {p.days} วัน
-                  </div>
-
-                  {/* Price — enlarged, count-up */}
-                  <div style={{position:'relative',marginBottom:26}}>
-                    <div style={{display:'flex',alignItems:'baseline',gap:8}}>
+                    <div style={{position:'relative',display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
+                      <Compass size={16} strokeWidth={2.3} style={{color:i===1 ? GOLD : CORAL}}/>
+                      <span style={{color:'#fff',fontSize:'1.05rem',fontWeight:800,letterSpacing:'-0.005em'}}>{sp.journey}</span>
+                    </div>
+                    <div style={{position:'relative',display:'flex',alignItems:'baseline',gap:8}}>
                       <span style={{
-                        fontSize:'clamp(2.6rem, 4.4vw, 3.4rem)',fontWeight:800,letterSpacing:'-0.025em',lineHeight:1,
+                        fontSize:'2.3rem',fontWeight:800,letterSpacing:'-0.02em',lineHeight:1,
                         fontVariantNumeric:'tabular-nums',
-                        background: p.recommended
+                        background: i===1
                           ? 'linear-gradient(135deg, #fbbf24, #FB7C58)'
-                          : `linear-gradient(135deg, ${p.accent}, ${PEACH})`,
+                          : `linear-gradient(135deg, ${CORAL}, ${PEACH})`,
                         WebkitBackgroundClip:'text',backgroundClip:'text',
                         WebkitTextFillColor:'transparent',
-                      }}>{(animatedPrices[idx] || 0).toLocaleString()}</span>
-                      <span style={{color:'#d4d4d8',fontSize:'1.05rem',fontWeight:700}}>บาท</span>
-                    </div>
-                    <div style={{color:'#a8a29e',fontSize:'0.78rem',marginTop:6,display:'flex',alignItems:'center',gap:6}}>
-                      <Users size={11} strokeWidth={2.2}/>
-                      ราคา / รุ่น · 30 คน
-                    </div>
-                  </div>
-
-                  {/* Classes included */}
-                  <div style={{position:'relative',marginBottom:22,flex:'1 0 auto'}}>
-                    <div style={{
-                      color:p.accent,fontSize:'0.66rem',fontWeight:800,letterSpacing:'0.14em',marginBottom:10,
-                      display:'flex',alignItems:'center',gap:6,
-                    }}>
-                      <BookOpen size={12} strokeWidth={2.4}/> CLASSES INCLUDED
-                    </div>
-                    <div style={{display:'flex',flexDirection:'column',gap:8}}>
-                      {p.classes.map((c,i)=>(
-                        <div key={i} style={{
-                          display:'flex',alignItems:'flex-start',gap:9,
-                          color:'#e4e4e7',fontSize:'0.85rem',lineHeight:1.5,
-                        }}>
-                          <CheckCircle size={15} strokeWidth={2.4} style={{color:p.accent,flexShrink:0,marginTop:1.5}}/>
-                          <span>{c}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Journey highlight */}
-                  <div style={{
-                    position:'relative',
-                    display:'flex',alignItems:'center',gap:11,
-                    background:p.accentSoft,
-                    border:`1px solid ${p.accentBorder}`,
-                    borderRadius:12,padding:'12px 14px',marginBottom:22,
-                    boxShadow:`inset 0 1px 0 rgba(255,255,255,0.06)`,
-                  }}>
-                    <div style={{
-                      width:34,height:34,borderRadius:10,flexShrink:0,
-                      background:`linear-gradient(135deg, ${p.accent}33, ${p.accent}10)`,
-                      border:`1px solid ${p.accent}55`,
-                      display:'flex',alignItems:'center',justifyContent:'center',
-                      color:p.accent,
-                      boxShadow:`0 4px 12px ${p.accent}22, inset 0 1px 0 rgba(255,255,255,0.10)`,
-                    }}>
-                      <Compass size={16} strokeWidth={2.2}/>
-                    </div>
-                    <div style={{flex:1}}>
-                      <div style={{color:p.accent,fontSize:'0.62rem',fontWeight:800,letterSpacing:'0.12em'}}>PERSONALIZED LEARNING</div>
-                      <div style={{color:'#fff',fontSize:'0.85rem',fontWeight:700}}>{p.journeyLabel}</div>
-                    </div>
-                  </div>
-
-                  {/* CTA */}
-                  <button
-                    onClick={() => onNav && onNav('landing')}
-                    className="btn-press"
-                    style={{
-                      position:'relative',width:'100%',
-                      padding:'14px 20px',borderRadius:14,
-                      border: p.recommended ? 'none' : '1px solid rgba(255,255,255,0.16)',
-                      background: p.recommended
-                        ? `linear-gradient(135deg, ${PRIMARY}, ${CORAL})`
-                        : 'rgba(255,255,255,0.05)',
-                      color: '#fff',fontWeight:700,fontSize:'0.95rem',
-                      cursor:'pointer',
-                      boxShadow: p.recommended ? `0 16px 38px ${PRIMARY}66` : 'none',
-                      transition:'transform 0.15s, box-shadow 0.2s',
-                      display:'inline-flex',alignItems:'center',justifyContent:'center',gap:7,
-                      overflow:'hidden',
-                    }}>
-                    <span style={{position:'relative',zIndex:1,display:'inline-flex',alignItems:'center',gap:7}}>
-                      {p.recommended ? 'ขอใบเสนอราคา' : 'ดูรายละเอียด'}
-                      <span className={p.recommended ? 'ac-arrow-nudge' : ''} style={{display:'inline-flex'}}>
-                        <ChevronRight size={17} strokeWidth={2.4}/>
+                      }}>{(animatedPrices[i] || 0).toLocaleString()}</span>
+                      <span style={{color:'#d4d4d8',fontSize:'1rem',fontWeight:700}}>บาท</span>
+                      <span style={{color:'#a8a29e',fontSize:'0.82rem',marginLeft:6}}>
+                        จากราคา <span style={{textDecoration:'line-through'}}>{sp.original}</span>
                       </span>
-                    </span>
-                    {p.recommended && <div className="ac-btn-sheen"/>}
-                  </button>
-
-                  {/* Start date footer */}
-                  <div style={{
-                    position:'relative',
-                    marginTop:16, paddingTop:14,
-                    borderTop:'1px dashed rgba(255,255,255,0.10)',
-                    color:'#a8a29e',fontSize:'0.74rem',
-                    display:'flex',alignItems:'center',gap:7,
-                  }}>
-                    <Calendar size={12} strokeWidth={2}/>
-                    เริ่มได้ตั้งแต่กันยายน 2026
+                    </div>
+                    <div style={{position:'relative',color:'#78716c',fontSize:'0.72rem',fontStyle:'italic',marginTop:10}}>
+                      *ยังไม่รวมราคาค่าหลักสูตร
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </section>
 
@@ -10916,23 +10983,6 @@
                 </div>
               </div>
 
-              {/* CTA */}
-              <button
-                onClick={() => onNav && onNav('landing')}
-                className="btn-press"
-                style={{
-                  position:'relative',
-                  padding:'11px 20px',borderRadius:12,
-                  background:'linear-gradient(135deg, rgba(226,232,240,0.18), rgba(148,163,184,0.10))',
-                  border:'1px solid rgba(203,213,225,0.55)',
-                  color:'#f1f5f9',fontWeight:700,fontSize:'0.9rem',
-                  cursor:'pointer',
-                  boxShadow:'0 4px 14px rgba(203,213,225,0.14), inset 0 1px 0 rgba(255,255,255,0.10)',
-                  display:'inline-flex',alignItems:'center',gap:7,flexShrink:0,
-                }}>
-                สนใจทดลองใช้ฟรี
-                <ChevronRight size={15} strokeWidth={2.4}/>
-              </button>
             </div>
           </section>
 
