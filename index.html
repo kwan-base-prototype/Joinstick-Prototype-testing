@@ -11918,7 +11918,7 @@
         },
       ];
 
-      /* ── พร้อมใช้งาน — สิงหาคม / กันยายน ── */
+      /* ── พร้อมใช้งาน — สิงหาคม ── */
       const augHighlight1Day = [
         'Problem Solving with Critical Thinking',
         'People Manager in Action',
@@ -11939,7 +11939,7 @@
         'POWERFUL COMMUNICATION SERIES',
       ];
 
-      /* Reusable card — used for both Highlight Course and September programs */
+      /* Reusable card — used for Highlight Course and program series */
       const HighlightCard = ({ title, badge, accent, BadgeIcon = Clock }) => (
         <div
           onMouseEnter={e=>{
@@ -12081,26 +12081,30 @@
               }
             `}</style>
 
+            {/* ── Month pill — spans full width above both columns ── */}
+            <div style={{
+              maxWidth:1120, margin:'0 auto 24px',
+              display:'flex',alignItems:'center',justifyContent:'center',gap:8,
+              background:'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))',
+              border:'1px solid rgba(255,255,255,0.12)',
+              borderRadius:14, padding:'13px 18px',
+              boxShadow:'inset 0 1px 0 rgba(255,255,255,0.06)',
+              opacity: packagesInView ? 1 : 0,
+              transform:`translateY(${packagesInView ? 0 : 16}px)`,
+              transition:'opacity 0.6s ease, transform 0.6s ease',
+            }}>
+              <Calendar size={16} strokeWidth={2.2} style={{color:CORAL}}/>
+              <span className="bp-heading" style={{fontSize:'1.15rem',fontWeight:800,letterSpacing:'0.02em'}}>สิงหาคม</span>
+            </div>
+
             <div className="ac-ready-grid">
-              {/* ── LEFT — สิงหาคม ── */}
+              {/* ── LEFT — Free Trial + Highlight + Special Price ── */}
               <div style={{
                 opacity: packagesInView ? 1 : 0,
                 transform:`translateY(${packagesInView ? 0 : 24}px)`,
                 transition:'opacity 0.7s cubic-bezier(0.22,1,0.36,1) 0.05s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.05s',
               }}>
-                {/* Month pill */}
-                <div style={{
-                  display:'flex',alignItems:'center',justifyContent:'center',gap:8,
-                  background:'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))',
-                  border:'1px solid rgba(255,255,255,0.12)',
-                  borderRadius:14, padding:'13px 18px', marginBottom:24,
-                  boxShadow:'inset 0 1px 0 rgba(255,255,255,0.06)',
-                }}>
-                  <Calendar size={16} strokeWidth={2.2} style={{color:CORAL}}/>
-                  <span className="bp-heading" style={{fontSize:'1.15rem',fontWeight:800,letterSpacing:'0.02em'}}>สิงหาคม</span>
-                </div>
-
-                {/* ── FREE TRIAL — moved under สิงหาคม ── */}
+                {/* ── FREE TRIAL ── */}
                 <div ref={freeTrialRef} style={{
                   marginBottom:24,
                   opacity: freeTrialInView ? 1 : 0,
@@ -12237,25 +12241,13 @@
                 background:'linear-gradient(180deg, transparent, rgba(255,255,255,0.14) 12%, rgba(255,255,255,0.14) 88%, transparent)',
               }}/>
 
-              {/* ── RIGHT — กันยายน ── */}
+              {/* ── RIGHT — All Program + Custom Package ── */}
               <div style={{
                 display:'flex', flexDirection:'column',
                 opacity: packagesInView ? 1 : 0,
                 transform:`translateY(${packagesInView ? 0 : 24}px)`,
                 transition:'opacity 0.7s cubic-bezier(0.22,1,0.36,1) 0.18s, transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.18s',
               }}>
-                {/* Month pill */}
-                <div style={{
-                  display:'flex',alignItems:'center',justifyContent:'center',gap:8,
-                  background:'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))',
-                  border:'1px solid rgba(255,255,255,0.12)',
-                  borderRadius:14, padding:'13px 18px', marginBottom:24,
-                  boxShadow:'inset 0 1px 0 rgba(255,255,255,0.06)',
-                }}>
-                  <Calendar size={16} strokeWidth={2.2} style={{color:GOLD}}/>
-                  <span className="bp-heading" style={{fontSize:'1.15rem',fontWeight:800,letterSpacing:'0.02em'}}>กันยายน</span>
-                </div>
-
                 {/* All Program label */}
                 <div style={{
                   color:CORAL,fontSize:'0.92rem',fontWeight:800,letterSpacing:'0.01em',
@@ -12325,6 +12317,7 @@
                   </div>
                 </div>
               </div>
+
             </div>
 
           </section>
