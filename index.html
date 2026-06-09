@@ -77,9 +77,199 @@
     .hr-tab-btn { transition: color 0.15s, border-color 0.15s; }
     .hr-tl-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:6px; }
     .hr-tl-line { width:1.5px; background:#e7e5e4; flex:1; min-height:18px; }
+
+    /* ── HR Sidebar (collapsible nav rail) ──
+       Sidebar height follows its content (no 100vh cap), so all expanded sub-menus
+       remain visible without internal scrolling — scrolls with the page instead. */
+    .hr-sidebar {
+      position: relative; align-self: stretch;
+      min-height: 100vh;
+      background: #ffffff; border-right: 1px solid #e7e5e4;
+      flex-shrink: 0; display: flex; flex-direction: column;
+      transition: width 0.28s cubic-bezier(0.22,1,0.36,1);
+      z-index: 90;
+    }
+    .hr-sidebar-expanded  { width: 248px; }
+    .hr-sidebar-collapsed { width: 64px;  }
+    .hr-side-section-label {
+      color: #a8a29e; font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0 14px; margin: 16px 0 6px;
+      transition: opacity 0.18s ease;
+    }
+    .hr-sidebar-collapsed .hr-side-section-label { opacity: 0; pointer-events: none; height: 8px; margin: 12px 0 0; }
+    .hr-side-link {
+      display: flex; align-items: center; gap: 11px;
+      padding: 9px 12px; margin: 0 8px; border-radius: 10px;
+      color: #57534e; font-size: 0.82rem; font-weight: 500;
+      cursor: pointer; border: none; background: transparent;
+      font-family: 'Poppins', sans-serif; letter-spacing: -0.005em;
+      text-align: left; width: calc(100% - 16px);
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap; overflow: hidden;
+    }
+    .hr-side-link:hover { background: #f5f5f4; color: #1c1917; }
+    .hr-side-link.active {
+      background: rgba(5,150,105,0.10); color: #047857; font-weight: 600;
+    }
+    .hr-side-link .hr-side-icon {
+      width: 18px; height: 18px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .hr-side-link .hr-side-label {
+      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+      transition: opacity 0.18s ease;
+    }
+    .hr-sidebar-collapsed .hr-side-link {
+      justify-content: center; padding: 9px 0; margin: 0 8px;
+    }
+    .hr-sidebar-collapsed .hr-side-label,
+    .hr-sidebar-collapsed .hr-side-count,
+    .hr-sidebar-collapsed .hr-side-dot,
+    .hr-sidebar-collapsed .hr-side-chevron { display: none; }
+    .hr-side-count {
+      flex-shrink: 0; padding: 1px 7px; border-radius: 999px;
+      font-size: 0.65rem; font-weight: 600;
+      background: #f5f5f4; color: #78716c;
+    }
+    .hr-side-link.active .hr-side-count {
+      background: rgba(5,150,105,0.16); color: #047857;
+    }
+    .hr-side-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .hr-side-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; padding: 14px 14px 10px; border-bottom: 1px solid #f0eeec;
+    }
+    .hr-sidebar-collapsed .hr-side-header { flex-direction: column; padding: 14px 8px 10px; }
+    .hr-side-brand { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .hr-side-brand-label { transition: opacity 0.18s ease; }
+    .hr-sidebar-collapsed .hr-side-brand-label { opacity: 0; pointer-events: none; width: 0; }
+    .hr-side-toggle {
+      width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #fafaf9; border: 1px solid #e7e5e4; color: #57534e;
+      cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .hr-side-toggle:hover { background: #f5f5f4; color: #1c1917; border-color: #d6d3d1; }
+    .hr-side-footer {
+      margin-top: auto; padding: 14px; border-top: 1px solid #f0eeec;
+      transition: padding 0.18s ease;
+    }
+    /* Nested sub-nav under Individual */
+    .hr-side-subnav {
+      margin: 2px 8px 6px 26px; padding-left: 12px;
+      border-left: 1px solid #e7e5e4;
+      animation: hrSubFade 0.22s ease;
+    }
+    @keyframes hrSubFade {
+      from { opacity: 0; transform: translateY(-2px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hr-sidebar-collapsed .hr-side-subnav { display: none; }
+    .hr-side-subsection {
+      color: #a8a29e; font-size: 0.58rem; font-weight: 600;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      padding: 8px 4px 4px; margin-top: 2px;
+    }
+    .hr-side-sublink {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 8px; border-radius: 8px;
+      color: #57534e; font-size: 0.78rem; font-weight: 500;
+      cursor: pointer; border: none; background: transparent;
+      font-family: 'Poppins', sans-serif; letter-spacing: -0.005em;
+      text-align: left; width: 100%;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap; overflow: hidden;
+    }
+    .hr-side-sublink:hover { background: #f5f5f4; color: #1c1917; }
+    .hr-side-sublink.active { background: rgba(5,150,105,0.10); color: #047857; font-weight: 600; }
+    .hr-side-sublink .hr-side-icon { width: 16px; height: 16px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center; }
+    .hr-side-sublink .hr-side-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .hr-side-sublink .hr-side-count {
+      flex-shrink: 0; padding: 0 6px; border-radius: 999px;
+      font-size: 0.6rem; font-weight: 600;
+      background: #f5f5f4; color: #78716c;
+    }
+    .hr-side-sublink.active .hr-side-count { background: rgba(5,150,105,0.16); color: #047857; }
+    .hr-side-chevron {
+      flex-shrink: 0; transition: transform 0.22s ease;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .hr-side-chevron.open { transform: rotate(180deg); }
+    .hr-sidebar-collapsed .hr-side-footer-card { display: none; }
+
+    /* ── HR bar reveal — animate width via transform: scaleX for performance ── */
+    @keyframes hrBarReveal {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+    .hr-bar-fill {
+      transform-origin: left center;
+      animation: hrBarReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+      will-change: transform;
+    }
+
+    /* ── Collapsible — grid 0fr↔1fr trick for smooth height transition ── */
+    .hr-collapsible {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hr-collapsible.open {
+      grid-template-rows: 1fr;
+    }
+    .hr-collapsible > .hr-collapsible-inner {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ── SVG path draw-in (uses pathLength="1" to normalize) ── */
+    @keyframes hrPathDraw {
+      from { stroke-dashoffset: 1; }
+      to   { stroke-dashoffset: 0; }
+    }
+    .hr-path-draw {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: hrPathDraw 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    /* Fade in the area fill slightly after the line starts drawing */
+    @keyframes hrAreaFade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .hr-area-fade {
+      opacity: 0;
+      animation: hrAreaFade 0.5s ease-out 0.3s forwards;
+    }
+
+    /* ── Number delta pulse — drawn once on mount, never loops ── */
+    @keyframes hrDeltaPulse {
+      0%   { transform: scale(1);   }
+      50%  { transform: scale(1.10); }
+      100% { transform: scale(1);   }
+    }
+    .hr-delta-pulse { animation: hrDeltaPulse 0.6s ease-out 0.3s both; }
+
+    /* ── Reduced-motion: collapse all transitions/animations ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
     @media (max-width: 980px) {
       .hr-2col { grid-template-columns: 1fr !important; }
       .hr-drawer { width:100vw; }
+      .hr-sidebar-expanded  { width: 64px; }
+      .hr-sidebar-expanded .hr-side-label,
+      .hr-sidebar-expanded .hr-side-count,
+      .hr-sidebar-expanded .hr-side-brand-label,
+      .hr-sidebar-expanded .hr-side-section-label { opacity: 0; pointer-events: none; }
     }
     ::-webkit-scrollbar { display: none; }
     /* ── Fade in (tab content, general) ── */
@@ -977,7 +1167,7 @@
     const APP_BG = 'radial-gradient(130% 55% at 50% -8%, rgba(237,71,36,0.5) 0%, rgba(237,71,36,0.13) 32%, #0b0708 62%, #09090b 100%)';
 
     /* ── Phone mockup wrapper ────────────────────── */
-    function PhoneFrame({ children, statusBg }) {
+    function PhoneFrame({ children, statusBg, previewMode }) {
       const sBar = statusBg || APP_BG;
       const PHONE_W = 390;
       const PHONE_H = 844;
@@ -985,6 +1175,7 @@
       const [scale, setScale] = useState(1);
 
       useEffect(() => {
+        if (previewMode) return; // caller handles sizing/scale in preview mode
         const update = () => {
           const padPx = window.innerWidth <= 414 ? 8 : 24; // matches .phone-frame-outer padding
           const availW = window.innerWidth  - padPx * 2 - HALO;
@@ -999,7 +1190,45 @@
           window.removeEventListener('resize', update);
           window.removeEventListener('orientationchange', update);
         };
-      }, []);
+      }, [previewMode]);
+
+      // ── Preview mode: chrome-less, fixed-size; caller wraps with its own shell ──
+      if (previewMode) {
+        return (
+          <div style={{
+            width: PHONE_W,
+            height: PHONE_H,
+            background: sBar,
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            flexShrink: 0,
+          }}>
+            {/* Status bar (kept; dynamic island still useful as a brand cue) */}
+            <div style={{
+              height: 44, flexShrink: 0, display: 'flex', alignItems: 'center',
+              justifyContent: 'space-between', padding: '0 28px',
+              position: 'relative', zIndex: 10, background: 'transparent',
+            }}>
+              <span style={{color:'#fff',fontSize:'0.8125rem',fontWeight:600}}>9:41</span>
+              <div style={{
+                position:'absolute', top:9, left:'50%', transform:'translateX(-50%)',
+                width:116, height:33, background:'#000', borderRadius:999, zIndex:11,
+              }}/>
+              <div style={{display:'flex',gap:5,alignItems:'center',zIndex:12}}>
+                <div style={{width:17,height:10,borderRadius:1.5,background:'rgba(255,255,255,0.85)'}}/>
+                <div style={{width:15,height:11,borderRadius:1.5,background:'rgba(255,255,255,0.85)'}}/>
+                <div style={{width:26,height:12,borderRadius:3,border:'1.4px solid rgba(255,255,255,0.55)',
+                  display:'flex',alignItems:'center',paddingLeft:2}}>
+                  <div style={{width:16,height:7,borderRadius:1.5,background:'#fff'}}/>
+                </div>
+              </div>
+            </div>
+            {children}
+          </div>
+        );
+      }
 
       return (
         <div className="phone-frame-outer" style={{
@@ -1313,6 +1542,114 @@
       );
     }
 
+    /* ── HeroWave (procedural canvas wave, CI-tuned palette) ─ */
+    function HeroWave() {
+      const canvasRef = useRef(null);
+
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let width, height, imageData, data;
+        const SCALE = 2;
+        let rafId = 0;
+
+        const resizeCanvas = () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          width = Math.floor(canvas.width / SCALE);
+          height = Math.floor(canvas.height / SCALE);
+          imageData = ctx.createImageData(width, height);
+          data = imageData.data;
+        };
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const startTime = Date.now();
+
+        // Precomputed trig tables for fastSin / fastCos
+        const SIN_TABLE = new Float32Array(1024);
+        const COS_TABLE = new Float32Array(1024);
+        for (let i = 0; i < 1024; i++) {
+          const angle = (i / 1024) * Math.PI * 2;
+          SIN_TABLE[i] = Math.sin(angle);
+          COS_TABLE[i] = Math.cos(angle);
+        }
+        const TWO_PI = Math.PI * 2;
+        const fastSin = (x) => SIN_TABLE[Math.floor(((x % TWO_PI) / TWO_PI) * 1024) & 1023];
+        const fastCos = (x) => COS_TABLE[Math.floor(((x % TWO_PI) / TWO_PI) * 1024) & 1023];
+
+        const render = () => {
+          const time = (Date.now() - startTime) * 0.001;
+
+          for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+              const u_x = (2 * x - width)  / height;
+              const u_y = (2 * y - height) / height;
+
+              let a = 0;
+              let d = 0;
+              for (let i = 0; i < 4; i++) {
+                a += fastCos(i - d + time * 0.5 - a * u_x);
+                d += fastSin(i * u_y + a);
+              }
+
+              const wave      = (fastSin(a) + fastCos(d)) * 0.5;
+              const intensity = 0.3 + 0.4 * wave;
+              const baseVal   = 0.12 + 0.18 * fastCos(u_x + u_y + time * 0.3);
+              // CI: warm dominant + ember accent (replaces blue/purple)
+              const warmAccent  = 0.22 * fastSin(a * 1.5 + time * 0.2);
+              const emberAccent = 0.16 * fastCos(d * 2 + time * 0.1);
+
+              // Mix toward #ED4724 (R-dominant, G moderate, B minimal)
+              const r = Math.max(0, Math.min(1, baseVal       + warmAccent * 1.10 + emberAccent * 0.70)) * intensity;
+              const g = Math.max(0, Math.min(1, baseVal * 0.42 + warmAccent * 0.35 + emberAccent * 0.20)) * intensity;
+              const b = Math.max(0, Math.min(1, baseVal * 0.18 + emberAccent * 0.08))                    * intensity;
+
+              const idx = (y * width + x) * 4;
+              data[idx]     = r * 255;
+              data[idx + 1] = g * 255;
+              data[idx + 2] = b * 255;
+              data[idx + 3] = 255;
+            }
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+          if (SCALE > 1) {
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(canvas, 0, 0, width, height, 0, 0, canvas.width, canvas.height);
+          }
+
+          rafId = requestAnimationFrame(render);
+        };
+
+        render();
+
+        return () => {
+          window.removeEventListener('resize', resizeCanvas);
+          if (rafId) cancelAnimationFrame(rafId);
+        };
+      }, []);
+
+      return (
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+            pointerEvents: 'none',
+            background: '#161412',
+          }}
+        />
+      );
+    }
+
     /* ── LandingPage ─────────────────────────────── */
     function LandingPage({ onEnter, onShiftStage, onJourney, onNav }) {
       const [exiting, setExiting] = useState(false);
@@ -1330,7 +1667,7 @@
 
       // Cycle phone screens
       useEffect(() => {
-        const id = setInterval(() => setPhoneIdx(p => (p + 1) % 3), 3600);
+        const id = setInterval(() => setPhoneIdx(p => (p + 1) % 4), 4200);
         return () => clearInterval(id);
       }, []);
 
@@ -1456,52 +1793,8 @@
           transition: 'opacity 0.5s ease, transform 0.5s ease',
         }}>
 
-          {/* ── Ambient background ── */}
-          <div style={{position:'fixed',inset:0,pointerEvents:'none',zIndex:0,overflow:'hidden'}}>
-            {/* Animated subtle grid */}
-            <div className="anim-grid" style={{position:'absolute',inset:0,opacity:0.55}}/>
-
-            {/* Drifting orange blob */}
-            <div className="anim-drift" style={{
-              position:'absolute', top:'-18%', left:'-8%',
-              width:'62vw', height:'62vw', maxWidth:880, maxHeight:880,
-              background:'radial-gradient(circle, rgba(237,71,36,0.14) 0%, transparent 62%)',
-              borderRadius:'50%', filter:'blur(20px)',
-            }}/>
-            {/* Drifting warm secondary blob */}
-            <div className="anim-drift-rev" style={{
-              position:'absolute', bottom:'-22%', right:'-10%',
-              width:'58vw', height:'58vw', maxWidth:760, maxHeight:760,
-              background:'radial-gradient(circle, rgba(251,124,88,0.10) 0%, transparent 62%)',
-              borderRadius:'50%', filter:'blur(20px)',
-            }}/>
-            {/* Cool accent blob */}
-            <div className="anim-drift" style={{
-              position:'absolute', top:'30%', right:'10%',
-              width:'30vw', height:'30vw', maxWidth:420, maxHeight:420,
-              background:'radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 65%)',
-              borderRadius:'50%', filter:'blur(30px)', animationDelay:'-6s',
-            }}/>
-
-            {/* Sparkle particles */}
-            {[
-              {top:'12%', left:'18%', size:6,  delay:'0s'},
-              {top:'24%', left:'78%', size:4,  delay:'1.2s'},
-              {top:'48%', left:'8%',  size:5,  delay:'2.4s'},
-              {top:'62%', left:'92%', size:6,  delay:'0.6s'},
-              {top:'82%', left:'30%', size:4,  delay:'1.8s'},
-              {top:'18%', left:'52%', size:3,  delay:'3.0s'},
-              {top:'72%', left:'62%', size:5,  delay:'2.1s'},
-            ].map((s,i)=>(
-              <div key={i} className="anim-sparkle" style={{
-                position:'absolute', top:s.top, left:s.left,
-                width:s.size, height:s.size, borderRadius:'50%',
-                background:'#ED4724',
-                boxShadow:`0 0 ${s.size*2}px rgba(237,71,36,0.7)`,
-                animationDelay:s.delay,
-              }}/>
-            ))}
-          </div>
+          {/* ── Ambient background (Procedural wave, CI-tuned) ── */}
+          <HeroWave />
 
           {/* ── Navbar ── */}
           <nav className="lp-nav" style={{
@@ -1663,202 +1956,32 @@
                 display:'inline-flex',alignItems:'center',gap:5,
               }}>+50 pts <Sparkles size={12} strokeWidth={2}/></div>
 
-              {/* Phone shell — floats & tilts */}
+              {/* Phone shell — embeds real LearnerApp scaled down */}
               <div className="anim-phone-tilt" style={{
-                width:260, height:560,
+                width:260, height:564,
                 background:'#161412',
                 borderRadius:44,
                 boxShadow:'0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.04)',
                 position:'relative', overflow:'hidden',
                 flexShrink:0,
               }}>
-                {/* Status bar */}
-                <div style={{height:32,background:'#161412',display:'flex',alignItems:'center',
-                  justifyContent:'space-between',padding:'0 20px',position:'relative'}}>
-                  <span style={{color:'#fff',fontSize:'0.65rem',fontWeight:600}}>9:41</span>
-                  <div style={{
-                    position:'absolute',top:0,left:'50%',transform:'translateX(-50%)',
-                    width:80,height:24,background:'#161412',borderRadius:'0 0 14px 14px',
-                  }}/>
-                  <div style={{display:'flex',gap:4,alignItems:'center'}}>
-                    <div style={{width:10,height:7,borderRadius:1,background:'rgba(255,255,255,0.5)'}}/>
-                    <div style={{width:10,height:7,borderRadius:1,background:'rgba(255,255,255,0.5)'}}/>
-                    <div style={{width:16,height:8,borderRadius:2,border:'1px solid rgba(255,255,255,0.3)',
-                      display:'flex',alignItems:'center',paddingLeft:2}}>
-                      <div style={{width:10,height:4,borderRadius:1,background:'#fff'}}/>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mock app content — cycles between 3 screens */}
+                {/* Scaled embed: real PhoneFrame (390×844) scaled by 2/3 → 260×563.
+                    Outer wrapper handles fade animation; inner wrapper holds the scale
+                    (kept separate so the keyframe's `transform` doesn't override scale). */}
                 <div key={phoneIdx} className="anim-screen-fade" style={{
-                  padding:'12px 16px',overflowY:'hidden',height:'calc(100% - 32px)',
+                  position:'absolute', inset:0,
+                  pointerEvents:'none', userSelect:'none',
                 }}>
-                  {/* Header (shared) */}
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
-                    <div>
-                      <div style={{color:'#a8a29e',fontSize:'0.6rem'}}>สวัสดี</div>
-                      <div style={{color:'#fff',fontSize:'0.8rem',fontWeight:700}}>คุณสมชาย</div>
-                    </div>
-                    <div style={{width:30,height:30,borderRadius:'50%',background:'#ED4724',
-                      display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.7rem',fontWeight:700}}>S</div>
+                  <div style={{
+                    width:390, height:844,
+                    transform:'scale(0.66667)',
+                    transformOrigin:'top left',
+                  }}>
+                    <LearnerApp
+                      previewMode
+                      forcedTab={['home','leaderboard','challenges','lessons'][phoneIdx]}
+                    />
                   </div>
-
-                  {phoneIdx === 0 && (
-                    <>
-                      {/* Streak card */}
-                      <div style={{
-                        background:'linear-gradient(135deg, rgba(237,71,36,0.18), rgba(251,191,36,0.10))',
-                        border:'1px solid rgba(237,71,36,0.32)',
-                        borderRadius:14, padding:'12px 14px', marginBottom:12,
-                        display:'flex',alignItems:'center',justifyContent:'space-between',
-                      }}>
-                        <div>
-                          <div style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600,display:'inline-flex',alignItems:'center',gap:3}}><Flame size={9} strokeWidth={2}/> Streak</div>
-                          <div style={{color:'#fff',fontSize:'1.3rem',fontWeight:800,lineHeight:1}}>7 วัน</div>
-                        </div>
-                        <div style={{textAlign:'right'}}>
-                          <div style={{color:'#a8a29e',fontSize:'0.55rem'}}>คะแนนสะสม</div>
-                          <div style={{color:'#fbbf24',fontSize:'0.9rem',fontWeight:700}}>1,240 pts</div>
-                        </div>
-                      </div>
-                      {[
-                        {type:'Quiz',Icon:Lightbulb,title:"Trust Lenses",pts:30,time:'3 วัน',color:'#ED4724'},
-                        {type:'Mission',Icon:Target,title:"Observe & report",pts:50,time:'2 วัน',color:'#fbbf24'},
-                      ].map((c,i)=>(
-                        <div key={i} style={{
-                          background:'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))',
-                          border:'1px solid rgba(255,255,255,0.08)',
-                          borderRadius:12, padding:'10px 12px', marginBottom:8,
-                          display:'flex',alignItems:'center',gap:11,
-                          boxShadow:'inset 0 1px 0 rgba(255,255,255,0.04)',
-                        }}>
-                          <div style={{
-                            width:38,height:38,borderRadius:11,flexShrink:0,
-                            background:`linear-gradient(135deg, ${c.color}33, ${c.color}10)`,
-                            border:`1px solid ${c.color}55`,
-                            display:'flex',alignItems:'center',justifyContent:'center',
-                            color:c.color,
-                            boxShadow:`0 4px 12px ${c.color}22, inset 0 1px 0 rgba(255,255,255,0.10)`,
-                          }}>
-                            <c.Icon size={18} strokeWidth={2.2}/>
-                          </div>
-                          <div style={{flex:1,minWidth:0}}>
-                            <div style={{
-                              color:c.color, fontSize:'0.5rem', fontWeight:700,
-                              letterSpacing:'0.12em', marginBottom:2,
-                            }}>{c.type.toUpperCase()}</div>
-                            <div style={{color:'#f4f4f5',fontSize:'0.68rem',fontWeight:700,
-                              overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis',lineHeight:1.2}}>{c.title}</div>
-                            <div style={{color:'#a8a29e',fontSize:'0.58rem',marginTop:1}}>+{c.pts} pts · {c.time}</div>
-                          </div>
-                        </div>
-                      ))}
-                      <div style={{marginTop:12}}>
-                        <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
-                          <span style={{color:'#a8a29e',fontSize:'0.6rem'}}>Essential Leadership</span>
-                          <span style={{color:'#ED4724',fontSize:'0.6rem',fontWeight:600}}>75%</span>
-                        </div>
-                        <div style={{height:4,background:'rgba(255,255,255,0.08)',borderRadius:999,overflow:'hidden'}}>
-                          <div style={{width:'75%',height:'100%',
-                            background:'linear-gradient(90deg, #ED4724, #fbbf24)',borderRadius:999}}/>
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {phoneIdx === 1 && (
-                    <>
-                      <div style={{
-                        background:'rgba(237,71,36,0.10)',
-                        border:'1px solid rgba(237,71,36,0.28)',
-                        borderRadius:14, padding:14, marginBottom:12,
-                      }}>
-                        <div style={{fontSize:'0.55rem',color:'#ED4724',fontWeight:700,letterSpacing:'0.08em',marginBottom:6}}>QUIZ · ข้อ 2/5</div>
-                        <div style={{color:'#fff',fontSize:'0.78rem',fontWeight:700,lineHeight:1.35,marginBottom:10}}>"Trust Lenses" คืออะไร?</div>
-                        {[
-                          {t:'มุมมองที่หัวหน้ามอง',ok:true},
-                          {t:'แว่นตาของผู้นำ',ok:false},
-                          {t:'เครื่องมือ HR',ok:false},
-                        ].map((o,i)=>(
-                          <div key={i} style={{
-                            background: o.ok ? 'rgba(16,185,129,0.18)' : 'rgba(255,255,255,0.04)',
-                            border: `1px solid ${o.ok ? 'rgba(16,185,129,0.45)' : 'rgba(255,255,255,0.08)'}`,
-                            color: o.ok ? '#86efac' : '#d4d4d8',
-                            borderRadius:9, padding:'7px 10px', marginBottom:5,
-                            fontSize:'0.65rem', fontWeight: o.ok ? 700 : 500,
-                            display:'flex',alignItems:'center',gap:7,
-                          }}>
-                            <span style={{width:14,height:14,borderRadius:'50%',
-                              border:'1.5px solid currentColor',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.55rem',fontWeight:800}}>{o.ok ? '✓' : ['A','B','C'][i]}</span>
-                            {o.t}
-                          </div>
-                        ))}
-                      </div>
-                      <div style={{display:'flex',gap:6}}>
-                        {[1,2,3,4,5].map(n=>(
-                          <div key={n} style={{flex:1,height:4,borderRadius:2,
-                            background: n<=2 ? '#ED4724' : 'rgba(255,255,255,0.1)'}}/>
-                        ))}
-                      </div>
-                      <div style={{marginTop:14,padding:'10px 12px',borderRadius:12,
-                        background:'#ED4724',color:'#fff',
-                        fontSize:'0.72rem',fontWeight:700,textAlign:'center'}}>ส่งคำตอบ →</div>
-                    </>
-                  )}
-
-                  {phoneIdx === 2 && (
-                    <>
-                      <div style={{
-                        background:'linear-gradient(135deg, rgba(99,102,241,0.18), rgba(167,139,250,0.10))',
-                        border:'1px solid rgba(99,102,241,0.32)',
-                        borderRadius:14, padding:14, marginBottom:12, textAlign:'center',
-                      }}>
-                        <div style={{fontSize:'0.55rem',color:'#a5b4fc',fontWeight:700,letterSpacing:'0.08em',marginBottom:8,display:'inline-flex',alignItems:'center',gap:4,justifyContent:'center',width:'100%'}}><Trophy size={10} strokeWidth={2}/> LEADERBOARD</div>
-                        <div style={{color:'#fff',fontSize:'1.7rem',fontWeight:800,lineHeight:1}}>#3</div>
-                        <div style={{color:'#c4b5fd',fontSize:'0.6rem',marginTop:3}}>จาก 124 คน</div>
-                      </div>
-                      {[
-                        {r:1,n:'มาลี ปั้นเก่ง',p:1820,me:false,color:'#fbbf24'},
-                        {r:2,n:'สมศักดิ์ มุ่งมั่น',p:1560,me:false,color:'#94a3b8'},
-                        {r:3,n:'คุณ (สมชาย)',p:1240,me:true,color:'#ED4724'},
-                        {r:4,n:'อรุณ พรหมศรี',p:1080,me:false,color:'#71717a'},
-                      ].map(u=>(
-                        <div key={u.r} style={{
-                          background: u.me ? 'rgba(237,71,36,0.14)' : 'rgba(255,255,255,0.03)',
-                          border: `1px solid ${u.me ? 'rgba(237,71,36,0.4)' : 'rgba(255,255,255,0.06)'}`,
-                          borderRadius:10, padding:'7px 10px', marginBottom:5,
-                          display:'flex',alignItems:'center',gap:8,
-                        }}>
-                          <div style={{width:18,height:18,borderRadius:'50%',
-                            background:`${u.color}22`,color:u.color,
-                            display:'flex',alignItems:'center',justifyContent:'center',
-                            fontSize:'0.55rem',fontWeight:800}}>{u.r}</div>
-                          <div style={{flex:1,color:u.me?'#fff':'#d4d4d8',fontSize:'0.62rem',fontWeight: u.me?700:500,
-                            overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{u.n}</div>
-                          <div style={{color:'#fbbf24',fontSize:'0.6rem',fontWeight:700}}>{u.p.toLocaleString()}</div>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </div>
-
-                {/* Bottom nav */}
-                <div style={{
-                  position:'absolute',bottom:0,left:0,right:0,
-                  height:52, background:'rgba(22,20,18,0.95)',
-                  borderTop:'1px solid rgba(255,255,255,0.07)',
-                  display:'flex', alignItems:'center', justifyContent:'space-around',
-                  paddingBottom:6,
-                }}>
-                  {[Home, Target, Video, BarChart2, Trophy].map((Ico,i)=>(
-                    <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2,
-                      color: i===phoneIdx ? '#ED4724' : 'rgba(255,255,255,0.55)',
-                      opacity: i===phoneIdx ? 1 : 0.7, transition:'all 0.3s'}}>
-                      <Ico size={14} strokeWidth={2}/>
-                      {i===phoneIdx && <div style={{width:4,height:4,borderRadius:'50%',background:'#ED4724'}}/>}
-                    </div>
-                  ))}
                 </div>
               </div>
 
@@ -1868,7 +1991,7 @@
                 transform:'translateX(-50%)',
                 display:'flex', gap:6,
               }}>
-                {[0,1,2].map(i=>(
+                {[0,1,2,3].map(i=>(
                   <div key={i} style={{
                     width: i===phoneIdx ? 18 : 6, height:6, borderRadius:3,
                     background: i===phoneIdx ? '#ED4724' : 'rgba(255,255,255,0.18)',
@@ -2007,8 +2130,10 @@
     }
 
     /* ── LearnerApp ──────────────────────────────── */
-    function LearnerApp() {
-      const [activeTab,   setActiveTab ] = useState('home');
+    function LearnerApp({ previewMode, forcedTab } = {}) {
+      const [internalActiveTab, setInternalActiveTab] = useState('home');
+      const activeTab    = forcedTab || internalActiveTab;
+      const setActiveTab = forcedTab ? () => {} : setInternalActiveTab;
       const [screen,      setScreen    ] = useState(null);
       const [screenData,  setScreenData] = useState(null);
       const [trendView,   setTrendView ] = useState('เดือน');
@@ -4906,7 +5031,7 @@
       ];
 
       return (
-        <PhoneFrame statusBg={APP_BG}>
+        <PhoneFrame statusBg={APP_BG} previewMode={previewMode}>
           {/* ── Content: flex-1 scroll พร้อม pb-28 เผื่อ nav ── */}
           <div className="flex-1 overflow-y-auto px-6 pt-4 pb-28">
             {activeTab==='home'        && renderHome()}
@@ -6890,8 +7015,49 @@
     }
 
     /* ── HRDashboard (Soft Bento Modern · 30 Learners · 2-tab + Drawer) ─── */
+    /* ── CountUp · animated number from 0 → target with ease-out ── */
+    function CountUp({ value, decimals = 0, duration = 900, prefix = '', suffix = '' }) {
+      const [v, setV] = useState(0);
+      useEffect(() => {
+        if (typeof window !== 'undefined' &&
+            window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          setV(value);
+          return;
+        }
+        const start = performance.now();
+        let raf;
+        const tick = (now) => {
+          const t = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+          setV(value * eased);
+          if (t < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+      }, [value, duration]);
+      const formatted = decimals > 0 ? v.toFixed(decimals) : Math.round(v).toLocaleString('en-US');
+      return <>{prefix}{formatted}{suffix}</>;
+    }
+
     function HRDashboard({ onBack }) {
       const [tab, setTab]                     = useState('overview');
+      const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+      const [overviewNavOpen,   setOverviewNavOpen]   = useState(true); // sub-anchors expanded under Overview
+      const [individualNavOpen, setIndividualNavOpen] = useState(true); // sub-filters expanded under Individual
+      const [engagementNavOpen, setEngagementNavOpen] = useState(true); // sub-anchors expanded under Engagement
+      const [activityRange,     setActivityRange]     = useState('14D'); // Engagement → Daily Activity range
+      const [expandedScoreCard, setExpandedScoreCard] = useState(null);  // 'transformation' | 'engagement' | null — in-drawer chart toggle
+
+      // Smooth-scroll to a section inside the active tab; auto-switch tab if needed
+      const scrollToSection = (id, targetTab) => {
+        if (targetTab && tab !== targetTab) setTab(targetTab);
+        // wait for tab content to mount before scrolling
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, targetTab && tab !== targetTab ? 80 : 0);
+      };
       const [statusFilter, setStatusFilter]   = useState('all');   // 'all' | 'onTrack' | 'atRisk' | 'behind'
       const [stageFilter, setStageFilter]     = useState(null);    // null | 0..5
       const [selectedLearner, setSelectedLearner] = useState(null);
@@ -6910,7 +7076,10 @@
       const [execOpen, setExecOpen]           = useState(true);    // Insight tab — Executive Summary collapse toggle
 
       const handleExport = () => {
-        const label = tab === 'individual' ? 'ไฟล์ CSV (Individual)' : tab === 'insight' ? 'รายงาน Insight Summary (PDF)' : 'รายงาน PDF (Overview)';
+        const label = tab === 'individual' ? 'ไฟล์ CSV (Individual)'
+                    : tab === 'insight'    ? 'รายงาน Insight Summary (PDF)'
+                    : tab === 'engagement' ? 'รายงาน Engagement (PDF)'
+                    : 'รายงาน PDF (Overview)';
         setExportToast({ label });
         setTimeout(() => setExportToast(null), 2600);
       };
@@ -7079,6 +7248,7 @@
       };
       const closeDrawer = () => {
         setDrawerOpen(false);
+        setExpandedScoreCard(null);
         setTimeout(() => setSelectedLearner(null), 440);
       };
 
@@ -7603,6 +7773,7 @@
                 <div key={l.id} style={{
                   display:'flex', alignItems:'center', gap:12,
                   padding:'12px 0', borderBottom: idx < list.length - 1 ? '1px solid #f5f5f4' : 'none',
+                  minHeight:62,
                 }}>
                   <div style={{
                     width:38, height:38, borderRadius:'50%', flexShrink:0,
@@ -7612,12 +7783,16 @@
                   }}>{l.av}</div>
                   <div style={{flex:'1 1 0', minWidth:0}}>
                     <div style={{color:'#1c1917', fontSize:'0.85rem', fontWeight:500, overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{l.name}</div>
-                    <div className="num" style={{color:'#78716c', fontSize:'0.7rem', marginTop:2, display:'flex', gap:8}}>
-                      <span>S{l.stage} {stageMeta(l.stage).name}</span>
-                      <span style={{color:'#d6d3d1'}}>·</span>
-                      <span>T<span style={{color: accent, fontWeight:600, marginLeft:2}}>{tScore}</span></span>
-                      <span style={{color:'#d6d3d1'}}>·</span>
-                      <span>E<span style={{color:'#1c1917', fontWeight:600, marginLeft:2}}>{eScore}</span></span>
+                    {/* Meta line — single line with ellipsis so rows stay the same height across both cards */}
+                    <div className="num" style={{
+                      color:'#78716c', fontSize:'0.7rem', marginTop:2,
+                      whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis',
+                    }}>
+                      S{l.stage} {stageMeta(l.stage).name}
+                      <span style={{color:'#d6d3d1', margin:'0 6px'}}>·</span>
+                      T<span style={{color: accent, fontWeight:600, marginLeft:2}}>{tScore}</span>
+                      <span style={{color:'#d6d3d1', margin:'0 6px'}}>·</span>
+                      E<span style={{color:'#1c1917', fontWeight:600, marginLeft:2}}>{eScore}</span>
                     </div>
                   </div>
                   <div style={{display:'flex', gap:6, flexShrink:0}}>
@@ -7879,13 +8054,13 @@
 
       const renderOverview = () => (
         <div className="fade-in hr-reveal">
-          {renderClassInfo()}
-          {renderTransformationMovement()}
+          <div id="ov-class"        style={{scrollMarginTop:120}}>{renderClassInfo()}</div>
+          <div id="ov-transformation" style={{scrollMarginTop:120}}>{renderTransformationMovement()}</div>
           <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16}}>
-            {renderCompletionRate()}
+            <div id="ov-completion" style={{scrollMarginTop:120}}>{renderCompletionRate()}</div>
             <div style={{display:'flex', flexDirection:'column', gap:16}}>
               {/* Quick aggregate card */}
-              <div className="hr-card">
+              <div id="ov-cohort" className="hr-card" style={{scrollMarginTop:120}}>
                 <div className="hr-eyebrow" style={{marginBottom:8}}>Cohort Health · Day {dayCurrent}</div>
                 <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:14}}>
                   {[
@@ -7895,52 +8070,530 @@
                   ].map(({key, label, count}) => {
                     const m = statusMeta[key];
                     return (
-                      <div key={key} style={{
-                        background:m.bg, border:`1px solid ${m.border}`, borderRadius:14,
-                        padding:'12px 8px', textAlign:'center',
-                      }}>
+                      <button
+                        key={key}
+                        onClick={() => { setStatusFilter(key); setStageFilter(null); setTab('individual'); }}
+                        title={`ดู ${label} ${count} คน`}
+                        className="btn-press"
+                        style={{
+                          background:m.bg, border:`1px solid ${m.border}`, borderRadius:14,
+                          padding:'12px 8px', textAlign:'center', cursor:'pointer',
+                          fontFamily:'Poppins,sans-serif',
+                          transition:'transform 0.15s, box-shadow 0.15s, border-color 0.15s',
+                        }}
+                        onMouseEnter={e=>{
+                          e.currentTarget.style.boxShadow = `0 4px 14px ${m.border}`;
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseLeave={e=>{
+                          e.currentTarget.style.boxShadow = 'none';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }}>
                         <div className="num" style={{color:m.color, fontSize:'1.8rem', fontWeight:600, lineHeight:1}}>{count}</div>
                         <div style={{color:'#78716c', fontSize:'0.68rem', marginTop:4, letterSpacing:'0.04em', textTransform:'uppercase'}}>{label}</div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
                 <div style={{height:6, background:'#f5f5f4', borderRadius:999, overflow:'hidden', display:'flex'}}>
-                  <div style={{width:`${(statusCounts.onTrack/totalLearners)*100}%`, background:'#10b981'}}/>
-                  <div style={{width:`${(statusCounts.atRisk/totalLearners)*100}%`, background:'#f59e0b'}}/>
-                  <div style={{width:`${(statusCounts.behind/totalLearners)*100}%`, background:'#ef4444'}}/>
+                  <div className="hr-bar-fill" style={{width:`${(statusCounts.onTrack/totalLearners)*100}%`, background:'#10b981'}}/>
+                  <div className="hr-bar-fill" style={{width:`${(statusCounts.atRisk/totalLearners)*100}%`, background:'#f59e0b', animationDelay:'0.1s'}}/>
+                  <div className="hr-bar-fill" style={{width:`${(statusCounts.behind/totalLearners)*100}%`, background:'#ef4444', animationDelay:'0.2s'}}/>
                 </div>
                 <div className="num" style={{marginTop:10, color:'#78716c', fontSize:'0.7rem', textAlign:'right'}}>
                   Avg Transformation: <span style={{color:'#1c1917', fontWeight:600}}>
                     {Math.round(LEARNERS.reduce((a,l)=>a+transformationScore(l),0)/totalLearners)}
                   </span>
                 </div>
+                {/* View all learners */}
+                <button
+                  onClick={() => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); }}
+                  style={{
+                    marginTop:14, width:'100%', padding:'10px', borderRadius:10, cursor:'pointer',
+                    background:'transparent', border:'1px dashed rgba(28,25,23,0.18)', color:'#57534e',
+                    fontSize:'0.78rem', fontWeight:500, fontFamily:'Poppins,sans-serif',
+                    display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
+                    transition:'background 0.15s, border-color 0.15s, color 0.15s',
+                  }}
+                  onMouseEnter={e=>{e.currentTarget.style.background='#fafaf9'; e.currentTarget.style.borderColor='rgba(28,25,23,0.32)'; e.currentTarget.style.color='#1c1917';}}
+                  onMouseLeave={e=>{e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='rgba(28,25,23,0.18)'; e.currentTarget.style.color='#57534e';}}>
+                  ดูผู้เรียนทั้งหมด ({totalLearners} คน) <ChevronRight size={14}/>
+                </button>
               </div>
               {/* Manager Review summary */}
-              <div className="hr-card">
+              <div id="ov-manager" className="hr-card" style={{scrollMarginTop:120}}>
                 <div className="hr-eyebrow" style={{marginBottom:8}}>Manager Review</div>
                 {[
                   {key:'completed', label:'Reviewed', color:'#047857', count: LEARNERS.filter(l=>l.mgrReview==='completed').length},
                   {key:'pending',   label:'Pending',  color:'#b45309', count: LEARNERS.filter(l=>l.mgrReview==='pending').length},
                   {key:'overdue',   label:'Overdue',  color:'#b91c1c', count: LEARNERS.filter(l=>l.mgrReview==='overdue').length},
                 ].map(({key,label,color,count}) => (
-                  <div key={key} style={{
-                    display:'flex', alignItems:'center', justifyContent:'space-between',
-                    padding:'10px 0', borderBottom: key !== 'overdue' ? '1px solid #f5f5f4' : 'none',
-                  }}>
+                  <button
+                    key={key}
+                    onClick={() => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); /* future: setMgrReviewFilter(key) */ }}
+                    title={`ดูผู้เรียนสถานะ ${label}`}
+                    className="btn-press"
+                    style={{
+                      width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between',
+                      padding:'10px 8px', borderBottom: key !== 'overdue' ? '1px solid #f5f5f4' : 'none',
+                      background:'transparent', border:'none', cursor:'pointer', textAlign:'left',
+                      fontFamily:'Poppins,sans-serif',
+                      borderRadius:6, transition:'background 0.15s',
+                    }}
+                    onMouseEnter={e=>e.currentTarget.style.background='#fafaf9'}
+                    onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                     <div style={{display:'flex', alignItems:'center', gap:8}}>
                       <span style={{width:8, height:8, borderRadius:'50%', background:color}}/>
                       <span style={{color:'#1c1917', fontSize:'0.85rem'}}>{label}</span>
                     </div>
-                    <span className="num" style={{color, fontSize:'0.95rem', fontWeight:600}}>{count}</span>
-                  </div>
+                    <span style={{display:'inline-flex', alignItems:'center', gap:6}}>
+                      <span className="num" style={{color, fontSize:'0.95rem', fontWeight:600}}>{count}</span>
+                      <ChevronRight size={13} style={{color:'#a8a29e'}}/>
+                    </span>
+                  </button>
                 ))}
+                {/* See more */}
+                <button
+                  onClick={() => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); }}
+                  style={{
+                    marginTop:12, width:'100%', padding:'10px', borderRadius:10, cursor:'pointer',
+                    background:'transparent', border:'1px dashed rgba(28,25,23,0.18)', color:'#57534e',
+                    fontSize:'0.78rem', fontWeight:500, fontFamily:'Poppins,sans-serif',
+                    display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
+                    transition:'background 0.15s, border-color 0.15s, color 0.15s',
+                  }}
+                  onMouseEnter={e=>{e.currentTarget.style.background='#fafaf9'; e.currentTarget.style.borderColor='rgba(28,25,23,0.32)'; e.currentTarget.style.color='#1c1917';}}
+                  onMouseLeave={e=>{e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='rgba(28,25,23,0.18)'; e.currentTarget.style.color='#57534e';}}>
+                  ดูสถานะของผู้เรียนทั้งหมด <ChevronRight size={14}/>
+                </button>
               </div>
             </div>
           </div>
-          {renderAtRiskTop()}
+          <div id="ov-atrisk" style={{scrollMarginTop:120}}>{renderAtRiskTop()}</div>
         </div>
       );
+
+      // ─────────────────────────────────────────────────────────────
+      // ENGAGEMENT TAB — class-wide + per-learner participation
+      // ─────────────────────────────────────────────────────────────
+      const renderEngagement = () => {
+        const scored      = LEARNERS.map(l => ({ l, score: engagementScore(l) }));
+        const sorted      = [...scored].sort((a, b) => b.score - a.score);
+        const avgEng      = Math.round(scored.reduce((s, x) => s + x.score, 0) / scored.length);
+        const activeCount = LEARNERS.filter(l => l.status === 'active').length;
+        const activeRate  = Math.round((activeCount / totalLearners) * 100);
+        const avgStreak   = (LEARNERS.reduce((s, l) => s + l.streak, 0) / totalLearners).toFixed(1);
+        const totalDone   = LEARNERS.reduce((s, l) => s + l.done, 0);
+
+        // Engagement distribution buckets
+        const highEng = scored.filter(x => x.score >= 70).length;
+        const midEng  = scored.filter(x => x.score >= 45 && x.score < 70).length;
+        const lowEng  = scored.filter(x => x.score < 45).length;
+
+        // Daily-active synthetic trend — deterministic story arc:
+        //   gentle ramp-up at start (learners getting started)
+        //   peak around 60% of the window (momentum / mid-class energy)
+        //   slight settle near the end (steady-state)
+        // Soft weekly cadence + low-amplitude noise — no hard weekend cliffs.
+        const RANGE_DAYS = { '7D': 7, '14D': 14, '1M': 30, 'All': 60 };
+        const rangeDays  = RANGE_DAYS[activityRange] || 14;
+        const dailyActive = Array.from({ length: rangeDays }, (_, i) => {
+          const t = i / Math.max(1, rangeDays - 1);                                  // 0..1 across the window
+          // Strong story arc + a single slow ripple — drops the weekly hard cadence in favor of a clean shape
+          const arc    = 9 * Math.sin(t * Math.PI * 0.92);                            // peak near 0.55
+          const slow   = 2.0 * Math.sin(t * Math.PI * 2.4 + 0.6);                     // 2-3 gentle hills across the window
+          const breath = 0.6 * Math.sin(i * 0.8 + 0.3);                                // micro variation, just enough to feel alive
+          const base   = activeCount + arc + slow + breath - 3;                       // baseline tilt so start sits lower
+          return Math.max(8, Math.min(totalLearners, Math.round(base)));
+        });
+        const trendMax = Math.max(...dailyActive);
+        const trendMin = Math.min(...dailyActive);
+        const trendDelta = dailyActive[dailyActive.length - 1] - dailyActive[0];
+
+        const top5    = sorted.slice(0, 5).map(x => x.l);
+        const bottom5 = sorted.slice(-5).reverse().map(x => x.l);
+
+        // ── small chart helpers ──
+        const chartW = 360, chartH = 110, padX = 14, padY = 18;
+        const xStep = (chartW - padX * 2) / Math.max(1, dailyActive.length - 1);
+        const yScale = (v) => padY + (1 - (v - trendMin) / Math.max(1, trendMax - trendMin)) * (chartH - padY * 2);
+        const chartPts = dailyActive.map((v, i) => ({ x: padX + i * xStep, y: yScale(v) }));
+
+        // Catmull-Rom → cubic Bezier path (smooth organic curve through every point)
+        const smoothLine = (pts) => {
+          if (pts.length < 2) return '';
+          let d = `M ${pts[0].x},${pts[0].y}`;
+          for (let i = 0; i < pts.length - 1; i++) {
+            const p0 = pts[Math.max(0, i - 1)];
+            const p1 = pts[i];
+            const p2 = pts[i + 1];
+            const p3 = pts[Math.min(pts.length - 1, i + 2)];
+            const c1x = p1.x + (p2.x - p0.x) / 6;
+            const c1y = p1.y + (p2.y - p0.y) / 6;
+            const c2x = p2.x - (p3.x - p1.x) / 6;
+            const c2y = p2.y - (p3.y - p1.y) / 6;
+            d += ` C ${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+          }
+          return d;
+        };
+        const linePath = smoothLine(chartPts);
+        const areaPath = chartPts.length
+          ? `M ${chartPts[0].x},${chartH - padY} L ${chartPts[0].x},${chartPts[0].y}${linePath.slice(linePath.indexOf(' C'))} L ${chartPts[chartPts.length - 1].x},${chartH - padY} Z`
+          : '';
+
+        const LearnerRow = ({ l, idx, accent }) => {
+          const score = engagementScore(l);
+          return (
+            <div
+              className="hr-row-hover"
+              role="button" tabIndex={0}
+              onClick={() => openLearner(l.id)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLearner(l.id); } }}
+              style={{
+                display:'flex', alignItems:'center', gap:12, padding:'10px 12px', borderRadius:10,
+                minHeight:60, cursor:'pointer',
+              }}>
+              <div style={{
+                width:26, height:26, borderRadius:'50%', flexShrink:0,
+                display:'inline-flex', alignItems:'center', justifyContent:'center',
+                background:`${accent}1a`, color:accent,
+                fontFamily:'JetBrains Mono, monospace', fontSize:'0.72rem', fontWeight:700,
+              }}>{idx + 1}</div>
+              <div style={{
+                width:30, height:30, borderRadius:'50%', flexShrink:0,
+                background:l.bg, color:'#fff', display:'inline-flex', alignItems:'center', justifyContent:'center',
+                fontSize:'0.78rem', fontWeight:600,
+              }}>{l.av}</div>
+              <div style={{flex:1, minWidth:0}}>
+                <div style={{color:'#1c1917', fontSize:'0.82rem', fontWeight:600, letterSpacing:'-0.005em',
+                  overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{l.name}</div>
+                {/* Meta line — single line with ellipsis (matches across cards) */}
+                <div style={{color:'#78716c', fontSize:'0.7rem', marginTop:2,
+                  whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>
+                  {l.role} <span style={{color:'#a8a29e', margin:'0 4px'}}>·</span>
+                  {l.done} ภารกิจ <span style={{color:'#a8a29e', margin:'0 4px'}}>·</span>
+                  Last {l.last}
+                </div>
+              </div>
+              {/* Streak — fixed width */}
+              <div className="num" style={{
+                width:38, flexShrink:0, display:'inline-flex', alignItems:'center', justifyContent:'flex-end', gap:3,
+                color: l.streak >= 7 ? '#b45309' : '#78716c', fontSize:'0.74rem', fontWeight:600,
+              }}>
+                <Flame size={11} style={{color: l.streak >= 7 ? '#f59e0b' : '#a8a29e'}}/> {l.streak}
+              </div>
+              {/* Score + mini bar — fixed width */}
+              <div style={{flexShrink:0, width:96, textAlign:'right'}}>
+                <div className="num" style={{color:accent, fontSize:'0.95rem', fontWeight:600, lineHeight:1}}>{score}</div>
+                <div style={{height:4, background:'#f5f5f4', borderRadius:999, marginTop:4, overflow:'hidden'}}>
+                  <div style={{width:`${score}%`, height:'100%', background:accent, borderRadius:999}}/>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        return (
+          <div className="fade-in hr-reveal">
+
+            {/* ─── 1 · Engagement summary KPIs ─── */}
+            <div id="eng-summary" className="hr-card" style={{marginBottom:16, scrollMarginTop:120}}>
+              <div className="hr-eyebrow" style={{marginBottom:10}}>Class Engagement · Day {dayCurrent}</div>
+              <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:14}}>
+                {[
+                  // delta = change vs 7 วันก่อน (synthetic but believable; positive = improving)
+                  { Icon:Activity,    label:'Avg Engagement',   val:avgEng,            decimals:0, unit:'pts',  color:'#0891b2', sub:`${activeCount}/${totalLearners} active`, delta:'+3',    deltaPct:'+5.3%'  },
+                  { Icon:CheckCircle, label:'Active Rate',      val:activeRate,        decimals:0, unit:'%',    color:'#059669', sub:'last 7 days',                            delta:'+7',    deltaPct:'+9.2%'  },
+                  { Icon:Flame,       label:'Avg Streak',       val:parseFloat(avgStreak), decimals:1, unit:'days', color:'#f59e0b', sub:'across all learners',                delta:'+0.9',  deltaPct:'+23.1%' },
+                  { Icon:Target,      label:'Total Activities', val:totalDone,         decimals:0, unit:'',     color:'#6366f1', sub:'challenges done',                        delta:'+45',   deltaPct:'+20.1%' },
+                ].map(({Icon, label, val, decimals, unit, color, sub, delta, deltaPct}) => {
+                  const positive = delta.startsWith('+');
+                  const deltaColor = positive ? '#047857' : '#b91c1c';
+                  const deltaBg    = positive ? 'rgba(5,150,105,0.08)' : 'rgba(239,68,68,0.08)';
+                  return (
+                    <div key={label} style={{
+                      background:'#fafaf9', border:'1px solid #f0eeec', borderRadius:14, padding:'14px 16px',
+                    }}>
+                      <div style={{display:'flex', alignItems:'center', gap:7, color:'#78716c', fontSize:'0.7rem',
+                        fontWeight:600, letterSpacing:'0.04em', textTransform:'uppercase'}}>
+                        <Icon size={13} style={{color}}/> {label}
+                      </div>
+                      <div style={{display:'flex', alignItems:'baseline', gap:5, marginTop:6}}>
+                        <span className="num" style={{color:'#1c1917', fontSize:'1.6rem', fontWeight:600, letterSpacing:'-0.01em', lineHeight:1}}>
+                          <CountUp value={val} decimals={decimals}/>
+                        </span>
+                        {unit && <span style={{color:'#a8a29e', fontSize:'0.78rem', fontWeight:500}}>{unit}</span>}
+                      </div>
+                      {/* 7-day delta chip */}
+                      <div style={{display:'flex', alignItems:'center', gap:6, marginTop:8}}>
+                        <span className="hr-delta-pulse" style={{
+                          display:'inline-flex', alignItems:'center', gap:3,
+                          background:deltaBg, color:deltaColor,
+                          fontFamily:'JetBrains Mono, monospace', fontSize:'0.7rem', fontWeight:600,
+                          padding:'2px 7px', borderRadius:999,
+                        }}>
+                          <TrendingUp size={10} style={{transform: positive ? 'none' : 'scaleY(-1)'}}/>
+                          {delta}
+                        </span>
+                        <span style={{color:'#a8a29e', fontSize:'0.66rem'}}>vs 7 วันก่อน</span>
+                      </div>
+                      <div style={{color:'#a8a29e', fontSize:'0.68rem', marginTop:6}}>{sub}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* ─── 2 · Engagement Distribution ─── */}
+            <div id="eng-distribution" className="hr-card" style={{marginBottom:16, scrollMarginTop:120}}>
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14}}>
+                <div>
+                  <div className="hr-eyebrow" style={{marginBottom:4}}>Engagement Distribution</div>
+                  <div style={{color:'#78716c', fontSize:'0.78rem'}}>การกระจายของผู้เรียนตามระดับการมีส่วนร่วม</div>
+                </div>
+                <div style={{display:'inline-flex', alignItems:'center', gap:14, fontSize:'0.74rem', color:'#57534e'}}>
+                  <span style={{display:'inline-flex', alignItems:'center', gap:5}}><span style={{width:8, height:8, borderRadius:2, background:'#10b981'}}/>High · ≥70</span>
+                  <span style={{display:'inline-flex', alignItems:'center', gap:5}}><span style={{width:8, height:8, borderRadius:2, background:'#f59e0b'}}/>Mid · 45–69</span>
+                  <span style={{display:'inline-flex', alignItems:'center', gap:5}}><span style={{width:8, height:8, borderRadius:2, background:'#ef4444'}}/>Low · &lt;45</span>
+                </div>
+              </div>
+              {/* Stacked horizontal bar with counts */}
+              <div style={{display:'flex', height:42, borderRadius:12, overflow:'hidden', border:'1px solid #f0eeec'}}>
+                {[
+                  { c:highEng, label:'High', color:'#10b981', delay:0    },
+                  { c:midEng,  label:'Mid',  color:'#f59e0b', delay:0.12 },
+                  { c:lowEng,  label:'Low',  color:'#ef4444', delay:0.24 },
+                ].map(({c, label, color, delay}) => (
+                  <div key={label} className="hr-bar-fill" style={{
+                    flexBasis: `${(c / totalLearners) * 100}%`, flexShrink:0,
+                    background:color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center',
+                    fontWeight:600, fontSize:'0.78rem', letterSpacing:'-0.005em',
+                    fontFamily:'JetBrains Mono, monospace',
+                    animationDelay: `${delay}s`,
+                  }}>
+                    {c > 0 && `${label} · ${c}`}
+                  </div>
+                ))}
+              </div>
+              <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:12, marginTop:14}}>
+                {[
+                  // delta = net change vs 7 วันก่อน. goodWhenUp tells which direction is "good" for color semantics.
+                  { c:highEng, label:'มีส่วนร่วมสูง',     hint:'พร้อม Advanced / Recognition',   color:'#059669', delta:+4, goodWhenUp:true  },
+                  { c:midEng,  label:'มีส่วนร่วมปานกลาง', hint:'รักษา momentum + กระตุ้น',       color:'#b45309', delta:-2, goodWhenUp:null  },
+                  { c:lowEng,  label:'มีส่วนร่วมต่ำ',     hint:'ต้อง Nudge / Manager Follow-up', color:'#b91c1c', delta:-2, goodWhenUp:false },
+                ].map(({c, label, hint, color, delta, goodWhenUp}) => {
+                  const up = delta > 0;
+                  // goodWhenUp=true → positive change is good; =false → negative change is good; =null → neutral grey
+                  const isGood = goodWhenUp === null ? null : (up === goodWhenUp);
+                  const deltaColor = isGood === null ? '#78716c' : isGood ? '#047857' : '#b91c1c';
+                  const deltaBg    = isGood === null ? '#f5f5f4' : isGood ? 'rgba(5,150,105,0.10)' : 'rgba(239,68,68,0.10)';
+                  return (
+                    <div key={label}>
+                      <div style={{display:'flex', alignItems:'baseline', gap:6}}>
+                        <span className="num" style={{color, fontSize:'1.2rem', fontWeight:600, letterSpacing:'-0.01em'}}>{c}</span>
+                        <span style={{color:'#78716c', fontSize:'0.76rem'}}>คน</span>
+                        <span style={{
+                          display:'inline-flex', alignItems:'center', gap:3,
+                          background:deltaBg, color:deltaColor,
+                          fontFamily:'JetBrains Mono, monospace', fontSize:'0.65rem', fontWeight:600,
+                          padding:'1px 6px', borderRadius:999, marginLeft:'auto',
+                        }}>
+                          <TrendingUp size={9} style={{transform: up ? 'none' : 'scaleY(-1)'}}/>
+                          {delta > 0 ? `+${delta}` : delta}
+                        </span>
+                      </div>
+                      <div style={{color:'#1c1917', fontSize:'0.78rem', fontWeight:600, marginTop:2}}>{label}</div>
+                      <div style={{color:'#a8a29e', fontSize:'0.7rem', marginTop:1}}>{hint}</div>
+                      <div style={{color:'#a8a29e', fontSize:'0.64rem', marginTop:3}}>vs 7 วันก่อน</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* ─── 3 · Activity trend + Challenge completion (2-col) ─── */}
+            <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16}}>
+              <div id="eng-activity" className="hr-card" style={{scrollMarginTop:120}}>
+                <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:12, gap:12}}>
+                  <div>
+                    <div className="hr-eyebrow" style={{marginBottom:4}}>Daily Activity · {rangeDays} days</div>
+                    <div style={{color:'#78716c', fontSize:'0.78rem'}}>ผู้เรียน active ต่อวัน</div>
+                  </div>
+                  <div style={{display:'flex', flexDirection:'column', alignItems:'flex-end', gap:6, flexShrink:0}}>
+                    {/* Range selector */}
+                    <div style={{display:'inline-flex', gap:2, background:'#f5f5f4', borderRadius:9, padding:2}}>
+                      {['7D','14D','1M','All'].map(r => {
+                        const active = activityRange === r;
+                        return (
+                          <button
+                            key={r}
+                            onClick={() => setActivityRange(r)}
+                            style={{
+                              padding:'4px 10px', borderRadius:7, border:'none', cursor:'pointer',
+                              fontFamily:'Poppins,sans-serif', fontSize:'0.72rem', fontWeight:600, letterSpacing:'-0.005em',
+                              background: active ? '#fff' : 'transparent',
+                              color:      active ? '#1c1917' : '#78716c',
+                              boxShadow:  active ? '0 1px 3px rgba(28,25,23,0.08)' : 'none',
+                              transition:'background 0.15s, color 0.15s',
+                            }}>
+                            {r}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {/* Trend delta */}
+                    <span className="num" style={{
+                      display:'inline-flex', alignItems:'center', gap:4,
+                      color: trendDelta >= 0 ? '#047857' : '#b91c1c', fontSize:'0.74rem', fontWeight:600,
+                    }}>
+                      <TrendingUp size={12} style={{transform: trendDelta >= 0 ? 'none' : 'scaleY(-1)'}}/>
+                      {trendDelta >= 0 ? '+' : ''}{trendDelta} vs Day -{rangeDays}
+                    </span>
+                  </div>
+                </div>
+                <svg viewBox={`0 0 ${chartW} ${chartH}`} width="100%" height={chartH} style={{display:'block'}}>
+                  <defs>
+                    <linearGradient id="engAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%"   stopColor="#0891b2" stopOpacity="0.28"/>
+                      <stop offset="100%" stopColor="#0891b2" stopOpacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  {/* Y-grid */}
+                  {[0.25, 0.5, 0.75].map(p => (
+                    <line key={p} x1={padX} y1={padY + p * (chartH - padY * 2)} x2={chartW - padX} y2={padY + p * (chartH - padY * 2)}
+                      stroke="#f0eeec" strokeWidth="1"/>
+                  ))}
+                  <path className="hr-area-fade" d={areaPath} fill="url(#engAreaGrad)"/>
+                  <path className="hr-path-draw" pathLength="1" d={linePath} fill="none" stroke="#0891b2" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+                  {/* Dots only on smaller ranges so the curve reads cleanly when zoomed out */}
+                  {rangeDays <= 14 && chartPts.map((p, i) => (
+                    <circle key={i} cx={p.x} cy={p.y} r="2.4" fill="#fff" stroke="#0891b2" strokeWidth="1.6"/>
+                  ))}
+                </svg>
+                <div style={{display:'flex', justifyContent:'space-between', marginTop:6, color:'#a8a29e', fontSize:'0.66rem'}}>
+                  <span>Day -{rangeDays}</span><span>Day -{Math.floor(rangeDays / 2)}</span><span>Today</span>
+                </div>
+              </div>
+
+              <div id="eng-challenges" className="hr-card" style={{scrollMarginTop:120}}>
+                <div className="hr-eyebrow" style={{marginBottom:12}}>Challenge Completion by Type</div>
+                <div style={{display:'flex', flexDirection:'column', gap:11}}>
+                  {CHDATA.map(({ type, Icon, pct, done, total, color }) => (
+                    <div key={type}>
+                      <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:5}}>
+                        <span style={{
+                          width:24, height:24, borderRadius:7,
+                          background:`${color}1a`, color, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0,
+                        }}><Icon size={12}/></span>
+                        <span style={{flex:1, color:'#1c1917', fontSize:'0.8rem', fontWeight:500}}>{type}</span>
+                        <span className="num" style={{color:'#78716c', fontSize:'0.72rem'}}>{done}/{total}</span>
+                        <span className="num" style={{color, fontSize:'0.86rem', fontWeight:600, minWidth:38, textAlign:'right'}}>{pct}%</span>
+                      </div>
+                      <div style={{height:6, background:'#f5f5f4', borderRadius:999, overflow:'hidden'}}>
+                        <div style={{width:`${pct}%`, height:'100%', background:color, borderRadius:999}}/>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ─── 4 · Top engaged + Need attention (2-col) ─── */}
+            <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16}}>
+              <div id="eng-top" className="hr-card" style={{scrollMarginTop:120}}>
+                <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:10}}>
+                  <div>
+                    <div className="hr-eyebrow" style={{marginBottom:4}}>Top Engaged</div>
+                    <div style={{color:'#78716c', fontSize:'0.78rem'}}>ผู้เรียนที่มีส่วนร่วมสูงสุด</div>
+                  </div>
+                  <span style={{background:'rgba(5,150,105,0.10)', color:'#047857',
+                    fontSize:'0.66rem', fontWeight:700, padding:'2px 9px', borderRadius:999, letterSpacing:'0.06em'}}>TOP 5</span>
+                </div>
+                <div style={{display:'flex', flexDirection:'column', gap:2}}>
+                  {top5.map((l, i) => <LearnerRow key={l.id} l={l} idx={i} accent="#059669"/>)}
+                </div>
+              </div>
+
+              <div id="eng-attention" className="hr-card" style={{scrollMarginTop:120}}>
+                <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:10}}>
+                  <div>
+                    <div className="hr-eyebrow" style={{marginBottom:4}}>Need Attention</div>
+                    <div style={{color:'#78716c', fontSize:'0.78rem'}}>มีส่วนร่วมต่ำสุด — ต้องดูแล</div>
+                  </div>
+                  <span style={{background:'rgba(239,68,68,0.10)', color:'#b91c1c',
+                    fontSize:'0.66rem', fontWeight:700, padding:'2px 9px', borderRadius:999, letterSpacing:'0.06em'}}>5 คน</span>
+                </div>
+                <div style={{display:'flex', flexDirection:'column', gap:2}}>
+                  {bottom5.map((l, i) => <LearnerRow key={l.id} l={l} idx={i} accent="#ef4444"/>)}
+                </div>
+              </div>
+            </div>
+
+            {/* ─── 5 · Full ranked table ─── */}
+            <div id="eng-table" className="hr-card" style={{scrollMarginTop:120}}>
+              <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:14}}>
+                <div>
+                  <div className="hr-eyebrow" style={{marginBottom:4}}>All Learners · Ranked by Engagement</div>
+                  <div style={{color:'#78716c', fontSize:'0.78rem'}}>ผู้เรียนทั้งหมด {totalLearners} คน · เรียงตามคะแนนการมีส่วนร่วม</div>
+                </div>
+              </div>
+              <div style={{
+                display:'grid', gridTemplateColumns:'40px 1fr 90px 80px 100px 1fr',
+                gap:12, padding:'0 8px 10px', borderBottom:'1px solid #f0eeec',
+                color:'#a8a29e', fontSize:'0.66rem', fontWeight:600, letterSpacing:'0.08em', textTransform:'uppercase',
+              }}>
+                <span>#</span><span>Learner</span><span>Streak</span><span>ภารกิจ</span><span>Last Active</span><span>Engagement</span>
+              </div>
+              <div style={{display:'flex', flexDirection:'column'}}>
+                {sorted.map((x, i) => {
+                  const score = x.score;
+                  const tone = score >= 70 ? '#059669' : score >= 45 ? '#f59e0b' : '#ef4444';
+                  return (
+                    <div
+                      key={x.l.id}
+                      className="hr-row-hover"
+                      role="button" tabIndex={0}
+                      onClick={() => openLearner(x.l.id)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLearner(x.l.id); } }}
+                      style={{
+                        display:'grid', gridTemplateColumns:'40px 1fr 90px 80px 100px 1fr',
+                        gap:12, alignItems:'center', padding:'10px 8px', borderBottom:'1px solid #fafaf9',
+                        cursor:'pointer',
+                      }}>
+                      <span className="num" style={{color:'#a8a29e', fontSize:'0.78rem', fontWeight:600}}>{i + 1}</span>
+                      <div style={{display:'flex', alignItems:'center', gap:10, minWidth:0}}>
+                        <div style={{
+                          width:30, height:30, borderRadius:'50%', flexShrink:0,
+                          background:x.l.bg, color:'#fff', display:'inline-flex', alignItems:'center', justifyContent:'center',
+                          fontSize:'0.78rem', fontWeight:600,
+                        }}>{x.l.av}</div>
+                        <div style={{minWidth:0}}>
+                          <div style={{color:'#1c1917', fontSize:'0.82rem', fontWeight:500, letterSpacing:'-0.005em',
+                            overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{x.l.name}</div>
+                          <div style={{color:'#78716c', fontSize:'0.68rem'}}>{x.l.role}</div>
+                        </div>
+                      </div>
+                      <span className="num" style={{display:'inline-flex', alignItems:'center', gap:4,
+                        color: x.l.streak >= 7 ? '#b45309' : '#78716c', fontSize:'0.78rem', fontWeight:600}}>
+                        <Flame size={11} style={{color: x.l.streak >= 7 ? '#f59e0b' : '#a8a29e'}}/> {x.l.streak}
+                      </span>
+                      <span className="num" style={{color:'#1c1917', fontSize:'0.82rem'}}>{x.l.done}</span>
+                      <span style={{color:'#78716c', fontSize:'0.74rem'}}>{x.l.last}</span>
+                      <div style={{display:'flex', alignItems:'center', gap:8}}>
+                        <div style={{flex:1, height:6, background:'#f5f5f4', borderRadius:999, overflow:'hidden'}}>
+                          <div style={{width:`${score}%`, height:'100%', background:tone, borderRadius:999}}/>
+                        </div>
+                        <span className="num" style={{color:tone, fontSize:'0.82rem', fontWeight:600, minWidth:30, textAlign:'right'}}>{score}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        );
+      };
 
       // ─────────────────────────────────────────────────────────────
       // INSIGHT SUMMARY TAB
@@ -8604,7 +9257,7 @@
           <div className="hr-card" style={{padding:0, overflow:'hidden'}}>
             {/* Table header */}
             <div style={{
-              display:'grid', gridTemplateColumns:'minmax(200px, 2fr) 1.3fr 1.1fr 1fr 1fr 0.8fr 0.7fr 152px',
+              display:'grid', gridTemplateColumns:'minmax(200px, 2fr) minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.7fr) 152px',
               gap:12, padding:'14px 24px', borderBottom:'1px solid #f0eeec',
               background:'#fafaf9',
             }}>
@@ -8660,7 +9313,7 @@
                   onClick={() => openLearner(l.id)}
                   className="hr-row-hover"
                   style={{
-                    display:'grid', gridTemplateColumns:'minmax(200px, 2fr) 1.3fr 1.1fr 1fr 1fr 0.8fr 0.7fr 152px',
+                    display:'grid', gridTemplateColumns:'minmax(200px, 2fr) minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.7fr) 152px',
                     gap:12, padding:'14px 24px', borderBottom:'1px solid #f5f5f4',
                     alignItems:'center', cursor:'pointer',
                   }}>
@@ -8910,35 +9563,185 @@
                 </div>
               </div>
 
-              {/* Scores */}
-              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:24}}>
-                <div className="hr-card" style={{padding:'14px 16px', boxShadow:'none', borderRadius:14}}>
-                  <div className="hr-eyebrow" style={{fontSize:'0.6rem'}}>Transformation</div>
-                  <div style={{display:'flex', alignItems:'baseline', gap:6, marginTop:4}}>
-                    <span className="num" style={{color:'#1c1917', fontSize:'1.8rem', fontWeight:600, letterSpacing:'-0.03em'}}>{tScore}</span>
-                    {tScore - tPrev > 0 && (
-                      <span className="num" style={{color:'#047857', fontSize:'0.72rem', fontWeight:600,
-                        background:'rgba(5,150,105,0.10)', padding:'2px 6px', borderRadius:999}}>
-                        ↑ {tScore - tPrev}
-                      </span>
-                    )}
-                  </div>
-                  <div style={{height:5, background:'#f5f5f4', borderRadius:999, marginTop:8, overflow:'hidden'}}>
-                    <div style={{width:`${tScore}%`, height:'100%', background:'linear-gradient(to right, #059669, #10b981)', borderRadius:999, transition:'width 0.7s'}}/>
-                  </div>
-                  <div className="num" style={{color:'#a8a29e', fontSize:'0.66rem', marginTop:6}}>Pre-Class baseline: {tPrev}</div>
-                </div>
-                <div className="hr-card" style={{padding:'14px 16px', boxShadow:'none', borderRadius:14}}>
-                  <div className="hr-eyebrow" style={{fontSize:'0.6rem'}}>Engagement</div>
-                  <div style={{display:'flex', alignItems:'baseline', gap:6, marginTop:4}}>
-                    <span className="num" style={{color:'#1c1917', fontSize:'1.8rem', fontWeight:600, letterSpacing:'-0.03em'}}>{eScore}</span>
-                  </div>
-                  <div style={{height:5, background:'#f5f5f4', borderRadius:999, marginTop:8, overflow:'hidden'}}>
-                    <div style={{width:`${eScore}%`, height:'100%', background:'#0d9488', borderRadius:999, transition:'width 0.7s'}}/>
-                  </div>
-                  <div className="num" style={{color:'#a8a29e', fontSize:'0.66rem', marginTop:6}}>Streak {l.streak}d · {l.status}</div>
-                </div>
-              </div>
+              {/* Scores — click to expand a mini history chart below */}
+              {(() => {
+                const toggle = (k) => setExpandedScoreCard(c => c === k ? null : k);
+                const isOpen = (k) => expandedScoreCard === k;
+
+                const ScoreCard = ({ k, label, value, sub, deltaChip, barFill, accent }) => {
+                  const open = isOpen(k);
+                  return (
+                    <div
+                      role="button" tabIndex={0}
+                      onClick={() => toggle(k)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(k); } }}
+                      className="hr-card"
+                      style={{
+                        padding:'14px 16px', boxShadow:'none', borderRadius:14, cursor:'pointer',
+                        border: open ? `1px solid ${accent}66` : '1px solid #e7e5e4',
+                        background: open ? `${accent}07` : '#fff',
+                        transition:'border-color 0.15s, background 0.15s',
+                      }}>
+                      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                        <div className="hr-eyebrow" style={{fontSize:'0.6rem'}}>{label}</div>
+                        <ChevronDown size={12} style={{
+                          color:'#a8a29e', transition:'transform 0.2s',
+                          transform: open ? 'rotate(180deg)' : 'none',
+                        }}/>
+                      </div>
+                      <div style={{display:'flex', alignItems:'baseline', gap:6, marginTop:4}}>
+                        <span className="num" style={{color:'#1c1917', fontSize:'1.8rem', fontWeight:600, letterSpacing:'-0.03em'}}>{value}</span>
+                        {deltaChip}
+                      </div>
+                      <div style={{height:5, background:'#f5f5f4', borderRadius:999, marginTop:8, overflow:'hidden'}}>
+                        <div style={{width:`${value}%`, height:'100%', background:barFill, borderRadius:999, transition:'width 0.7s'}}/>
+                      </div>
+                      <div className="num" style={{color:'#a8a29e', fontSize:'0.66rem', marginTop:6}}>{sub}</div>
+                    </div>
+                  );
+                };
+
+                // Build synthetic time-series for whichever card is expanded
+                const N = Math.max(7, dayCurrent);  // at least 7 days
+                const smoothLine = (pts) => {
+                  if (pts.length < 2) return '';
+                  let d = `M ${pts[0].x},${pts[0].y}`;
+                  for (let i = 0; i < pts.length - 1; i++) {
+                    const p0 = pts[Math.max(0, i - 1)];
+                    const p1 = pts[i];
+                    const p2 = pts[i + 1];
+                    const p3 = pts[Math.min(pts.length - 1, i + 2)];
+                    const c1x = p1.x + (p2.x - p0.x) / 6;
+                    const c1y = p1.y + (p2.y - p0.y) / 6;
+                    const c2x = p2.x - (p3.x - p1.x) / 6;
+                    const c2y = p2.y - (p3.y - p1.y) / 6;
+                    d += ` C ${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+                  }
+                  return d;
+                };
+
+                const buildHistory = (start, end, learnerId) => Array.from({ length: N }, (_, i) => {
+                  const t = i / Math.max(1, N - 1);
+                  // Easing curve: slow start, accelerate, gentle finish
+                  const ease  = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+                  // Small deterministic ripple per learner
+                  const ripple = 1.6 * Math.sin(i * 0.7 + learnerId * 0.3);
+                  return Math.max(0, Math.min(100, Math.round(start + (end - start) * ease + ripple)));
+                });
+
+                const renderChart = (k) => {
+                  const isTr  = k === 'transformation';
+                  const accent = isTr ? '#059669' : '#0d9488';
+                  const start  = isTr ? tPrev : Math.max(20, eScore - 25);
+                  const end    = isTr ? tScore : eScore;
+                  const series = buildHistory(start, end, l.id);
+                  const minV = Math.min(...series, start) - 4;
+                  const maxV = Math.max(...series, end) + 4;
+                  const W = 480, H = 130, padX = 18, padY = 16;
+                  const xStep = (W - padX * 2) / Math.max(1, series.length - 1);
+                  const yScale = (v) => padY + (1 - (v - minV) / Math.max(1, maxV - minV)) * (H - padY * 2);
+                  const pts = series.map((v, i) => ({ x: padX + i * xStep, y: yScale(v) }));
+                  const linePath = smoothLine(pts);
+                  const areaPath = pts.length
+                    ? `M ${pts[0].x},${H - padY} L ${pts[0].x},${pts[0].y}${linePath.slice(linePath.indexOf(' C'))} L ${pts[pts.length - 1].x},${H - padY} Z`
+                    : '';
+                  const peakIdx  = series.indexOf(Math.max(...series));
+                  const lastIdx  = series.length - 1;
+
+                  return (
+                    <div className="hr-card" style={{
+                      marginTop:0, marginBottom:24, padding:'14px 16px', boxShadow:'none', borderRadius:14,
+                      border:`1px solid ${accent}33`, background:`${accent}05`,
+                      animation:'fadeIn 0.22s ease',
+                    }}>
+                      <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:8}}>
+                        <div>
+                          <div className="hr-eyebrow" style={{fontSize:'0.6rem', marginBottom:2}}>
+                            {isTr ? 'Transformation History' : 'Engagement History'}
+                          </div>
+                          <div style={{color:'#78716c', fontSize:'0.72rem'}}>
+                            Day 1 → Day {dayCurrent} · {N} จุดข้อมูล
+                          </div>
+                        </div>
+                        <div className="num" style={{
+                          display:'inline-flex', alignItems:'center', gap:4,
+                          color: end >= start ? '#047857' : '#b91c1c', fontSize:'0.72rem', fontWeight:600,
+                        }}>
+                          <TrendingUp size={12} style={{transform: end >= start ? 'none' : 'scaleY(-1)'}}/>
+                          {start} → {end} ({end - start >= 0 ? '+' : ''}{end - start})
+                        </div>
+                      </div>
+
+                      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H} style={{display:'block'}}>
+                        <defs>
+                          <linearGradient id={`drawerAreaGrad-${k}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%"   stopColor={accent} stopOpacity="0.28"/>
+                            <stop offset="100%" stopColor={accent} stopOpacity="0"/>
+                          </linearGradient>
+                        </defs>
+                        {/* Y-grid */}
+                        {[0.33, 0.66].map(p => (
+                          <line key={p} x1={padX} y1={padY + p * (H - padY * 2)} x2={W - padX} y2={padY + p * (H - padY * 2)}
+                            stroke="#f0eeec" strokeWidth="1" strokeDasharray="3,3"/>
+                        ))}
+                        {/* Pre-class baseline dashed line */}
+                        <line x1={padX} y1={yScale(start)} x2={W - padX} y2={yScale(start)}
+                          stroke={accent} strokeWidth="1" strokeOpacity="0.35" strokeDasharray="4,4"/>
+                        <text x={W - padX - 4} y={yScale(start) - 4} fill={accent} fontSize="9" textAnchor="end" opacity="0.7">
+                          {isTr ? 'Pre-Class' : 'Floor'} {start}
+                        </text>
+                        {/* Area + line (line draws in; area fades up after) */}
+                        <path className="hr-area-fade" d={areaPath} fill={`url(#drawerAreaGrad-${k})`}/>
+                        <path className="hr-path-draw" pathLength="1" d={linePath} fill="none" stroke={accent} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+                        {/* Peak marker */}
+                        <circle cx={pts[peakIdx].x} cy={pts[peakIdx].y} r="3" fill="#fff" stroke={accent} strokeWidth="1.8"/>
+                        <text x={pts[peakIdx].x} y={pts[peakIdx].y - 7} fill={accent} fontSize="9" textAnchor="middle" fontWeight="600">
+                          peak {series[peakIdx]}
+                        </text>
+                        {/* Current (last) marker */}
+                        <circle cx={pts[lastIdx].x} cy={pts[lastIdx].y} r="3.6" fill={accent} stroke="#fff" strokeWidth="2"/>
+                        <text x={pts[lastIdx].x - 2} y={pts[lastIdx].y - 8} fill={accent} fontSize="9" textAnchor="end" fontWeight="700">
+                          now {end}
+                        </text>
+                      </svg>
+                      <div style={{display:'flex', justifyContent:'space-between', marginTop:4, color:'#a8a29e', fontSize:'0.62rem'}}>
+                        <span>Day 1</span><span>Day {Math.ceil(N/2)}</span><span>Day {dayCurrent}</span>
+                      </div>
+                    </div>
+                  );
+                };
+
+                return (
+                  <>
+                    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom: expandedScoreCard ? 12 : 24}}>
+                      <ScoreCard
+                        k="transformation"
+                        label="Transformation"
+                        value={tScore}
+                        sub={`Pre-Class baseline: ${tPrev}`}
+                        barFill="linear-gradient(to right, #059669, #10b981)"
+                        accent="#059669"
+                        deltaChip={tScore - tPrev > 0 && (
+                          <span className="num" style={{color:'#047857', fontSize:'0.72rem', fontWeight:600,
+                            background:'rgba(5,150,105,0.10)', padding:'2px 6px', borderRadius:999}}>
+                            ↑ {tScore - tPrev}
+                          </span>
+                        )}
+                      />
+                      <ScoreCard
+                        k="engagement"
+                        label="Engagement"
+                        value={eScore}
+                        sub={`Streak ${l.streak}d · ${l.status}`}
+                        barFill="#0d9488"
+                        accent="#0d9488"
+                        deltaChip={null}
+                      />
+                    </div>
+                    {expandedScoreCard && renderChart(expandedScoreCard)}
+                  </>
+                );
+              })()}
 
               {/* Timeline */}
               <div style={{marginBottom:24}}>
@@ -9062,30 +9865,275 @@
       // ─────────────────────────────────────────────────────────────
       // MAIN RENDER
       // ─────────────────────────────────────────────────────────────
+      // Sidebar sub-nav items (nested under Individual)
+      const NAV_STATUS = [
+        { id:'all',     label:'ทั้งหมด',  dot:'#a8a29e', count: totalLearners       },
+        { id:'onTrack', label:'On Track', dot:'#10b981', count: statusCounts.onTrack},
+        { id:'atRisk',  label:'At Risk',  dot:'#f59e0b', count: statusCounts.atRisk },
+        { id:'behind',  label:'Behind',   dot:'#ef4444', count: statusCounts.behind },
+      ];
+
       return (
         <div style={{
           minHeight:'100vh', background:'#fafaf9', color:'#1c1917',
-          fontFamily:"'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif", overflowX:'hidden',
+          fontFamily:"'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+          display:'flex', alignItems:'stretch',
         }}>
+          {/* ── Sidebar ── */}
+          <aside className={`hr-sidebar ${sidebarCollapsed ? 'hr-sidebar-collapsed' : 'hr-sidebar-expanded'}`}>
+            {/* Brand + collapse toggle */}
+            <div className="hr-side-header">
+              <a href="#" className="hr-side-brand" onClick={(e)=>e.preventDefault()}>
+                <JoinstickLogo size={28} variant="black"/>
+                <span className="hr-side-brand-label" style={{
+                  fontFamily:'Poppins,sans-serif', fontWeight:700, fontSize:'0.88rem',
+                  letterSpacing:'-0.01em', color:'#1c1917', whiteSpace:'nowrap',
+                }}>JOINSTICK</span>
+              </a>
+              <button
+                aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                title={sidebarCollapsed ? 'ขยาย' : 'ย่อ'}
+                onClick={() => setSidebarCollapsed(v => !v)}
+                className="hr-side-toggle">
+                {sidebarCollapsed
+                  ? <ChevronRight size={15}/>
+                  : <ChevronLeft  size={15}/>}
+              </button>
+            </div>
+
+            {/* Views — switch top-level tab. Individual is expandable with nested filters. */}
+            <div className="hr-side-section-label">Workspace</div>
+
+            {/* Overview — expandable group header; sub-anchors handle navigation + scroll.
+                Collapsed sidebar falls back to direct navigation. */}
+            <button
+              title={sidebarCollapsed ? 'Overview' : undefined}
+              onClick={() => {
+                if (sidebarCollapsed) setTab('overview');
+                else setOverviewNavOpen(o => !o);
+              }}
+              className={`hr-side-link ${tab === 'overview' ? 'active' : ''}`}>
+              <span className="hr-side-icon"><BarChart2 size={16} strokeWidth={tab==='overview'?2.4:2}/></span>
+              <span className="hr-side-label">Overview</span>
+              <span className={`hr-side-chevron ${overviewNavOpen ? 'open' : ''}`}>
+                <ChevronDown size={14}/>
+              </span>
+            </button>
+
+            {/* Nested sub-nav: section anchors inside the Overview page */}
+            <div className={`hr-collapsible ${overviewNavOpen ? 'open' : ''}`}>
+              <div className="hr-collapsible-inner">
+                <div className="hr-side-subnav">
+                  {[
+                    { id:'ov-class',          Icon: Info,       label:'ภาพรวมคลาส'           },
+                    { id:'ov-transformation', Icon: TrendingUp, label:'Transformation Movement' },
+                    { id:'ov-completion',     Icon: CheckCircle,label:'Completion Rate'      },
+                    { id:'ov-cohort',         Icon: Activity,   label:'Cohort Health'        },
+                    { id:'ov-manager',        Icon: FileText,   label:'Manager Review'       },
+                    { id:'ov-atrisk',         Icon: AlertTriangle, label:'At-Risk Top'       },
+                  ].map(({id, Icon, label}) => (
+                    <button
+                      key={id}
+                      onClick={() => scrollToSection(id, 'overview')}
+                      className="hr-side-sublink">
+                      <span className="hr-side-icon"><Icon size={13}/></span>
+                      <span className="hr-side-label">{label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Individual — just an expandable group header; sub-filters do the navigation.
+                When the sidebar is collapsed (sub-menu hidden), clicking falls back to navigating
+                to the Individual tab so the user can still reach it. */}
+            <button
+              title={sidebarCollapsed ? 'Individual' : undefined}
+              onClick={() => {
+                if (sidebarCollapsed) setTab('individual');
+                else setIndividualNavOpen(o => !o);
+              }}
+              className={`hr-side-link ${tab === 'individual' ? 'active' : ''}`}>
+              <span className="hr-side-icon"><Users size={16} strokeWidth={tab==='individual'?2.4:2}/></span>
+              <span className="hr-side-label">Individual</span>
+              <span className={`hr-side-chevron ${individualNavOpen ? 'open' : ''}`}>
+                <ChevronDown size={14}/>
+              </span>
+            </button>
+
+            {/* Nested sub-nav: Status + Stage filters */}
+            <div className={`hr-collapsible ${individualNavOpen ? 'open' : ''}`}>
+              <div className="hr-collapsible-inner">
+                <div className="hr-side-subnav">
+                  <div className="hr-side-subsection">สถานะผู้เรียน</div>
+                  {NAV_STATUS.map(({id, label, dot, count}) => (
+                    <button
+                      key={id}
+                      onClick={() => { setStatusFilter(id); if (tab !== 'individual') setTab('individual'); }}
+                      className={`hr-side-sublink ${tab === 'individual' && statusFilter === id ? 'active' : ''}`}>
+                      <span className="hr-side-icon"><span className="hr-side-dot" style={{background:dot}}/></span>
+                      <span className="hr-side-label">{label}</span>
+                      <span className="hr-side-count">{count}</span>
+                    </button>
+                  ))}
+
+                  <div className="hr-side-subsection">By Stage</div>
+                  <button
+                    onClick={() => { setStageFilter(null); if (tab !== 'individual') setTab('individual'); }}
+                    className={`hr-side-sublink ${tab === 'individual' && stageFilter === null ? 'active' : ''}`}>
+                    <span className="hr-side-icon"><Activity size={13}/></span>
+                    <span className="hr-side-label">ทุก Stage</span>
+                    <span className="hr-side-count">{totalLearners}</span>
+                  </button>
+                  {STAGE_META.map((s, i) => (
+                    <button
+                      key={s.num}
+                      onClick={() => { setStageFilter(s.num); if (tab !== 'individual') setTab('individual'); }}
+                      className={`hr-side-sublink ${tab === 'individual' && stageFilter === s.num ? 'active' : ''}`}>
+                      <span className="hr-side-icon"><span className="hr-side-dot" style={{background:s.color}}/></span>
+                      <span className="hr-side-label">{`Stage ${s.num} · ${s.name}`}</span>
+                      <span className="hr-side-count">{stageCounts[i]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Engagement — expandable group header; sub-anchors handle navigation + scroll.
+                Collapsed sidebar falls back to direct navigation. */}
+            <button
+              title={sidebarCollapsed ? 'Engagement' : undefined}
+              onClick={() => {
+                if (sidebarCollapsed) setTab('engagement');
+                else setEngagementNavOpen(o => !o);
+              }}
+              className={`hr-side-link ${tab === 'engagement' ? 'active' : ''}`}>
+              <span className="hr-side-icon"><Activity size={16} strokeWidth={tab==='engagement'?2.4:2}/></span>
+              <span className="hr-side-label">Engagement</span>
+              <span className={`hr-side-chevron ${engagementNavOpen ? 'open' : ''}`}>
+                <ChevronDown size={14}/>
+              </span>
+            </button>
+
+            <div className={`hr-collapsible ${engagementNavOpen ? 'open' : ''}`}>
+              <div className="hr-collapsible-inner">
+                <div className="hr-side-subnav">
+                  {[
+                    { id:'eng-summary',      Icon: Activity,      label:'ภาพรวมการมีส่วนร่วม' },
+                    { id:'eng-distribution', Icon: LayoutGrid,    label:'การกระจาย Engagement' },
+                    { id:'eng-activity',     Icon: TrendingUp,    label:'กิจกรรมรายวัน'        },
+                    { id:'eng-challenges',   Icon: Target,        label:'Challenge Completion' },
+                    { id:'eng-top',          Icon: Sparkles,      label:'ผู้เรียนเด่น'         },
+                    { id:'eng-attention',    Icon: AlertTriangle, label:'ต้องดูแล'             },
+                    { id:'eng-table',        Icon: Users,         label:'ตารางทั้งหมด'          },
+                  ].map(({id, Icon, label}) => (
+                    <button
+                      key={id}
+                      onClick={() => scrollToSection(id, 'engagement')}
+                      className="hr-side-sublink">
+                      <span className="hr-side-icon"><Icon size={13}/></span>
+                      <span className="hr-side-label">{label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Insight Summary */}
+            <button
+              title={sidebarCollapsed ? 'Insight Summary' : undefined}
+              onClick={() => setTab('insight')}
+              className={`hr-side-link ${tab === 'insight' ? 'active' : ''}`}>
+              <span className="hr-side-icon"><Sparkles size={16} strokeWidth={tab==='insight'?2.4:2}/></span>
+              <span className="hr-side-label">Insight Summary</span>
+            </button>
+
+            {/* Quick actions */}
+            <div className="hr-side-section-label">Quick Actions</div>
+            <button
+              title={sidebarCollapsed ? 'Export' : undefined}
+              onClick={handleExport}
+              className="hr-side-link">
+              <span className="hr-side-icon"><Download size={15} style={{color:'#059669'}}/></span>
+              <span className="hr-side-label">{tab === 'individual' ? 'Export CSV' : 'Export PDF'}</span>
+            </button>
+            <button
+              title={sidebarCollapsed ? 'ถัดไป' : undefined}
+              onClick={onBack}
+              className="hr-side-link">
+              <span className="hr-side-icon"><ChevronRight size={15}/></span>
+              <span className="hr-side-label">ถัดไป</span>
+            </button>
+
+            {/* Footer — class metadata card */}
+            <div className="hr-side-footer">
+              <div className="hr-side-footer-card" style={{
+                background:'#fafaf9', border:'1px solid #e7e5e4', borderRadius:12, padding:'10px 12px',
+              }}>
+                <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:6}}>
+                  <span style={{width:6, height:6, borderRadius:'50%', background:'#059669', boxShadow:'0 0 6px rgba(5,150,105,0.6)'}}/>
+                  <span style={{color:'#047857', fontSize:'0.6rem', fontWeight:700, letterSpacing:'0.08em'}}>OUT OF CLASS</span>
+                </div>
+                <div style={{color:'#1c1917', fontSize:'0.78rem', fontWeight:600, letterSpacing:'-0.005em', lineHeight:1.3}}>
+                  {CLASS.name}
+                </div>
+                <div className="num" style={{color:'#78716c', fontSize:'0.7rem', marginTop:6}}>
+                  Day <span style={{color:'#1c1917', fontWeight:600}}>{dayCurrent}</span> / {CLASS.totalDays}
+                </div>
+                <div style={{height:4, background:'#e7e5e4', borderRadius:999, marginTop:6, overflow:'hidden'}}>
+                  <div style={{width:`${dayProgress}%`, height:'100%',
+                    background:'linear-gradient(90deg, #059669, #14b8a6)', borderRadius:999}}/>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* ── Right column (was the whole dashboard) ── */}
+          <div style={{flex:1, minWidth:0, display:'flex', flexDirection:'column'}}>
+
           {/* Navbar */}
           <nav style={{
-            position:'sticky', top:0, zIndex:100, height:60,
+            position:'sticky', top:0, zIndex:80, height:60,
             display:'flex', alignItems:'center', justifyContent:'space-between',
-            padding:'0 max(24px, calc((100vw - 1800px)/2))',
+            padding:'0 28px',
             background:'rgba(255,255,255,0.92)', backdropFilter:'blur(12px)',
             borderBottom:'1px solid #e7e5e4',
           }}>
             <div style={{display:'flex', alignItems:'center', gap:12}}>
-              <JoinstickLogo size={32} variant="black"/>
-              <span style={{fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'0.9rem', letterSpacing:'-0.01em', color:'#1c1917'}}>JOINSTICK</span>
-              <div style={{width:1, height:16, background:'#e7e5e4'}}/>
               <span style={{color:'#78716c', fontSize:'0.82rem'}}>HR Dashboard</span>
-              <div style={{display:'inline-flex', alignItems:'center', gap:5,
-                background:'rgba(5,150,105,0.10)', border:'1px solid rgba(5,150,105,0.30)',
-                borderRadius:999, padding:'2px 10px'}}>
-                <span style={{width:5, height:5, borderRadius:'50%', background:'#059669'}}/>
-                <span style={{color:'#047857', fontSize:'0.66rem', fontWeight:600, letterSpacing:'0.04em'}}>OUT OF CLASS</span>
-              </div>
+              <div style={{width:1, height:16, background:'#e7e5e4'}}/>
+              <span style={{color:'#1c1917', fontSize:'0.86rem', fontWeight:600, letterSpacing:'-0.005em'}}>
+                {tab === 'overview'   ? 'Overview'
+               : tab === 'individual' ? 'Individual'
+               : tab === 'engagement' ? 'Engagement'
+               : 'Insight Summary'}
+              </span>
+              {tab === 'individual' && statusFilter !== 'all' && (
+                <span style={{display:'inline-flex', alignItems:'center', gap:5,
+                  background:statusMeta[statusFilter].bg,
+                  border:`1px solid ${statusMeta[statusFilter].border}`,
+                  borderRadius:999, padding:'2px 10px',
+                  color:statusMeta[statusFilter].color,
+                  fontSize:'0.7rem', fontWeight:600, letterSpacing:'-0.005em'}}>
+                  {statusMeta[statusFilter].label}
+                  <button onClick={()=>setStatusFilter('all')} style={{
+                    background:'transparent', border:'none', cursor:'pointer',
+                    color:'inherit', padding:0, display:'inline-flex',
+                  }}><XCircle size={12}/></button>
+                </span>
+              )}
+              {tab === 'individual' && stageFilter !== null && (
+                <span style={{display:'inline-flex', alignItems:'center', gap:5,
+                  background:'#f5f5f4', border:'1px solid #e7e5e4',
+                  borderRadius:999, padding:'2px 10px',
+                  color:'#1c1917', fontSize:'0.7rem', fontWeight:600, letterSpacing:'-0.005em'}}>
+                  Stage {stageFilter} · {STAGE_META[stageFilter].name}
+                  <button onClick={()=>setStageFilter(null)} style={{
+                    background:'transparent', border:'none', cursor:'pointer',
+                    color:'inherit', padding:0, display:'inline-flex',
+                  }}><XCircle size={12}/></button>
+                </span>
+              )}
             </div>
             <div style={{display:'flex', alignItems:'center', gap:10}}>
               <span className="num" style={{color:'#78716c', fontSize:'0.78rem'}}>
@@ -9099,10 +10147,10 @@
 
           {/* Tab bar */}
           <div style={{borderBottom:'1px solid #e7e5e4', background:'#ffffff',
-            padding:'0 max(24px, calc((100vw - 1800px)/2))'}}>
+            padding:'0 28px'}}>
             <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
               <div style={{display:'flex'}}>
-                {[['overview', BarChart2, 'Overview'], ['individual', Users, 'Individual'], ['insight', Sparkles, 'Insight Summary']].map(([id, TabIcon, label]) => (
+                {[['overview', BarChart2, 'Overview'], ['individual', Users, 'Individual'], ['engagement', Activity, 'Engagement'], ['insight', Sparkles, 'Insight Summary']].map(([id, TabIcon, label]) => (
                   <button
                     key={id} onClick={() => setTab(id)}
                     className="hr-tab-btn"
@@ -9139,11 +10187,16 @@
           </div>
 
           {/* Content */}
-          <div style={{padding:'24px max(24px, calc((100vw - 1800px)/2)) 60px'}}>
+          <div style={{padding:'24px 28px 60px'}}>
             <div key={tab}>
-              {tab === 'overview' ? renderOverview() : tab === 'insight' ? renderInsight() : renderIndividual()}
+              {tab === 'overview'   ? renderOverview()
+              : tab === 'insight'    ? renderInsight()
+              : tab === 'engagement' ? renderEngagement()
+              : renderIndividual()}
             </div>
           </div>
+
+          </div> {/* /right column */}
 
           {/* Drawer */}
           <div className={`hr-drawer-backdrop ${drawerOpen ? 'open' : ''}`} onClick={closeDrawer}/>
