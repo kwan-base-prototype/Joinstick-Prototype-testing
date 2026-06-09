@@ -2,18 +2,6 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "Ruby WEBrick Server",
-      "runtimeExecutable": "/usr/bin/ruby",
-      "runtimeArgs": ["-run", "-e", "httpd", "--", "/tmp/joinstick-preview"],
-      "autoPort": true
-    },
-    {
-      "name": "Static Server (serve)",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", ".", "--no-clipboard"],
-      "autoPort": true
-    },
-    {
       "name": "Live Server (auto-reload)",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["live-server", ".", "--no-browser"],
