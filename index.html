@@ -297,9 +297,10 @@
       animation: hrPing 2.2s cubic-bezier(0,0,0.2,1) infinite;
     }
     .hr-focus-title {
-      font-family: 'Sora', 'Poppins', sans-serif;
+      /* Sora handles Latin + numbers; Thai glyphs fall through to IBM Plex Sans Thai */
+      font-family: 'Sora', 'IBM Plex Sans Thai', 'Poppins', sans-serif;
       font-weight: 600; font-size: 1.6rem; letter-spacing: -0.025em;
-      color: #1c1917; line-height: 1.15; margin-top: 6px;
+      color: #1c1917; line-height: 1.2; margin-top: 6px;
     }
     .hr-focus-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 22px;
@@ -311,7 +312,7 @@
       border: 1px solid #ebe9e7;
       border-radius: 16px; padding: 16px 18px;
       cursor: pointer; text-align: left;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Poppins', 'IBM Plex Sans Thai', sans-serif;
       transition: transform 0.18s cubic-bezier(0.22,1,0.36,1),
                   box-shadow 0.18s ease,
                   border-color 0.18s ease,
