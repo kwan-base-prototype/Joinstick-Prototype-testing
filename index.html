@@ -199,15 +199,32 @@
     .hr-side-chevron.open { transform: rotate(180deg); }
     .hr-sidebar-collapsed .hr-side-footer-card { display: none; }
 
-    /* ── HR bar reveal — animate width via transform: scaleX for performance ── */
+    /* ── HR bar reveal — horizontal scaleX (default), vertical scaleY (.hr-bar-fill-v) ── */
     @keyframes hrBarReveal {
       from { transform: scaleX(0); }
       to   { transform: scaleX(1); }
+    }
+    @keyframes hrBarRevealV {
+      from { transform: scaleY(0); }
+      to   { transform: scaleY(1); }
     }
     .hr-bar-fill {
       transform-origin: left center;
       animation: hrBarReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
       will-change: transform;
+    }
+    .hr-bar-fill-v {
+      transform-origin: bottom center;
+      animation: hrBarRevealV 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+      will-change: transform;
+    }
+    /* Chart swap — crossfade + slight slide when toggling between Stages / Growth views */
+    @keyframes hrChartSwapIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hr-chart-swap {
+      animation: hrChartSwapIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
     /* ── Collapsible — grid 0fr↔1fr trick for smooth height transition ── */
@@ -308,59 +325,79 @@
     @media (max-width: 1100px) { .hr-focus-grid { grid-template-columns: repeat(2, 1fr); } }
     .hr-focus-tile {
       position: relative;
-      background: rgba(255,255,255,0.7);
+      background: #ffffff;
       border: 1px solid #ebe9e7;
-      border-radius: 16px; padding: 16px 18px;
+      border-radius: 14px; padding: 22px 22px 14px;
       cursor: pointer; text-align: left;
       font-family: 'Poppins', 'IBM Plex Sans Thai', sans-serif;
       transition: transform 0.18s cubic-bezier(0.22,1,0.36,1),
                   box-shadow 0.18s ease,
-                  border-color 0.18s ease,
-                  background 0.18s ease;
-      display: flex; flex-direction: column; gap: 8px;
+                  border-color 0.18s ease;
+      display: flex; flex-direction: column;
     }
     .hr-focus-tile:hover {
       transform: translateY(-2px);
       border-color: rgba(28,25,23,0.18);
     }
     .hr-focus-tile::after {
-      /* tinted, color-matched shadow on hover */
-      content: ''; position: absolute; inset: 0; border-radius: 16px;
+      content: ''; position: absolute; inset: 0; border-radius: 14px;
       box-shadow: 0 14px 30px var(--hr-tile-shadow, rgba(28,25,23,0.08));
       opacity: 0; transition: opacity 0.18s ease;
       pointer-events: none;
     }
     .hr-focus-tile:hover::after { opacity: 1; }
-    .hr-focus-tile-head {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    }
-    .hr-focus-tile-icon {
-      width: 32px; height: 32px; border-radius: 10px;
-      display: inline-flex; align-items: center; justify-content: center;
+    .hr-focus-tile-label {
+      color: #78716c; font-size: 0.82rem; font-weight: 500;
+      letter-spacing: -0.005em; line-height: 1.35;
+      /* Reserve 2 lines so every tile has the same vertical anchor for the number below */
+      min-height: calc(2 * 1.35em);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     .hr-focus-tile-num {
       font-family: 'Sora', 'JetBrains Mono', monospace;
-      font-size: 2rem; font-weight: 500; line-height: 1;
-      letter-spacing: -0.04em;
+      font-size: 2.4rem; font-weight: 600; line-height: 1.05;
+      letter-spacing: -0.045em;
       font-variant-numeric: tabular-nums;
+      color: #1c1917;
+      margin-top: 4px;
     }
-    .hr-focus-tile-label {
-      color: #1c1917; font-size: 0.86rem; font-weight: 500; letter-spacing: -0.005em;
-    }
-    .hr-focus-tile-sub {
-      color: #78716c; font-size: 0.72rem; line-height: 1.4;
-    }
-    .hr-focus-tile-action {
+    /* Bottom tray — pushed to bottom of card via margin-top: auto so trays align across tiles */
+    .hr-focus-tile-tray {
       margin-top: auto;
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 0.74rem; font-weight: 500;
-      padding-top: 8px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 8px 10px 8px 8px; border-radius: 10px;
+      background: rgba(28,25,23,0.04);
+      transition: background 0.15s ease;
     }
-    .hr-focus-tile-action::after {
-      content: '→'; transition: transform 0.18s ease;
+    .hr-focus-tile:hover .hr-focus-tile-tray {
+      background: rgba(28,25,23,0.07);
     }
-    .hr-focus-tile:hover .hr-focus-tile-action::after {
-      transform: translateX(3px);
+    .hr-focus-tile-icon {
+      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #ffffff;
+    }
+    .hr-focus-tile-tray-text {
+      flex: 1; min-width: 0; line-height: 1.3;
+    }
+    .hr-focus-tile-tray-sub {
+      color: #78716c; font-size: 0.74rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hr-focus-tile-tray-status {
+      font-size: 0.78rem; font-weight: 500; letter-spacing: -0.005em; margin-top: 1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hr-focus-tile-chev {
+      flex-shrink: 0; color: rgba(28,25,23,0.32);
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+    .hr-focus-tile:hover .hr-focus-tile-chev {
+      color: rgba(28,25,23,0.7);
+      transform: translateX(2px);
     }
     /* Card hover lift, tinted shadow */
     .hr-card { transition: box-shadow 0.22s ease, transform 0.22s cubic-bezier(0.22,1,0.36,1), border-color 0.18s ease; }
@@ -7150,12 +7187,15 @@
 
     function HRDashboard({ onBack }) {
       const [tab, setTab]                     = useState('overview');
-      const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-      const [overviewNavOpen,   setOverviewNavOpen]   = useState(true); // sub-anchors expanded under Overview
-      const [individualNavOpen, setIndividualNavOpen] = useState(true); // sub-filters expanded under Individual
-      const [engagementNavOpen, setEngagementNavOpen] = useState(true); // sub-anchors expanded under Engagement
+      const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // start collapsed (icon-only)
+      const [overviewNavOpen,   setOverviewNavOpen]   = useState(false); // sub-anchors collapsed by default
+      const [individualNavOpen, setIndividualNavOpen] = useState(false); // sub-filters collapsed by default
+      const [engagementNavOpen, setEngagementNavOpen] = useState(false); // sub-anchors collapsed by default
       const [activityRange,     setActivityRange]     = useState('14D'); // Engagement → Daily Activity range
       const [expandedScoreCard, setExpandedScoreCard] = useState(null);  // 'transformation' | 'engagement' | null — in-drawer chart toggle
+      const [hoveredStage,      setHoveredStage]      = useState(null); // Transformation Movement chart column hover
+      const [growthRange,       setGrowthRange]       = useState('All'); // Growth chart time-range view
+      const [hoveredPoint,      setHoveredPoint]      = useState(null); // Growth chart data-point hover (index)
 
       // Smooth-scroll to a section inside the active tab; auto-switch tab if needed
       const scrollToSection = (id, targetTab) => {
@@ -7571,92 +7611,155 @@
       // SECTION 2: Transformation Movement (2-bar Pre vs Now)
       // ─────────────────────────────────────────────────────────────
       const renderTransformationMovement = () => {
-        const maxCount = Math.max(...stageCounts, ...prevStageCounts, 1);
+        const barScale = totalLearners; // unified scale so bar widths are comparable across rows
+        const movedUp = LEARNERS.filter(l => l.stage > l.prevStage).length;
+        const transformed = stageCounts.slice(3).reduce((a, b) => a + b, 0); // Stage 3+
         return (
-          <div className="hr-card" style={{marginBottom:16}}>
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:6, flexWrap:'wrap', gap:12}}>
+          <div className="hr-card" style={{marginBottom:16, padding:'32px 36px', borderRadius:12, boxShadow:'none', border:'1px solid #EAEAEA'}}>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:32, flexWrap:'wrap', gap:24}}>
               <div>
-                <div className="hr-eyebrow" style={{marginBottom:4}}>Visible Learning Evidence</div>
-                <div style={{display:'flex', alignItems:'center', gap:10}}>
-                  <Activity size={18} style={{color:'#059669'}}/>
-                  <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.15rem', color:'#1c1917', letterSpacing:'-0.015em'}}>
-                    Transformation Movement
-                  </h3>
-                </div>
-                <div style={{color:'#78716c', fontSize:'0.82rem', marginTop:6}}>
-                  เปรียบเทียบ <span style={{color:'#1c1917', fontWeight:500}}>ก่อนเรียน (Pre-Class)</span> กับ <span style={{color:'#059669', fontWeight:500}}>ปัจจุบัน (Day {dayCurrent})</span> · จำนวนผู้เรียนที่ขยับขึ้นไปแต่ละ Stage
+                <div className="hr-eyebrow" style={{marginBottom:10, fontSize:'0.62rem', color:'#a8a29e'}}>Visible Learning Evidence</div>
+                <h3 style={{margin:0, fontFamily:"'Sora','IBM Plex Sans Thai',sans-serif", fontWeight:500, fontSize:'1.7rem', color:'#111111', letterSpacing:'-0.03em', lineHeight:1.1}}>
+                  Transformation Movement
+                </h3>
+                <div style={{color:'#787774', fontSize:'0.86rem', marginTop:12, lineHeight:1.55}}>
+                  <span className="num" style={{color:'#111111', fontWeight:500}}>{movedUp}</span> ของ {totalLearners} คน ขยับขึ้นจาก Pre-Class แล้ว
+                  <span style={{color:'#d6d3d1', margin:'0 8px'}}>·</span>
+                  Day <span className="num" style={{color:'#111111', fontWeight:500}}>{dayCurrent}</span> / {CLASS.totalDays}
                 </div>
               </div>
-              <div style={{display:'flex', gap:14, fontSize:'0.7rem', alignItems:'center', flexWrap:'wrap'}}>
-                <span style={{display:'inline-flex', alignItems:'center', gap:6, color:'#57534e'}}>
-                  <span style={{width:14, height:6, background:'#e7e5e4', borderRadius:2}}/>Pre-Class
+              <div style={{display:'flex', gap:24, fontSize:'0.62rem', alignItems:'center', flexWrap:'wrap', fontFamily:"'JetBrains Mono', monospace"}}>
+                <span style={{display:'inline-flex', alignItems:'center', gap:8, color:'#a8a29e', letterSpacing:'0.14em', textTransform:'uppercase'}}>
+                  <span style={{width:18, height:1.5, background:'#a8a29e'}}/>Pre
                 </span>
-                <span style={{display:'inline-flex', alignItems:'center', gap:6, color:'#1c1917'}}>
-                  <span style={{width:14, height:6, background:'#059669', borderRadius:2}}/>Now
+                <span style={{display:'inline-flex', alignItems:'center', gap:8, color:'#047857', letterSpacing:'0.14em', textTransform:'uppercase'}}>
+                  <span style={{width:18, height:2.5, background:'#059669'}}/>Now
                 </span>
-                <button
-                  onClick={() => setShowGrowthChart(v => !v)}
-                  style={{
-                    display:'inline-flex', alignItems:'center', gap:6, cursor:'pointer',
-                    padding:'6px 12px', borderRadius:999, fontFamily:'Poppins,sans-serif', fontSize:'0.72rem', fontWeight:600,
-                    border:`1px solid ${showGrowthChart ? 'rgba(5,150,105,0.35)' : '#e7e5e4'}`,
-                    background: showGrowthChart ? 'rgba(5,150,105,0.10)' : '#fff',
-                    color: showGrowthChart ? '#047857' : '#57534e', transition:'all 0.15s',
-                  }}>
-                  <Activity size={13}/>
-                  {showGrowthChart ? 'ซ่อนกราฟ' : 'ดูกราฟการเติบโต'}
-                  <ChevronDown size={13} style={{transform: showGrowthChart ? 'rotate(180deg)' : 'none', transition:'transform 0.2s'}}/>
-                </button>
+                {/* Segmented toggle — swaps between Stages view and Growth curve view */}
+                <div style={{display:'inline-flex', gap:2, background:'#F7F6F3', borderRadius:8, padding:3, border:'1px solid #EAEAEA'}}>
+                  {[
+                    { id:false, Icon: BarChart2,  label:'แยกตาม Stage' },
+                    { id:true,  Icon: TrendingUp, label:'การเติบโต'    },
+                  ].map(({id, Icon, label}) => {
+                    const active = showGrowthChart === id;
+                    return (
+                      <button
+                        key={String(id)}
+                        onClick={() => setShowGrowthChart(id)}
+                        style={{
+                          display:'inline-flex', alignItems:'center', gap:6, cursor:'pointer',
+                          padding:'7px 12px', borderRadius:6, border:'none',
+                          fontFamily:'Poppins,sans-serif', fontSize:'0.72rem', fontWeight:500, letterSpacing:'-0.005em',
+                          background: active ? '#fff' : 'transparent',
+                          color: active ? '#111111' : '#787774',
+                          boxShadow: active ? '0 1px 3px rgba(28,25,23,0.08)' : 'none',
+                          transition:'background 0.15s, color 0.15s, box-shadow 0.15s',
+                        }}>
+                        <Icon size={13}/> {label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
-            {/* Growth chart panel */}
-            {showGrowthChart && (() => {
+            {/* Chart area — swaps between Growth curve and Vertical bars with crossfade */}
+            <div key={showGrowthChart ? 'growth' : 'stages'} className="hr-chart-swap">
+            {showGrowthChart ? (() => {
               const W = 720, H = 200, padL = 8, padR = 8, padT = 14, padB = 26;
-              const series = [
-                { d:'Pre',  goal:0,  moved:0  },
-                { d:'D4',   goal:1,  moved:3  },
-                { d:'D8',   goal:4,  moved:8  },
-                { d:'D12',  goal:8,  moved:14 },
-                { d:'D16',  goal:13, moved:18 },
-                { d:'D20',  goal:17, moved:22 },
-                { d:'D25',  goal:20, moved:24 },
+              // Anchor points (every 4-5 days) — drives the interpolated daily series below
+              const anchors = [
+                { day:0,  goal:0,  pre:30 },
+                { day:4,  goal:1,  pre:29 },
+                { day:8,  goal:4,  pre:26 },
+                { day:12, goal:8,  pre:22 },
+                { day:16, goal:13, pre:17 },
+                { day:20, goal:17, pre:13 },
+                { day:25, goal:20, pre:10 },
               ];
+              // Daily series via linear interpolation between anchors
+              const daily = Array.from({ length: dayCurrent + 1 }, (_, day) => {
+                let lo = anchors[0], hi = anchors[anchors.length - 1];
+                for (let i = 0; i < anchors.length - 1; i++) {
+                  if (anchors[i].day <= day && day <= anchors[i+1].day) { lo = anchors[i]; hi = anchors[i+1]; break; }
+                }
+                const span = hi.day - lo.day || 1;
+                const t = (day - lo.day) / span;
+                return {
+                  day,
+                  goal: Math.round(lo.goal + (hi.goal - lo.goal) * t),
+                  pre:  Math.round(lo.pre  + (hi.pre  - lo.pre)  * t),
+                };
+              });
+              // Apply range filter — show last N days
+              const RANGE_DAYS = { '7D': 7, '14D': 14, '1M': 30, 'All': dayCurrent + 1 };
+              const showLast = Math.min(RANGE_DAYS[growthRange] || daily.length, daily.length);
+              const series = daily.slice(daily.length - showLast).map(p => ({
+                ...p,
+                d: p.day === 0 ? 'Pre' : `D${p.day}`,
+              }));
               const maxY = totalLearners; // 30
               const innerW = W - padL - padR, innerH = H - padT - padB;
-              const xAt = i => padL + (i / (series.length - 1)) * innerW;
+              const xAt = i => padL + (i / Math.max(1, series.length - 1)) * innerW;
               const yAt = v => padT + innerH - (v / maxY) * innerH;
               const linePath = key => series.map((p,i) => `${i===0?'M':'L'}${xAt(i).toFixed(1)} ${yAt(p[key]).toFixed(1)}`).join(' ');
               const areaPath = key => `${linePath(key)} L${xAt(series.length-1).toFixed(1)} ${yAt(0).toFixed(1)} L${xAt(0).toFixed(1)} ${yAt(0).toFixed(1)} Z`;
-              const stat = (label, val, color) => (
-                <div style={{flex:'1 1 0', minWidth:120, border:'1px solid #f0eeec', borderRadius:12, padding:'10px 14px'}}>
-                  <div style={{display:'flex', alignItems:'center', gap:6}}>
-                    <span style={{width:9, height:9, borderRadius:3, background:color}}/>
-                    <span style={{color:'#57534e', fontSize:'0.72rem', fontWeight:500}}>{label}</span>
-                  </div>
-                  <div style={{display:'flex', alignItems:'baseline', gap:6, marginTop:4}}>
-                    <span className="num" style={{fontSize:'1.4rem', fontWeight:600, color, letterSpacing:'-0.03em', lineHeight:1}}>{val}</span>
-                    <span className="num" style={{color:'#a8a29e', fontSize:'0.72rem'}}>/ {totalLearners} คน</span>
-                    <span className="num" style={{marginLeft:'auto', display:'inline-flex', alignItems:'center', gap:3, color:'#059669', fontSize:'0.72rem', fontWeight:600}}>
-                      <TrendingUp size={12}/> +{val}
-                    </span>
-                  </div>
-                </div>
-              );
+              const lastPre  = series[series.length-1].pre;
+              const lastGoal = series[series.length-1].goal;
+              const firstPre  = series[0].pre;
+              const firstGoal = series[0].goal;
+              const deltaPre  = lastPre - firstPre;
+              const deltaGoal = lastGoal - firstGoal;
+              // X-axis tick selection: show ~5 evenly spaced labels
+              const tickStep = Math.max(1, Math.ceil(series.length / 6));
               return (
-                <div style={{marginTop:14, padding:'16px', background:'#fafaf9', border:'1px solid #f0eeec', borderRadius:16}}>
-                  <div style={{fontSize:'0.78rem', color:'#57534e', marginBottom:12}}>
-                    อัตราการเติบโตของผู้เรียนตลอด <span style={{color:'#1c1917', fontWeight:500}}>{dayCurrent} วัน</span> · จำนวนสะสมที่ขยับขึ้นและที่ถึง Goal Stage (3+)
+                <div style={{marginTop:14}}>
+                  {/* Range selector + period deltas */}
+                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14, gap:12, flexWrap:'wrap'}}>
+                    <div style={{display:'flex', alignItems:'baseline', gap:16, fontSize:'0.78rem', color:'#787774', fontFamily:"'JetBrains Mono', monospace"}}>
+                      <span style={{display:'inline-flex', alignItems:'baseline', gap:6}}>
+                        <span style={{color:'#a8a29e', fontSize:'0.6rem', letterSpacing:'0.14em', textTransform:'uppercase'}}>Pre</span>
+                        <span className="num" style={{color:'#787774', fontSize:'0.95rem', fontWeight:500}}>{firstPre} → {lastPre}</span>
+                        <span className="num" style={{color: deltaPre < 0 ? '#047857' : '#787774', fontSize:'0.74rem', fontWeight:500}}>({deltaPre >= 0 ? '+' : ''}{deltaPre})</span>
+                      </span>
+                      <span style={{color:'#e7e5e4'}}>|</span>
+                      <span style={{display:'inline-flex', alignItems:'baseline', gap:6}}>
+                        <span style={{color:'#047857', fontSize:'0.6rem', letterSpacing:'0.14em', textTransform:'uppercase'}}>Goal</span>
+                        <span className="num" style={{color:'#111111', fontSize:'0.95rem', fontWeight:500}}>{firstGoal} → {lastGoal}</span>
+                        <span className="num" style={{color: deltaGoal > 0 ? '#047857' : '#787774', fontSize:'0.74rem', fontWeight:500}}>({deltaGoal >= 0 ? '+' : ''}{deltaGoal})</span>
+                      </span>
+                    </div>
+
+                    {/* Range selector — same pattern as Daily Activity */}
+                    <div style={{display:'inline-flex', gap:2, background:'#f5f5f4', borderRadius:9, padding:2}}>
+                      {['7D','14D','1M','All'].map(r => {
+                        const active = growthRange === r;
+                        return (
+                          <button
+                            key={r}
+                            onClick={() => setGrowthRange(r)}
+                            style={{
+                              padding:'4px 10px', borderRadius:7, border:'none', cursor:'pointer',
+                              fontFamily:'Poppins,sans-serif', fontSize:'0.72rem', fontWeight:600, letterSpacing:'-0.005em',
+                              background: active ? '#fff' : 'transparent',
+                              color:      active ? '#1c1917' : '#78716c',
+                              boxShadow:  active ? '0 1px 3px rgba(28,25,23,0.08)' : 'none',
+                              transition:'background 0.15s, color 0.15s',
+                            }}>
+                            {r}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <div style={{display:'flex', gap:10, flexWrap:'wrap', marginBottom:14}}>
-                    {stat('ขยับขึ้นจาก Pre-Class', 24, '#1c1917')}
-                    {stat('ถึง Goal Stage (3+)', 20, '#059669')}
-                  </div>
-                  <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%', height:'auto', display:'block', overflow:'visible'}}>
+
+                  <div style={{position:'relative'}}>
+                  <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%', height:'auto', display:'block', overflow:'visible'}}
+                    onMouseLeave={() => setHoveredPoint(null)}>
                     <defs>
-                      <linearGradient id="grad-moved" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#1c1917" stopOpacity="0.16"/>
-                        <stop offset="100%" stopColor="#1c1917" stopOpacity="0"/>
+                      <linearGradient id="grad-pre" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#a8a29e" stopOpacity="0.22"/>
+                        <stop offset="100%" stopColor="#a8a29e" stopOpacity="0"/>
                       </linearGradient>
                       <linearGradient id="grad-goal" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#059669" stopOpacity="0.30"/>
@@ -7673,138 +7776,338 @@
                         </g>
                       );
                     })}
-                    {/* areas */}
-                    <path d={areaPath('moved')} fill="url(#grad-moved)"/>
-                    <path d={areaPath('goal')}  fill="url(#grad-goal)"/>
+                    {/* areas — PRE descending (gray, neutral), GOAL ascending (emerald) */}
+                    <path d={areaPath('pre')}  fill="url(#grad-pre)"/>
+                    <path d={areaPath('goal')} fill="url(#grad-goal)"/>
                     {/* lines */}
-                    <path d={linePath('moved')} fill="none" stroke="#44403c" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
-                    <path d={linePath('goal')}  fill="none" stroke="#059669" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
-                    {/* end dots */}
-                    <circle cx={xAt(series.length-1)} cy={yAt(series[series.length-1].moved)} r="3.5" fill="#44403c"/>
-                    <circle cx={xAt(series.length-1)} cy={yAt(series[series.length-1].goal)}  r="3.5" fill="#059669"/>
-                    {/* x labels */}
-                    {series.map((p,i) => (
-                      <text key={i} x={xAt(i)} y={H-8} fill="#a8a29e" fontSize="9.5" fontFamily="Poppins,sans-serif"
-                        textAnchor={i===0?'start':i===series.length-1?'end':'middle'}>{p.d}</text>
-                    ))}
+                    <path d={linePath('pre')}  fill="none" stroke="#a8a29e" strokeWidth="2"   strokeLinejoin="round" strokeLinecap="round"/>
+                    <path d={linePath('goal')} fill="none" stroke="#059669" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
+                    {/* end dots + end-of-line value labels */}
+                    <circle cx={xAt(series.length-1)} cy={yAt(lastPre)}  r="3.5" fill="#a8a29e"/>
+                    <circle cx={xAt(series.length-1)} cy={yAt(lastGoal)} r="3.5" fill="#059669"/>
+                    <text x={xAt(series.length-1) - 6} y={yAt(lastPre) - 6} fill="#787774" fontSize="11" fontFamily="JetBrains Mono, monospace" fontWeight="500" textAnchor="end">Pre {lastPre}</text>
+                    <text x={xAt(series.length-1) - 6} y={yAt(lastGoal) - 6} fill="#047857" fontSize="11" fontFamily="JetBrains Mono, monospace" fontWeight="600" textAnchor="end">Goal {lastGoal}</text>
+                    {/* x labels — every Nth point to avoid crowding at small ranges */}
+                    {series.map((p,i) => {
+                      const isFirst = i === 0;
+                      const isLast = i === series.length - 1;
+                      if (!isFirst && !isLast && i % tickStep !== 0) return null;
+                      return (
+                        <text key={i} x={xAt(i)} y={H-8} fill="#a8a29e" fontSize="9.5" fontFamily="Poppins,sans-serif"
+                          textAnchor={isFirst?'start':isLast?'end':'middle'}>{p.d}</text>
+                      );
+                    })}
+
+                    {/* Hover crosshair — vertical guide line at hovered point */}
+                    {hoveredPoint !== null && series[hoveredPoint] && (
+                      <line
+                        x1={xAt(hoveredPoint)} y1={padT - 4}
+                        x2={xAt(hoveredPoint)} y2={H - padB}
+                        stroke="#d6d3d1" strokeWidth="1" strokeDasharray="3,3"
+                        pointerEvents="none"
+                      />
+                    )}
+
+                    {/* Emphasized hover dots — larger, with outer ring */}
+                    {hoveredPoint !== null && series[hoveredPoint] && (
+                      <g pointerEvents="none">
+                        <circle cx={xAt(hoveredPoint)} cy={yAt(series[hoveredPoint].pre)}  r="5" fill="#fff" stroke="#a8a29e" strokeWidth="2"/>
+                        <circle cx={xAt(hoveredPoint)} cy={yAt(series[hoveredPoint].goal)} r="5" fill="#fff" stroke="#059669" strokeWidth="2.5"/>
+                      </g>
+                    )}
+
+                    {/* Per-point hit zones — invisible rects spanning each X-slice */}
+                    {series.map((p, i) => {
+                      const halfStep = i === 0 || i === series.length - 1
+                        ? innerW / Math.max(1, series.length - 1) / 2
+                        : innerW / Math.max(1, series.length - 1) / 2;
+                      return (
+                        <rect
+                          key={`hit-${i}`}
+                          x={xAt(i) - halfStep}
+                          y={0}
+                          width={halfStep * 2}
+                          height={H}
+                          fill="transparent"
+                          style={{cursor:'crosshair'}}
+                          onMouseEnter={() => setHoveredPoint(i)}
+                        />
+                      );
+                    })}
                   </svg>
+
+                  {/* Tooltip — floats above the hovered point */}
+                  {hoveredPoint !== null && series[hoveredPoint] && (
+                    <div style={{
+                      position:'absolute',
+                      left: `${(xAt(hoveredPoint) / W) * 100}%`,
+                      top: `${(yAt(Math.min(series[hoveredPoint].pre, series[hoveredPoint].goal)) / H) * 100}%`,
+                      transform: 'translate(-50%, calc(-100% - 14px))',
+                      background: '#1c1917', color: '#fafaf9',
+                      padding: '10px 14px', borderRadius: 10,
+                      fontFamily: 'Poppins, sans-serif', fontSize: '0.72rem',
+                      whiteSpace: 'nowrap',
+                      pointerEvents: 'none',
+                      boxShadow: '0 8px 24px rgba(28,25,23,0.22)',
+                      animation: 'fadeIn 0.12s ease',
+                      zIndex: 4,
+                    }}>
+                      <div style={{color:'#a8a29e', fontSize:'0.6rem', letterSpacing:'0.16em', textTransform:'uppercase', fontFamily:"'JetBrains Mono', monospace", marginBottom:6}}>
+                        {series[hoveredPoint].d === 'Pre' ? 'Pre-Class' : `Day ${series[hoveredPoint].day}`}
+                      </div>
+                      <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:4}}>
+                        <span style={{width:8, height:2, background:'#a8a29e'}}/>
+                        <span style={{color:'#d6d3d1'}}>Pre</span>
+                        <span className="num" style={{color:'#fff', fontWeight:600, marginLeft:'auto'}}>{series[hoveredPoint].pre}</span>
+                        <span style={{color:'#787774', fontSize:'0.66rem'}}>คน</span>
+                      </div>
+                      <div style={{display:'flex', alignItems:'center', gap:8}}>
+                        <span style={{width:8, height:2.5, background:'#10b981'}}/>
+                        <span style={{color:'#86efac'}}>Goal</span>
+                        <span className="num" style={{color:'#fff', fontWeight:600, marginLeft:'auto'}}>{series[hoveredPoint].goal}</span>
+                        <span style={{color:'#787774', fontSize:'0.66rem'}}>คน</span>
+                      </div>
+                      {/* Caret pointing down to the data point */}
+                      <div style={{
+                        position:'absolute', bottom:-5, left:'50%', transform:'translateX(-50%) rotate(45deg)',
+                        width:10, height:10, background:'#1c1917',
+                      }}/>
+                    </div>
+                  )}
+                  </div>
+                </div>
+              );
+            })() : (() => {
+              const maxCount = Math.max(...stageCounts, ...prevStageCounts, 1);
+              const CHART_H = 240;
+              const BAR_MAX_H = CHART_H * 0.80;
+              // Y-axis tick values (1/4, 1/2, 3/4, top)
+              const tickValues = [0.25, 0.5, 0.75, 1].map(t => ({ pct: t, value: Math.round(t * maxCount) }));
+              return (
+                <div style={{position:'relative'}}>
+                  {/* Goal threshold pill — floating top center */}
+                  <div style={{
+                    position:'absolute', top:0, left:'calc(50% - 80px)',
+                    width:160, textAlign:'center', zIndex:2,
+                  }}>
+                    <span style={{
+                      display:'inline-flex', alignItems:'center', gap:8,
+                      padding:'4px 10px', borderRadius:999,
+                      background:'#fff', border:'1px solid rgba(5,150,105,0.32)',
+                      color:'#047857', fontSize:'0.58rem', fontWeight:600,
+                      letterSpacing:'0.18em', textTransform:'uppercase',
+                      fontFamily:"'JetBrains Mono', monospace",
+                    }}>
+                      <span style={{width:5, height:5, borderRadius:'50%', background:'#059669'}}/>
+                      Goal Threshold
+                    </span>
+                  </div>
+
+                  {/* Goal threshold vertical hairline — spans the bars plot */}
+                  <div style={{
+                    position:'absolute',
+                    top:30 + 26 + 6, // delta row height + margin
+                    left:'calc(50% - 0.5px)',
+                    height:CHART_H,
+                    width:1, background:'rgba(5,150,105,0.28)',
+                    pointerEvents:'none', zIndex:1,
+                  }}/>
+
+                  {/* Y-axis gridlines + tick labels — sit behind bars */}
+                  <div style={{
+                    position:'absolute',
+                    top:30 + 26 + 6, left:0, right:0,
+                    height:CHART_H,
+                    pointerEvents:'none', zIndex:0,
+                  }}>
+                    {tickValues.map(({pct, value}) => (
+                      <React.Fragment key={pct}>
+                        <div style={{
+                          position:'absolute', left:0, right:0,
+                          bottom: pct * CHART_H,
+                          borderTop:'1px dashed rgba(0,0,0,0.05)',
+                        }}/>
+                        <span style={{
+                          position:'absolute',
+                          right:0, bottom: pct * CHART_H - 5,
+                          color:'#d6d3d1', fontSize:'0.6rem',
+                          fontFamily:"'JetBrains Mono', monospace",
+                          background:'#fff', padding:'0 2px',
+                        }}>{value}</span>
+                      </React.Fragment>
+                    ))}
+                  </div>
+
+                  {/* Columns */}
+                  <div style={{
+                    display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:4,
+                    paddingTop:32,
+                    position:'relative', zIndex:2,
+                  }}>
+                    {STAGE_META.map((s, i) => {
+                      const now  = stageCounts[i];
+                      const prev = prevStageCounts[i];
+                      const delta = now - prev;
+                      const isGoalStage = s.num >= 3;
+                      const prevH = (prev / maxCount) * BAR_MAX_H;
+                      const nowH  = (now  / maxCount) * BAR_MAX_H;
+                      const isGoodMove = (isGoalStage && delta > 0) || (!isGoalStage && delta < 0);
+                      const deltaColor = isGoodMove ? '#059669' : (delta === 0 ? '#d6d3d1' : '#787774');
+                      const isHovered = hoveredStage === s.num;
+
+                      return (
+                        <div
+                          key={s.num}
+                          onClick={() => { setStageFilter(s.num); setStatusFilter('all'); setTab('individual'); }}
+                          onMouseEnter={() => setHoveredStage(s.num)}
+                          onMouseLeave={() => setHoveredStage(null)}
+                          style={{
+                            cursor:'pointer', padding:'0 6px 16px',
+                            borderRadius:10,
+                            transition:'background 0.2s, transform 0.2s',
+                            background: isHovered ? 'rgba(5,150,105,0.05)' : 'transparent',
+                            position:'relative',
+                          }}>
+
+                          {/* Delta — expands to "Pre → Now (Δ)" on hover */}
+                          <div style={{
+                            height:26, display:'flex', alignItems:'center', justifyContent:'center',
+                            marginBottom:6,
+                          }}>
+                            {isHovered ? (
+                              <span style={{
+                                display:'inline-flex', alignItems:'baseline', gap:5,
+                                fontFamily:"'JetBrains Mono', monospace",
+                                fontSize:'0.78rem', letterSpacing:'-0.005em',
+                                animation:'fadeIn 0.15s ease',
+                              }}>
+                                <span className="num" style={{color:'#a8a29e'}}>{prev}</span>
+                                <span style={{color:'#d6d3d1', fontSize:'0.7rem'}}>→</span>
+                                <span className="num" style={{color:'#047857', fontWeight:600}}>{now}</span>
+                              </span>
+                            ) : delta !== 0 ? (
+                              <span style={{
+                                display:'inline-flex', alignItems:'baseline', gap:3,
+                                color: deltaColor,
+                                fontWeight: isGoodMove ? 500 : 400,
+                              }}>
+                                <span style={{fontSize:'0.78rem', lineHeight:1}}>{delta > 0 ? '↑' : '↓'}</span>
+                                <span className="num" style={{
+                                  fontSize:'0.95rem', fontFamily:"'JetBrains Mono', monospace",
+                                  letterSpacing:'-0.01em', lineHeight:1,
+                                }}>{Math.abs(delta)}</span>
+                              </span>
+                            ) : (
+                              <span className="num" style={{color:'#d6d3d1', fontSize:'0.95rem', fontFamily:"'JetBrains Mono', monospace"}}>0</span>
+                            )}
+                          </div>
+
+                          {/* Bars plot area */}
+                          <div style={{
+                            position:'relative', height:CHART_H,
+                            display:'flex', alignItems:'flex-end', justifyContent:'center', gap:8,
+                            borderBottom:'1px solid #d6d3d1',
+                          }}>
+                            {/* PRE bar */}
+                            <div style={{position:'relative', display:'flex', flexDirection:'column', alignItems:'center'}}>
+                              <span className="num" style={{
+                                color: isHovered ? '#57534e' : '#a8a29e',
+                                fontSize: isHovered ? '0.78rem' : '0.7rem', fontWeight: isHovered ? 600 : 400,
+                                fontFamily:"'JetBrains Mono', monospace",
+                                marginBottom:4, transition:'color 0.15s, font-size 0.15s, font-weight 0.15s',
+                                visibility: prev > 0 ? 'visible' : 'hidden',
+                              }}>{prev}</span>
+                              <div className="hr-bar-fill-v" style={{
+                                width:18,
+                                height: Math.max(prevH, prev > 0 ? 3 : 0),
+                                background: 'linear-gradient(to top, #a8a29e 0%, #c7c3c0 100%)',
+                                borderRadius:'3px 3px 0 0',
+                                boxShadow: isHovered ? 'inset 0 0 0 1px rgba(0,0,0,0.04)' : 'none',
+                                transition: 'transform 0.18s cubic-bezier(0.22,1,0.36,1)',
+                                transform: isHovered ? 'scaleY(1.04) translateY(-1px)' : 'scaleY(1)',
+                                transformOrigin: 'bottom center',
+                              }}/>
+                            </div>
+                            {/* NOW bar */}
+                            <div style={{position:'relative', display:'flex', flexDirection:'column', alignItems:'center'}}>
+                              <span className="num" style={{
+                                color:'#047857',
+                                fontSize: isHovered ? '0.92rem' : '0.82rem',
+                                fontWeight:600,
+                                fontFamily:"'JetBrains Mono', monospace",
+                                marginBottom:4, letterSpacing:'-0.005em',
+                                transition:'font-size 0.15s',
+                                visibility: now > 0 ? 'visible' : 'hidden',
+                              }}>{now}</span>
+                              <div className="hr-bar-fill-v" style={{
+                                width:22,
+                                height: Math.max(nowH, now > 0 ? 3 : 0),
+                                background: 'linear-gradient(to top, #059669 0%, #10b981 100%)',
+                                borderRadius:'3px 3px 0 0',
+                                boxShadow: isHovered
+                                  ? '0 6px 16px rgba(5,150,105,0.28), inset 0 1px 0 rgba(255,255,255,0.18)'
+                                  : 'inset 0 1px 0 rgba(255,255,255,0.12)',
+                                transition: 'transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s',
+                                transform: isHovered ? 'scaleY(1.04) translateY(-1px)' : 'scaleY(1)',
+                                transformOrigin: 'bottom center',
+                              }}/>
+                            </div>
+                          </div>
+
+                          {/* Stage label below */}
+                          <div style={{paddingTop:12, textAlign:'center'}}>
+                            <div className="num" style={{
+                              color: isHovered ? '#047857' : (isGoalStage ? 'rgba(5,150,105,0.55)' : '#a8a29e'),
+                              fontSize:'0.7rem', fontFamily:"'JetBrains Mono', monospace",
+                              letterSpacing:'0.04em',
+                              transition:'color 0.15s',
+                            }}>0{s.num}</div>
+                            <div style={{
+                              color:'#111111', fontSize:'0.88rem', fontWeight: isHovered ? 600 : 500,
+                              letterSpacing:'-0.01em', marginTop:3,
+                              fontFamily:"'Sora','IBM Plex Sans Thai',sans-serif",
+                              transition:'font-weight 0.15s',
+                            }}>{s.name}</div>
+                            <div style={{color:'#787774', fontSize:'0.62rem', marginTop:2, letterSpacing:'-0.005em'}}>{s.role}</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Transformed summary */}
+                  <div style={{
+                    display:'flex', justifyContent:'flex-end', marginTop:14,
+                    color:'#787774', fontSize:'0.74rem',
+                  }}>
+                    <span>Transformed (Stage 3+): <span className="num" style={{color:'#059669', fontWeight:500}}>{transformed}</span>
+                      <span style={{color:'#d6d3d1', margin:'0 6px'}}>/</span>
+                      <span className="num">{totalLearners}</span>
+                    </span>
+                  </div>
                 </div>
               );
             })()}
-
-            <div style={{marginTop:18, display:'flex', flexDirection:'column', gap:14}}>
-              {STAGE_META.map((s, i) => {
-                const now  = stageCounts[i];
-                const prev = prevStageCounts[i];
-                const delta = now - prev;
-                const isGoalStage = s.num >= 3;
-                const accent = isGoalStage ? '#059669' : '#1c1917';
-                const nowPct  = Math.round((now  / totalLearners) * 100);
-                const prevPct = Math.round((prev / totalLearners) * 100);
-                const nowBarW  = (now  / maxCount) * 100;
-                const prevBarW = (prev / maxCount) * 100;
-
-                return (
-                  <div
-                    key={s.num}
-                    onClick={() => { setStageFilter(s.num); setStatusFilter('all'); setTab('individual'); }}
-                    style={{
-                      cursor:'pointer', borderRadius:14, padding:'14px 16px',
-                      background: isGoalStage ? 'rgba(5,150,105,0.04)' : '#ffffff',
-                      border:`1px solid ${isGoalStage ? 'rgba(5,150,105,0.18)' : '#f0eeec'}`,
-                      boxShadow:'0 1px 2px rgba(28,25,23,0.04)',
-                      transition:'box-shadow 0.15s, border-color 0.15s, transform 0.15s',
-                    }}
-                    onMouseEnter={e=>{e.currentTarget.style.boxShadow='0 4px 14px rgba(28,25,23,0.08)'; e.currentTarget.style.borderColor=isGoalStage?'rgba(5,150,105,0.35)':'#e0ddda'; e.currentTarget.style.transform='translateY(-1px)';}}
-                    onMouseLeave={e=>{e.currentTarget.style.boxShadow='0 1px 2px rgba(28,25,23,0.04)'; e.currentTarget.style.borderColor=isGoalStage?'rgba(5,150,105,0.18)':'#f0eeec'; e.currentTarget.style.transform='translateY(0)';}}>
-                    <div style={{display:'flex', alignItems:'center', gap:14}}>
-                      {/* Stage label */}
-                      <div style={{flex:'0 0 160px', display:'flex', alignItems:'center', gap:10}}>
-                        <span className="num" style={{
-                          width:26, height:26, borderRadius:8, flexShrink:0,
-                          background: isGoalStage ? 'rgba(5,150,105,0.10)' : '#f5f5f4',
-                          color: accent, fontSize:'0.78rem', fontWeight:600,
-                          display:'inline-flex', alignItems:'center', justifyContent:'center',
-                        }}>{s.num}</span>
-                        <div style={{minWidth:0}}>
-                          <div style={{color:'#1c1917', fontSize:'0.85rem', fontWeight:500, letterSpacing:'-0.005em'}}>{s.name}</div>
-                          <div style={{color:'#a8a29e', fontSize:'0.66rem'}}>{s.role}</div>
-                        </div>
-                      </div>
-
-                      {/* Bars container */}
-                      <div style={{flex:1, display:'flex', flexDirection:'column', gap:6, minWidth:0}}>
-                        {/* Pre-Class bar */}
-                        <div style={{display:'flex', alignItems:'center', gap:10}}>
-                          <span style={{flex:'0 0 56px', color:'#a8a29e', fontSize:'0.62rem', fontWeight:500, letterSpacing:'0.08em', textTransform:'uppercase'}}>Pre</span>
-                          <div style={{flex:1, height:8, background:'#fafaf9', borderRadius:4, overflow:'hidden'}}>
-                            <div style={{
-                              width: prev ? `${Math.max(prevBarW, 1.5)}%` : '0%', height:'100%',
-                              background:'#d6d3d1', borderRadius:4, transition:'width 0.7s ease',
-                            }}/>
-                          </div>
-                          <span className="num" style={{flex:'0 0 64px', color:'#78716c', fontSize:'0.76rem', fontWeight:500, textAlign:'right'}}>
-                            {prev} <span style={{color:'#a8a29e', fontWeight:400}}>· {prevPct}%</span>
-                          </span>
-                        </div>
-                        {/* Now bar */}
-                        <div style={{display:'flex', alignItems:'center', gap:10}}>
-                          <span style={{flex:'0 0 56px', color: accent, fontSize:'0.62rem', fontWeight:600, letterSpacing:'0.08em', textTransform:'uppercase'}}>Now</span>
-                          <div style={{flex:1, height:10, background:'#fafaf9', borderRadius:5, overflow:'hidden', position:'relative'}}>
-                            <div style={{
-                              width: now ? `${Math.max(nowBarW, 1.5)}%` : '0%', height:'100%',
-                              background: isGoalStage
-                                ? 'linear-gradient(to right, #059669, #10b981)'
-                                : 'linear-gradient(to right, #44403c, #1c1917)',
-                              borderRadius:5, transition:'width 0.8s ease',
-                              boxShadow: isGoalStage ? '0 0 12px rgba(5,150,105,0.30)' : 'none',
-                            }}/>
-                          </div>
-                          <span className="num" style={{flex:'0 0 64px', color:'#1c1917', fontSize:'0.82rem', fontWeight:600, textAlign:'right'}}>
-                            {now} <span style={{color:'#a8a29e', fontWeight:400}}>· {nowPct}%</span>
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Delta */}
-                      <div style={{flex:'0 0 96px', textAlign:'right'}}>
-                        {delta > 0 ? (
-                          <span className="num" style={{
-                            display:'inline-flex', alignItems:'center', gap:4,
-                            padding:'4px 10px', borderRadius:999,
-                            background:'rgba(5,150,105,0.10)', color:'#047857',
-                            fontSize:'0.78rem', fontWeight:600,
-                          }}>↑ {delta}</span>
-                        ) : delta < 0 ? (
-                          <span className="num" style={{
-                            display:'inline-flex', alignItems:'center', gap:4,
-                            padding:'4px 10px', borderRadius:999,
-                            background:'rgba(168,162,158,0.14)', color:'#78716c',
-                            fontSize:'0.78rem', fontWeight:600,
-                          }}>↓ {Math.abs(delta)}</span>
-                        ) : (
-                          <span style={{color:'#d6d3d1', fontSize:'0.95rem'}}>—</span>
-                        )}
-                        {delta > 0 && isGoalStage && (
-                          <div style={{color:'#059669', fontSize:'0.6rem', marginTop:3, letterSpacing:'0.06em', textTransform:'uppercase', fontWeight:600}}>
-                            → Goal
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
 
-            <div style={{marginTop:16, paddingTop:14, borderTop:'1px solid #f5f5f4',
-              display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:8}}>
-              <span style={{color:'#78716c', fontSize:'0.72rem'}}>
-                <span className="num" style={{color:'#1c1917', fontWeight:600}}>
-                  {LEARNERS.filter(l => l.stage > l.prevStage).length}
-                </span> / {totalLearners} คน ขยับขึ้นจาก Pre-Class แล้ว
+            <div style={{marginTop:28, paddingTop:20, borderTop:'1px solid #EAEAEA',
+              display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12}}>
+              <span style={{color:'#787774', fontSize:'0.75rem'}}>
+                คลิกที่แถวเพื่อดูรายชื่อผู้เรียน
               </span>
-              <span style={{color:'#78716c', fontSize:'0.72rem'}}>กดที่ stage เพื่อดูรายชื่อ →</span>
+              <button
+                onClick={() => { setStageFilter(null); setStatusFilter('all'); setTab('individual'); }}
+                style={{
+                  display:'inline-flex', alignItems:'center', gap:6, cursor:'pointer',
+                  padding:'9px 16px', borderRadius:6, fontFamily:'Poppins,sans-serif',
+                  fontSize:'0.78rem', fontWeight:500,
+                  background:'#111111', color:'#fafaf9', border:'none', letterSpacing:'-0.005em',
+                  transition:'background 0.15s',
+                }}
+                onMouseEnter={e=>e.currentTarget.style.background='#333333'}
+                onMouseLeave={e=>e.currentTarget.style.background='#111111'}>
+                ดูผู้เรียนทั้งหมด <ChevronRight size={14}/>
+              </button>
             </div>
           </div>
         );
@@ -8167,44 +8470,41 @@
         const inactiveLearners = LEARNERS.filter(l => l.streak === 0 || /\d+\s*วัน/.test(l.last)).length;
         const readyToRecognize = LEARNERS.filter(l => l.stage >= 4 && l.goalStatus === 'achieved').length;
 
+        // Tile data — Stats06-style cards: top label + large stat, bottom tray with status icon + sub + chevron
         const focusTiles = [
           {
-            tone:'amber',
-            ico: AlertTriangle, iconBg:'rgba(245,158,11,0.14)', iconColor:'#b45309',
-            num: atRiskCount, numColor:'#b45309',
+            ico: AlertTriangle, iconSquareBg:'#f59e0b',
+            num: atRiskCount,
             label:'ต้องการการดูแล',
-            sub: `รวม At-Risk ${statusCounts.atRisk} · Behind ${statusCounts.behind}`,
-            action:'ดูทั้งหมดและส่ง Notify', actionColor:'#b45309',
+            sub: `At-Risk ${statusCounts.atRisk} · Behind ${statusCounts.behind}`,
+            status:'ต้องดูแลด่วน', statusColor:'#b45309',
             shadow:'rgba(245,158,11,0.18)',
             onClick: () => { setStatusFilter('atRisk'); setStageFilter(null); setTab('individual'); },
           },
           {
-            tone:'red',
-            ico: FileText, iconBg:'rgba(239,68,68,0.12)', iconColor:'#b91c1c',
-            num: overdueReviews, numColor:'#b91c1c',
+            ico: FileText, iconSquareBg:'#ef4444',
+            num: overdueReviews,
             label:'Manager Review เกินกำหนด',
             sub:'ติดตาม Manager เพื่อปิดรอบ',
-            action:'ดูรายชื่อ', actionColor:'#b91c1c',
+            status:'เลยกำหนดแล้ว', statusColor:'#b91c1c',
             shadow:'rgba(239,68,68,0.16)',
             onClick: () => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); scrollToSection('ov-manager', 'overview'); },
           },
           {
-            tone:'amber-soft',
-            ico: Activity, iconBg:'rgba(234,88,12,0.10)', iconColor:'#9a3412',
-            num: inactiveLearners, numColor:'#9a3412',
+            ico: Activity, iconSquareBg:'#ea580c',
+            num: inactiveLearners,
             label:'ไม่มี Activity 3+ วัน',
-            sub:'ลองส่ง Mission กระตุ้นใหม่',
-            action:'Bulk Nudge', actionColor:'#9a3412',
+            sub:'ส่ง Mission กระตุ้นใหม่',
+            status:'รอ Re-engage', statusColor:'#9a3412',
             shadow:'rgba(234,88,12,0.14)',
             onClick: () => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); },
           },
           {
-            tone:'emerald',
-            ico: Award, iconBg:'rgba(5,150,105,0.12)', iconColor:'#047857',
-            num: readyToRecognize, numColor:'#047857',
+            ico: Award, iconSquareBg:'#059669',
+            num: readyToRecognize,
             label:'พร้อมให้รางวัล',
             sub:'Stage 4+ และทำ Goal สำเร็จ',
-            action:'ส่ง Praise', actionColor:'#047857',
+            status:'พร้อม Recognize', statusColor:'#047857',
             shadow:'rgba(5,150,105,0.18)',
             onClick: () => { setStatusFilter('onTrack'); setStageFilter(null); setTab('individual'); },
           },
@@ -8212,6 +8512,8 @@
 
         return (
         <div className="fade-in hr-reveal">
+          <div id="ov-class"        style={{scrollMarginTop:120}}>{renderClassInfo()}</div>
+
           {/* ── HR Action Center — surfaces today's priorities ── */}
           <div className="hr-focus">
             <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:16, flexWrap:'wrap'}}>
@@ -8220,29 +8522,15 @@
                 <h2 className="hr-focus-title">
                   มี <span style={{color:'#b45309'}} className="num">{atRiskCount + overdueReviews}</span> รายการที่ต้องการคุณวันนี้
                 </h2>
-                <div style={{color:'#78716c', fontSize:'0.86rem', marginTop:6, maxWidth:540}}>
-                  จัดลำดับ action ตามความเร่งด่วน — เริ่มจากผู้เรียนที่ At-Risk ก่อน
-                  เพื่อกู้คืน momentum ก่อนจะเข้าสู่สัปดาห์ที่ {Math.ceil(dayCurrent/7)+1}
+                <div style={{color:'#78716c', fontSize:'0.86rem', marginTop:6, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>
+                  จัดลำดับ action ตามความเร่งด่วน — เริ่มจากผู้เรียนที่ At-Risk ก่อน เพื่อกู้คืน momentum ก่อนจะเข้าสู่สัปดาห์ที่ {Math.ceil(dayCurrent/7)+1}
                 </div>
               </div>
-              <button
-                onClick={() => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); }}
-                style={{
-                  padding:'10px 16px', borderRadius:12, cursor:'pointer',
-                  background:'#1c1917', color:'#fafaf9', border:'none',
-                  fontFamily:'Poppins,sans-serif', fontSize:'0.82rem', fontWeight:500,
-                  letterSpacing:'-0.005em',
-                  display:'inline-flex', alignItems:'center', gap:6,
-                  boxShadow:'0 8px 22px rgba(28,25,23,0.18)',
-                  transition:'transform 0.15s ease, box-shadow 0.15s ease',
-                }}
-                onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 12px 28px rgba(28,25,23,0.22)';}}
-                onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 8px 22px rgba(28,25,23,0.18)';}}>
-                ไปที่ผู้เรียนทั้งหมด <ChevronRight size={14}/>
-              </button>
             </div>
 
-            <div className="hr-focus-grid">
+            <div>
+              <div>
+                <div className="hr-focus-grid">
               {focusTiles.map((t, i) => {
                 const Ic = t.ico;
                 return (
@@ -8251,24 +8539,29 @@
                     onClick={t.onClick}
                     className="hr-focus-tile"
                     style={{ '--hr-tile-shadow': t.shadow, animationDelay:`${i * 60}ms` }}>
-                    <div className="hr-focus-tile-head">
-                      <span className="hr-focus-tile-icon" style={{background:t.iconBg, color:t.iconColor}}>
-                        <Ic size={16}/>
-                      </span>
-                    </div>
-                    <div className="hr-focus-tile-num" style={{color:t.numColor}}>
+                    {/* Top — label + big stat */}
+                    <div className="hr-focus-tile-label">{t.label}</div>
+                    <div className="hr-focus-tile-num">
                       <CountUp value={t.num} decimals={0} duration={700}/>
                     </div>
-                    <div className="hr-focus-tile-label">{t.label}</div>
-                    <div className="hr-focus-tile-sub">{t.sub}</div>
-                    <span className="hr-focus-tile-action" style={{color:t.actionColor}}>{t.action}</span>
+                    {/* Bottom tray — colored icon square + sub copy + chevron */}
+                    <div className="hr-focus-tile-tray">
+                      <span className="hr-focus-tile-icon" style={{background:t.iconSquareBg}}>
+                        <Ic size={16}/>
+                      </span>
+                      <div className="hr-focus-tile-tray-text">
+                        <div className="hr-focus-tile-tray-sub">{t.sub}</div>
+                        <div className="hr-focus-tile-tray-status" style={{color:t.statusColor}}>{t.status}</div>
+                      </div>
+                      <ChevronRight size={18} className="hr-focus-tile-chev"/>
+                    </div>
                   </button>
                 );
               })}
+                </div>
+              </div>
             </div>
           </div>
-
-          <div id="ov-class"        style={{scrollMarginTop:120}}>{renderClassInfo()}</div>
           <div id="ov-transformation" style={{scrollMarginTop:120}}>{renderTransformationMovement()}</div>
           <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16, alignItems:'stretch'}}>
             <div id="ov-completion" style={{scrollMarginTop:120, height:'100%'}}>{renderCompletionRate()}</div>
@@ -8626,8 +8919,8 @@
               </div>
             </div>
 
-            {/* ─── 3 · Activity trend + Challenge completion (2-col) ─── */}
-            <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16}}>
+            {/* ─── 3 · Activity trend + Challenge completion (auto-fit responsive) ─── */}
+            <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(400px, 1fr))', gap:16, marginBottom:16}}>
               <div id="eng-activity" className="hr-card" style={{scrollMarginTop:120}}>
                 <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:12, gap:12}}>
                   <div>
@@ -8714,7 +9007,7 @@
             </div>
 
             {/* ─── 4 · Top engaged + Need attention (2-col) ─── */}
-            <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16}}>
+            <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(400px, 1fr))', gap:16, marginBottom:16}}>
               <div id="eng-top" className="hr-card" style={{scrollMarginTop:120}}>
                 <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:10}}>
                   <div>
