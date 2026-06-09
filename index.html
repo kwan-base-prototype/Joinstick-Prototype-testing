@@ -7156,6 +7156,7 @@
       const [engagementNavOpen, setEngagementNavOpen] = useState(true); // sub-anchors expanded under Engagement
       const [activityRange,     setActivityRange]     = useState('14D'); // Engagement → Daily Activity range
       const [expandedScoreCard, setExpandedScoreCard] = useState(null);  // 'transformation' | 'engagement' | null — in-drawer chart toggle
+      const [focusOpen,         setFocusOpen]         = useState(true); // Today's Focus expand/collapse
 
       // Smooth-scroll to a section inside the active tab; auto-switch tab if needed
       const scrollToSection = (id, targetTab) => {
@@ -8212,6 +8213,8 @@
 
         return (
         <div className="fade-in hr-reveal">
+          <div id="ov-class"        style={{scrollMarginTop:120}}>{renderClassInfo()}</div>
+
           {/* ── HR Action Center — surfaces today's priorities ── */}
           <div className="hr-focus">
             <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:16, flexWrap:'wrap'}}>
@@ -8226,23 +8229,28 @@
                 </div>
               </div>
               <button
-                onClick={() => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); }}
+                onClick={() => setFocusOpen(o => !o)}
+                aria-label={focusOpen ? 'ย่อ' : 'ขยาย'}
+                title={focusOpen ? 'ย่อ' : 'ขยาย'}
                 style={{
-                  padding:'10px 16px', borderRadius:12, cursor:'pointer',
-                  background:'#1c1917', color:'#fafaf9', border:'none',
-                  fontFamily:'Poppins,sans-serif', fontSize:'0.82rem', fontWeight:500,
-                  letterSpacing:'-0.005em',
-                  display:'inline-flex', alignItems:'center', gap:6,
-                  boxShadow:'0 8px 22px rgba(28,25,23,0.18)',
-                  transition:'transform 0.15s ease, box-shadow 0.15s ease',
+                  width:40, height:40, borderRadius:12, cursor:'pointer', flexShrink:0,
+                  background:'rgba(28,25,23,0.04)', color:'#1c1917',
+                  border:'1px solid rgba(28,25,23,0.10)',
+                  display:'inline-flex', alignItems:'center', justifyContent:'center',
+                  transition:'background 0.15s, border-color 0.15s, transform 0.22s ease',
                 }}
-                onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 12px 28px rgba(28,25,23,0.22)';}}
-                onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 8px 22px rgba(28,25,23,0.18)';}}>
-                ไปที่ผู้เรียนทั้งหมด <ChevronRight size={14}/>
+                onMouseEnter={e=>{e.currentTarget.style.background='rgba(28,25,23,0.08)'; e.currentTarget.style.borderColor='rgba(28,25,23,0.18)';}}
+                onMouseLeave={e=>{e.currentTarget.style.background='rgba(28,25,23,0.04)'; e.currentTarget.style.borderColor='rgba(28,25,23,0.10)';}}>
+                <ChevronDown size={16} style={{
+                  transform: focusOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.22s ease',
+                }}/>
               </button>
             </div>
 
-            <div className="hr-focus-grid">
+            <div className={`hr-collapsible ${focusOpen ? 'open' : ''}`}>
+              <div className="hr-collapsible-inner">
+                <div className="hr-focus-grid">
               {focusTiles.map((t, i) => {
                 const Ic = t.ico;
                 return (
@@ -8265,10 +8273,10 @@
                   </button>
                 );
               })}
+                </div>
+              </div>
             </div>
           </div>
-
-          <div id="ov-class"        style={{scrollMarginTop:120}}>{renderClassInfo()}</div>
           <div id="ov-transformation" style={{scrollMarginTop:120}}>{renderTransformationMovement()}</div>
           <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16, alignItems:'stretch'}}>
             <div id="ov-completion" style={{scrollMarginTop:120, height:'100%'}}>{renderCompletionRate()}</div>
