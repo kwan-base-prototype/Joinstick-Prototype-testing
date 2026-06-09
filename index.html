@@ -7814,7 +7814,7 @@
       // SECTION 3: Completion Rate ตามประเภทภารกิจ
       // ─────────────────────────────────────────────────────────────
       const renderCompletionRate = () => (
-        <div className="hr-card">
+        <div className="hr-card" style={{height:'100%', display:'flex', flexDirection:'column'}}>
           <div className="hr-eyebrow" style={{marginBottom:4}}>Visible Evidence</div>
           <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
             <CheckCircle2 size={18} style={{color:'#059669'}}/>
@@ -8270,8 +8270,8 @@
 
           <div id="ov-class"        style={{scrollMarginTop:120}}>{renderClassInfo()}</div>
           <div id="ov-transformation" style={{scrollMarginTop:120}}>{renderTransformationMovement()}</div>
-          <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16}}>
-            <div id="ov-completion" style={{scrollMarginTop:120}}>{renderCompletionRate()}</div>
+          <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16, alignItems:'stretch'}}>
+            <div id="ov-completion" style={{scrollMarginTop:120, height:'100%'}}>{renderCompletionRate()}</div>
             <div style={{display:'flex', flexDirection:'column', gap:16}}>
               {/* Quick aggregate card */}
               <div id="ov-cohort" className="hr-card" style={{scrollMarginTop:120}}>
