@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>JOINSTICK — Stage Demo Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script>
+    /* qrcode@1.5.3 ships no standalone browser build on jsdelivr (the URL above 404s).
+       Fall back to 1.4.4 (same QRCode.toCanvas API) so the projector QR always renders. */
+    if (typeof QRCode === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"><\/script>');
+    }
+  </script>
+  <script src="../config.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    html, body { margin:0; padding:0; }
+    body {
+      background:#f5f5f4;
+      font-family:'Poppins','IBM Plex Sans Thai',system-ui,sans-serif;
+      color:#1c1917;
+      -webkit-font-smoothing:antialiased;
+    }
+    * { box-sizing:border-box; }
+    .num { font-family:'JetBrains Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums; }
+
+    /* ── HR-dashboard card family ── */
+    .hr-card { background:#ffffff; border:1px solid #e7e5e4; border-radius:20px; padding:24px;
+               box-shadow:0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(28,25,23,0.04);
+               transition:transform 0.28s cubic-bezier(0.22,1,0.36,1), box-shadow 0.28s ease, border-color 0.2s ease; }
+    .hr-card:hover { box-shadow:0 2px 6px rgba(0,0,0,0.05), 0 18px 40px rgba(28,25,23,0.10); border-color:#dcd9d6; }
+    .hr-eyebrow { color:#a8a29e; font-size:0.65rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; }
+    .hr-kpi { font-family:'JetBrains Mono',monospace; font-weight:600; letter-spacing:-0.04em; color:#1c1917; font-variant-numeric:tabular-nums; }
+    .hr-btn-primary { background:#1c1917; color:#fafaf9; border:none; border-radius:10px; padding:10px 18px;
+                      font-size:0.82rem; font-weight:500; cursor:pointer; transition:background 0.15s; font-family:'Poppins','IBM Plex Sans Thai',sans-serif; }
+    .hr-btn-primary:hover { background:#292524; }
+    .hr-btn-primary:disabled { opacity:0.55; cursor:default; }
+    .hr-btn-ghost { background:#fafaf9; border:1px solid #e7e5e4; color:#1c1917; border-radius:10px; padding:8px 14px;
+                    font-size:0.78rem; font-weight:500; cursor:pointer; transition:background 0.15s,border-color 0.15s; font-family:'Poppins','IBM Plex Sans Thai',sans-serif; }
+    .hr-btn-ghost:hover { background:#f5f5f4; border-color:#d6d3d1; }
+    .hr-row-hover:hover { background:#fafaf9; }
+
+    /* ── entrance stagger ── */
+    @keyframes hrRise { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .hr-reveal > * { opacity:0; animation:hrRise 0.5s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .hr-reveal > *:nth-child(1)  { animation-delay:0.04s; }
+    .hr-reveal > *:nth-child(2)  { animation-delay:0.10s; }
+    .hr-reveal > *:nth-child(3)  { animation-delay:0.16s; }
+    .hr-reveal > *:nth-child(4)  { animation-delay:0.22s; }
+    .hr-reveal > *:nth-child(5)  { animation-delay:0.28s; }
+    .hr-reveal > *:nth-child(n+6){ animation-delay:0.34s; }
+
+    /* ── passcode gate ── */
+    @keyframes gateShake { 0%,100%{transform:translateX(0);} 15%{transform:translateX(-10px);} 30%{transform:translateX(8px);}
+                           45%{transform:translateX(-6px);} 60%{transform:translateX(5px);} 75%{transform:translateX(-3px);} 90%{transform:translateX(2px);} }
+    .gate-shake { animation:gateShake 0.5s cubic-bezier(0.36,0.07,0.19,0.97); }
+    .gate-input { width:100%; background:#0c0a09; border:1px solid #44403c; border-radius:12px; color:#fafaf9;
+                  padding:13px 16px; font-size:1rem; font-family:'JetBrains Mono',monospace; letter-spacing:0.12em; outline:none;
+                  transition:border-color 0.15s, box-shadow 0.15s; }
+    .gate-input:focus { border-color:#ED4724; box-shadow:0 0 0 3px rgba(237,71,36,0.22); }
+    .gate-input.err { border-color:#ef4444; }
+
+    /* ── live pulse dot ── */
+    @keyframes livePulse { 0%{ box-shadow:0 0 0 0 rgba(255,255,255,0.55);} 70%{ box-shadow:0 0 0 8px rgba(255,255,255,0);} 100%{ box-shadow:0 0 0 0 rgba(255,255,255,0);} }
+    .live-dot { width:8px; height:8px; border-radius:50%; background:currentColor; animation:livePulse 1.6s ease-out infinite; }
+    @keyframes onlinePing { 0%{transform:scale(0.8); opacity:0.8;} 100%{transform:scale(2.6); opacity:0;} }
+    .online-dot { position:relative; width:8px; height:8px; border-radius:50%; background:#22c55e; flex-shrink:0; }
+    .online-dot::after { content:''; position:absolute; inset:0; border-radius:50%; background:#22c55e; animation:onlinePing 1.8s cubic-bezier(0,0,0.2,1) infinite; }
+    .offline-dot { width:8px; height:8px; border-radius:50%; background:#d6d3d1; flex-shrink:0; }
+
+    /* ── phase segmented buttons ── */
+    .phase-btn { position:relative; height:84px; border-radius:16px; border:1px solid #e7e5e4; background:#ffffff; cursor:pointer;
+                 display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:3px; padding:0 18px;
+                 text-align:left; font-family:'Poppins','IBM Plex Sans Thai',sans-serif;
+                 transition:transform 0.22s cubic-bezier(0.22,1,0.36,1), box-shadow 0.22s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease; }
+    .phase-btn:hover:not(.active) { border-color:#d6d3d1; background:#fafaf9; transform:translateY(-2px); }
+    .phase-btn .pb-title { font-size:1.05rem; font-weight:700; letter-spacing:-0.01em; color:#1c1917; display:flex; align-items:center; gap:8px; }
+    .phase-btn .pb-sub { font-size:0.72rem; color:#78716c; font-weight:400; line-height:1.3; }
+    .phase-btn.active { transform:scale(1.025); border-color:transparent; box-shadow:0 10px 28px rgba(28,25,23,0.18); }
+    .phase-btn.active .pb-title, .phase-btn.active .pb-sub { color:inherit; }
+    .phase-btn.active.p-demo   { background:#ED4724; color:#ffffff; }
+    .phase-btn.active.p-eyes   { background:#fbbf24; color:#1c1917; }
+    .phase-btn.active.p-survey { background:#22c55e; color:#ffffff; }
+    .phase-btn.active.p-demo .pb-sub, .phase-btn.active.p-survey .pb-sub { color:rgba(255,255,255,0.85); }
+    .phase-btn.active.p-eyes .pb-sub { color:rgba(28,25,23,0.72); }
+    .phase-btn.active.p-eyes .live-dot { animation-name:livePulseDark; }
+    @keyframes livePulseDark { 0%{ box-shadow:0 0 0 0 rgba(28,25,23,0.4);} 70%{ box-shadow:0 0 0 8px rgba(28,25,23,0);} 100%{ box-shadow:0 0 0 0 rgba(28,25,23,0);} }
+
+    /* ── chips ── */
+    .chip { display:inline-flex; align-items:center; gap:5px; font-size:0.68rem; font-weight:600; letter-spacing:0.02em;
+            padding:3px 10px; border-radius:999px; border:1px solid transparent; white-space:nowrap; }
+
+    /* ── tabs ── */
+    .tab-btn { border:none; background:transparent; padding:9px 16px; border-radius:10px; font-size:0.82rem; font-weight:600;
+               color:#78716c; cursor:pointer; font-family:'Poppins','IBM Plex Sans Thai',sans-serif; transition:background 0.15s,color 0.15s; }
+    .tab-btn:hover { color:#1c1917; }
+    .tab-btn.active { background:#1c1917; color:#fafaf9; }
+
+    /* ── distribution bars ── */
+    .bar-track { flex:1; height:18px; background:#f5f5f4; border-radius:6px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:6px; transition:width 0.5s cubic-bezier(0.22,1,0.36,1); min-width:0; }
+
+    /* ── participants table ── */
+    .ptable { width:100%; border-collapse:collapse; }
+    .ptable th { text-align:left; font-size:0.65rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+                 color:#a8a29e; padding:10px 12px; border-bottom:1px solid #e7e5e4; white-space:nowrap; }
+    .ptable td { padding:11px 12px; border-bottom:1px solid #f5f5f4; font-size:0.82rem; vertical-align:middle; }
+    .ptable tr:last-child td { border-bottom:none; }
+
+    /* ── fullscreen QR ── */
+    .fsqr { position:fixed; inset:0; z-index:90; background:#ffffff; display:flex; flex-direction:column;
+            align-items:center; justify-content:center; gap:18px; cursor:pointer; animation:hrRise 0.3s ease-out; }
+
+    /* ── toasts ── */
+    @keyframes toastIn { from { opacity:0; transform:translateY(10px);} to { opacity:1; transform:translateY(0);} }
+    .toast { animation:toastIn 0.25s ease-out; border-radius:12px; padding:11px 16px; font-size:0.82rem; font-weight:500;
+             box-shadow:0 8px 26px rgba(28,25,23,0.18); display:flex; align-items:center; gap:8px; }
+    .toast.err { background:#dc2626; color:#fff; }
+    .toast.ok  { background:#1c1917; color:#fafaf9; }
+
+    .hr-spin { animation:hrSpin 0.7s linear infinite; }
+    @keyframes hrSpin { to { transform:rotate(360deg); } }
+
+    select.sess-select { appearance:none; -webkit-appearance:none; background:#fafaf9 url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2378716c' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+      border:1px solid #e7e5e4; border-radius:10px; padding:8px 32px 8px 12px; font-size:0.78rem; font-weight:500;
+      font-family:'Poppins','IBM Plex Sans Thai',sans-serif; color:#1c1917; cursor:pointer; max-width:240px; }
+    select.sess-select:focus { outline:none; border-color:#d6d3d1; }
+
+    .main-grid { display:grid; grid-template-columns:380px 1fr; gap:20px; align-items:stretch; }
+    .kpi-grid { display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:16px; }
+    .phase-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }
+    @media (max-width:1080px) {
+      .main-grid { grid-template-columns:1fr; }
+      .kpi-grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width:760px) {
+      .phase-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+    /* ───────────────────────── config & constants ───────────────────────── */
+    const CFG = window.STAGE_DEMO_CONFIG || { SUPABASE_URL: '', SUPABASE_ANON_KEY: '', ADMIN_PASSCODE: 'base-e11' };
+    const IS_LOCAL = !CFG.SUPABASE_URL;
+    const sb = IS_LOCAL ? null : window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
+    const QR_OK = typeof window.QRCode !== 'undefined';
+
+    const nowIso = () => new Date().toISOString();
+    const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    const genCode = () => {
+      let out = '';
+      for (let i = 0; i < 6; i++) out += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+      return out;
+    };
+
+    const HARVESTER_QUESTIONS = [
+      { id: 'q1', dim: 'Inspiration', text: 'วันนี้คุณได้ไอเดียใหม่ ๆ จากเวทีนี้มากแค่ไหน?' },
+      { id: 'q2', dim: 'Relevance',   text: 'เนื้อหาที่ฟังเชื่อมโยงกับงานของคุณมากแค่ไหน?' },
+      { id: 'q3', dim: 'Action',      text: 'คุณอยากนำสิ่งที่ได้ฟังไปลองใช้จริงมากแค่ไหน?' },
+    ];
+    const RATING_LABELS_04 = ['น้อยที่สุด', 'น้อย', 'ปานกลาง', 'มาก', 'มากที่สุด'];
+    const HARVESTER_BAR_COLORS = ['#fed7aa', '#fdba74', '#fb923c', '#f97316', '#ea580c'];
+    const SURVEY_EMOJI = ['😞', '😕', '🙂', '😄', '🤩'];
+    const SURVEY_LABELS = ['ไม่พอใจ', 'เฉย ๆ', 'พอใจ', 'พอใจมาก', 'ประทับใจมาก'];
+    const SURVEY_BAR_COLORS = ['#fca5a5', '#fcd34d', '#bef264', '#86efac', '#4ade80'];
+
+    const STEP_CHIP = {
+      join:      { label: 'Join',      bg: '#f5f5f4', fg: '#57534e', bd: '#e7e5e4' },
+      harvester: { label: 'Harvester', bg: '#fff7ed', fg: '#c2410c', bd: '#fed7aa' },
+      insight:   { label: 'Insight',   bg: '#eef2ff', fg: '#4338ca', bd: '#c7d2fe' },
+      challenge: { label: 'Challenge', bg: '#faf5ff', fg: '#7e22ce', bd: '#e9d5ff' },
+      eyes_up:   { label: 'Eyes Up',   bg: '#fffbeb', fg: '#b45309', bd: '#fde68a' },
+      survey:    { label: 'Survey',    bg: '#f0fdf4', fg: '#15803d', bd: '#bbf7d0' },
+      done:      { label: 'Done',      bg: '#ecfdf5', fg: '#047857', bd: '#a7f3d0' },
+    };
+
+    const PHASE_DEFS = [
+      { key: 'demo',    cls: 'p-demo',   label: 'Demo',      sub: 'Join → Harvester → Insight → Challenge' },
+      { key: 'eyes_up', cls: 'p-eyes',   label: 'Eyes Up 👀', sub: 'ล็อกหน้าจอทุกเครื่อง ให้ฟังวิทยากร' },
+      { key: 'survey',  cls: 'p-survey', label: 'Survey',    sub: 'ถามความพึงพอใจ 2 คำถาม' },
+    ];
+
+    /* ───────────────────────── time / format helpers ───────────────────────── */
+    const pad2 = (n) => String(n).padStart(2, '0');
+    const fmtClock = (ms) => {
+      const d = new Date(ms);
+      return pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ':' + pad2(d.getSeconds());
+    };
+    const fmtHHMM = (iso) => {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return '—';
+      return pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    };
+    const fmtElapsed = (iso, nowMs) => {
+      if (!iso) return '00:00';
+      const s = Math.max(0, Math.floor((nowMs - new Date(iso).getTime()) / 1000));
+      return pad2(Math.floor(s / 60)) + ':' + pad2(s % 60);
+    };
+    const timeAgoTh = (iso, nowMs) => {
+      if (!iso) return '—';
+      const s = Math.max(0, Math.floor((nowMs - new Date(iso).getTime()) / 1000));
+      if (s < 60) return s + ' วินาทีที่แล้ว';
+      const m = Math.floor(s / 60);
+      if (m < 60) return m + ' นาทีที่แล้ว';
+      return Math.floor(m / 60) + ' ชั่วโมงที่แล้ว';
+    };
+    const isOnline = (iso, nowMs) => {
+      if (!iso) return false;
+      return (nowMs - new Date(iso).getTime()) <= 60000;
+    };
+    const defaultSessionName = () => {
+      const d = new Date();
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return 'Stage Demo ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    };
+
+    /* ───────────────────────── CSV helpers ───────────────────────── */
+    const csvEscape = (v) => {
+      const s = (v === null || v === undefined) ? '' : String(v);
+      return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    const downloadCsv = (filename, headers, rows) => {
+      const lines = [headers.map(csvEscape).join(',')].concat(rows.map((r) => r.map(csvEscape).join(',')));
+      const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    };
+
+    const copyText = async (text) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (e) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          const ok = document.execCommand('copy');
+          ta.remove();
+          return ok;
+        } catch (e2) {
+          return false;
+        }
+      }
+    };
+
+    /* ───────────────────────── local-mode storage ───────────────────────── */
+    const LOCAL_DB_KEY = 'stage_demo_local_db';
+    const EMPTY_DB = { sessions: [], participants: [], harvester_answers: [], survey_responses: [], events: [] };
+    const readDb = () => {
+      try {
+        const raw = localStorage.getItem(LOCAL_DB_KEY);
+        if (!raw) return JSON.parse(JSON.stringify(EMPTY_DB));
+        const db = JSON.parse(raw);
+        Object.keys(EMPTY_DB).forEach((k) => { if (!Array.isArray(db[k])) db[k] = []; });
+        return db;
+      } catch (e) {
+        return JSON.parse(JSON.stringify(EMPTY_DB));
+      }
+    };
+    const writeDb = (db) => {
+      localStorage.setItem(LOCAL_DB_KEY, JSON.stringify(db));
+      try {
+        const bc = new BroadcastChannel('stage_demo_sync');
+        bc.postMessage({ type: 'db_change' });
+        bc.close();
+      } catch (e) { /* BroadcastChannel unsupported — 2s poll covers it */ }
+    };
+    const byCreatedDesc = (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+    const byJoinedDesc = (a, b) => new Date(b.joined_at || 0).getTime() - new Date(a.joined_at || 0).getTime();
+
+    /* ───────────────────────── data access layer (dual backend) ───────────────────────── */
+    const localApi = {
+      async listSessions() {
+        return readDb().sessions.slice().sort(byCreatedDesc);
+      },
+      async getSessionById(id) {
+        return readDb().sessions.find((s) => s.id === id) || null;
+      },
+      async getSessionByCode(code) {
+        return readDb().sessions.find((s) => s.code === code && s.is_active) || null;
+      },
+      async createSession(name) {
+        const db = readDb();
+        let code = genCode();
+        let guard = 0;
+        while (db.sessions.some((s) => s.code === code) && guard++ < 50) code = genCode();
+        const row = {
+          id: crypto.randomUUID(),
+          code,
+          name: name || 'Stage Demo',
+          phase: 'demo',
+          is_active: true,
+          created_at: nowIso(),
+          phase_changed_at: nowIso(),
+        };
+        db.sessions.push(row);
+        writeDb(db);
+        return row;
+      },
+      async updatePhase(sessionId, phase) {
+        const db = readDb();
+        const s = db.sessions.find((x) => x.id === sessionId);
+        if (!s) throw new Error('session not found');
+        s.phase = phase;
+        s.phase_changed_at = nowIso();
+        writeDb(db);
+        return s;
+      },
+      async resetSession(sessionId) {
+        const db = readDb();
+        db.participants = db.participants.filter((p) => p.session_id !== sessionId);
+        db.harvester_answers = db.harvester_answers.filter((a) => a.session_id !== sessionId);
+        db.survey_responses = db.survey_responses.filter((r) => r.session_id !== sessionId);
+        db.events = db.events.filter((e) => e.session_id !== sessionId);
+        const s = db.sessions.find((x) => x.id === sessionId);
+        if (s) { s.phase = 'demo'; s.phase_changed_at = nowIso(); }
+        writeDb(db);
+        return s || null;
+      },
+      async listParticipants(sessionId) {
+        return readDb().participants.filter((p) => p.session_id === sessionId).sort(byJoinedDesc);
+      },
+      async listHarvesterAnswers(sessionId) {
+        return readDb().harvester_answers.filter((a) => a.session_id === sessionId);
+      },
+      async listSurveys(sessionId) {
+        return readDb().survey_responses.filter((r) => r.session_id === sessionId).sort(byCreatedDesc);
+      },
+      async listEvents(sessionId) {
+        return readDb().events.filter((e) => e.session_id === sessionId);
+      },
+      subscribeSession(sessionId, cb) {
+        let bc = null;
+        try {
+          bc = new BroadcastChannel('stage_demo_sync');
+          bc.onmessage = (msg) => {
+            if (msg && msg.data && msg.data.type === 'db_change') cb();
+          };
+        } catch (e) { /* unsupported — polling covers it */ }
+        return () => { try { if (bc) bc.close(); } catch (e) {} };
+      },
+    };
+
+    const supaApi = {
+      async listSessions() {
+        const { data, error } = await sb.from('demo_sessions').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        return data || [];
+      },
+      async getSessionById(id) {
+        const { data, error } = await sb.from('demo_sessions').select('*').eq('id', id).maybeSingle();
+        if (error) throw error;
+        return data || null;
+      },
+      async getSessionByCode(code) {
+        const { data, error } = await sb.from('demo_sessions').select('*').eq('code', code).eq('is_active', true).maybeSingle();
+        if (error) throw error;
+        return data || null;
+      },
+      async createSession(name) {
+        for (let i = 0; i < 5; i++) {
+          const code = genCode();
+          const { data, error } = await sb.from('demo_sessions')
+            .insert({ code, name: name || 'Stage Demo', phase: 'demo', is_active: true })
+            .select().single();
+          if (!error) return data;
+          const dup = error.code === '23505' || /duplicate|unique/i.test(error.message || '');
+          if (!dup) throw error;
+        }
+        throw new Error('could not generate a unique session code');
+      },
+      async updatePhase(sessionId, phase) {
+        const { data, error } = await sb.from('demo_sessions')
+          .update({ phase, phase_changed_at: nowIso() })
+          .eq('id', sessionId)
+          .select().single();
+        if (error) throw error;
+        return data;
+      },
+      async resetSession(sessionId) {
+        // children first — participants cascade-deletes answers/surveys, but events
+        // reference the session directly, so clear everything explicitly
+        const tables = ['demo_events', 'demo_survey_responses', 'demo_harvester_answers', 'demo_participants'];
+        for (const t of tables) {
+          const { error } = await sb.from(t).delete().eq('session_id', sessionId);
+          if (error) throw error;
+        }
+        const { data, error } = await sb.from('demo_sessions')
+          .update({ phase: 'demo', phase_changed_at: nowIso() })
+          .eq('id', sessionId).select().single();
+        if (error) throw error;
+        return data;
+      },
+      async listParticipants(sessionId) {
+        const { data, error } = await sb.from('demo_participants').select('*')
+          .eq('session_id', sessionId).order('joined_at', { ascending: false });
+        if (error) throw error;
+        return data || [];
+      },
+      async listHarvesterAnswers(sessionId) {
+        const { data, error } = await sb.from('demo_harvester_answers').select('*')
+          .eq('session_id', sessionId).order('created_at', { ascending: true });
+        if (error) throw error;
+        return data || [];
+      },
+      async listSurveys(sessionId) {
+        const { data, error } = await sb.from('demo_survey_responses').select('*')
+          .eq('session_id', sessionId).order('created_at', { ascending: false });
+        if (error) throw error;
+        return data || [];
+      },
+      async listEvents(sessionId) {
+        const { data, error } = await sb.from('demo_events').select('*')
+          .eq('session_id', sessionId).order('created_at', { ascending: true });
+        if (error) throw error;
+        return data || [];
+      },
+      subscribeSession(sessionId, cb) {
+        let channel = null;
+        try {
+          channel = sb.channel('stage-demo-' + sessionId)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'demo_participants',      filter: 'session_id=eq.' + sessionId }, cb)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'demo_harvester_answers', filter: 'session_id=eq.' + sessionId }, cb)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'demo_survey_responses',  filter: 'session_id=eq.' + sessionId }, cb)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'demo_events',            filter: 'session_id=eq.' + sessionId }, cb)
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'demo_sessions',     filter: 'id=eq.' + sessionId }, cb)
+            .subscribe();
+        } catch (e) { /* realtime is a bonus — polling covers it */ }
+        return () => { try { if (channel) sb.removeChannel(channel); } catch (e) {} };
+      },
+    };
+
+    const api = IS_LOCAL ? localApi : supaApi;
+
+    /* ───────────────────────── JOINSTICK logo (verbatim from main app) ───────────────────────── */
+    const JoinstickLogo = ({ size = 36, variant = 'white', style }) => {
+      const fill = variant === 'white' ? '#ffffff' : '#231F20';
+      return (
+        <svg width={size} height={size} viewBox="0 0 1024 1024" fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{flexShrink:0, ...(style||{})}}>
+          <path fill={fill} d="M386.175 147.012H271.91C268.085 146.902 264.273 147.55 260.717 148.943C257.149 150.336 253.898 152.425 251.149 155.101C248.4 157.777 246.225 160.979 244.734 164.51C243.243 168.042 242.473 171.842 242.473 175.691C242.473 179.54 243.243 183.329 244.734 186.872C246.225 190.404 248.412 193.605 251.149 196.281C253.898 198.957 257.149 201.047 260.717 202.44C264.285 203.833 268.098 204.481 271.91 204.371H386.175C393.605 204.151 400.655 201.022 405.824 195.67C411.005 190.318 413.889 183.157 413.889 175.691C413.889 168.225 410.993 161.064 405.824 155.712C400.643 150.36 393.605 147.244 386.175 147.012ZM751.834 147.012H637.568C633.744 146.902 629.931 147.55 626.375 148.943C622.807 150.336 619.557 152.425 616.807 155.101C614.058 157.777 611.883 160.979 610.392 164.51C608.901 168.042 608.132 171.842 608.132 175.691C608.132 179.54 608.901 183.329 610.392 186.872C611.883 190.404 614.07 193.605 616.807 196.281C619.557 198.957 622.807 201.047 626.375 202.44C629.943 203.833 633.756 204.481 637.568 204.371H751.834C759.263 204.151 766.314 201.022 771.483 195.67C776.664 190.318 779.548 183.157 779.548 175.691C779.548 168.225 776.652 161.064 771.483 155.712C766.302 150.36 759.263 147.244 751.834 147.012Z"/>
+          <path fill={fill} d="M861.602 876.093C837.163 876.129 813.029 870.545 791.071 859.755C769.112 848.965 749.927 833.263 734.971 813.846L733.492 814.335L646.256 670.511C643.959 666.759 640.745 663.668 636.909 661.517C633.084 659.366 628.77 658.218 624.396 658.193H399.58C395.193 658.218 390.88 659.354 387.067 661.517C383.242 663.668 380.029 666.771 377.719 670.511L290.398 814.396L288.92 813.907C273.963 833.312 254.778 849.026 232.819 859.816C210.861 870.606 186.739 876.19 162.288 876.154C74.7105 876.154 3.33594 805.696 2.06511 718.631L0 717.935L2.2484 702.819C2.63943 700.229 41.0089 440.551 45.9945 408.548C67.3176 270.515 129.931 199.996 242.546 188.094V186.176H781.344V188.253C831.737 194.424 874.371 216.187 907.963 253.09C942.508 290.983 966.03 343.136 977.896 408.12C983.737 440.221 1020.18 692.2 1021.82 702.905L1024 717.996L1021.98 718.668C1020.57 805.732 949.192 876.08 861.614 876.08L861.602 876.093ZM749.634 770.699L757.259 782.576C768.477 800.16 783.934 814.616 802.19 824.612C820.446 834.607 840.926 839.825 861.736 839.776C930.117 839.776 985.777 784.385 985.777 716.31C985.777 713.536 985.545 710.554 985.313 707.414L984.714 699.447C978.152 654.039 947.506 442.701 942.361 414.535C929.824 345.812 889.768 229.58 762.477 222.932L752.371 222.419H271.568L261.487 222.932C155.274 228.455 101.508 285.619 81.6756 414.034C77.2521 442.555 45.8112 655.212 39.1882 699.85L38.6138 707.34C38.3817 710.505 38.1739 713.487 38.1739 716.285C38.3572 743.119 47.192 769.184 63.334 790.568C79.4761 811.964 102.082 827.544 127.78 834.998C153.478 842.452 180.874 841.365 205.9 831.919C230.925 822.461 252.249 805.146 266.668 782.552L274.293 770.674H274.476L346.828 651.558C352.376 642.503 360.123 635.013 369.361 629.807C378.599 624.602 388.998 621.852 399.592 621.816H624.408C635.002 621.852 645.401 624.602 654.627 629.807C663.853 635.013 671.612 642.503 677.148 651.558L749.5 770.674H749.597L749.634 770.699Z"/>
+          <path fill="url(#jl-grad)" d="M520.089 270.014L755.842 273.851C755.842 273.851 810.5 273.851 846.462 319.234C865.634 343.404 883.829 411.553 883.829 411.553C883.829 411.553 932.671 671.414 932.671 705.544C932.671 739.673 912.435 778.152 872.844 780.755C833.253 783.346 798.292 729.091 798.292 729.091L520.089 270.014Z"/>
+          <path fill={fill} d="M280.561 362.969H256.159C244.774 362.969 235.544 372.198 235.544 383.583V502.883C235.544 514.268 244.774 523.497 256.159 523.497H280.561C291.946 523.497 301.176 514.268 301.176 502.883V383.583C301.176 372.198 291.946 362.969 280.561 362.969Z"/>
+          <path fill={fill} d="M348.625 455.435V431.032C348.625 419.647 339.395 410.418 328.01 410.418H208.71C197.325 410.418 188.096 419.647 188.096 431.032V455.435C188.096 466.82 197.325 476.049 208.71 476.049H328.01C339.395 476.049 348.625 466.82 348.625 455.435Z"/>
+          <defs>
+            <linearGradient id="jl-grad" x1="628.514" y1="220.219" x2="987.964" y2="783.248" gradientUnits="userSpaceOnUse">
+              <stop offset="0.15" stopColor="#ED4724"/>
+              <stop offset="0.26" stopColor="#E94523"/>
+              <stop offset="0.37" stopColor="#DD4221"/>
+              <stop offset="0.48" stopColor="#C93C1E"/>
+              <stop offset="0.59" stopColor="#AD331A"/>
+              <stop offset="0.7"  stopColor="#882914"/>
+              <stop offset="0.81" stopColor="#5C1B0E"/>
+              <stop offset="0.92" stopColor="#290C06"/>
+              <stop offset="1"    stopColor="#000000"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      );
+    };
+
+    /* ───────────────────────── passcode gate ───────────────────────── */
+    function Gate({ onOk }) {
+      const [val, setVal] = useState('');
+      const [err, setErr] = useState(false);
+      const [shaking, setShaking] = useState(false);
+      const inputRef = useRef(null);
+
+      useEffect(() => { if (inputRef.current) inputRef.current.focus(); }, []);
+
+      const submit = () => {
+        if (val === CFG.ADMIN_PASSCODE) {
+          sessionStorage.setItem('stage_demo_admin_ok', '1');
+          onOk();
+        } else {
+          setErr(true);
+          setShaking(true);
+          setTimeout(() => setShaking(false), 520);
+        }
+      };
+
+      return (
+        <div style={{position:'fixed', inset:0, background:'#161412', display:'flex', alignItems:'center', justifyContent:'center', padding:24, zIndex:100}}>
+          <div className={shaking ? 'gate-shake' : ''}
+            style={{width:400, maxWidth:'100%', background:'#1c1917', border:'1px solid #292524', borderRadius:24,
+                    padding:'44px 40px', boxShadow:'0 24px 70px rgba(0,0,0,0.5)'}}>
+            <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:14, marginBottom:30}}>
+              <JoinstickLogo size={64} variant="white" />
+              <div style={{fontFamily:'Poppins,sans-serif', fontWeight:800, letterSpacing:'0.14em', color:'#fafaf9', fontSize:'1.1rem'}}>JOINSTICK</div>
+              <div style={{color:'#a8a29e', fontSize:'0.85rem', fontWeight:500}}>Stage Demo — Admin</div>
+            </div>
+            <input
+              ref={inputRef}
+              type="password"
+              className={'gate-input' + (err ? ' err' : '')}
+              placeholder="Passcode"
+              value={val}
+              onChange={(e) => { setVal(e.target.value); setErr(false); }}
+              onKeyDown={(e) => { if (e.key === 'Enter') submit(); }}
+            />
+            {err && (
+              <div style={{color:'#ef4444', fontSize:'0.76rem', marginTop:10, fontWeight:500}}>
+                รหัสไม่ถูกต้อง ลองอีกครั้ง
+              </div>
+            )}
+            <button className="hr-btn-primary" onClick={submit}
+              style={{width:'100%', marginTop:18, background:'#ED4724', padding:'13px 18px', fontSize:'0.9rem', fontWeight:600, borderRadius:12}}>
+              เข้าสู่ Console
+            </button>
+            <div style={{color:'#57534e', fontSize:'0.68rem', textAlign:'center', marginTop:22}}>
+              BASE Playhouse — Booth No. E11
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ───────────────────────── small shared components ───────────────────────── */
+    function ConnBadge() {
+      if (IS_LOCAL) {
+        return (
+          <span className="chip" style={{background:'#fffbeb', color:'#b45309', borderColor:'#fde68a'}}>
+            <span style={{width:7, height:7, borderRadius:'50%', background:'#fbbf24', flexShrink:0}}></span>
+            Local Mode — ข้อมูลอยู่ในเครื่องนี้เท่านั้น
+          </span>
+        );
+      }
+      return (
+        <span className="chip" style={{background:'#f0fdf4', color:'#15803d', borderColor:'#bbf7d0'}}>
+          <span style={{width:7, height:7, borderRadius:'50%', background:'#22c55e', flexShrink:0}}></span>
+          Supabase Connected
+        </span>
+      );
+    }
+
+    function StepChip({ step }) {
+      const c = STEP_CHIP[step] || STEP_CHIP.join;
+      return (
+        <span className="chip" style={{background:c.bg, color:c.fg, borderColor:c.bd}}>{c.label}</span>
+      );
+    }
+
+    function Toasts({ items }) {
+      if (!items.length) return null;
+      return (
+        <div style={{position:'fixed', right:20, bottom:20, zIndex:95, display:'flex', flexDirection:'column', gap:8, maxWidth:340}}>
+          {items.map((t) => (
+            <div key={t.id} className={'toast ' + (t.type === 'error' ? 'err' : 'ok')}>
+              {t.type === 'error' ? '⚠️' : '✓'} {t.msg}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    function CheckIcon({ size = 16 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}>
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      );
+    }
+
+    function KpiCard({ label, value, sub, accent }) {
+      return (
+        <div className="hr-card" style={{padding:'18px 20px', display:'flex', flexDirection:'column', gap:6}}>
+          <div className="hr-eyebrow" style={{display:'flex', alignItems:'center', gap:6}}>
+            {accent === 'green' && <span className="online-dot" style={{width:7, height:7}}></span>}
+            {label}
+          </div>
+          <div style={{display:'flex', alignItems:'baseline', gap:8}}>
+            <div className="hr-kpi" style={{fontSize:'1.9rem', lineHeight:1.1}}>{value}</div>
+            {sub && <div style={{fontSize:'0.7rem', color:'#a8a29e', fontWeight:500}}>{sub}</div>}
+          </div>
+        </div>
+      );
+    }
+
+    function DistBar({ label, count, total, color, emoji }) {
+      const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+      return (
+        <div style={{display:'flex', alignItems:'center', gap:10}}>
+          <div style={{width:emoji ? 30 : 96, fontSize:'0.72rem', color:'#78716c', fontWeight:500, flexShrink:0,
+                       display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap'}}>
+            {emoji ? <span style={{fontSize:'1.05rem'}}>{emoji}</span> : label}
+          </div>
+          <div className="bar-track">
+            <div className="bar-fill" style={{width:pct + '%', background:color}}></div>
+          </div>
+          <div className="num" style={{width:62, fontSize:'0.72rem', color:'#57534e', textAlign:'right', flexShrink:0}}>
+            {count} · {pct}%
+          </div>
+        </div>
+      );
+    }
+
+    /* ───────────────────────── console (main app after gate) ───────────────────────── */
+    function Console() {
+      const [sessions, setSessions] = useState([]);
+      const [selectedId, setSelectedId] = useState(null);
+      const [session, setSession] = useState(null);
+      const [participants, setParticipants] = useState([]);
+      const [answers, setAnswers] = useState([]);
+      const [surveys, setSurveys] = useState([]);
+      const [events, setEvents] = useState([]);
+      const [booted, setBooted] = useState(false);
+      const [tab, setTab] = useState('participants');
+      const [now, setNow] = useState(Date.now());
+      const [toasts, setToasts] = useState([]);
+      const [showCreate, setShowCreate] = useState(false);
+      const [creating, setCreating] = useState(false);
+      const [newName, setNewName] = useState(defaultSessionName());
+      const [fsQR, setFsQR] = useState(false);
+      const [copied, setCopied] = useState(false);
+      const [confirmReset, setConfirmReset] = useState(false);
+      const [resetting, setResetting] = useState(false);
+
+      const selectedIdRef = useRef(null);
+      const lastErrToastRef = useRef(0);
+      const toastSeqRef = useRef(0);
+      const qrRef = useRef(null);
+      const fsQrRef = useRef(null);
+
+      /* ── toast helpers ── */
+      const pushToast = useCallback((type, msg) => {
+        const id = ++toastSeqRef.current;
+        setToasts((list) => [...list, { id, type, msg }]);
+        setTimeout(() => setToasts((list) => list.filter((t) => t.id !== id)), 3500);
+      }, []);
+      const pushErrToast = useCallback((msg) => {
+        const nowMs = Date.now();
+        if (nowMs - lastErrToastRef.current < 8000) return; // dedupe poll-failure spam
+        lastErrToastRef.current = nowMs;
+        pushToast('error', msg || 'โหลดข้อมูลไม่สำเร็จ');
+      }, [pushToast]);
+
+      /* ── clock tick (1s) ── */
+      useEffect(() => {
+        const iv = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(iv);
+      }, []);
+
+      /* ── load session list on boot ── */
+      const refreshSessions = useCallback(async (autoSelect) => {
+        try {
+          const list = await api.listSessions();
+          setSessions(list);
+          if (autoSelect && list.length && !selectedIdRef.current) {
+            selectedIdRef.current = list[0].id;
+            setSelectedId(list[0].id);
+          }
+        } catch (e) {
+          pushErrToast();
+        }
+      }, [pushErrToast]);
+
+      useEffect(() => {
+        (async () => {
+          await refreshSessions(true);
+          setBooted(true);
+        })();
+      }, []);
+
+      /* ── keep session list fresh (poll + local-mode broadcast); auto-select once one appears ── */
+      useEffect(() => {
+        const refresh = () => refreshSessions(!selectedIdRef.current);
+        const iv = setInterval(refresh, IS_LOCAL ? 2000 : 5000);
+        let bc = null;
+        if (IS_LOCAL) {
+          try {
+            bc = new BroadcastChannel('stage_demo_sync');
+            bc.onmessage = (msg) => {
+              if (msg && msg.data && msg.data.type === 'db_change') refresh();
+            };
+          } catch (e) { /* unsupported — poll covers it */ }
+        }
+        return () => {
+          clearInterval(iv);
+          try { if (bc) bc.close(); } catch (e) {}
+        };
+      }, [refreshSessions]);
+
+      /* ── load all data for the selected session ── */
+      const loadAll = useCallback(async (sid) => {
+        if (!sid) return;
+        try {
+          const [sess, parts, ans, survs, evs] = await Promise.all([
+            api.getSessionById(sid),
+            api.listParticipants(sid),
+            api.listHarvesterAnswers(sid),
+            api.listSurveys(sid),
+            api.listEvents(sid),
+          ]);
+          if (selectedIdRef.current !== sid) return; // selection changed while loading
+          if (sess) {
+            // a poll started before an optimistic phase change must not revert it:
+            // only accept the fetched session if its phase_changed_at is not older
+            const isStale = (cur) => cur && cur.id === sess.id &&
+              cur.phase_changed_at && sess.phase_changed_at &&
+              new Date(sess.phase_changed_at).getTime() < new Date(cur.phase_changed_at).getTime();
+            setSession((cur) => (isStale(cur) ? cur : sess));
+            setSessions((list) => list.map((s) => (s.id === sess.id ? (isStale(s) ? s : sess) : s)));
+          }
+          setParticipants(parts || []);
+          setAnswers(ans || []);
+          setSurveys(survs || []);
+          setEvents(evs || []);
+        } catch (e) {
+          pushErrToast();
+        }
+      }, [pushErrToast]);
+
+      /* ── poll + realtime subscribe per selected session ── */
+      useEffect(() => {
+        selectedIdRef.current = selectedId;
+        if (!selectedId) { setSession(null); return; }
+        setSession(null);
+        setParticipants([]); setAnswers([]); setSurveys([]); setEvents([]);
+        loadAll(selectedId);
+        const iv = setInterval(() => loadAll(selectedId), IS_LOCAL ? 2000 : 5000);
+        const unsub = api.subscribeSession(selectedId, () => loadAll(selectedId));
+        return () => {
+          clearInterval(iv);
+          if (typeof unsub === 'function') unsub();
+        };
+      }, [selectedId, loadAll]);
+
+      /* ── join URL + QR rendering ── */
+      const joinUrl = useMemo(() => {
+        if (!session) return '';
+        return location.origin + location.pathname.replace(/admin\/?(index\.html)?$/, '') + '?s=' + session.code;
+      }, [session && session.code]);
+
+      useEffect(() => {
+        if (!QR_OK || !joinUrl || !qrRef.current) return;
+        try {
+          window.QRCode.toCanvas(qrRef.current, joinUrl,
+            { width: 260, margin: 2, color: { dark: '#161412', light: '#ffffff' } }, () => {});
+        } catch (e) { /* fallback text shown instead */ }
+      }, [joinUrl]);
+
+      useEffect(() => {
+        if (!fsQR || !QR_OK || !joinUrl || !fsQrRef.current) return;
+        try {
+          window.QRCode.toCanvas(fsQrRef.current, joinUrl,
+            { width: 520, margin: 2, color: { dark: '#161412', light: '#ffffff' } }, () => {});
+        } catch (e) {}
+      }, [fsQR, joinUrl]);
+
+      useEffect(() => {
+        if (!fsQR) return;
+        const onKey = (e) => { if (e.key === 'Escape') setFsQR(false); };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+      }, [fsQR]);
+
+      /* ── handlers ── */
+      const handleCreate = async () => {
+        if (creating) return;
+        setCreating(true);
+        try {
+          const s = await api.createSession((newName || '').trim() || defaultSessionName());
+          setSessions((list) => [s, ...list.filter((x) => x.id !== s.id)]);
+          selectedIdRef.current = s.id;
+          setSelectedId(s.id);
+          setShowCreate(false);
+          setNewName(defaultSessionName());
+          pushToast('ok', 'สร้าง Session ' + s.code + ' เรียบร้อย');
+        } catch (e) {
+          pushToast('error', 'สร้าง Session ไม่สำเร็จ ลองอีกครั้ง');
+        } finally {
+          setCreating(false);
+        }
+      };
+
+      const changePhase = async (phase) => {
+        if (!session || session.phase === phase) return;
+        const prev = session;
+        const optimistic = { ...session, phase, phase_changed_at: nowIso() };
+        setSession(optimistic);
+        setSessions((list) => list.map((s) => (s.id === optimistic.id ? optimistic : s)));
+        try {
+          await api.updatePhase(session.id, phase);
+          loadAll(session.id);
+        } catch (e) {
+          setSession(prev);
+          setSessions((list) => list.map((s) => (s.id === prev.id ? prev : s)));
+          pushToast('error', 'เปลี่ยนเฟสไม่สำเร็จ ลองอีกครั้ง');
+        }
+      };
+
+      const handleReset = async () => {
+        if (!session || resetting) return;
+        setResetting(true);
+        try {
+          await api.resetSession(session.id);
+          setParticipants([]); setAnswers([]); setSurveys([]); setEvents([]);
+          setConfirmReset(false);
+          await loadAll(session.id);
+          pushToast('ok', 'รีเซ็ตเรียบร้อย — เริ่มใหม่ที่ Phase Demo');
+        } catch (e) {
+          pushToast('error', 'รีเซ็ตไม่สำเร็จ ลองอีกครั้ง');
+        } finally {
+          setResetting(false);
+        }
+      };
+
+      const handleCopy = async () => {
+        const ok = await copyText(joinUrl);
+        if (ok) {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1800);
+        } else {
+          pushToast('error', 'คัดลอกไม่สำเร็จ');
+        }
+      };
+
+      const downloadQrPng = () => {
+        const c = qrRef.current;
+        if (!c || !session) { pushToast('error', 'ยังไม่มี QR ให้ดาวน์โหลด'); return; }
+        try {
+          const url = c.toDataURL('image/png');
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'joinstick-qr-' + session.code + '.png';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } catch (e) {
+          pushToast('error', 'ดาวน์โหลดไม่สำเร็จ');
+        }
+      };
+
+      /* ── derived stats ── */
+      const pById = useMemo(() => {
+        const m = {};
+        participants.forEach((p) => { m[p.id] = p; });
+        return m;
+      }, [participants]);
+
+      const stats = useMemo(() => {
+        const joined = participants.length;
+        const online = participants.filter((p) => isOnline(p.last_seen_at, now)).length;
+        const harvesterDone = new Set(answers.map((a) => a.participant_id)).size;
+        const challengeAccepted = new Set(
+          events.filter((e) => e.event_type === 'challenge_accept').map((e) => e.participant_id)
+        ).size;
+        const surveyCount = surveys.length;
+        const surveyAvg = surveyCount
+          ? surveys.reduce((s, r) => s + (r.rating || 0), 0) / surveyCount
+          : 0;
+        return { joined, online, harvesterDone, challengeAccepted, surveyCount, surveyAvg };
+      }, [participants, answers, events, surveys, now]);
+
+      const harvesterStats = useMemo(() => {
+        return HARVESTER_QUESTIONS.map((q) => {
+          const rows = answers.filter((a) => a.question_id === q.id);
+          const dist = [0, 0, 0, 0, 0];
+          rows.forEach((r) => { if (r.rating >= 0 && r.rating <= 4) dist[r.rating]++; });
+          const n = rows.length;
+          const avg = n ? rows.reduce((s, r) => s + r.rating, 0) / n : 0;
+          return { ...q, dist, n, avg };
+        });
+      }, [answers]);
+
+      const surveyStats = useMemo(() => {
+        const dist = [0, 0, 0, 0, 0];   // Q1 satisfaction — index 0 = rating 1
+        const dist2 = [0, 0, 0, 0, 0];  // Q2 behavior transformation
+        let sum2 = 0, n2 = 0;
+        surveys.forEach((r) => {
+          if (r.rating >= 1 && r.rating <= 5) dist[r.rating - 1]++;
+          if (r.rating2 >= 1 && r.rating2 <= 5) { dist2[r.rating2 - 1]++; sum2 += r.rating2; n2++; }
+        });
+        const comments = surveys.filter((r) => r.comment && String(r.comment).trim() !== '');
+        return { dist, dist2, avg2: n2 ? sum2 / n2 : 0, n2, comments };
+      }, [surveys]);
+
+      /* ── CSV exports ── */
+      const exportParticipants = () => {
+        downloadCsv('participants.csv',
+          ['nickname', 'device_id', 'current_step', 'joined_at', 'last_seen_at', 'user_agent'],
+          participants.map((p) => [p.nickname, p.device_id, p.current_step, p.joined_at, p.last_seen_at, p.user_agent]));
+      };
+      const exportHarvester = () => {
+        downloadCsv('harvester.csv',
+          ['nickname', 'question_id', 'question_text', 'rating', 'created_at'],
+          answers.map((a) => [
+            (pById[a.participant_id] || {}).nickname || '',
+            a.question_id, a.question_text, a.rating, a.created_at,
+          ]));
+      };
+      const exportSurvey = () => {
+        downloadCsv('survey.csv',
+          ['nickname', 'satisfaction', 'behavior_transformation', 'comment', 'created_at'],
+          surveys.map((r) => [
+            (pById[r.participant_id] || {}).nickname || '',
+            r.rating, (r.rating2 != null ? r.rating2 : ''), r.comment || '', r.created_at,
+          ]));
+      };
+
+      /* ── render ── */
+      const phaseElapsed = session ? fmtElapsed(session.phase_changed_at, now) : '00:00';
+
+      return (
+        <div style={{minHeight:'100vh', display:'flex', flexDirection:'column'}}>
+
+          {/* ── top bar ── */}
+          <header style={{position:'sticky', top:0, zIndex:50, background:'#ffffff', borderBottom:'1px solid #e7e5e4',
+                          padding:'0 24px', height:64, display:'flex', alignItems:'center', gap:14}}>
+            <div style={{display:'flex', alignItems:'center', gap:10, flexShrink:0}}>
+              <JoinstickLogo size={28} variant="black" />
+              <div style={{fontFamily:'Poppins,sans-serif', fontWeight:700, fontSize:'0.95rem', letterSpacing:'-0.01em'}}>
+                Stage Demo Console
+              </div>
+            </div>
+            <ConnBadge />
+            <div style={{flex:1}}></div>
+            {sessions.length > 0 && (
+              <select className="sess-select" value={selectedId || ''} onChange={(e) => setSelectedId(e.target.value)}>
+                {sessions.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name} · {s.code}</option>
+                ))}
+              </select>
+            )}
+            <button className="hr-btn-primary" onClick={() => { setNewName(defaultSessionName()); setShowCreate(true); }}>
+              + New Session
+            </button>
+            <div className="num" style={{fontSize:'0.9rem', fontWeight:600, color:'#57534e', flexShrink:0, minWidth:76, textAlign:'right'}}>
+              {fmtClock(now)}
+            </div>
+          </header>
+
+          {/* ── main ── */}
+          <main style={{flex:1, width:'100%', maxWidth:1280, margin:'0 auto', padding:'24px 24px 12px'}}>
+            {!booted ? (
+              <div style={{display:'flex', alignItems:'center', justifyContent:'center', padding:'120px 0', color:'#a8a29e', gap:10}}>
+                <svg className="hr-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M21 12a9 9 0 1 1-6.2-8.56"></path>
+                </svg>
+                กำลังโหลด…
+              </div>
+            ) : sessions.length === 0 ? (
+              /* ── empty hero: no sessions yet ── */
+              <div className="hr-card" style={{padding:'72px 32px', display:'flex', flexDirection:'column', alignItems:'center',
+                                               gap:18, textAlign:'center', marginTop:24}}>
+                <JoinstickLogo size={72} variant="black" style={{opacity:0.9}} />
+                <div style={{fontFamily:'Poppins,sans-serif', fontWeight:700, fontSize:'1.5rem', letterSpacing:'-0.02em'}}>
+                  สร้าง Session แรกเพื่อเริ่ม Demo
+                </div>
+                <div style={{color:'#78716c', fontSize:'0.88rem', maxWidth:420}}>
+                  สร้าง Session แล้วโชว์ QR บนโปรเจกเตอร์ ให้ผู้ชมสแกนเข้าร่วมได้ทันที
+                </div>
+                <button className="hr-btn-primary"
+                  style={{background:'#ED4724', fontSize:'0.95rem', fontWeight:600, padding:'14px 30px', borderRadius:12}}
+                  onClick={() => { setNewName(defaultSessionName()); setShowCreate(true); }}>
+                  + สร้าง Session ใหม่
+                </button>
+              </div>
+            ) : (
+              <div className="hr-reveal" style={{display:'flex', flexDirection:'column', gap:20}}>
+
+                {/* ── row 1: QR + phase control ── */}
+                <div className="main-grid">
+
+                  {/* ── session & QR card ── */}
+                  <div className="hr-card" style={{display:'flex', flexDirection:'column', gap:14}}>
+                    <div className="hr-eyebrow">Session &amp; QR</div>
+                    {session ? (
+                      <React.Fragment>
+                        <div>
+                          <div style={{fontSize:'0.82rem', fontWeight:600, color:'#57534e'}}>{session.name}</div>
+                          <div className="num" style={{fontSize:32, fontWeight:600, letterSpacing:'0.28em', color:'#1c1917', marginTop:2}}>
+                            {session.code}
+                          </div>
+                        </div>
+                        {QR_OK ? (
+                          <div style={{alignSelf:'center', background:'#ffffff', border:'1px solid #e7e5e4', borderRadius:16, padding:8, lineHeight:0}}>
+                            <canvas ref={qrRef} width={260} height={260} style={{borderRadius:10, display:'block'}}></canvas>
+                          </div>
+                        ) : (
+                          <div style={{background:'#fffbeb', border:'1px solid #fde68a', borderRadius:14, padding:'18px 16px', textAlign:'center'}}>
+                            <div style={{fontSize:'0.74rem', color:'#b45309', fontWeight:600, marginBottom:8}}>
+                              โหลดไลบรารี QR ไม่สำเร็จ — ให้ผู้ชมพิมพ์ลิงก์/โค้ดแทน
+                            </div>
+                            <div className="num" style={{fontSize:'1.4rem', fontWeight:600, letterSpacing:'0.2em'}}>{session.code}</div>
+                            <div className="num" style={{fontSize:'0.78rem', color:'#57534e', marginTop:8, wordBreak:'break-all'}}>{joinUrl}</div>
+                          </div>
+                        )}
+                        <div className="num" style={{fontSize:'0.72rem', color:'#78716c', background:'#fafaf9', border:'1px solid #f5f5f4',
+                                                     borderRadius:10, padding:'8px 10px', wordBreak:'break-all', userSelect:'all'}}>
+                          {joinUrl}
+                        </div>
+                        <div style={{display:'flex', flexWrap:'wrap', gap:8}}>
+                          <button className="hr-btn-ghost" onClick={handleCopy}>{copied ? '✓ Copied' : 'Copy'}</button>
+                          <a className="hr-btn-ghost" href={joinUrl} target="_blank" rel="noopener noreferrer"
+                             style={{textDecoration:'none', display:'inline-flex', alignItems:'center'}}>เปิดหน้า Join ↗</a>
+                          <button className="hr-btn-ghost" onClick={downloadQrPng} disabled={!QR_OK}>Download PNG</button>
+                          <button className="hr-btn-ghost" onClick={() => setFsQR(true)}
+                            style={{background:'#1c1917', color:'#fafaf9', borderColor:'#1c1917'}}>⛶ Fullscreen QR</button>
+                        </div>
+                      </React.Fragment>
+                    ) : (
+                      <div style={{color:'#a8a29e', fontSize:'0.82rem', padding:'30px 0', textAlign:'center'}}>กำลังโหลด Session…</div>
+                    )}
+                  </div>
+
+                  {/* ── phase control (hero) ── */}
+                  <div className="hr-card" style={{display:'flex', flexDirection:'column', gap:16}}>
+                    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8}}>
+                      <div>
+                        <div className="hr-eyebrow">Phase Control</div>
+                        <div style={{fontFamily:'Poppins,sans-serif', fontWeight:700, fontSize:'1.25rem', letterSpacing:'-0.02em', marginTop:2}}>
+                          คุมจังหวะการ Demo บนเวที
+                        </div>
+                      </div>
+                      <div style={{textAlign:'right'}}>
+                        <div className="hr-eyebrow">อยู่ในเฟสนี้มา</div>
+                        <div className="num" style={{fontSize:'1.5rem', fontWeight:600, color:'#1c1917'}}>{phaseElapsed}</div>
+                      </div>
+                    </div>
+                    <div className="phase-grid">
+                      {PHASE_DEFS.map((p) => {
+                        const active = session && session.phase === p.key;
+                        return (
+                          <button key={p.key}
+                            className={'phase-btn ' + p.cls + (active ? ' active' : '')}
+                            onClick={() => changePhase(p.key)}
+                            disabled={!session}>
+                            <span className="pb-title">
+                              {active && <CheckIcon size={15} />}
+                              {p.label}
+                              {active && (
+                                <span style={{display:'inline-flex', alignItems:'center', gap:5, fontSize:'0.62rem',
+                                              fontWeight:700, letterSpacing:'0.1em'}}>
+                                  <span className="live-dot"></span>LIVE
+                                </span>
+                              )}
+                            </span>
+                            <span className="pb-sub">{p.sub}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div style={{fontSize:'0.74rem', color:'#78716c'}}>
+                      ผู้เล่นทุกคนจะเปลี่ยนหน้าจอตามทันที (ภายใน ~5 วินาที)
+                    </div>
+                    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:10,
+                                 borderTop:'1px solid #f5f5f4', paddingTop:12, marginTop:'auto'}}>
+                      <div style={{fontSize:'0.72rem', color:'#a8a29e'}}>
+                        เริ่มรอบใหม่ตั้งแต่ต้น — ล้างผู้เล่นและคำตอบทั้งหมดของ Session นี้
+                      </div>
+                      <button className="hr-btn-ghost"
+                        style={{color:'#dc2626', borderColor:'#fecaca', whiteSpace:'nowrap'}}
+                        onClick={() => setConfirmReset(true)} disabled={!session || resetting}>
+                        ↺ Reset All
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── row 2: KPI cards ── */}
+                <div className="kpi-grid hr-reveal">
+                  <KpiCard label="Joined" value={stats.joined} />
+                  <KpiCard label="Online now" value={stats.online} accent="green" />
+                  <KpiCard label="Harvester เสร็จ" value={stats.harvesterDone} />
+                  <KpiCard label="รับ Challenge" value={stats.challengeAccepted} />
+                  <KpiCard label="Survey ตอบแล้ว" value={stats.surveyCount}
+                    sub={stats.surveyCount ? 'เฉลี่ย ' + stats.surveyAvg.toFixed(1) + '/5' : null} />
+                </div>
+
+                {/* ── row 3: data tabs ── */}
+                <div className="hr-card" style={{padding:0, overflow:'hidden'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:6, padding:'16px 20px', borderBottom:'1px solid #f5f5f4', flexWrap:'wrap'}}>
+                    <button className={'tab-btn' + (tab === 'participants' ? ' active' : '')} onClick={() => setTab('participants')}>
+                      Participants <span className="num" style={{opacity:0.65, marginLeft:4}}>{stats.joined}</span>
+                    </button>
+                    <button className={'tab-btn' + (tab === 'harvester' ? ' active' : '')} onClick={() => setTab('harvester')}>
+                      Harvester <span className="num" style={{opacity:0.65, marginLeft:4}}>{answers.length}</span>
+                    </button>
+                    <button className={'tab-btn' + (tab === 'survey' ? ' active' : '')} onClick={() => setTab('survey')}>
+                      Survey <span className="num" style={{opacity:0.65, marginLeft:4}}>{stats.surveyCount}</span>
+                    </button>
+                    <div style={{flex:1}}></div>
+                    <button className="hr-btn-ghost"
+                      onClick={tab === 'participants' ? exportParticipants : tab === 'harvester' ? exportHarvester : exportSurvey}>
+                      ⬇ Export CSV
+                    </button>
+                  </div>
+
+                  {/* ── participants tab ── */}
+                  {tab === 'participants' && (
+                    <div style={{padding:'4px 8px 8px'}}>
+                      {participants.length === 0 ? (
+                        <div style={{textAlign:'center', color:'#a8a29e', fontSize:'0.84rem', padding:'48px 16px'}}>
+                          ยังไม่มีใคร join — โชว์ QR บนจอได้เลย
+                        </div>
+                      ) : (
+                        <div style={{overflowX:'auto'}}>
+                          <table className="ptable">
+                            <thead>
+                              <tr>
+                                <th style={{width:24}}></th>
+                                <th>Nickname</th>
+                                <th>Device</th>
+                                <th>Step</th>
+                                <th>Joined</th>
+                                <th>Last seen</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {participants.map((p) => {
+                                const online = isOnline(p.last_seen_at, now);
+                                return (
+                                  <tr key={p.id} className="hr-row-hover">
+                                    <td>
+                                      {online ? <span className="online-dot"></span> : <span className="offline-dot"></span>}
+                                    </td>
+                                    <td style={{fontWeight:600}}>{p.nickname || '—'}</td>
+                                    <td className="num" style={{color:'#a8a29e', fontSize:'0.74rem'}}>
+                                      {(p.device_id || '').slice(0, 8)}
+                                    </td>
+                                    <td><StepChip step={p.current_step} /></td>
+                                    <td className="num" style={{color:'#57534e'}}>{fmtHHMM(p.joined_at)}</td>
+                                    <td style={{color: online ? '#15803d' : '#a8a29e', fontSize:'0.76rem'}}>
+                                      {timeAgoTh(p.last_seen_at, now)}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ── harvester tab ── */}
+                  {tab === 'harvester' && (
+                    <div style={{padding:20, display:'flex', flexDirection:'column', gap:20}}>
+                      {answers.length === 0 && (
+                        <div style={{textAlign:'center', color:'#a8a29e', fontSize:'0.84rem', padding:'34px 16px'}}>
+                          ยังไม่มีคำตอบ Harvester — รอผู้ชมเล่นถึงช่วงคำถาม
+                        </div>
+                      )}
+                      {harvesterStats.map((q) => (
+                        <div key={q.id} style={{border:'1px solid #f5f5f4', borderRadius:16, padding:'18px 20px'}}>
+                          <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:16, flexWrap:'wrap'}}>
+                            <div style={{flex:1, minWidth:240}}>
+                              <span className="chip" style={{background:'#fff7ed', color:'#c2410c', borderColor:'#fed7aa', marginBottom:8}}>
+                                {q.id.toUpperCase()} · {q.dim}
+                              </span>
+                              <div style={{fontSize:'0.92rem', fontWeight:600, color:'#1c1917', marginTop:6}}>{q.text}</div>
+                              <div style={{fontSize:'0.7rem', color:'#a8a29e', marginTop:4}}>{q.n} คำตอบ</div>
+                            </div>
+                            <div style={{textAlign:'right'}}>
+                              <span className="hr-kpi" style={{fontSize:'2.1rem', color:'#f97316'}}>
+                                {q.n ? q.avg.toFixed(1) : '–'}
+                              </span>
+                              <span className="num" style={{fontSize:'0.85rem', color:'#a8a29e'}}> / 4</span>
+                            </div>
+                          </div>
+                          <div style={{display:'flex', flexDirection:'column', gap:7, marginTop:14}}>
+                            {[4, 3, 2, 1, 0].map((r) => (
+                              <DistBar key={r}
+                                label={r + ' · ' + RATING_LABELS_04[r]}
+                                count={q.dist[r]}
+                                total={q.n}
+                                color={HARVESTER_BAR_COLORS[r]} />
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* ── survey tab ── */}
+                  {tab === 'survey' && (
+                    <div style={{padding:20}}>
+                      {stats.surveyCount === 0 ? (
+                        <div style={{textAlign:'center', color:'#a8a29e', fontSize:'0.84rem', padding:'40px 16px'}}>
+                          ยังไม่มีคำตอบ Survey — กดเฟส Survey เมื่อจบช่วง Demo
+                        </div>
+                      ) : (
+                        <div style={{display:'flex', flexDirection:'column', gap:24}}>
+                          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:24}}>
+                            {/* Q1 — ความพึงพอใจการใช้งาน */}
+                            <div>
+                              <div className="hr-eyebrow" style={{marginBottom:12}}>1 · ความพึงพอใจการใช้งาน</div>
+                              <div style={{display:'flex', alignItems:'center', gap:14, marginBottom:16}}>
+                                <span style={{fontSize:'2.4rem', lineHeight:1}}>{SURVEY_EMOJI[Math.min(4, Math.max(0, Math.round(stats.surveyAvg) - 1))]}</span>
+                                <div>
+                                  <div><span className="hr-kpi" style={{fontSize:'2.2rem', color:'#22c55e'}}>{stats.surveyAvg.toFixed(1)}</span><span className="num" style={{fontSize:'0.9rem', color:'#a8a29e'}}> / 5</span></div>
+                                  <div style={{fontSize:'0.72rem', color:'#a8a29e'}}>{stats.surveyCount} คำตอบ</div>
+                                </div>
+                              </div>
+                              <div style={{display:'flex', flexDirection:'column', gap:7}}>
+                                {[5, 4, 3, 2, 1].map((r) => (
+                                  <DistBar key={r} emoji={SURVEY_EMOJI[r - 1]} label={SURVEY_LABELS[r - 1]}
+                                    count={surveyStats.dist[r - 1]} total={stats.surveyCount} color={SURVEY_BAR_COLORS[r - 1]} />
+                                ))}
+                              </div>
+                            </div>
+                            {/* Q2 — Behavior Transformation */}
+                            <div>
+                              <div className="hr-eyebrow" style={{marginBottom:12}}>2 · เชื่อว่าเกิด Behavior Transformation</div>
+                              <div style={{display:'flex', alignItems:'center', gap:14, marginBottom:16}}>
+                                <span style={{fontSize:'2.4rem', lineHeight:1}}>{SURVEY_EMOJI[Math.min(4, Math.max(0, Math.round(surveyStats.avg2) - 1))]}</span>
+                                <div>
+                                  <div><span className="hr-kpi" style={{fontSize:'2.2rem', color:'#ED4724'}}>{surveyStats.avg2.toFixed(1)}</span><span className="num" style={{fontSize:'0.9rem', color:'#a8a29e'}}> / 5</span></div>
+                                  <div style={{fontSize:'0.72rem', color:'#a8a29e'}}>{surveyStats.n2} คำตอบ</div>
+                                </div>
+                              </div>
+                              <div style={{display:'flex', flexDirection:'column', gap:7}}>
+                                {[5, 4, 3, 2, 1].map((r) => (
+                                  <DistBar key={r} emoji={SURVEY_EMOJI[r - 1]} label={SURVEY_LABELS[r - 1]}
+                                    count={surveyStats.dist2[r - 1]} total={Math.max(1, surveyStats.n2)} color={SURVEY_BAR_COLORS[r - 1]} />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          {/* comments — full width */}
+                          <div>
+                            <div className="hr-eyebrow" style={{marginBottom:10}}>Comments ({surveyStats.comments.length})</div>
+                            {surveyStats.comments.length === 0 ? (
+                              <div style={{color:'#a8a29e', fontSize:'0.78rem', padding:'8px 0'}}>ยังไม่มีคอมเมนต์</div>
+                            ) : (
+                              <div style={{display:'flex', flexDirection:'column', gap:10, maxHeight:300, overflowY:'auto', paddingRight:6}}>
+                                {surveyStats.comments.map((c) => (
+                                  <div key={c.id} style={{background:'#fafaf9', border:'1px solid #f5f5f4', borderRadius:12, padding:'10px 14px'}}>
+                                    <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:4}}>
+                                      <span style={{fontSize:'1rem'}}>{SURVEY_EMOJI[Math.min(4, Math.max(0, (c.rating || 1) - 1))]}</span>
+                                      <span style={{fontSize:'0.7rem', fontWeight:600, color:'#57534e'}}>{(pById[c.participant_id] || {}).nickname || 'Guest'}</span>
+                                      <span className="num" style={{fontSize:'0.66rem', color:'#a8a29e', marginLeft:'auto'}}>{fmtHHMM(c.created_at)}</span>
+                                    </div>
+                                    <div style={{fontSize:'0.8rem', color:'#1c1917', lineHeight:1.5}}>{c.comment}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </main>
+
+          {/* ── footer ── */}
+          <footer style={{textAlign:'center', padding:'20px 24px 28px', color:'#a8a29e', fontSize:'0.72rem', lineHeight:1.7}}>
+            <div style={{fontWeight:600, color:'#78716c'}}>BASE Playhouse — Booth No. E11 · JOINSTICK Stage Demo</div>
+            <div>อยากรู้จัก JOINSTICK มากขึ้น? แวะมาคุยกับทีม BASE Playhouse ได้ที่บูธ No. E11</div>
+          </footer>
+
+          {/* ── create-session modal ── */}
+          {showCreate && (
+            <div style={{position:'fixed', inset:0, zIndex:80, background:'rgba(28,25,23,0.4)',
+                         display:'flex', alignItems:'center', justifyContent:'center', padding:24}}
+                 onClick={() => !creating && setShowCreate(false)}>
+              <div className="hr-card" style={{width:420, maxWidth:'100%', padding:28}} onClick={(e) => e.stopPropagation()}>
+                <div style={{fontFamily:'Poppins,sans-serif', fontWeight:700, fontSize:'1.1rem', marginBottom:4}}>New Session</div>
+                <div style={{fontSize:'0.78rem', color:'#78716c', marginBottom:16}}>
+                  ระบบจะสุ่มโค้ด 6 ตัวอักษรให้อัตโนมัติ
+                </div>
+                <label className="hr-eyebrow" style={{display:'block', marginBottom:6}}>Session name</label>
+                <input
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleCreate(); }}
+                  autoFocus
+                  style={{width:'100%', border:'1px solid #e7e5e4', borderRadius:10, padding:'11px 14px', fontSize:'0.88rem',
+                          fontFamily:"'Poppins','IBM Plex Sans Thai',sans-serif", outline:'none'}}
+                />
+                <div style={{display:'flex', gap:8, marginTop:18, justifyContent:'flex-end'}}>
+                  <button className="hr-btn-ghost" onClick={() => setShowCreate(false)} disabled={creating}>ยกเลิก</button>
+                  <button className="hr-btn-primary" style={{background:'#ED4724'}} onClick={handleCreate} disabled={creating}>
+                    {creating ? 'กำลังสร้าง…' : 'สร้าง Session'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── reset-all confirm ── */}
+          {confirmReset && session && (
+            <div style={{position:'fixed', inset:0, zIndex:80, background:'rgba(28,25,23,0.4)',
+                         display:'flex', alignItems:'center', justifyContent:'center', padding:24}}
+                 onClick={() => !resetting && setConfirmReset(false)}>
+              <div className="hr-card" style={{width:440, maxWidth:'100%', padding:28}} onClick={(e) => e.stopPropagation()}>
+                <div style={{fontFamily:'Poppins,sans-serif', fontWeight:700, fontSize:'1.1rem', marginBottom:4, color:'#dc2626'}}>
+                  ↺ Reset All — {session.name}
+                </div>
+                <div style={{fontSize:'0.82rem', color:'#57534e', lineHeight:1.7, marginBottom:6}}>
+                  จะลบ<b>ผู้เล่น คำตอบ Harvester, Survey และ event ทั้งหมด</b>ของ Session นี้
+                  แล้วกลับไปเริ่มที่ Phase <b>Demo</b> — QR code เดิมยังใช้ได้ และมือถือผู้เล่นจะเด้งกลับหน้า Join เอง
+                </div>
+                <div style={{fontSize:'0.74rem', color:'#a8a29e', marginBottom:16}}>
+                  ข้อมูลที่ลบกู้คืนไม่ได้ ถ้าต้องการเก็บไว้ให้กด Export CSV ก่อน
+                </div>
+                <div style={{display:'flex', gap:8, justifyContent:'flex-end'}}>
+                  <button className="hr-btn-ghost" onClick={() => setConfirmReset(false)} disabled={resetting}>ยกเลิก</button>
+                  <button className="hr-btn-primary" style={{background:'#dc2626'}} onClick={handleReset} disabled={resetting}>
+                    {resetting ? 'กำลังรีเซ็ต…' : 'ยืนยัน Reset All'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── fullscreen QR (projector mode) ── */}
+          {fsQR && session && (
+            <div className="fsqr" onClick={() => setFsQR(false)}>
+              <div style={{fontFamily:'Poppins,sans-serif', fontWeight:800, fontSize:40, letterSpacing:'-0.02em', color:'#161412'}}>
+                Scan to Join
+              </div>
+              {QR_OK ? (
+                <canvas ref={fsQrRef} width={520} height={520} style={{borderRadius:18, display:'block'}}></canvas>
+              ) : (
+                <div className="num" style={{fontSize:'1.3rem', color:'#57534e', maxWidth:700, textAlign:'center', wordBreak:'break-all'}}>
+                  {joinUrl}
+                </div>
+              )}
+              <div className="num" style={{fontSize:72, fontWeight:600, letterSpacing:'0.3em', color:'#161412', paddingLeft:'0.3em'}}>
+                {session.code}
+              </div>
+              <div style={{display:'flex', alignItems:'center', gap:10}}>
+                <JoinstickLogo size={30} variant="black" />
+                <span style={{fontFamily:'Poppins,sans-serif', fontWeight:800, letterSpacing:'0.14em', fontSize:'0.95rem', color:'#161412'}}>
+                  JOINSTICK
+                </span>
+              </div>
+              <div style={{fontSize:'0.72rem', color:'#a8a29e'}}>คลิกที่ใดก็ได้ หรือกด Esc เพื่อปิด</div>
+            </div>
+          )}
+
+          <Toasts items={toasts} />
+        </div>
+      );
+    }
+
+    /* ───────────────────────── root ───────────────────────── */
+    function App() {
+      const [authed, setAuthed] = useState(() => sessionStorage.getItem('stage_demo_admin_ok') === '1');
+      if (!authed) return <Gate onOk={() => setAuthed(true)} />;
+      return <Console />;
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
