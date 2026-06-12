@@ -1,0 +1,2602 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>JOINSTICK — Stage Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="./config.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; background: #050505; }
+    body {
+      color: #fafaf9;
+      font-family: 'Poppins', 'IBM Plex Sans Thai', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior-y: none;
+    }
+    button, input, textarea { font-family: inherit; }
+    textarea::placeholder { color: #57534e; font-family: 'IBM Plex Sans Thai', 'Poppins', sans-serif; }
+    input::placeholder { color: #44403c; }
+
+    .font-th { font-family: 'IBM Plex Sans Thai', 'Poppins', sans-serif; }
+    .font-mono-num { font-family: 'JetBrains Mono', monospace; }
+
+    .app-shell {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #050505;
+      overflow-x: hidden;
+    }
+    .scr {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    .screen-fade { animation: fadeSlideUp 0.35s ease both; }
+
+    /* hide scrollbars everywhere — scrolling still works, the bar just disappears */
+    .scr, .scr *, main { scrollbar-width: none; -ms-overflow-style: none; }
+    .scr::-webkit-scrollbar, .scr *::-webkit-scrollbar, main::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+    @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    /* ── wide screens (desktop / tablet / Claude preview): show as a centered
+          phone mockup instead of a 430px column floating in black.
+          transform on .app-shell makes the inner position:fixed overlays
+          (eyes-up, flash, challenge sheet, toast) anchor to the FRAME. ── */
+    @media (min-width: 600px) {
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 16px;
+        background: radial-gradient(circle at 50% 28%, #1b1512 0%, #050505 68%);
+      }
+      .app-shell {
+        width: 390px;
+        max-width: 390px;
+        height: 844px;
+        max-height: calc(100dvh - 32px);
+        min-height: 0;
+        border-radius: 46px;
+        overflow: hidden;
+        transform: translateZ(0);
+        box-shadow: 0 0 0 11px #14100d, 0 0 0 13px #2c241f, 0 30px 80px rgba(0,0,0,0.65);
+      }
+      .scr {
+        min-height: 100%;
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes logoWiggle {
+      0%   { transform: rotate(0deg) scale(0.9); }
+      12%  { transform: rotate(-12deg) scale(1.04); }
+      25%  { transform: rotate(10deg) scale(1.08); }
+      38%  { transform: rotate(-8deg) scale(1.05); }
+      50%  { transform: rotate(7deg) scale(1.06); }
+      62%  { transform: rotate(-5deg) scale(1.04); }
+      75%  { transform: rotate(4deg) scale(1.03); }
+      88%  { transform: rotate(-2deg) scale(1.01); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translate(-50%, -10px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+    @keyframes popIn {
+      0%   { transform: scale(0.5); opacity: 0; }
+      60%  { transform: scale(1.12); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes bounceIn {
+      0%   { transform: scale(0.3); opacity: 0; }
+      55%  { transform: scale(1.15); opacity: 1; }
+      75%  { transform: scale(0.95); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes flashFade {
+      0%   { opacity: 0.92; }
+      100% { opacity: 0; }
+    }
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+    @keyframes blinkEyes {
+      0%, 90%, 100% { transform: scaleY(1); }
+      94%           { transform: scaleY(0.08); }
+    }
+    /* Eyes Up — rising chevrons + breathing glow */
+    @keyframes arrowRise {
+      0%, 100% { opacity: 0.22; transform: translateY(6px); }
+      50%      { opacity: 1;    transform: translateY(-6px); }
+    }
+    @keyframes eyesUpGlow {
+      0%, 100% { opacity: 0.45; transform: scale(0.88); }
+      50%      { opacity: 1;    transform: scale(1.12); }
+    }
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.55; }
+      50%      { opacity: 0.85; }
+    }
+    @keyframes sparkleFloat {
+      0%   { transform: translateY(6px) scale(0.7); opacity: 0; }
+      40%  { opacity: 1; }
+      100% { transform: translateY(-6px) scale(1.05); opacity: 1; }
+    }
+    /* flame flicker — drives the SiEffortOrb fire */
+    @keyframes bpFlick { 0%,100% { transform: scaleY(1) scaleX(1) skewX(0deg); } 28% { transform: scaleY(1.08) scaleX(0.95) skewX(-3deg); } 62% { transform: scaleY(0.93) scaleX(1.04) skewX(3deg); } }
+    /* crystal animations — used by SiCrystal (active when reduce=false) */
+    @keyframes bpFloat { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-5px) rotate(0.6deg); } }
+    @keyframes bpGlow { 0%, 100% { opacity: 0.82; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+    @keyframes bpShimmer { 0%, 100% { opacity: 0.18; } 45% { opacity: 0.7; } }
+    @keyframes bpTwinkle { 0%, 100% { opacity: 0; transform: scale(0.6); } 50% { opacity: 0.9; transform: scale(1); } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+    /* ─────────────────────────────────────────────────────────
+       Config + mode
+    ───────────────────────────────────────────────────────── */
+    const CFG = window.STAGE_DEMO_CONFIG || { SUPABASE_URL: '', SUPABASE_ANON_KEY: '', ADMIN_PASSCODE: '' };
+    const IS_LOCAL = !CFG.SUPABASE_URL;
+    const sb = IS_LOCAL ? null : window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
+
+    const nowIso = () => new Date().toISOString();
+
+    /* ─────────────────────────────────────────────────────────
+       Flame orb helpers (ported from joinstick, `si` prefixed)
+    ───────────────────────────────────────────────────────── */
+    // tiny color helpers
+    const siParseHex = (hex) => {
+      let h = hex.replace('#', '');
+      if (h.length === 3) h = h.split('').map(c => c + c).join('');
+      return { r: parseInt(h.slice(0, 2), 16), g: parseInt(h.slice(2, 4), 16), b: parseInt(h.slice(4, 6), 16) };
+    };
+    const siMix = (a, b, t) => Math.round(a + (b - a) * t);
+    const siHexA = (hex, a) => {
+      const { r, g, b } = siParseHex(hex);
+      return `rgba(${r},${g},${b},${a})`;
+    };
+    const siLighten = (hex, amt) => {
+      const { r, g, b } = siParseHex(hex);
+      return `rgb(${siMix(r, 255, amt)},${siMix(g, 255, amt)},${siMix(b, 255, amt)})`;
+    };
+    const siDarken = (hex, amt) => {
+      const { r, g, b } = siParseHex(hex);
+      return `rgb(${siMix(r, 0, amt)},${siMix(g, 0, amt)},${siMix(b, 0, amt)})`;
+    };
+    const siMixHex = (a, b, t) => {
+      const A = siParseHex(a), B = siParseHex(b);
+      const h = n => siMix(A[n], B[n], t).toString(16).padStart(2, '0');
+      return '#' + h('r') + h('g') + h('b');
+    };
+    // engagement color scale: red(worst) → orange → yellow → green → blue(best)
+    const siEngageColor = (intensity) => {
+      const stops = [[0, '#E5391E'], [0.27, '#F5821F'], [0.5, '#FFC93C'], [0.72, '#33B96B'], [1, '#2F80ED']];
+      const k = Math.max(0, Math.min(100, intensity)) / 100;
+      for (let i = 1; i < stops.length; i++) {
+        if (k <= stops[i][0]) {
+          const a = stops[i - 1], b = stops[i];
+          const t = (k - a[0]) / ((b[0] - a[0]) || 1);
+          return siMixHex(a[1], b[1], t);
+        }
+      }
+      return stops[stops.length - 1][1];
+    };
+    // effort level 1–5 from intensity
+    const siEffortLevel = (intensity) => {
+      const v = Math.max(0, Math.min(100, intensity));
+      return v < 20 ? 1 : v < 40 ? 2 : v < 60 ? 3 : v < 80 ? 4 : 5;
+    };
+    // engagement copy keyed by intensity zone (Thai 3-line message)
+    const siZone = (intensity) => {
+      if (intensity < 20) return 'z1';
+      if (intensity < 40) return 'z2';
+      if (intensity < 60) return 'z3';
+      if (intensity < 80) return 'z4';
+      return 'z5';
+    };
+    const siMessages = (intensity, name) => {
+      const z = siZone(intensity);
+      const sets = {
+        z5: { state: 'แสงเจิดจ้าเต็มที่', lines: ['สุดยอดมาก', 'การเรียนรู้ของคุณดูดีมาก', 'อย่าลืมพักผ่อนให้เพียงพอด้วยนะ'] },
+        z4: { state: 'แสงกำลังสว่างไสว', lines: ['ดูดีเลย', 'การเรียนรู้ของคุณไปได้สวย', 'รักษาระดับไว้นะ'] },
+        z3: { state: 'แสงเริ่มหรี่ลง', lines: ['ใช้ได้เลย', 'คุณเริ่มจะลืมแล้ว แต่เป็นเรื่องปกติ', 'ลองเติมแสงอีกหน่อยจะดูดีเลย'] },
+        z2: { state: 'แสงเริ่มจาง', lines: ['เราเริ่มห่างกันนะ', 'คุณกำลังลืมหลายเรื่องแล้ว', 'แต่ยังทัน มาโฟกัสกันเลยดีกว่า'] },
+        z1: { state: 'แสงแทบจะดับ', lines: ['ดีใจที่กลับมา กำลังเป็นห่วงเลย', 'การเรียนรู้ของคุณหายไปเยอะเลย', 'แต่ยังมีหวัง มาเริ่มกันเลย'] },
+      };
+      return sets[z];
+    };
+
+    /* ─────────────────────────────────────────────────────────
+       Constants (per stage-demo contract)
+    ───────────────────────────────────────────────────────── */
+    const HOLD_MS = 1600;
+
+    const HARVESTER_QUESTIONS = [
+      { id: 'q1', dim: 'Inspiration', text: 'วันนี้คุณได้ไอเดียใหม่ ๆ จากเวทีนี้มากแค่ไหน?' },
+      { id: 'q2', dim: 'Relevance',   text: 'เนื้อหาที่ฟังเชื่อมโยงกับงานของคุณมากแค่ไหน?' },
+      { id: 'q3', dim: 'Action',      text: 'คุณอยากนำสิ่งที่ได้ฟังไปลองใช้จริงมากแค่ไหน?' }
+    ];
+    const RATING_LABELS = ['น้อยที่สุด', 'น้อย', 'ปานกลาง', 'มาก', 'มากที่สุด'];
+
+    const SURVEY_QUESTIONS = [
+      'คุณพึงพอใจกับการใช้งาน Joinstick ที่ได้ทดลองมากน้อยแค่ไหน?',
+      'ตลอดการบรรยายนี้คุณคิดว่า Joinstick จะช่วยให้เกิด Behavior Transformation ได้จริงมากน้อยแค่ไหน?'
+    ];
+    const SURVEY_FACES = [
+      { emoji: '😞', label: 'ไม่พอใจ' },
+      { emoji: '😕', label: 'เฉย ๆ' },
+      { emoji: '🙂', label: 'พอใจ' },
+      { emoji: '😄', label: 'พอใจมาก' },
+      { emoji: '🤩', label: 'ประทับใจมาก' }
+    ];
+
+    const CHALLENGES = [
+      { id: 'c1', type: 'Mission',    title: 'ทักคนข้าง ๆ แล้วแลกเปลี่ยน 1 ไอเดียที่ได้จากวันนี้', points: 50, duration: '5 นาที' },
+      { id: 'c2', type: 'Quiz',       title: 'Trust Lenses — ทายสไตล์ความไว้ใจของตัวเอง',          points: 30, duration: '3 นาที' },
+      { id: 'c3', type: 'Flash Card', title: 'เก็บคำศัพท์ผู้นำยุคใหม่ 5 คำ',                        points: 20, duration: '2 นาที' }
+    ];
+    const TYPE_STYLES = {
+      'Mission':    { color: '#ED4724', bg: 'rgba(237,71,36,0.14)',  border: 'rgba(237,71,36,0.4)' },
+      'Quiz':       { color: '#fbbf24', bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.35)' },
+      'Flash Card': { color: '#22c55e', bg: 'rgba(34,197,94,0.12)',  border: 'rgba(34,197,94,0.35)' }
+    };
+
+    const ADJ = ['Brave','Swift','Sunny','Clever','Mighty','Chill','Cosmic','Turbo','Lucky','Zen'];
+    const ANIMAL = ['Otter','Falcon','Panda','Tiger','Dolphin','Fox','Koala','Eagle','Lynx','Bear'];
+    const genNickname = () => {
+      const a = ADJ[Math.floor(Math.random() * ADJ.length)];
+      const b = ANIMAL[Math.floor(Math.random() * ANIMAL.length)];
+      const n = String(Math.floor(Math.random() * 90) + 10);
+      return a + ' ' + b + ' #' + n;
+    };
+
+    /* Learning Energy score (0-100) from 3 harvester ratings (each 0-4, total 0-12)
+       → mapped to one of 4 JOINSTICK journey stages. */
+    const scoreFromRatings = (ratings) => {
+      const total = (ratings.q1 || 0) + (ratings.q2 || 0) + (ratings.q3 || 0);
+      return Math.round((total / 12) * 100); // max 100
+    };
+    const stageFor = (score) => (
+      score >= 85 ? { num: 4, role: 'Trailblazer', emoji: '🚀', color: '#22c55e', glow: 'rgba(34,197,94,',
+                      headline: 'ดูดีเลย!', sub: 'พลังการเรียนรู้ของคุณเต็มเปี่ยม พร้อมเป็นผู้นำการเปลี่ยนแปลง' }
+      : score >= 65 ? { num: 3, role: 'Practitioner', emoji: '🔥', color: '#f97316', glow: 'rgba(249,115,22,',
+                        headline: 'ไปได้สวย', sub: 'คุณพร้อมลงมือทำจริง — รักษาโมเมนตัมนี้ไว้นะ' }
+      : score >= 40 ? { num: 2, role: 'Explorer', emoji: '🧭', color: '#fbbf24', glow: 'rgba(251,191,36,',
+                        headline: 'กำลังมาเลย', sub: 'คุณกำลังเก็บไอเดียและมองหาจุดเชื่อมโยง — ลองเลือกไปทดลองใช้สักอย่าง' }
+      : { num: 1, role: 'Observer', emoji: '👀', color: '#a8a29e', glow: 'rgba(168,162,158,',
+          headline: 'เริ่มต้นได้ดี', sub: 'การเปลี่ยนแปลงเริ่มจากการมองเห็น — ค่อย ๆ ก้าวไปด้วยกัน' }
+    );
+
+    /* ─────────────────────────────────────────────────────────
+       Device + resume state helpers
+    ───────────────────────────────────────────────────────── */
+    const getDeviceId = () => {
+      let id = localStorage.getItem('stage_demo_device_id');
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem('stage_demo_device_id', id);
+      }
+      return id;
+    };
+
+    const stateKeyFor = (code) => 'stage_demo_state_' + code;
+    const loadStateFor = (code) => {
+      try {
+        const raw = localStorage.getItem(stateKeyFor(code));
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    };
+
+    const dbStepFor = (scr) => ({
+      join: 'join', welcome: 'harvester', harvester: 'harvester', insight: 'insight',
+      challenge: 'challenge', eyes_up: 'eyes_up', survey: 'survey', done: 'done'
+    })[scr] || null;
+
+    /* ─────────────────────────────────────────────────────────
+       Local-mode storage backend (localStorage + BroadcastChannel)
+    ───────────────────────────────────────────────────────── */
+    const LOCAL_DB_KEY = 'stage_demo_local_db';
+    const EMPTY_DB = { sessions: [], participants: [], harvester_answers: [], survey_responses: [], events: [] };
+
+    const readDb = () => {
+      try {
+        const raw = localStorage.getItem(LOCAL_DB_KEY);
+        if (raw) {
+          const db = JSON.parse(raw);
+          return {
+            sessions: db.sessions || [], participants: db.participants || [],
+            harvester_answers: db.harvester_answers || [], survey_responses: db.survey_responses || [],
+            events: db.events || []
+          };
+        }
+      } catch (e) {}
+      return JSON.parse(JSON.stringify(EMPTY_DB));
+    };
+
+    const writeDb = (db) => {
+      localStorage.setItem(LOCAL_DB_KEY, JSON.stringify(db));
+      try { (new BroadcastChannel('stage_demo_sync')).postMessage({ type: 'db_change' }); } catch (e) {}
+    };
+
+    const nextIdFor = (rows) => rows.reduce((m, r) => Math.max(m, typeof r.id === 'number' ? r.id : 0), 0) + 1;
+
+    const localApi = {
+      async getSessionByCode(code) {
+        const db = readDb();
+        const s = db.sessions.find((x) => x.code === code && x.is_active);
+        return s ? { ...s } : null;
+      },
+      async getSessionById(id) {
+        const db = readDb();
+        const s = db.sessions.find((x) => x.id === id);
+        return s ? { ...s } : null;
+      },
+      async getLatestActiveSession() {
+        const db = readDb();
+        const actives = db.sessions.filter((x) => x.is_active)
+          .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+        return actives.length ? { ...actives[0] } : null;
+      },
+      async ensureDefaultSession() {
+        const db = readDb();
+        let s = db.sessions.find((x) => x.code === 'DEMO01' && x.is_active);
+        if (!s) {
+          s = {
+            id: crypto.randomUUID(), code: 'DEMO01', name: 'Local Demo', phase: 'demo',
+            is_active: true, created_at: nowIso(), phase_changed_at: nowIso()
+          };
+          db.sessions.push(s);
+          writeDb(db);
+        }
+        return { ...s };
+      },
+      async upsertParticipant(p) {
+        const db = readDb();
+        let row = db.participants.find((x) => x.session_id === p.session_id && x.device_id === p.device_id);
+        if (row) {
+          row.nickname = p.nickname != null ? p.nickname : row.nickname;
+          row.user_agent = p.user_agent != null ? p.user_agent : row.user_agent;
+          row.current_step = p.current_step != null ? p.current_step : row.current_step;
+          row.last_seen_at = nowIso();
+        } else {
+          row = {
+            id: crypto.randomUUID(), session_id: p.session_id, device_id: p.device_id,
+            nickname: p.nickname || null, current_step: p.current_step || 'join',
+            user_agent: p.user_agent || null, joined_at: nowIso(), last_seen_at: nowIso()
+          };
+          db.participants.push(row);
+        }
+        writeDb(db);
+        return { ...row };
+      },
+      async heartbeat(participantId, step) {
+        const db = readDb();
+        const row = db.participants.find((x) => x.id === participantId);
+        if (row) {
+          row.last_seen_at = nowIso();
+          if (step) row.current_step = step;
+          writeDb(db);
+        }
+      },
+      async getParticipantById(id) {
+        const db = readDb();
+        const p = db.participants.find((x) => x.id === id);
+        return p ? { ...p } : null;
+      },
+      async saveHarvesterAnswers(rows) {
+        const db = readDb();
+        rows.forEach((r) => {
+          const ex = db.harvester_answers.find((x) => x.participant_id === r.participant_id && x.question_id === r.question_id);
+          if (ex) {
+            ex.rating = r.rating;
+            ex.question_text = r.question_text;
+          } else {
+            db.harvester_answers.push({ id: nextIdFor(db.harvester_answers), ...r, created_at: nowIso() });
+          }
+        });
+        writeDb(db);
+      },
+      async saveSurvey(row) {
+        const db = readDb();
+        const ex = db.survey_responses.find((x) => x.participant_id === row.participant_id);
+        if (ex) {
+          ex.rating = row.rating;
+          ex.rating2 = row.rating2;
+          ex.comment = row.comment;
+        } else {
+          db.survey_responses.push({ id: nextIdFor(db.survey_responses), ...row, created_at: nowIso() });
+        }
+        writeDb(db);
+      },
+      async logEvent(row) {
+        const db = readDb();
+        db.events.push({
+          id: nextIdFor(db.events), session_id: row.session_id || null,
+          participant_id: row.participant_id || null, event_type: row.event_type,
+          payload: row.payload || {}, created_at: nowIso()
+        });
+        writeDb(db);
+      },
+      subscribeSession(sessionId, cb) {
+        const fire = () => {
+          const db = readDb();
+          const s = db.sessions.find((x) => x.id === sessionId);
+          if (s) cb({ ...s });
+        };
+        let ch = null;
+        try {
+          ch = new BroadcastChannel('stage_demo_sync');
+          ch.onmessage = fire;
+        } catch (e) {}
+        const iv = setInterval(fire, 2000); // always poll-reload localStorage (contract)
+        return () => {
+          if (ch) try { ch.close(); } catch (e) {}
+          clearInterval(iv);
+        };
+      }
+    };
+
+    /* ─────────────────────────────────────────────────────────
+       Supabase backend — same async surface as localApi
+    ───────────────────────────────────────────────────────── */
+    const supaApi = {
+      async getSessionByCode(code) {
+        const { data, error } = await sb.from('demo_sessions').select('*').eq('code', code).eq('is_active', true).maybeSingle();
+        if (error) throw error;
+        return data;
+      },
+      async getSessionById(id) {
+        const { data, error } = await sb.from('demo_sessions').select('*').eq('id', id).maybeSingle();
+        if (error) throw error;
+        return data;
+      },
+      async getLatestActiveSession() {
+        const { data, error } = await sb.from('demo_sessions').select('*')
+          .eq('is_active', true).order('created_at', { ascending: false }).limit(1);
+        if (error) throw error;
+        return (data && data.length) ? data[0] : null;
+      },
+      async ensureDefaultSession() { return null; },
+      async upsertParticipant(p) {
+        const { data, error } = await sb.from('demo_participants').upsert({
+          session_id: p.session_id, device_id: p.device_id, nickname: p.nickname,
+          user_agent: p.user_agent, current_step: p.current_step, last_seen_at: nowIso()
+        }, { onConflict: 'session_id,device_id' }).select().single();
+        if (error) throw error;
+        return data;
+      },
+      async heartbeat(participantId, step) {
+        const patch = { last_seen_at: nowIso() };
+        if (step) patch.current_step = step;
+        const { error } = await sb.from('demo_participants').update(patch).eq('id', participantId);
+        if (error) throw error;
+      },
+      async getParticipantById(id) {
+        const { data, error } = await sb.from('demo_participants').select('id').eq('id', id).maybeSingle();
+        if (error) throw error;
+        return data;
+      },
+      async saveHarvesterAnswers(rows) {
+        const { error } = await sb.from('demo_harvester_answers').upsert(rows, { onConflict: 'participant_id,question_id' });
+        if (error) throw error;
+      },
+      async saveSurvey(row) {
+        const { error } = await sb.from('demo_survey_responses').upsert(row, { onConflict: 'participant_id' });
+        if (error) throw error;
+      },
+      async logEvent(row) {
+        const { error } = await sb.from('demo_events').insert({
+          session_id: row.session_id || null, participant_id: row.participant_id || null,
+          event_type: row.event_type, payload: row.payload || {}
+        });
+        if (error) throw error;
+      },
+      subscribeSession(sessionId, cb) {
+        const ch = sb.channel('stage-demo-' + sessionId)
+          .on('postgres_changes',
+            { event: '*', schema: 'public', table: 'demo_sessions', filter: 'id=eq.' + sessionId },
+            (payload) => { if (payload && payload.new && payload.new.id) cb(payload.new); })
+          .subscribe();
+        return () => { try { sb.removeChannel(ch); } catch (e) {} };
+      }
+    };
+
+    const api = IS_LOCAL ? localApi : supaApi;
+
+    /* ─────────────────────────────────────────────────────────
+       Brand mark (verbatim from JOINSTICK app)
+    ───────────────────────────────────────────────────────── */
+    const JoinstickLogo = ({ size = 36, variant = 'white', style }) => {
+      const fill = variant === 'white' ? '#ffffff' : '#231F20';
+      return (
+        <svg width={size} height={size} viewBox="0 0 1024 1024" fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{flexShrink:0, ...(style||{})}}>
+          <path fill={fill} d="M386.175 147.012H271.91C268.085 146.902 264.273 147.55 260.717 148.943C257.149 150.336 253.898 152.425 251.149 155.101C248.4 157.777 246.225 160.979 244.734 164.51C243.243 168.042 242.473 171.842 242.473 175.691C242.473 179.54 243.243 183.329 244.734 186.872C246.225 190.404 248.412 193.605 251.149 196.281C253.898 198.957 257.149 201.047 260.717 202.44C264.285 203.833 268.098 204.481 271.91 204.371H386.175C393.605 204.151 400.655 201.022 405.824 195.67C411.005 190.318 413.889 183.157 413.889 175.691C413.889 168.225 410.993 161.064 405.824 155.712C400.643 150.36 393.605 147.244 386.175 147.012ZM751.834 147.012H637.568C633.744 146.902 629.931 147.55 626.375 148.943C622.807 150.336 619.557 152.425 616.807 155.101C614.058 157.777 611.883 160.979 610.392 164.51C608.901 168.042 608.132 171.842 608.132 175.691C608.132 179.54 608.901 183.329 610.392 186.872C611.883 190.404 614.07 193.605 616.807 196.281C619.557 198.957 622.807 201.047 626.375 202.44C629.943 203.833 633.756 204.481 637.568 204.371H751.834C759.263 204.151 766.314 201.022 771.483 195.67C776.664 190.318 779.548 183.157 779.548 175.691C779.548 168.225 776.652 161.064 771.483 155.712C766.302 150.36 759.263 147.244 751.834 147.012Z"/>
+          <path fill={fill} d="M861.602 876.093C837.163 876.129 813.029 870.545 791.071 859.755C769.112 848.965 749.927 833.263 734.971 813.846L733.492 814.335L646.256 670.511C643.959 666.759 640.745 663.668 636.909 661.517C633.084 659.366 628.77 658.218 624.396 658.193H399.58C395.193 658.218 390.88 659.354 387.067 661.517C383.242 663.668 380.029 666.771 377.719 670.511L290.398 814.396L288.92 813.907C273.963 833.312 254.778 849.026 232.819 859.816C210.861 870.606 186.739 876.19 162.288 876.154C74.7105 876.154 3.33594 805.696 2.06511 718.631L0 717.935L2.2484 702.819C2.63943 700.229 41.0089 440.551 45.9945 408.548C67.3176 270.515 129.931 199.996 242.546 188.094V186.176H781.344V188.253C831.737 194.424 874.371 216.187 907.963 253.09C942.508 290.983 966.03 343.136 977.896 408.12C983.737 440.221 1020.18 692.2 1021.82 702.905L1024 717.996L1021.98 718.668C1020.57 805.732 949.192 876.08 861.614 876.08L861.602 876.093ZM749.634 770.699L757.259 782.576C768.477 800.16 783.934 814.616 802.19 824.612C820.446 834.607 840.926 839.825 861.736 839.776C930.117 839.776 985.777 784.385 985.777 716.31C985.777 713.536 985.545 710.554 985.313 707.414L984.714 699.447C978.152 654.039 947.506 442.701 942.361 414.535C929.824 345.812 889.768 229.58 762.477 222.932L752.371 222.419H271.568L261.487 222.932C155.274 228.455 101.508 285.619 81.6756 414.034C77.2521 442.555 45.8112 655.212 39.1882 699.85L38.6138 707.34C38.3817 710.505 38.1739 713.487 38.1739 716.285C38.3572 743.119 47.192 769.184 63.334 790.568C79.4761 811.964 102.082 827.544 127.78 834.998C153.478 842.452 180.874 841.365 205.9 831.919C230.925 822.461 252.249 805.146 266.668 782.552L274.293 770.674H274.476L346.828 651.558C352.376 642.503 360.123 635.013 369.361 629.807C378.599 624.602 388.998 621.852 399.592 621.816H624.408C635.002 621.852 645.401 624.602 654.627 629.807C663.853 635.013 671.612 642.503 677.148 651.558L749.5 770.674H749.597L749.634 770.699Z"/>
+          <path fill="url(#jl-grad)" d="M520.089 270.014L755.842 273.851C755.842 273.851 810.5 273.851 846.462 319.234C865.634 343.404 883.829 411.553 883.829 411.553C883.829 411.553 932.671 671.414 932.671 705.544C932.671 739.673 912.435 778.152 872.844 780.755C833.253 783.346 798.292 729.091 798.292 729.091L520.089 270.014Z"/>
+          <path fill={fill} d="M280.561 362.969H256.159C244.774 362.969 235.544 372.198 235.544 383.583V502.883C235.544 514.268 244.774 523.497 256.159 523.497H280.561C291.946 523.497 301.176 514.268 301.176 502.883V383.583C301.176 372.198 291.946 362.969 280.561 362.969Z"/>
+          <path fill={fill} d="M348.625 455.435V431.032C348.625 419.647 339.395 410.418 328.01 410.418H208.71C197.325 410.418 188.096 419.647 188.096 431.032V455.435C188.096 466.82 197.325 476.049 208.71 476.049H328.01C339.395 476.049 348.625 466.82 348.625 455.435Z"/>
+          <defs>
+            <linearGradient id="jl-grad" x1="628.514" y1="220.219" x2="987.964" y2="783.248" gradientUnits="userSpaceOnUse">
+              <stop offset="0.15" stopColor="#ED4724"/>
+              <stop offset="0.26" stopColor="#E94523"/>
+              <stop offset="0.37" stopColor="#DD4221"/>
+              <stop offset="0.48" stopColor="#C93C1E"/>
+              <stop offset="0.59" stopColor="#AD331A"/>
+              <stop offset="0.7"  stopColor="#882914"/>
+              <stop offset="0.81" stopColor="#5C1B0E"/>
+              <stop offset="0.92" stopColor="#290C06"/>
+              <stop offset="1"    stopColor="#000000"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      );
+    };
+
+    /* ─────────────────────────────────────────────────────────
+       Small shared pieces
+    ───────────────────────────────────────────────────────── */
+    const FingerprintIcon = ({ size = 60, color = '#ED4724', rotate = -15 }) => (
+      <svg width={size} height={size} viewBox="0 0 64 64" fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ transform: 'rotate(' + rotate + 'deg)', display: 'block' }}>
+        <path d="M10 28C14 15 22 8 32 8C42 8 50 15 54 28" stroke={color} strokeWidth="6" strokeLinecap="round"/>
+        <path d="M14 45C14 30 21 19 32 19C43 19 50 30 50 45" stroke={color} strokeWidth="6" strokeLinecap="round"/>
+        <path d="M23 51C23 38 26.5 30 32 30C37.5 30 41 38 41 51" stroke={color} strokeWidth="6" strokeLinecap="round"/>
+        <path d="M32 42V56" stroke={color} strokeWidth="6" strokeLinecap="round"/>
+      </svg>
+    );
+
+    const MapPinIcon = ({ size = 26, color = '#ED4724' }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
+        strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+    );
+
+    const Toast = ({ msg }) => (
+      <div className="font-th" style={{
+        position: 'fixed', top: 18, left: '50%', transform: 'translateX(-50%)', zIndex: 90,
+        background: '#dc2626', color: '#fff', fontSize: 13, fontWeight: 600,
+        padding: '10px 18px', borderRadius: 999, whiteSpace: 'nowrap',
+        boxShadow: '0 8px 24px rgba(220,38,38,0.4)',
+        animation: 'fadeSlideDown 0.25s ease both'
+      }}>{msg}</div>
+    );
+
+    const ConnDot = () => (
+      <div
+        title={IS_LOCAL ? 'Local Mode — ข้อมูลอยู่ในเครื่องนี้เท่านั้น' : 'Supabase Connected'}
+        style={{
+          position: 'fixed', bottom: 8, left: '50%', transform: 'translateX(-50%)',
+          width: 6, height: 6, borderRadius: '50%', zIndex: 70, opacity: 0.7,
+          background: IS_LOCAL ? '#fbbf24' : '#22c55e'
+        }}/>
+    );
+
+    const BootScreen = () => (
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ animation: 'glowPulse 1.6s ease-in-out infinite' }}>
+          <JoinstickLogo size={64} variant="white"/>
+        </div>
+      </div>
+    );
+
+    /* ─────────────────────────────────────────────────────────
+       1. JOIN — hold-to-join pad + corner blobs
+    ───────────────────────────────────────────────────────── */
+    const RING_R = 46;
+    const RING_C = 2 * Math.PI * RING_R;
+
+    /* One corner pad. Controlled by JoinScreen: reports its own press via
+       onDown/onUp; `pressed` = this pad is down, `active` = BOTH pads are down
+       (drives the progress ring so both fill together). */
+    const HoldPad = ({ side, enabled, pressed, active, onDown, onUp }) => {
+      const padRef = useRef(null);
+      const isLeft = side === 'left';
+
+      useEffect(() => {
+        const el = padRef.current;
+        if (!el) return;
+        const prevent = (e) => { e.preventDefault(); };
+        el.addEventListener('touchstart', prevent, { passive: false }); // stops iOS long-press callout
+        el.addEventListener('contextmenu', prevent);
+        return () => {
+          el.removeEventListener('touchstart', prevent);
+          el.removeEventListener('contextmenu', prevent);
+        };
+      }, []);
+
+      const start = (e) => {
+        if (!enabled) return;
+        if (padRef.current && e.pointerId !== undefined && padRef.current.setPointerCapture) {
+          try { padRef.current.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+        onDown();
+      };
+
+      const cornerRadius = isLeft ? '0 100% 0 0' : '100% 0 0 0';
+      const transformOrigin = isLeft ? 'bottom left' : 'bottom right';
+      const sidePos = isLeft ? { left: 0 } : { right: 0 };
+      const fpPos = isLeft ? { left: 30, bottom: 26 } : { right: 30, bottom: 26 };
+      const ringPos = isLeft ? { left: 6, bottom: 2 } : { right: 6, bottom: 2 };
+
+      return (
+        <div ref={padRef}
+          onPointerDown={start} onPointerUp={onUp} onPointerCancel={onUp} onPointerLeave={onUp}
+          style={{
+            position: 'absolute', bottom: 0, width: 150, height: 150, zIndex: 5, ...sidePos,
+            background: '#ffffff', borderRadius: cornerRadius,
+            opacity: enabled ? 1 : 0.4,
+            transform: pressed ? 'scale(1.06)' : 'scale(1)', transformOrigin: transformOrigin,
+            filter: pressed ? 'brightness(1.12)' : 'brightness(1)',
+            transition: 'transform 0.18s ease, filter 0.18s ease, opacity 0.3s ease',
+            touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none',
+            WebkitTouchCallout: 'none', cursor: enabled ? 'pointer' : 'default'
+          }}>
+          <div style={{ position: 'absolute', pointerEvents: 'none', ...fpPos }}>
+            <FingerprintIcon size={60} color="#ED4724" rotate={isLeft ? -15 : 15}/>
+          </div>
+          <svg width="108" height="108" viewBox="0 0 108 108"
+            style={{ position: 'absolute', transform: 'rotate(-90deg)', pointerEvents: 'none', ...ringPos }}>
+            <circle cx="54" cy="54" r={RING_R} fill="none" stroke="rgba(237,71,36,0.18)" strokeWidth="5"
+              style={{ opacity: active ? 1 : 0, transition: 'opacity 0.2s ease' }}/>
+            <circle cx="54" cy="54" r={RING_R} fill="none" stroke="#ED4724" strokeWidth="5" strokeLinecap="round"
+              strokeDasharray={RING_C} strokeDashoffset={active ? 0 : RING_C}
+              style={{ transition: active ? 'stroke-dashoffset ' + HOLD_MS + 'ms linear' : 'stroke-dashoffset 0.25s ease' }}/>
+          </svg>
+        </div>
+      );
+    };
+
+    const JoinScreen = ({ session, onJoin }) => {
+      const [flash, setFlash] = useState(false);
+      const [leftDown, setLeftDown] = useState(false);
+      const [rightDown, setRightDown] = useState(false);
+      const enabled = !!session && !flash;
+      const bothHeld = enabled && leftDown && rightDown;
+      const timerRef = useRef(null);
+
+      const handleHoldComplete = () => {
+        if (navigator.vibrate) { try { navigator.vibrate(40); } catch (e) {} }
+        setFlash(true);
+        setLeftDown(false);
+        setRightDown(false);
+        setTimeout(() => { onJoin(); }, 320);
+        setTimeout(() => { setFlash(false); }, 1200); // safety reset if join failed
+      };
+
+      /* arm the join timer only while BOTH pads are held; release either → cancel */
+      useEffect(() => {
+        if (bothHeld) {
+          timerRef.current = setTimeout(() => {
+            timerRef.current = null;
+            handleHoldComplete();
+          }, HOLD_MS);
+          return () => { if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; } };
+        }
+      }, [bothHeld]);
+
+      /* PC testing: hold A (left pad) + ' (right pad) together */
+      useEffect(() => {
+        if (!session) return;
+        const isLeftKey = (e) => e.code === 'KeyA' || (e.key && e.key.toLowerCase() === 'a');
+        const isRightKey = (e) => e.code === 'Quote' || e.key === "'" || e.key === '"';
+        const down = (e) => {
+          if (e.repeat) return;
+          if (isLeftKey(e)) { e.preventDefault(); setLeftDown(true); }
+          else if (isRightKey(e)) { e.preventDefault(); setRightDown(true); }
+        };
+        const up = (e) => {
+          if (isLeftKey(e)) setLeftDown(false);
+          else if (isRightKey(e)) setRightDown(false);
+        };
+        const clearAll = () => { setLeftDown(false); setRightDown(false); };
+        window.addEventListener('keydown', down);
+        window.addEventListener('keyup', up);
+        window.addEventListener('blur', clearAll);
+        return () => {
+          window.removeEventListener('keydown', down);
+          window.removeEventListener('keyup', up);
+          window.removeEventListener('blur', clearAll);
+        };
+      }, [session]);
+
+      return (
+        <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#050505' }}>
+          {/* soft orange glow rising from bottom-left */}
+          <div style={{
+            position: 'absolute', left: -130, bottom: -130, width: 430, height: 430,
+            borderRadius: '50%', pointerEvents: 'none', zIndex: 1,
+            background: 'radial-gradient(circle at center, rgba(237,71,36,0.5) 0%, rgba(237,71,36,0.18) 42%, transparent 70%)',
+            filter: 'blur(30px)', animation: 'glowPulse 5s ease-in-out infinite'
+          }}/>
+
+          {/* logo + wordmark + (code entry) */}
+          <div style={{
+            position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column',
+            alignItems: 'center', paddingTop: '8vh'
+          }}>
+            <JoinstickLogo size={155} variant="white"/>
+            <div style={{
+              fontWeight: 800, fontSize: 26, color: '#ffffff',
+              letterSpacing: '0.14em', marginRight: '-0.14em', marginTop: 8
+            }}>JOINSTICK</div>
+
+            {!session && (
+              <div className="font-th" style={{
+                marginTop: 18, color: '#a8a29e', fontSize: 13, fontWeight: 500,
+                display: 'flex', alignItems: 'center', gap: 8, animation: 'fadeIn 0.4s ease both'
+              }}>
+                <span style={{
+                  width: 7, height: 7, borderRadius: '50%', background: '#fbbf24',
+                  boxShadow: '0 0 6px #fbbf24', animation: 'glowPulse 1.6s ease-in-out infinite'
+                }}/>
+                กำลังเชื่อมต่อ...
+              </div>
+            )}
+
+            {session && (
+              <div className="font-th" style={{
+                marginTop: 18, color: '#22c55e', fontSize: 13, fontWeight: 500,
+                display: 'flex', alignItems: 'center', gap: 6, animation: 'fadeIn 0.4s ease both'
+              }}>
+                <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px #22c55e' }}/>
+                พร้อมเข้าร่วม · {session.name}
+              </div>
+            )}
+          </div>
+
+          {/* hold instruction */}
+          <div className="font-th" style={{ position: 'absolute', top: '58%', left: 0, right: 0, textAlign: 'center', zIndex: 2, pointerEvents: 'none' }}>
+            <div style={{ fontSize: 22, fontWeight: 400, color: '#ffffff', lineHeight: 1.5 }}>
+              <div>กดค้างด้วย<b style={{ fontWeight: 700 }}>สองนิ้วโป้ง</b></div>
+              <div><b style={{ fontWeight: 700 }}>พร้อมกัน</b></div>
+            </div>
+            {!enabled && (
+              <div style={{ color: '#a8a29e', fontSize: 13, marginTop: 10 }}>
+                รอสักครู่ ทีมงานกำลังเปิดรอบ...
+              </div>
+            )}
+          </div>
+
+          {/* both corner pads are now live — must be held together */}
+          <HoldPad side="left" enabled={enabled} pressed={leftDown} active={bothHeld}
+            onDown={() => setLeftDown(true)} onUp={() => setLeftDown(false)}/>
+          <HoldPad side="right" enabled={enabled} pressed={rightDown} active={bothHeld}
+            onDown={() => setRightDown(true)} onUp={() => setRightDown(false)}/>
+
+          {flash && (
+            <div style={{
+              position: 'fixed', inset: 0, background: '#ffffff', zIndex: 55,
+              pointerEvents: 'none', animation: 'flashFade 0.5s ease forwards'
+            }}/>
+          )}
+        </div>
+      );
+    };
+
+    /* ─────────────────────────────────────────────────────────
+       2. WELCOME flash — JOINSTICK logo wiggle (~500ms) then harvester
+    ───────────────────────────────────────────────────────── */
+    const WelcomeScreen = () => (
+      <div style={{
+        flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'
+      }}>
+        <div style={{ animation: 'logoWiggle 1.2s ease-in-out both' }}>
+          <JoinstickLogo size={120} variant="white"/>
+        </div>
+      </div>
+    );
+
+    /* ─────────────────────────────────────────────────────────
+       3. HARVESTER — 3 questions, rating 0-4, one at a time
+    ───────────────────────────────────────────────────────── */
+    const HeaderChip = ({ label }) => (
+      <span style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.35)',
+        color: '#f97316', fontSize: 12, fontWeight: 600, letterSpacing: '0.04em',
+        padding: '5px 12px', borderRadius: 999
+      }}>{label}</span>
+    );
+
+    const HarvesterScreen = ({ onFinish }) => {
+      const [qi, setQi] = useState(0);
+      const [ratings, setRatings] = useState({});
+      const [sel, setSel] = useState(null);
+      const [flash, setFlash] = useState(false);
+      const lockRef = useRef(false);
+
+      const pick = (val) => {
+        if (lockRef.current || flash) return;
+        lockRef.current = true;
+        setSel(val);
+        const q = HARVESTER_QUESTIONS[qi];
+        const next = { ...ratings, [q.id]: val };
+        setRatings(next);
+        setTimeout(() => {
+          lockRef.current = false;
+          if (qi < HARVESTER_QUESTIONS.length - 1) {
+            setQi(qi + 1);
+            setSel(null);
+          } else {
+            setFlash(true);
+            onFinish(next);
+          }
+        }, 250);
+      };
+
+      if (flash) return (
+        <div style={{
+          flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', textAlign: 'center', padding: '0 32px'
+        }}>
+          <div style={{ position: 'relative', marginBottom: 22 }}>
+            <div style={{
+              width: 72, height: 72, borderRadius: '50%', background: '#22c55e',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 32, color: '#fff', boxShadow: '0 8px 32px rgba(34,197,94,0.35)',
+              animation: 'bounceIn 0.5s ease both'
+            }}>✓</div>
+            <div style={{ position: 'absolute', top: -16, right: -20, fontSize: 24, animation: 'sparkleFloat 0.9s ease both 0.1s' }}>✨</div>
+            <div style={{ position: 'absolute', bottom: -10, left: -22, fontSize: 18, animation: 'sparkleFloat 0.9s ease both 0.3s' }}>✨</div>
+          </div>
+          <h2 className="font-th" style={{ color: '#fff', fontSize: 22, fontWeight: 800, margin: '0 0 8px' }}>
+            เก็บครบทั้ง 3 ข้อแล้ว!
+          </h2>
+          <p className="font-th" style={{ color: '#a8a29e', fontSize: 14, margin: 0 }}>
+            กำลังสร้าง Insight ของคุณ...
+          </p>
+        </div>
+      );
+
+      const q = HARVESTER_QUESTIONS[qi];
+      return (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '24px 24px 32px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{
+            position: 'absolute', top: -50, right: -50, width: 200, height: 200, borderRadius: '50%',
+            background: 'rgba(249,115,22,0.10)', filter: 'blur(44px)', pointerEvents: 'none'
+          }}/>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <HeaderChip label="Learning Harvest"/>
+            <span className="font-mono-num" style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, fontWeight: 600 }}>
+              {qi + 1} / {HARVESTER_QUESTIONS.length}
+            </span>
+          </div>
+
+          <div style={{ marginTop: 14, height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.12)' }}>
+            <div style={{
+              height: '100%', borderRadius: 4, background: '#f97316',
+              width: (((qi + 1) / HARVESTER_QUESTIONS.length) * 100) + '%',
+              transition: 'width 0.4s ease'
+            }}/>
+          </div>
+
+          <div key={qi} className="screen-fade" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{
+              color: '#f97316', fontSize: 11, fontWeight: 600,
+              letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 12
+            }}>{q.dim}</div>
+            <div className="font-th" style={{ color: '#ffffff', fontSize: 20, fontWeight: 600, lineHeight: 1.55 }}>
+              {q.text}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 36, padding: '0 2px' }}>
+              {[0, 1, 2, 3, 4].map((v) => {
+                const on = sel === v;
+                return (
+                  <button key={v} onClick={() => pick(v)} style={{
+                    width: 56, height: 56, borderRadius: '50%', cursor: 'pointer',
+                    background: on ? '#f97316' : 'rgba(255,255,255,0.04)',
+                    border: '1.5px solid ' + (on ? '#f97316' : 'rgba(255,255,255,0.22)'),
+                    color: on ? '#ffffff' : '#d6d3d1',
+                    fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600,
+                    boxShadow: on ? '0 6px 20px rgba(249,115,22,0.45)' : 'none',
+                    animation: on ? 'popIn 0.25s ease' : 'none',
+                    transition: 'background 0.15s ease, border-color 0.15s ease'
+                  }}>{v}</button>
+                );
+              })}
+            </div>
+            <div className="font-th" style={{
+              display: 'flex', justifyContent: 'space-between',
+              color: '#78716c', fontSize: 11, marginTop: 10, padding: '0 2px'
+            }}>
+              <span>{RATING_LABELS[0]}</span>
+              <span>{RATING_LABELS[4]}</span>
+            </div>
+            <div className="font-th" style={{
+              textAlign: 'center', marginTop: 20, minHeight: 22, fontSize: 14, fontWeight: 600,
+              color: sel !== null ? '#f97316' : '#57534e'
+            }}>
+              {sel !== null ? RATING_LABELS[sel] : 'แตะเพื่อเลือกคะแนน'}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    /* ─────────────────────────────────────────────────────────
+       4. INSIGHT — SiCrystal + SiEffortOrb
+       Direct copies of BPCrystal / BPEffortOrb (flame mode) from
+       /JOINSTICK_App/project/joinstick.html — renamed only.
+    ───────────────────────────────────────────────────────── */
+
+    /* ── SiCrystal — copy of BPCrystal. Renames: hexA→siHexA, lighten→siLighten,
+       darken→siDarken, engageColor→siEngageColor, bp IDs→si IDs. ── */
+    const SiCrystal = ({ intensity = 50, size = 200, color, reduce = false }) => {
+      const c = color || siEngageColor(intensity);
+      const k = Math.max(0, Math.min(100, intensity)) / 100;
+      const scale = 0.84 + k * 0.20;
+      const glow = 0.32 + k * 0.5;
+      const lighter = siLighten(c, 0.62), light = siLighten(c, 0.32), dark = siDarken(c, 0.26), darker = siDarken(c, 0.46);
+      const animFloat = reduce ? 'none' : 'bpFloat 4.6s ease-in-out infinite';
+      const animGlow  = reduce ? 'none' : 'bpGlow 3.6s ease-in-out infinite';
+      const animShim  = reduce ? 'none' : 'bpShimmer 4.2s ease-in-out infinite';
+      const sparks = [{ x: '24%', y: '30%', d: 0 }, { x: '74%', y: '40%', d: 1.3 }, { x: '66%', y: '74%', d: 2.4 }];
+      return (
+        <div style={{ position: 'relative', width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{
+            position: 'absolute', inset: '-14%', borderRadius: '50%',
+            background: `radial-gradient(circle at 50% 50%, ${siHexA(c, 0.5 * glow)} 0%, ${siHexA(c, 0.14 * glow)} 38%, transparent 64%)`,
+            filter: 'blur(6px)', animation: animGlow,
+          }} />
+          {sparks.map((s, i) => (
+            <svg key={i} viewBox="0 0 10 10" width="11" height="11" style={{
+              position: 'absolute', left: s.x, top: s.y, opacity: 0,
+              animation: reduce ? 'none' : `bpTwinkle ${(2.8 + i * 0.6).toFixed(1)}s ease-in-out ${s.d}s infinite`,
+            }}>
+              <path d="M5 0 L6 4 L10 5 L6 6 L5 10 L4 6 L0 5 L4 4 Z" fill={siLighten(c, 0.5)} />
+            </svg>
+          ))}
+          <div style={{ position: 'relative', zIndex: 1, transform: `scale(${scale})`, animation: animFloat, lineHeight: 0 }}>
+            <svg viewBox="0 0 100 122" width={size * 0.6} height={size * 0.74} style={{ filter: `drop-shadow(0 12px 24px ${siHexA(c, 0.5)})` }}>
+              <defs>
+                <linearGradient id="siCryCrownL" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor="#FFFFFF" /><stop offset="100%" stopColor={lighter} />
+                </linearGradient>
+                <linearGradient id="siCryCrownR" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor={lighter} /><stop offset="100%" stopColor={light} />
+                </linearGradient>
+                <linearGradient id="siCryL" x1="0" y1="0" x2="0.3" y2="1">
+                  <stop offset="0" stopColor={light} /><stop offset="100%" stopColor={c} />
+                </linearGradient>
+                <linearGradient id="siCryR" x1="1" y1="0" x2="0.6" y2="1">
+                  <stop offset="0" stopColor={c} /><stop offset="100%" stopColor={darker} />
+                </linearGradient>
+              </defs>
+              <polygon points="50,6 26,40 50,46" fill="url(#siCryCrownL)" />
+              <polygon points="50,6 74,40 50,46" fill="url(#siCryCrownR)" />
+              <polygon points="26,40 50,46 50,116 34,88" fill="url(#siCryL)" />
+              <polygon points="74,40 50,46 50,116 66,88" fill="url(#siCryR)" />
+              <polygon points="26,40 34,88 28,84 22,44" fill={darker} opacity="0.55" />
+              <polygon points="74,40 66,88 72,84 78,44" fill={dark} opacity="0.5" />
+              <polygon points="50,6 38,34 50,46" fill="#FFFFFF" opacity="0.5" style={{ animation: animShim }} />
+              <polygon points="50,6 26,40 34,88 50,116 66,88 74,40" fill="none" stroke={siHexA(darker, 0.55)} strokeWidth="1" strokeLinejoin="round" />
+              <line x1="50" y1="46" x2="50" y2="116" stroke={siHexA(lighter, 0.4)} strokeWidth="0.8" />
+            </svg>
+          </div>
+        </div>
+      );
+    };
+
+    /* ── SiEffortOrb — copy of BPEffortOrb (flame mode only, __FX='flame').
+       Renames: hexA→siHexA, lighten→siLighten, darken→siDarken,
+       bpEffortLevel→siEffortLevel, React.useRef→useRef.
+       Added: score prop drives the watermark (replaces hardcoded 82). ── */
+    const SiEffortOrb = ({ intensity = 50, score = 0, size = 284, accent = '#ED4724', reduce = false, dark = true, spread = 1, trend = 1 }) => {
+      const level = siEffortLevel(intensity);
+      const c = accent;
+      const S = size;
+      const W = Math.round(S * spread);
+      const R = [0.16, 0.235, 0.31, 0.385, 0.46];
+      const D = 2 * R[level - 1] * S;
+      const bloomD = Math.min(S * 1.08, D * 1.8);
+      const cx = W / 2, cy = S / 2;
+
+      const ctr = (d, extra = {}) => ({
+        position: 'absolute', left: cx, top: cy, width: d, height: d,
+        transform: 'translate(-50%,-50%)', borderRadius: '50%', boxSizing: 'border-box', ...extra,
+      });
+      const gidRef = useRef();
+      if (!gidRef.current) gidRef.current = 'siorb' + Math.random().toString(36).slice(2, 8);
+      const gid = gidRef.current;
+
+      // REALISTIC FIRE — teardrop body with a vertical fire gradient, radial inner glow, base hot-spot, soft halo, gentle flicker.
+      const baseY = cy + S * 0.08;
+      const fh = (0.26 + (level - 1) * 0.05) * S;
+      const fwRatio = level <= 3 ? 0.58 : 0.58 + (level - 3) * 0.12;
+      const fw = fh * fwRatio;
+      const FD = "M50 5 C60 40 89 56 89 90 C89 118 71 132 50 132 C29 132 11 118 11 90 C11 56 40 40 50 5 Z";
+      const g = gid + 'F';
+      // colour scale ticks flanking the flame — 5 levels, current one lit
+      const COL5 = ['#E5391E', '#F5821F', '#FFC93C', '#33B96B', '#2F80ED'];
+      const tickX = S * 0.6, tickMidY = cy - S * 0.19, tickColH = S * 0.4;
+      const sideTicks = (sign) => (
+        <div style={{ position: 'absolute', left: cx + sign * tickX, top: tickMidY, transform: 'translate(-50%,-50%)', height: tickColH,
+          display: 'flex', flexDirection: 'column-reverse', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none' }}>
+          {COL5.map((col, i) => {
+            const on = i === level - 1;
+            return <div key={i} style={{ width: on ? S * 0.058 : S * 0.038, height: 2.5, borderRadius: 999, background: col, opacity: on ? 1 : 0.26, boxShadow: on ? `0 0 6px ${siHexA(col, 0.85)}` : 'none', transition: 'all .2s' }} />;
+          })}
+        </div>
+      );
+
+      return (
+        <div style={{ position: 'relative', width: W, height: S, flexShrink: 0 }}>
+          {/* dim ambient bloom so the dark sphere doesn't read as a hole */}
+          <div style={ctr(bloomD)}>
+            <div style={{
+              width: '100%', height: '100%', borderRadius: '50%',
+              background: `radial-gradient(circle at 50% 40%, ${siHexA(c, dark ? 0.11 : 0.09)} 0%, ${siHexA(c, 0)} 58%)`,
+              filter: `blur(${(S * 0.04).toFixed(1)}px)`,
+            }} />
+          </div>
+
+          {sideTicks(-1)}
+          {sideTicks(1)}
+          {/* Circle Progress Bar wrapping the flame — symmetric: fills from the bottom up
+              BOTH sides to two endpoints near the top-centre */}
+          {(() => {
+            const rPB = S * 0.44;
+            const topGapHalf = 12;              // small opening at top-centre → two distinct endpoints
+            const span = 180 - topGapHalf;      // each side sweeps bottom (90°) → near top
+            // fill so the head reaches the SAME plane as the current level's side tick
+            const lvlTickY = (tickMidY + tickColH / 2) - ((level - 1) / 4) * tickColH;
+            const headAngle = Math.asin(Math.max(-1, Math.min(1, (lvlTickY - cy) / rPB))) * 180 / Math.PI;
+            const prog = Math.max(0, Math.min(1, (90 - headAngle) / span));
+            const ptOf = (deg) => { const a = deg * Math.PI / 180; return [cx + rPB * Math.cos(a), cy + rPB * Math.sin(a)]; };
+            const arc = (fromDeg, toDeg, sweep) => {
+              const [x0, y0] = ptOf(fromDeg), [x1, y1] = ptOf(toDeg);
+              const large = Math.abs(toDeg - fromDeg) > 180 ? 1 : 0;
+              return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${rPB.toFixed(2)} ${rPB.toFixed(2)} 0 ${large} ${sweep} ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+            };
+            const pw = S * 0.026;
+            const pg = gid + 'PB';
+            const rightEnd = 90 - span * prog;  // right side climbs (sweep 0)
+            const leftEnd = 90 + span * prog;   // left side climbs (sweep 1)
+            const track = siHexA('#FFFFFF', dark ? 0.09 : 0.12);
+            const glow = { filter: `drop-shadow(0 0 ${(S * 0.02).toFixed(0)}px ${siHexA(c, 0.7)})` };
+            return (
+              <svg width={W} height={S} viewBox={`0 0 ${W} ${S}`} style={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none' }}>
+                <defs>
+                  <linearGradient id={pg} x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0" stopColor={siDarken(c, 0.12)} />
+                    <stop offset="0.5" stopColor={c} />
+                    <stop offset="1" stopColor={siLighten(c, 0.45)} />
+                  </linearGradient>
+                </defs>
+                {/* track — both sides, full span with a small top gap */}
+                <path d={arc(90, 90 - span, 0)} fill="none" stroke={track} strokeWidth={pw} strokeLinecap="round" />
+                <path d={arc(90, 90 + span, 1)} fill="none" stroke={track} strokeWidth={pw} strokeLinecap="round" />
+                {/* progress — from the bottom up both sides toward the top-centre */}
+                <path d={arc(90, rightEnd, 0)} fill="none" stroke={`url(#${pg})`} strokeWidth={pw} strokeLinecap="round" style={glow} />
+                <path d={arc(90, leftEnd, 1)} fill="none" stroke={`url(#${pg})`} strokeWidth={pw} strokeLinecap="round" style={glow} />
+              </svg>
+            );
+          })()}
+          {/* big faint Score — sits BEHIND the flame as a watermark */}
+          <div style={{ position: 'absolute', left: cx, top: cy - S * 0.12, transform: 'translate(-50%,-50%)', zIndex: 0, pointerEvents: 'none',
+            fontFamily: "'Poppins', 'IBM Plex Sans Thai', sans-serif", fontWeight: 700, fontSize: Math.round(S * 0.42), lineHeight: 1,
+            letterSpacing: '0.08em',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.18) 45%, rgba(70,70,70,0.10) 100%)',
+            WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent' }}>{score}</div>
+          {/* ambient bloom on the horizon */}
+          <div style={{ position: 'absolute', left: cx, top: baseY, transform: 'translate(-50%,-50%)', width: fw * 1.8, height: fh * 0.6, borderRadius: '50%',
+            background: `radial-gradient(ellipse, ${siHexA(c, dark ? 0.5 : 0.34)} 0%, ${siHexA(c, 0)} 70%)`, filter: `blur(${(S * 0.05).toFixed(0)}px)`, pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', left: cx, top: baseY, width: fw, height: fh, transform: 'translate(-50%,-100%)', pointerEvents: 'none' }}>
+            <svg width="100%" height="100%" viewBox="0 0 100 137" style={{ display: 'block', overflow: 'visible', transformOrigin: '50% 100%', animation: reduce ? 'none' : 'bpFlick 2.6s ease-in-out infinite' }}>
+              <defs>
+                <linearGradient id={g + 'b'} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor={siHexA(c, 0)} />
+                  <stop offset="0.12" stopColor={siHexA(c, 0.55)} />
+                  <stop offset="0.36" stopColor={c} />
+                  <stop offset="0.64" stopColor={siLighten(c, 0.5)} />
+                  <stop offset="0.9" stopColor={siLighten(c, 0.85)} />
+                  <stop offset="1" stopColor="#FFFFFF" />
+                </linearGradient>
+                <radialGradient id={g + 'rc'} cx="50%" cy="62%" r="52%">
+                  <stop offset="0" stopColor="#FFFFFF" />
+                  <stop offset="0.32" stopColor={siLighten(c, 0.78)} />
+                  <stop offset="0.62" stopColor={siHexA(c, 0.45)} />
+                  <stop offset="1" stopColor={siHexA(c, 0)} />
+                </radialGradient>
+                <filter id={g + 'gl'} x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="4.5" /></filter>
+                <filter id={g + 'soft'} x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3" /></filter>
+              </defs>
+              {/* soft outer halo */}
+              <path d={FD} fill={siHexA(c, 0.4)} filter={`url(#${g}gl)`} transform="translate(50 132) scale(1.16) translate(-50 -132)" />
+              {/* main fire body */}
+              <path d={FD} fill={`url(#${g}b)`} filter={`url(#${g}soft)`} />
+              {/* radial inner glow — the luminous heart, low-centred so it flows into the base */}
+              <ellipse cx="50" cy="106" rx="22" ry="48" fill={`url(#${g}rc)`} opacity="0.92" />
+              {/* white-hot base hot-spot */}
+              <ellipse cx="50" cy="118" rx="15" ry="18" fill="#FFFFFF" filter={`url(#${g}soft)`} opacity="0.95" />
+            </svg>
+          </div>
+        </div>
+      );
+    };
+
+    /* ═══════════════════════════════════════════════════════════════
+       JOINSTICK UI KIT — copied from joinstick.html so the Insight step
+       renders the real app's "Out of Class" home (TopBar · StatusCard ·
+       HearthSection · Missions · BottomNav). Only the colour helpers were
+       re-pointed to the existing si* equivalents (bp* → si*).
+    ═══════════════════════════════════════════════════════════════ */
+    const bpHexA = siHexA, bpLighten = siLighten, bpDarken = siDarken;
+    const EN = "'Poppins', 'IBM Plex Sans Thai', sans-serif";
+    const TH = "'IBM Plex Sans Thai', sans-serif";
+
+    const BP_ICON_PATHS = {
+      trophy: <g><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3"/><path d="M10 14.5V17M14 14.5V17M8 20h8M9 20a3 3 0 0 1 3-3 3 3 0 0 1 3 3"/></g>,
+      flame: <path d="M12 3c2.5 3.5 5 6 5 9.5A5 5 0 0 1 7 12.5C7 9 9.5 6.5 12 3Z"/>,
+      target: <g><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/></g>,
+      layers: <g><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="M3 13l9 5 9-5M3 18l9 5 9-5" opacity="0.55"/></g>,
+      bell: <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/>,
+      user: <g><circle cx="12" cy="8" r="3.6"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></g>,
+      chevronRight: <path d="M9 5l7 7-7 7"/>,
+      clock: <g><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g>,
+      rotate: <g><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8"/><path d="M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 16"/><path d="M4 20v-4h4"/></g>,
+      help: <g><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.5 1.9-2.5 3.6"/><circle cx="12" cy="17" r="0.7" fill="currentColor" stroke="none"/></g>,
+      info: <g><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.7" r="0.7" fill="currentColor" stroke="none"/></g>,
+      x: <path d="M6 6l12 12M18 6 6 18"/>,
+      check: <path d="M5 12.5 10 17l9-10"/>,
+      lock: <g><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></g>,
+      play: <path d="M8 5.5v13l11-6.5-11-6.5Z"/>,
+      book: <path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3V4ZM8 20a3 3 0 0 0-3 3"/>,
+    };
+    const BP_ICON_FILLED = {
+      medal: <path fillRule="evenodd" d="M8.6 2h2.6l.7 5H9.3L8.6 2Zm6.8 0h-2.6l-.7 5h2.6L15.4 2ZM5.5 15a6.5 6.5 0 1 0 13 0 6.5 6.5 0 1 0-13 0Zm6.5-3.4.95 2.23 2.4.13-1.85 1.55.6 2.34L12 16.5l-2.1 1.35.6-2.34L8.65 13.96l2.4-.13L12 11.6Z" />,
+      home: <path fillRule="evenodd" d="M12 2.6 21 10.6V20.2A1.8 1.8 0 0 1 19.2 22H4.8A1.8 1.8 0 0 1 3 20.2V10.6L12 2.6Zm-2 18.4v-5.6a.9.9 0 0 1 .9-.9h2.2a.9.9 0 0 1 .9.9V21h-4Z" />,
+      flame: <path d="M12 21.5a6.5 6.5 0 0 0 6.5-6.5c0-2.1-1-4-2.9-5.4.2 1.5-.6 2.5-1.6 2.9.4-2.5-.9-5.1-3.3-6.9-.6 2.4-2 3.6-3.3 5A7.5 7.5 0 0 0 5.5 15 6.5 6.5 0 0 0 12 21.5Z" />,
+      book: <g><path d="M11.2 7.2C9.7 6 7.5 5.2 5.1 5.2c-.9 0-1.8.1-2.6.34a1 1 0 0 0-.7.96v10.9a.85.85 0 0 0 1.1.82c.7-.2 1.45-.32 2.2-.32 2 0 3.9.66 5.3 1.74a.8.8 0 0 0 .8.12V7.2Z" /><path d="M12.8 7.2C14.3 6 16.5 5.2 18.9 5.2c.9 0 1.8.1 2.6.34a1 1 0 0 1 .7.96v10.9a.85.85 0 0 1-1.1.82c-.7-.2-1.45-.32-2.2-.32-2 0-3.9.66-5.3 1.74a.8.8 0 0 1-.8.12V7.2Z" /></g>,
+      play: <path d="M8 5.5v13l11-6.5-11-6.5Z" />,
+    };
+    const BPIcon = ({ name, size = 20, color = 'currentColor', stroke = 2, filled = false, style = {} }) => {
+      if (filled) return (<svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke="none" style={style}>{BP_ICON_FILLED[name] || null}</svg>);
+      return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" style={style}>{BP_ICON_PATHS[name] || null}</svg>);
+    };
+    const BPJoinstick = ({ height = 26, color = '#FFFFFF', accent = '#ED4724', style = {} }) => {
+      const w = height * (837.97 / 596.7);
+      return (
+        <svg width={w} height={height} viewBox="0 0 837.97 596.7" fill="none" style={style}>
+          <defs>
+            <linearGradient id="bpLogoGrad" x1="514.14" y1="59.92" x2="808.3" y2="520.68" gradientUnits="userSpaceOnUse">
+              <stop offset=".15" stopColor="#ed4724" /><stop offset=".26" stopColor="#e94523" /><stop offset=".37" stopColor="#dd4221" />
+              <stop offset=".48" stopColor="#c93c1e" /><stop offset=".59" stopColor="#ad331a" /><stop offset=".7" stopColor="#882914" />
+              <stop offset=".81" stopColor="#5c1b0e" /><stop offset=".92" stopColor="#290c06" /><stop offset="1" stopColor="#000" />
+            </linearGradient>
+          </defs>
+          <path fill={color} d="M315.82.01h-93.51c-3.13-.09-6.25.44-9.16,1.58-2.92,1.14-5.58,2.85-7.83,5.04-2.25,2.19-4.03,4.81-5.25,7.7-1.22,2.89-1.85,6-1.85,9.15s.63,6.25,1.85,9.15c1.22,2.89,3.01,5.51,5.25,7.7,2.25,2.19,4.91,3.9,7.83,5.04,2.92,1.14,6.04,1.67,9.16,1.58h93.51c6.08-.18,11.85-2.74,16.08-7.12,4.24-4.38,6.6-10.24,6.6-16.35s-2.37-11.97-6.6-16.35c-4.24-4.38-10-6.93-16.08-7.12ZM615.06.01h-93.51c-3.13-.09-6.25.44-9.16,1.58-2.92,1.14-5.58,2.85-7.83,5.04-2.25,2.19-4.03,4.81-5.25,7.7-1.22,2.89-1.85,6-1.85,9.15s.63,6.25,1.85,9.15c1.22,2.89,3.01,5.51,5.25,7.7,2.25,2.19,4.91,3.9,7.83,5.04,2.92,1.14,6.04,1.67,9.16,1.58h93.51c6.08-.18,11.85-2.74,16.08-7.12,4.24-4.38,6.6-10.24,6.6-16.35s-2.37-11.97-6.6-16.35c-4.24-4.38-10-6.93-16.08-7.12Z" />
+          <path fill={color} d="M704.89,596.66c-20,.03-39.75-4.54-57.72-13.37-17.97-8.83-33.67-21.68-45.91-37.57l-1.21.4-71.39-117.7c-1.88-3.07-4.51-5.6-7.65-7.36-3.13-1.76-6.66-2.7-10.24-2.72h-183.98c-3.59.02-7.12.95-10.24,2.72-3.13,1.76-5.76,4.3-7.65,7.36l-71.46,117.75-1.21-.4c-12.24,15.88-27.94,28.74-45.91,37.57-17.97,8.83-37.71,13.4-57.72,13.37-71.67,0-130.08-57.66-131.12-128.91l.15-12.95c.32-2.12,31.72-214.63,35.8-240.82C54.88,101.08,106.12,43.37,198.28,33.63v-1.57h440.93v1.7c41.24,5.05,76.13,22.86,103.62,53.06,28.27,31.01,47.52,73.69,57.23,126.87,4.78,26.27,34.6,232.48,35.95,241.24l.13,12.9c-1.16,71.25-59.57,128.82-131.24,128.82ZM613.26,510.41l6.24,9.72c9.18,14.39,21.83,26.22,36.77,34.4,14.94,8.18,31.7,12.45,48.73,12.41,55.96,0,101.51-45.33,101.51-101.04,0-2.27-.19-4.71-.38-7.28l-.49-6.52c-5.37-37.16-30.45-210.11-34.66-233.16-10.26-56.24-43.04-151.36-147.21-156.8l-8.27-.42H222.03l-8.25.42c-86.92,4.52-130.92,51.3-147.15,156.39-3.62,23.34-29.35,197.37-34.77,233.9l-.47,6.13c-.19,2.59-.36,5.03-.36,7.32.15,21.96,7.38,43.29,20.59,60.79,13.21,17.51,31.71,30.26,52.74,36.36,21.03,6.1,43.45,5.21,63.93-2.52,20.48-7.74,37.93-21.91,49.73-40.4l6.24-9.72h.15l59.21-97.48c4.54-7.41,10.88-13.54,18.44-17.8,7.56-4.26,16.07-6.51,24.74-6.54h183.98c8.67.03,17.18,2.28,24.73,6.54,7.55,4.26,13.9,10.39,18.43,17.8l59.21,97.48h.08Z" />
+          <path fill="url(#bpLogoGrad)" d="M425.41,100.67l192.93,3.14s44.73,0,74.16,37.14c15.69,19.78,30.58,75.55,30.58,75.55,0,0,39.97,212.66,39.97,240.59s-16.56,59.42-48.96,61.55c-32.4,2.12-61.01-42.28-61.01-42.28L425.41,100.67Z" />
+          <rect fill={color} x="192.55" y="176.74" width="53.71" height="131.37" rx="16.87" ry="16.87" />
+          <rect fill={color} x="192.55" y="176.74" width="53.71" height="131.37" rx="16.87" ry="16.87" transform="translate(461.83 23.02) rotate(90)" />
+        </svg>
+      );
+    };
+
+    const bpTheme = (dark, accent) => {
+      if (dark) {
+        return {
+          dark: true, accent, accentLight: bpLighten(accent, 0.22),
+          bg: '#000000', bgGrad: 'radial-gradient(140% 90% at 50% -18%, #141416 0%, #000000 52%)',
+          card: '#161618', cardSolid: '#1C1C1F',
+          cardGrad: 'linear-gradient(180deg, #242427 0%, #1A1A1D 100%)',
+          cardGradHi: 'linear-gradient(180deg, #2E2E32 0%, #202023 100%)',
+          cardSheen: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+          glassBg: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.022) 100%)',
+          glassBlur: 'blur(22px) saturate(150%)',
+          glassBorder: 'rgba(255,255,255,0.13)',
+          glassSheen: 'inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(255,255,255,0.04), 0 16px 40px rgba(0,0,0,0.5)',
+          line: 'rgba(255,255,255,0.08)', line2: 'rgba(255,255,255,0.14)',
+          t1: '#FFFFFF', t2: 'rgba(255,255,255,0.72)', t3: 'rgba(255,255,255,0.5)', t4: 'rgba(255,255,255,0.34)',
+        };
+      }
+      return {
+        dark: false, accent, accentLight: bpLighten(accent, 0.18),
+        bg: '#F1F0EF', bgGrad: 'radial-gradient(140% 90% at 50% -18%, #FBFAFA 0%, #F1F0EF 55%)',
+        card: '#FFFFFF', cardSolid: '#FFFFFF',
+        cardGrad: 'linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%)',
+        cardGradHi: 'linear-gradient(180deg, #FFFFFF 0%, #F6F5F5 100%)',
+        cardSheen: 'inset 0 1px 0 rgba(255,255,255,0.8)',
+        glassBg: 'linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.44) 100%)',
+        glassBlur: 'blur(20px) saturate(160%)',
+        glassBorder: 'rgba(255,255,255,0.65)',
+        glassSheen: 'inset 0 1px 0 rgba(255,255,255,0.95), 0 16px 40px rgba(35,31,32,0.12)',
+        line: 'rgba(35,31,32,0.09)', line2: 'rgba(35,31,32,0.16)',
+        t1: '#231F20', t2: 'rgba(35,31,32,0.66)', t3: 'rgba(35,31,32,0.46)', t4: 'rgba(35,31,32,0.32)',
+      };
+    };
+
+    const BP_MISSIONS = [
+      { id: 'recall', type: 'Recall Quiz', icon: 'rotate', kind: 'quiz', title: 'ทบทวนสิ่งที่เรียนไปในบท Critical Thinking', minutes: 5, points: 20, status: 'todo', daysLeft: 2,
+        quiz: [
+          { q: 'ข้อใดคือหัวใจของการคิดเชิงวิพากษ์ (Critical Thinking)?',
+            choices: ['เชื่อข้อมูลที่ได้ยินมาทันที', 'ตั้งคำถามและประเมินหลักฐานก่อนสรุป', 'ทำตามที่คนส่วนใหญ่เลือก', 'หลีกเลี่ยงการตัดสินใจทุกครั้ง'], answer: 1 },
+        ] },
+      { id: 'fivewhys', type: 'Mission', icon: 'target', kind: 'action', title: 'ฝึกตั้งคำถามแบบ 5 Whys กับปัญหาจริง', minutes: 15, points: 50, status: 'doing',
+        prompt: 'นึกถึงปัญหาหนึ่งในงานของคุณ แล้วถาม “ทำไม” ต่อกัน 5 ครั้งเพื่อขุดหาต้นตอ จากนั้นเขียนรากของปัญหาที่คุณค้นพบ',
+        placeholder: 'รากของปัญหาที่แท้จริงคือ…' },
+      { id: 'growth', type: 'Flash Card', icon: 'layers', kind: 'flashcard', title: 'ทบทวนศัพท์ Growth Mindset', minutes: 8, points: 15, status: 'todo', daysLeft: 1,
+        cards: [
+          { front: 'Growth Mindset', back: 'ความเชื่อว่าความสามารถพัฒนาได้ด้วยความพยายามและการฝึกฝน' },
+          { front: 'Fixed Mindset', back: 'ความเชื่อว่าความสามารถเป็นสิ่งตายตัว เปลี่ยนแปลงไม่ได้' },
+          { front: 'Grit', back: 'ความมุ่งมั่นและความอดทนต่อเป้าหมายระยะยาว' },
+          { front: '“Yet” — ยังไม่', back: 'คำที่เปลี่ยน “ฉันทำไม่ได้” เป็น “ฉันยังทำไม่ได้” เปิดพื้นที่ให้การเติบโต' },
+          { front: 'Feedback', back: 'ข้อมูลสะท้อนกลับที่ใช้พัฒนาตัวเอง ไม่ใช่คำตัดสิน' },
+        ] },
+      { id: 'critical', type: 'Quiz', icon: 'help', kind: 'quiz', title: 'แบบทดสอบท้ายบท: การคิดเชิงวิพากษ์', minutes: 10, points: 30, status: 'late',
+        quiz: [
+          { q: 'เมื่อเจอข้อมูลใหม่บนโซเชียล สิ่งแรกที่ควรทำคือ?',
+            choices: ['แชร์ต่อทันทีถ้าน่าสนใจ', 'ตรวจสอบแหล่งที่มาและความน่าเชื่อถือ', 'เชื่อถ้ามีคนกดไลก์เยอะ', 'เพิกเฉยทุกข้อมูล'], answer: 1 },
+          { q: 'อคติยืนยัน (Confirmation Bias) คืออะไร?',
+            choices: ['การเลือกหาข้อมูลที่ยืนยันสิ่งที่เราเชื่ออยู่แล้ว', 'การเปลี่ยนใจบ่อย ๆ', 'การฟังทุกฝ่ายอย่างเท่าเทียม', 'การจดบันทึกอย่างละเอียด'], answer: 0 },
+        ] },
+    ];
+    const BP_TABS = [
+      { id: 'leaderboard', icon: 'medal', label: 'อันดับ' },
+      { id: 'insight', icon: 'home', label: 'วันนี้' },
+      { id: 'challenge', icon: 'flame', label: 'ภารกิจ' },
+      { id: 'resource', icon: 'book', label: 'คลัง' },
+    ];
+
+    const IconBtn = ({ th, name, onClick, badge }) => (
+      <button onClick={onClick} style={{
+        position: 'relative', width: 40, height: 40, borderRadius: 999, cursor: 'pointer',
+        background: th.dark ? 'rgba(255,255,255,0.06)' : '#fff', border: `1px solid ${th.line}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 150ms, border-color 150ms',
+      }}
+        onMouseEnter={e => e.currentTarget.style.borderColor = th.line2}
+        onMouseLeave={e => e.currentTarget.style.borderColor = th.line}>
+        <BPIcon name={name} size={19} color={th.t1} stroke={1.9} />
+        {badge > 0 && (<span style={{ position: 'absolute', top: 6, right: 6, minWidth: 8, height: 8, borderRadius: 999, background: th.accent, boxShadow: `0 0 0 2px ${th.bg}` }} />)}
+      </button>
+    );
+    const TopBar = ({ th, onProfile, onNotif, notifCount }) => (
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 5, padding: '20px 20px 12px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+        background: th.dark ? 'rgba(12,13,17,0.55)' : 'rgba(255,255,255,0.6)',
+        backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)',
+        borderBottom: `1px solid ${th.dark ? 'rgba(255,255,255,0.07)' : 'rgba(35,31,32,0.08)'}`,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+          <BPJoinstick height={27} color={th.dark ? '#FFFFFF' : th.t1} accent={th.accent} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <IconBtn th={th} name="user" onClick={onProfile} />
+          <IconBtn th={th} name="bell" onClick={onNotif} badge={notifCount} />
+        </div>
+      </div>
+    );
+    const InfoBtn = ({ th, onClick, style = {} }) => (
+      <button onClick={(e) => { e.stopPropagation(); onClick && onClick(); }} aria-label="รายละเอียด" style={{
+        width: 25, height: 25, borderRadius: 999, flexShrink: 0, cursor: 'pointer', padding: 0,
+        background: th.dark ? 'rgba(255,255,255,0.07)' : 'rgba(35,31,32,0.05)', border: `1px solid ${th.line}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 150ms, background 150ms', ...style,
+      }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = th.line2; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = th.line; }}>
+        <BPIcon name="info" size={13} color={th.t3} stroke={2} />
+      </button>
+    );
+    const SectionHead = ({ th, title, action }) => (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+        <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 17, color: th.t1, letterSpacing: '-0.01em' }}>{title}</span>
+        {action && (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2, fontFamily: TH, fontSize: 12.5, color: th.t3 }}>
+            {action}<BPIcon name="chevronRight" size={13} color={th.t4} stroke={2.2} />
+          </span>
+        )}
+      </div>
+    );
+    const statusView = (th, m, done) => {
+      if (done || m.status === 'done') return { label: 'เสร็จแล้ว', color: '#33B96B', dot: true };
+      if (m.status === 'late') return { label: 'ล่าช้า', color: th.accent, dot: true };
+      if (m.status === 'doing') return { label: 'กำลังทำ', color: '#4DA8F0', dot: true };
+      return { label: `เหลืออีก ${m.daysLeft} วัน`, color: th.t1, dot: true };
+    };
+    const MissionCard = ({ th, m, done, onOpen }) => {
+      const s = statusView(th, m, done);
+      return (
+        <button onClick={onOpen} style={{
+          textAlign: 'left', cursor: 'pointer', width: '100%',
+          background: th.glassBg, backdropFilter: th.glassBlur, WebkitBackdropFilter: th.glassBlur,
+          border: `1px solid ${th.glassBorder}`, borderRadius: 22, padding: 16, boxShadow: th.glassSheen,
+          display: 'flex', flexDirection: 'column', gap: 11, opacity: done ? 0.6 : 1, transition: 'all 180ms ease',
+        }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 11px 5px 9px', borderRadius: 999, background: th.dark ? 'rgba(255,255,255,0.06)' : '#F1F0EF', border: `1px solid ${th.line}` }}>
+              <BPIcon name={m.icon} size={13} color={th.accent} stroke={2} />
+              <span style={{ fontFamily: EN, fontSize: 11, fontWeight: 600, color: th.t2 }}>{m.type}</span>
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <BPIcon name="flame" filled size={13} color={th.t4} />
+              <span style={{ fontFamily: EN, fontSize: 12.5, fontWeight: 600, color: th.t2 }}>+{m.points}</span>
+            </span>
+          </div>
+          <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 15.5, color: th.t1, lineHeight: 1.32, textDecoration: done ? 'line-through' : 'none' }}>{m.title}</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: TH, fontSize: 12.5, color: th.t3 }}>
+              <BPIcon name="clock" size={14} color={th.t4} stroke={2} />
+              {m.minutes} นาที
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: TH, fontSize: 12.5, fontWeight: 600, color: s.color }}>
+              {s.dot && <span style={{ width: 6, height: 6, borderRadius: 999, background: s.color, boxShadow: `0 0 6px ${bpHexA(s.color, 0.7)}` }} />}
+              {s.label}
+            </span>
+          </div>
+        </button>
+      );
+    };
+    // priority by status only (NOT by done) so completing a mission keeps it
+    // in place showing "เสร็จแล้ว ✓" instead of reshuffling out of the top 3
+    const bpMissionPrio = (m) => {
+      if (m.status === 'doing') return 1;
+      if (m.status === 'late') return 2;
+      return 3;
+    };
+    /* ── MissionPlaySheet — tap a mission card to actually play it & submit.
+         quiz → multiple-choice + scoring · flashcard → flip cards · action → free-text. ── */
+    const MissionPlaySheet = ({ th, mission, onClose, onComplete }) => {
+      const m = mission;
+      const [answers, setAnswers] = useState({});
+      const [submitted, setSubmitted] = useState(false);
+      const [ci, setCi] = useState(0);
+      const [flipped, setFlipped] = useState(false);
+      const [text, setText] = useState('');
+
+      const correct = m.kind === 'quiz' ? m.quiz.reduce((n, q, i) => n + (answers[i] === q.answer ? 1 : 0), 0) : 0;
+      const allAnswered = m.kind === 'quiz' ? m.quiz.every((_, i) => answers[i] != null) : true;
+      const lastCard = m.kind === 'flashcard' && ci >= m.cards.length - 1;
+      const finish = () => { onComplete(); onClose(); };
+
+      // footer primary button — label / enabled / action depend on mission kind + state
+      let btnLabel = 'เสร็จสิ้น', btnEnabled = true, btnAction = finish;
+      if (m.kind === 'quiz') {
+        if (!submitted) { btnLabel = 'ส่งคำตอบ'; btnEnabled = allAnswered; btnAction = () => setSubmitted(true); }
+        else { btnLabel = `รับ +${m.points} คะแนน`; }
+      } else if (m.kind === 'flashcard') {
+        if (!lastCard) { btnLabel = 'การ์ดถัดไป →'; btnAction = () => { setCi(i => i + 1); setFlipped(false); }; }
+        else { btnLabel = `เรียนครบแล้ว · รับ +${m.points}`; }
+      } else if (m.kind === 'action') {
+        btnLabel = `ส่งคำตอบ · รับ +${m.points}`; btnEnabled = !!text.trim();
+      }
+
+      return (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 90, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+          <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.62)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }} />
+          <div style={{ position: 'relative', background: '#15110E', borderTopLeftRadius: 26, borderTopRightRadius: 26, borderTop: `1px solid ${th.line}`, maxHeight: '90%', display: 'flex', flexDirection: 'column', boxShadow: '0 -20px 50px rgba(0,0,0,0.5)', animation: 'sheetUp 0.34s cubic-bezier(0.22,1,0.36,1) both' }}>
+            <div style={{ padding: '12px 20px 10px', flexShrink: 0 }}>
+              <div style={{ width: 38, height: 4, borderRadius: 99, background: th.line2, margin: '0 auto 14px' }} />
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 999, background: bpHexA(th.accent, 0.14), border: `1px solid ${bpHexA(th.accent, 0.4)}` }}>
+                    <BPIcon name={m.icon} size={12} color={th.accent} stroke={2} />
+                    <span style={{ fontFamily: EN, fontSize: 11, fontWeight: 600, color: th.accent }}>{m.type}</span>
+                  </span>
+                  <h3 style={{ margin: '10px 0 0', fontFamily: TH, fontWeight: 700, fontSize: 18, color: th.t1, lineHeight: 1.35 }}>{m.title}</h3>
+                </div>
+                <button onClick={onClose} aria-label="ปิด" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }}>
+                  <BPIcon name="x" size={22} color={th.t3} stroke={2} />
+                </button>
+              </div>
+            </div>
+
+            <div style={{ padding: '6px 20px 18px', overflowY: 'auto', flex: 1 }}>
+              {m.kind === 'quiz' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+                  {m.quiz.map((q, qi) => (
+                    <div key={qi} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 15.5, color: th.t1, lineHeight: 1.45 }}>{qi + 1}. {q.q}</span>
+                      {q.choices.map((c, idx) => {
+                        const chosen = answers[qi] === idx;
+                        const isCorrect = idx === q.answer;
+                        let bg = 'rgba(255,255,255,0.04)', bd = th.line2, col = th.t2;
+                        if (submitted && isCorrect) { bg = bpHexA('#33B96B', 0.16); bd = bpHexA('#33B96B', 0.5); col = '#86e3ab'; }
+                        else if (submitted && chosen) { bg = bpHexA(th.accent, 0.14); bd = bpHexA(th.accent, 0.5); col = '#f3a995'; }
+                        else if (chosen) { bg = bpHexA(th.accent, 0.16); bd = bpHexA(th.accent, 0.55); col = th.t1; }
+                        return (
+                          <button key={idx} disabled={submitted} onClick={() => setAnswers(a => ({ ...a, [qi]: idx }))}
+                            style={{ textAlign: 'left', cursor: submitted ? 'default' : 'pointer', padding: '12px 14px', borderRadius: 14, background: bg, border: `1px solid ${bd}`, color: col, fontFamily: TH, fontSize: 14.5, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 11, transition: 'all 140ms', lineHeight: 1.35 }}>
+                            <span style={{ width: 20, height: 20, borderRadius: 999, border: `2px solid ${(chosen || (submitted && isCorrect)) ? 'currentColor' : th.line2}`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {submitted && isCorrect && <BPIcon name="check" size={12} color="#86e3ab" stroke={3} />}
+                              {!submitted && chosen && <span style={{ width: 8, height: 8, borderRadius: 999, background: 'currentColor' }} />}
+                            </span>
+                            <span style={{ flex: 1 }}>{c}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
+                  {submitted && (
+                    <div style={{ padding: '12px 14px', borderRadius: 14, background: bpHexA('#33B96B', 0.1), border: `1px solid ${bpHexA('#33B96B', 0.3)}`, fontFamily: TH, fontSize: 14, color: th.t1, lineHeight: 1.5 }}>
+                      ตอบถูก {correct}/{m.quiz.length} ข้อ {correct === m.quiz.length ? '🎉 เยี่ยมมาก!' : '— ลองทบทวนอีกครั้งได้นะ'}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {m.kind === 'flashcard' && (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+                  <span style={{ fontFamily: TH, fontSize: 13, color: th.t3 }}>การ์ด {ci + 1} / {m.cards.length}</span>
+                  <button onClick={() => setFlipped(f => !f)}
+                    style={{ width: '100%', minHeight: 190, borderRadius: 20, cursor: 'pointer', background: flipped ? bpHexA(th.accent, 0.12) : 'rgba(255,255,255,0.05)', border: `1px solid ${flipped ? bpHexA(th.accent, 0.4) : th.line2}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '24px 20px', textAlign: 'center', transition: 'all 200ms' }}>
+                    <span style={{ fontFamily: TH, fontSize: 12, color: th.t3, letterSpacing: '0.05em' }}>{flipped ? 'ความหมาย' : 'คำศัพท์'}</span>
+                    <span style={{ fontFamily: flipped ? TH : EN, fontWeight: 700, fontSize: flipped ? 16.5 : 22, color: th.t1, lineHeight: 1.4 }}>{flipped ? m.cards[ci].back : m.cards[ci].front}</span>
+                    <span style={{ fontFamily: TH, fontSize: 12, color: th.t4, marginTop: 4 }}>แตะการ์ดเพื่อพลิก</span>
+                  </button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <button onClick={() => { setCi(i => Math.max(0, i - 1)); setFlipped(false); }} disabled={ci === 0}
+                      style={{ width: 36, height: 36, borderRadius: 999, cursor: ci === 0 ? 'default' : 'pointer', background: 'rgba(255,255,255,0.06)', border: `1px solid ${th.line}`, color: th.t2, fontSize: 18, opacity: ci === 0 ? 0.4 : 1 }}>‹</button>
+                    <div style={{ display: 'flex', gap: 6 }}>{m.cards.map((_, i) => <span key={i} style={{ width: 7, height: 7, borderRadius: 999, background: i === ci ? th.accent : th.line2 }} />)}</div>
+                    <button onClick={() => { setCi(i => Math.min(m.cards.length - 1, i + 1)); setFlipped(false); }} disabled={lastCard}
+                      style={{ width: 36, height: 36, borderRadius: 999, cursor: lastCard ? 'default' : 'pointer', background: 'rgba(255,255,255,0.06)', border: `1px solid ${th.line}`, color: th.t2, fontSize: 18, opacity: lastCard ? 0.4 : 1 }}>›</button>
+                  </div>
+                </div>
+              )}
+
+              {m.kind === 'action' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <p style={{ margin: 0, fontFamily: TH, fontSize: 14.5, color: th.t2, lineHeight: 1.6 }}>{m.prompt}</p>
+                  <textarea value={text} onChange={e => setText(e.target.value)} placeholder={m.placeholder} rows={5}
+                    style={{ width: '100%', boxSizing: 'border-box', resize: 'none', borderRadius: 14, padding: '12px 14px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${th.line2}`, color: th.t1, fontFamily: TH, fontSize: 15, lineHeight: 1.55, outline: 'none' }} />
+                </div>
+              )}
+            </div>
+
+            <div style={{ padding: '12px 20px 22px', flexShrink: 0, borderTop: `1px solid ${th.line}` }}>
+              <button onClick={btnEnabled ? btnAction : undefined} disabled={!btnEnabled}
+                style={{ width: '100%', padding: '14px 0', borderRadius: 14, border: 'none', cursor: btnEnabled ? 'pointer' : 'default', fontFamily: TH, fontSize: 15, fontWeight: 700, color: '#fff', background: btnEnabled ? th.accent : 'rgba(255,255,255,0.12)', boxShadow: btnEnabled ? `0 8px 24px ${bpHexA(th.accent, 0.4)}` : 'none', transition: 'all 160ms' }}>
+                {btnLabel}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const Missions = ({ th }) => {
+      const [done, setDone] = useState({});
+      const [openIdx, setOpenIdx] = useState(null);
+      const items = BP_MISSIONS
+        .map((m, i) => ({ m, i, isDone: !!done[i] || m.status === 'done' }))
+        .sort((a, b) => bpMissionPrio(a.m) - bpMissionPrio(b.m) || ((a.m.daysLeft || 99) - (b.m.daysLeft || 99)))
+        .slice(0, 3);
+      const openMission = openIdx != null ? BP_MISSIONS[openIdx] : null;
+      return (
+        <div>
+          <SectionHead th={th} title="ภารกิจที่แนะนำ" action="ดูทั้งหมด" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {items.map(x => <MissionCard key={x.i} th={th} m={x.m} done={x.isDone} onOpen={() => setOpenIdx(x.i)} />)}
+          </div>
+          {openMission && <MissionPlaySheet th={th} mission={openMission} onClose={() => setOpenIdx(null)} onComplete={() => setDone(d => ({ ...d, [openIdx]: true }))} />}
+        </div>
+      );
+    };
+    const BottomNav = ({ th, tab, setTab }) => (
+      <div style={{
+        position: 'absolute', left: '50%', transform: 'translateX(-50%)', bottom: 20, zIndex: 40, borderRadius: 999,
+        background: th.dark ? 'rgba(30,30,34,0.55)' : 'rgba(255,255,255,0.62)',
+        backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+        border: `1px solid ${th.dark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.06)'}`,
+        boxShadow: th.dark ? '0 14px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.12)' : '0 14px 32px rgba(35,31,32,0.16), inset 0 1px 0 rgba(255,255,255,0.8)',
+        padding: '11px 14px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', gap: 6,
+      }}>
+        {BP_TABS.map(tb => {
+          const active = tab === tb.id;
+          return (
+            <button key={tb.id} onClick={() => setTab(tb.id)} aria-label={tb.label} title={tb.label} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, padding: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 66, height: 54, borderRadius: 999, background: active ? bpHexA(th.accent, th.dark ? 0.20 : 0.12) : 'transparent', transition: 'background 180ms ease' }}>
+                <BPIcon name={tb.icon} filled size={27} color={active ? th.accent : th.t3} />
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    );
+
+    /* ===============================================================
+       JOINSTICK TAB SCREENS — copied from joinstick.html so the bottom-nav
+       tabs (อันดับ / ภารกิจ / คลัง) open real content. The joinstick per-file
+       helpers were re-pointed to the shared si / TH / EN / bpHexA equivalents.
+    =============================================================== */
+    const BP_RANK_ORDER = ['Ignorance', 'Questioner', 'Goal Setter', 'Apprentice', 'Practitioner', 'Graduate'];
+    const bpRankColor = (rank) => { const i = BP_RANK_ORDER.indexOf(rank); return siEngageColor(i >= 0 ? (i / (BP_RANK_ORDER.length - 1)) * 100 : 50); };
+
+    // ── อันดับ / Leaderboard ──
+    const BP_LEADERS = [
+      { name: 'พิมพ์ชนก', rank: 'Graduate',     pts: 2180, move: 0 },
+      { name: 'ธีรเดช',    rank: 'Practitioner', pts: 1920, move: 2 },
+      { name: 'ณัฐวุฒิ',   rank: 'Practitioner', pts: 1760, move: -1 },
+      { name: 'จอย',       rank: 'Practitioner', pts: 1240, move: 2, me: true },
+      { name: 'ศุภิสรา',   rank: 'Apprentice',   pts: 1180, move: 0 },
+      { name: 'กิตติพงศ์', rank: 'Apprentice',   pts: 1050, move: -2 },
+      { name: 'อารยา',     rank: 'Goal Setter',  pts: 920,  move: 1 },
+      { name: 'ปองพล',     rank: 'Goal Setter',  pts: 740,  move: 0 },
+    ];
+    const BP_MEDAL = { 1: '#F1B304', 2: '#C4CAD4', 3: '#D08B5A' };
+    const MoveIndicator = ({ th, move }) => {
+      if (!move) return <span style={{ fontFamily: EN, fontSize: 11, color: th.t4 }}>—</span>;
+      const up = move > 0, c = up ? '#33B96B' : th.accent;
+      return (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 2, fontFamily: EN, fontSize: 11.5, fontWeight: 600, color: c }}><span style={{ fontSize: 9 }}>{up ? '▲' : '▼'}</span>{Math.abs(move)}</span>);
+    };
+    const PodiumPillar = ({ th, place, learner }) => {
+      const c = bpRankColor(learner.rank), big = place === 1, ring = big ? 82 : 62;
+      const order = { 1: 2, 2: 1, 3: 3 }, md = BP_MEDAL[place];
+      return (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7, order: order[place] }}>
+          <div style={{ position: 'relative' }}>
+            {big && (<span style={{ position: 'absolute', top: -15, left: '50%', transform: 'translateX(-50%)' }}><BPIcon name="trophy" size={18} color="#F1B304" stroke={2} /></span>)}
+            <div style={{ width: ring, height: ring, borderRadius: 999, background: bpHexA(c, 0.12), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <SiCrystal intensity={50} size={ring - 16} color={c} reduce={true} />
+            </div>
+            <span style={{ position: 'absolute', bottom: -3, left: '50%', transform: 'translateX(-50%)', width: 22, height: 22, borderRadius: 999, background: md, border: '2px solid #0c0d11', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: EN, fontWeight: 700, fontSize: 11, color: '#16110E' }}>{place}</span>
+          </div>
+          <span style={{ fontFamily: TH, fontWeight: 600, fontSize: big ? 14 : 13, color: th.t1, marginTop: 4, textAlign: 'center', whiteSpace: 'nowrap' }}>{learner.name}</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><BPIcon name="flame" filled size={11} color={th.t4} /><span style={{ fontFamily: EN, fontWeight: 700, fontSize: 12.5, color: th.t2 }}>{learner.pts.toLocaleString()}</span></span>
+        </div>
+      );
+    };
+    const RankRow = ({ th, learner, place }) => {
+      const c = bpRankColor(learner.rank), me = learner.me;
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 18, background: th.glassBg, backdropFilter: th.glassBlur, WebkitBackdropFilter: th.glassBlur, border: `1px solid ${me ? bpHexA(th.accent, 0.55) : th.glassBorder}`, boxShadow: me ? `${th.glassSheen}, 0 8px 22px ${bpHexA(th.accent, 0.18)}` : th.glassSheen }}>
+          <span style={{ width: 24, textAlign: 'center', fontFamily: EN, fontWeight: 700, fontSize: 14, color: me ? th.accent : th.t3, flexShrink: 0 }}>{place}</span>
+          <div style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, background: bpHexA(c, 0.14), border: `1px solid ${bpHexA(c, 0.4)}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <SiCrystal intensity={50} size={34} color={c} reduce={true} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 14.5, color: th.t1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{learner.name}</span>
+              {me && <span style={{ fontFamily: TH, fontSize: 10.5, fontWeight: 600, color: th.accent, background: bpHexA(th.accent, 0.18), padding: '2px 7px', borderRadius: 999, flexShrink: 0 }}>คุณ</span>}
+            </div>
+            <span style={{ fontFamily: EN, fontSize: 11.5, color: c, fontWeight: 600 }}>{learner.rank}</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2, flexShrink: 0 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><BPIcon name="flame" filled size={12} color={th.accent} /><span style={{ fontFamily: EN, fontWeight: 700, fontSize: 14, color: th.t1 }}>{learner.pts.toLocaleString()}</span></span>
+            <MoveIndicator th={th} move={learner.move} />
+          </div>
+        </div>
+      );
+    };
+    const BPLeaderboard = ({ th }) => {
+      const [scope, setScope] = useState('week');
+      const sorted = BP_LEADERS.slice().sort((a, b) => b.pts - a.pts);
+      const top3 = sorted.slice(0, 3), rest = sorted.slice(3);
+      const myPlace = sorted.findIndex(l => l.me) + 1;
+      const seg = (id, label) => { const active = scope === id; return (
+        <button onClick={() => setScope(id)} style={{ flex: 1, cursor: 'pointer', border: 'none', borderRadius: 999, padding: '8px 0', fontFamily: TH, fontSize: 13, fontWeight: 600, background: active ? '#fff' : 'transparent', color: active ? '#16110E' : th.t3, transition: 'background 180ms, color 180ms' }}>{label}</button>
+      ); };
+      return (
+        <main style={{ flex: 1, overflow: 'hidden', padding: '92px 20px 0', display: 'flex', flexDirection: 'column' }}>
+          {/* heading stays sharp */}
+          <h1 style={{ margin: '0 0 16px', fontFamily: TH, fontWeight: 600, fontSize: 25, color: th.t1, letterSpacing: '-0.01em', flexShrink: 0 }}>อันดับ</h1>
+
+          {/* everything below is a blurred teaser with the booth-info card overlay */}
+          <BoothTeaser th={th}>
+            <span style={{ fontFamily: TH, fontSize: 13, color: th.t3 }}>Critical Thinking 101 · 24 คน</span>
+            <div style={{ display: 'flex', gap: 4, padding: 4, borderRadius: 999, background: 'rgba(255,255,255,0.05)', border: `1px solid ${th.line}` }}>
+              {seg('week', 'สัปดาห์นี้')}{seg('all', 'ตลอดกาล')}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10, padding: '14px 0 6px' }}>
+              {top3.map((l, i) => <PodiumPillar key={l.name} th={th} place={i + 1} learner={l} />)}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 13, padding: '14px 16px', borderRadius: 18, background: th.glassBg, border: `1px solid ${bpHexA(th.accent, 0.4)}`, boxShadow: th.glassSheen }}>
+              <span style={{ fontFamily: EN, fontWeight: 700, fontSize: 20, color: th.accent }}>#{myPlace}</span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: TH, fontWeight: 600, fontSize: 14, color: th.t1 }}>อันดับของคุณ</div>
+                <div style={{ fontFamily: TH, fontSize: 12, color: th.t3 }}>ขยับขึ้น 2 อันดับ · อีก 520 แต้มแซง #3</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+              {rest.map((l, i) => <RankRow key={l.name} th={th} learner={l} place={i + 4} />)}
+            </div>
+          </BoothTeaser>
+        </main>
+      );
+    };
+
+    // shared "locked teaser" — blur the children + a centred booth-E11 message overlay
+    const BoothTeaser = ({ th, children }) => (
+      <div style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
+        <div aria-hidden style={{ filter: 'blur(7px)', opacity: 0.45, pointerEvents: 'none', userSelect: 'none', display: 'flex', flexDirection: 'column', gap: 20, paddingBottom: 116 }}>
+          {children}
+        </div>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 22px 96px' }}>
+          {/* booth-info card (same as the Done screen) */}
+          <div style={{
+            width: '100%', maxWidth: 360, background: '#1c1917',
+            border: '1px solid rgba(237,71,36,0.35)', borderRadius: 22, padding: '26px 22px',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
+            boxShadow: '0 24px 60px rgba(0,0,0,0.6)'
+          }}>
+            <JoinstickLogo size={44} variant="white"/>
+            <div className="font-th" style={{ color: '#ffffff', fontSize: 16, fontWeight: 700, marginTop: 14 }}>
+              อยากรู้จัก JOINSTICK มากขึ้น?
+            </div>
+            <div className="font-th" style={{ color: '#a8a29e', fontSize: 13, marginTop: 6 }}>
+              แวะมาคุยกับทีม BASE Playhouse ได้ที่บูธ
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 14 }}>
+              <MapPinIcon size={28} color="#ED4724"/>
+              <span className="font-mono-num" style={{ fontSize: 44, fontWeight: 600, color: '#ED4724', letterSpacing: '0.02em' }}>
+                E11
+              </span>
+            </div>
+            <div className="font-th" style={{ color: '#78716c', fontSize: 12.5, lineHeight: 1.7, marginTop: 12 }}>
+              มาดูเวอร์ชันเต็ม พร้อมคุยเรื่องการวัดผลการเรียนรู้ในองค์กรของคุณ
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    // ── ภารกิจ / Challenge tab ──
+    const BP_ANYTIME = [
+      { type: 'Recall Quiz', icon: 'rotate', desc: 'ทบทวนสิ่งที่เพิ่งเรียนไป', minutes: 5, points: 20 },
+      { type: 'Flash Card',  icon: 'layers', desc: 'ทวนศัพท์และหลักการสั้นๆ', minutes: 8, points: 15 },
+    ];
+    const AnytimeCard = ({ th, item, state, onStart }) => {
+      const done = state === 'done', cool = state === 'cooldown', ready = state === 'ready';
+      const accent = done ? '#33B96B' : cool ? th.t4 : th.accent;
+      return (
+        <button onClick={ready ? onStart : undefined} style={{ flex: 1, minWidth: 0, textAlign: 'left', cursor: ready ? 'pointer' : 'default', background: th.glassBg, backdropFilter: th.glassBlur, WebkitBackdropFilter: th.glassBlur, border: `1px solid ${done ? bpHexA('#33B96B', 0.32) : th.glassBorder}`, borderRadius: 20, padding: 15, boxShadow: th.glassSheen, display: 'flex', flexDirection: 'column', gap: 11, opacity: cool ? 0.5 : 1, transition: 'all 180ms ease' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ width: 42, height: 42, borderRadius: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', background: bpHexA(accent, 0.16), border: `1px solid ${bpHexA(accent, 0.32)}` }}><BPIcon name={item.icon} size={20} color={accent} stroke={2} /></span>
+            {done && <span style={{ width: 24, height: 24, borderRadius: 999, background: bpHexA('#33B96B', 0.18), display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BPIcon name="check" size={14} color="#33B96B" stroke={2.6} /></span>}
+            {cool && <BPIcon name="lock" size={15} color={th.t4} stroke={2} />}
+          </div>
+          <div>
+            <div style={{ fontFamily: EN, fontSize: 13.5, fontWeight: 700, color: th.t1, letterSpacing: '-0.01em' }}>{item.type}</div>
+            <div style={{ fontFamily: TH, fontSize: 11.5, color: th.t3, marginTop: 2, lineHeight: 1.35 }}>{item.desc}</div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: TH, fontSize: 11.5, color: th.t3 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><BPIcon name="flame" filled size={12} color={th.t4} /><span style={{ fontFamily: EN, fontWeight: 600, color: th.t2 }}>+{item.points}</span></span>
+            <span style={{ width: 3, height: 3, borderRadius: 99, background: th.t4 }} />{item.minutes} นาที
+          </div>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: TH, fontSize: 12, fontWeight: 600, color: accent, marginTop: 1 }}>
+            {done && <><span style={{ width: 6, height: 6, borderRadius: 999, background: '#33B96B', boxShadow: `0 0 6px ${bpHexA('#33B96B', 0.7)}` }} />สำเร็จแล้ว</>}
+            {cool && <><BPIcon name="clock" size={13} color={th.t4} stroke={2} />Cool Down · พรุ่งนี้</>}
+            {ready && <><BPIcon name="play" filled size={12} color={th.accent} />เริ่มทำ</>}
+          </div>
+        </button>
+      );
+    };
+    const BPChallengeTab = ({ th }) => {
+      const [done, setDone] = useState({});
+      const [openIdx, setOpenIdx] = useState(null);
+      const [anytimeDone, setAnytimeDone] = useState(null);
+      const anytimeState = item => anytimeDone == null ? 'ready' : (anytimeDone === item.type ? 'done' : 'cooldown');
+      // reuse the playable BP_MISSIONS as the "ภารกิจหลัก" list (they all have play content)
+      const main = BP_MISSIONS.map((m, i) => ({ m, i })).sort((a, b) => bpMissionPrio(a.m) - bpMissionPrio(b.m));
+      const openMission = openIdx != null ? BP_MISSIONS[openIdx] : null;
+      const head = (title, desc) => (
+        <div style={{ marginBottom: 13 }}>
+          <h2 style={{ margin: 0, fontFamily: TH, fontWeight: 700, fontSize: 19, color: th.t1, letterSpacing: '-0.01em' }}>{title}</h2>
+          <div style={{ fontFamily: TH, fontSize: 12.5, color: th.t3, marginTop: 3, lineHeight: 1.4 }}>{desc}</div>
+        </div>
+      );
+      return (
+        <main style={{ flex: 1, overflow: 'hidden', padding: '92px 20px 0', display: 'flex', flexDirection: 'column' }}>
+          <h1 style={{ margin: '0 0 16px', fontFamily: TH, fontWeight: 600, fontSize: 25, color: th.t1, letterSpacing: '-0.01em', flexShrink: 0 }}>ภารกิจ</h1>
+          <BoothTeaser th={th}>
+            <section>
+              {head('ภารกิจทุกเมื่อ', 'เพื่อหล่อเลี้ยงความรู้ และนำไปสู่ความจำระยะยาว')}
+              <div style={{ display: 'flex', gap: 10 }}>
+                {BP_ANYTIME.map(item => (<AnytimeCard key={item.type} th={th} item={item} state={anytimeState(item)} onStart={() => setAnytimeDone(item.type)} />))}
+              </div>
+            </section>
+            <section>
+              {head('ภารกิจหลัก', 'เพื่อการพัฒนาอย่างสม่ำเสมอสู่การเปลี่ยนแปลง')}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {main.map(({ m, i }) => (<MissionCard key={i} th={th} m={m} done={!!done[i] || m.status === 'done'} onOpen={() => setOpenIdx(i)} />))}
+              </div>
+            </section>
+          </BoothTeaser>
+        </main>
+      );
+    };
+
+    // ── คลัง / Resource tab ──
+    const BP_CATEGORIES = ['ทั้งหมด', 'การคิด', 'Mindset', 'ทักษะ'];
+    const BP_RESOURCES = [
+      { cat: 'การคิด',  type: 'บทเรียน',    icon: 'book',   title: 'Critical Thinking 101', items: '8 บท', progress: 62, color: '#2F80ED' },
+      { cat: 'การคิด',  type: 'Flash Card', icon: 'layers', title: 'Logical Fallacies',      items: '24 การ์ด', progress: 40, color: '#F5821F' },
+      { cat: 'Mindset', type: 'บทเรียน',    icon: 'book',   title: 'Growth Mindset',         items: '6 บท', progress: 100, color: '#33B96B' },
+      { cat: 'Mindset', type: 'Flash Card', icon: 'layers', title: 'ศัพท์ Growth Mindset',   items: '12 การ์ด', progress: 25, color: '#F1B304' },
+      { cat: 'ทักษะ',   type: 'Quiz',       icon: 'help',   title: 'การตั้งคำถาม 5 Whys',     items: '10 ข้อ', progress: 0, color: '#ED4724' },
+      { cat: 'ทักษะ',   type: 'บทเรียน',    icon: 'target', title: 'Problem Framing',        items: '5 บท', progress: 0, color: '#9B6BF2' },
+    ];
+    const ProgressBar = ({ th, pct, color }) => {
+      const c = color || th.accent;
+      return (<div style={{ height: 5, borderRadius: 999, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}><div style={{ height: '100%', width: pct + '%', borderRadius: 999, background: `linear-gradient(90deg, ${bpHexA(c, 0.6)}, ${c})`, transition: 'width 500ms ease' }} /></div>);
+    };
+    const ResourceCard = ({ th, r }) => {
+      const finished = r.progress >= 100;
+      return (
+        <button style={{ textAlign: 'left', cursor: 'pointer', width: '100%', background: th.cardGrad, border: `1px solid ${th.line}`, borderRadius: 20, padding: 16, boxShadow: th.cardSheen, display: 'flex', flexDirection: 'column', gap: 12, transition: 'transform 180ms ease' }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ width: 42, height: 42, borderRadius: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', background: bpHexA(r.color, 0.16), border: `1px solid ${bpHexA(r.color, 0.32)}` }}><BPIcon name={r.icon} size={20} color={r.color} stroke={2} /></span>
+            {finished && (<span style={{ width: 24, height: 24, borderRadius: 999, background: bpHexA('#33B96B', 0.2), display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BPIcon name="check" size={14} color="#33B96B" stroke={2.6} /></span>)}
+          </div>
+          <div style={{ flex: 1 }}>
+            <span style={{ fontFamily: EN, fontSize: 10.5, fontWeight: 600, color: r.color, letterSpacing: '0.04em' }}>{r.type}</span>
+            <div style={{ fontFamily: TH, fontWeight: 600, fontSize: 14.5, color: th.t1, lineHeight: 1.3, marginTop: 3 }}>{r.title}</div>
+            <span style={{ fontFamily: TH, fontSize: 11.5, color: th.t3 }}>{r.items}</span>
+          </div>
+          <div>
+            <ProgressBar th={th} pct={r.progress} color={r.color} />
+            <span style={{ fontFamily: EN, fontSize: 11, fontWeight: 600, color: th.t3, marginTop: 6, display: 'inline-block' }}>{finished ? 'เรียนจบแล้ว' : r.progress > 0 ? `${r.progress}%` : 'ยังไม่เริ่ม'}</span>
+          </div>
+        </button>
+      );
+    };
+    const BPResource = ({ th }) => {
+      const [cat, setCat] = useState('ทั้งหมด');
+      const resume = BP_RESOURCES[0];
+      const shown = cat === 'ทั้งหมด' ? BP_RESOURCES : BP_RESOURCES.filter(r => r.cat === cat);
+      return (
+        <main style={{ flex: 1, overflow: 'hidden', padding: '92px 20px 0', display: 'flex', flexDirection: 'column' }}>
+          <h1 style={{ margin: '0 0 16px', fontFamily: TH, fontWeight: 600, fontSize: 25, color: th.t1, letterSpacing: '-0.01em', flexShrink: 0 }}>คลังความรู้</h1>
+          <BoothTeaser th={th}>
+            <span style={{ fontFamily: TH, fontSize: 13, color: th.t3 }}>บทเรียนและการ์ดทบทวนทั้งหมดของคุณ</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 15px', borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: `1px solid ${th.line}` }}>
+            <BPIcon name="help" size={17} color={th.t4} stroke={2} />
+            <span style={{ fontFamily: TH, fontSize: 14, color: th.t4 }}>ค้นหาบทเรียนหรือการ์ด</span>
+          </div>
+          <button style={{ textAlign: 'left', cursor: 'pointer', width: '100%', display: 'flex', alignItems: 'center', gap: 14, padding: 16, borderRadius: 20, background: th.cardGradHi, border: `1px solid ${th.line2}`, boxShadow: th.cardSheen }}>
+            <span style={{ width: 54, height: 54, borderRadius: 16, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: bpHexA(resume.color, 0.16), border: `1px solid ${bpHexA(resume.color, 0.32)}` }}><BPIcon name="play" filled size={20} color={resume.color} /></span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ fontFamily: TH, fontSize: 11.5, fontWeight: 600, color: resume.color }}>เรียนต่อจากเดิม</span>
+              <div style={{ fontFamily: TH, fontWeight: 600, fontSize: 15, color: th.t1, marginBottom: 8 }}>{resume.title} · บทที่ 5</div>
+              <ProgressBar th={th} pct={resume.progress} color={resume.color} />
+            </div>
+            <BPIcon name="chevronRight" size={20} color={th.t3} stroke={2.2} />
+          </button>
+          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', margin: '0 -20px', padding: '0 20px', scrollbarWidth: 'none' }}>
+            {BP_CATEGORIES.map(c => { const active = cat === c; return (
+              <button key={c} onClick={() => setCat(c)} style={{ flexShrink: 0, cursor: 'pointer', fontFamily: TH, fontSize: 13, fontWeight: 500, padding: '8px 16px', borderRadius: 999, background: active ? '#fff' : th.card, color: active ? '#16110E' : th.t2, border: `1px solid ${active ? 'transparent' : th.line}`, transition: 'background 160ms, color 160ms' }}>{c}</button>
+            ); })}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {shown.map((r, i) => <ResourceCard key={i} th={th} r={r} />)}
+          </div>
+          </BoothTeaser>
+        </main>
+      );
+    };
+
+    const InsightScreen = ({ ratings, onNext }) => {
+      const [shown, setShown] = useState(0); // count-up score
+      const [tab, setTab] = useState('insight');
+
+      const score = scoreFromRatings(ratings);
+      const stage = stageFor(score);
+      const th = bpTheme(true, '#ED4724');
+      const mood = siEngageColor(score); // authentic red→orange→yellow→green→blue
+      const msg = siMessages(score).lines;
+
+      useEffect(() => {
+        // count the number up to `score` over ~1.1s (ease-out cubic)
+        let raf;
+        const startAt = (typeof performance !== 'undefined' ? performance.now() : 0);
+        const dur = 1100;
+        const tick = (now) => {
+          const p = Math.min(1, (now - startAt) / dur);
+          const eased = 1 - Math.pow(1 - p, 3);
+          setShown(Math.round(score * eased));
+          if (p < 1) raf = requestAnimationFrame(tick);
+        };
+        const startRaf = setTimeout(() => { raf = requestAnimationFrame(tick); }, 160);
+        return () => { clearTimeout(startRaf); if (raf) cancelAnimationFrame(raf); };
+      }, [score]);
+
+      const RR = 31, CIRC = 2 * Math.PI * RR;
+      const ringOff = CIRC * (1 - Math.min(score, 100) / 100);
+      const lc = 'rgba(255,255,255,0.13)';
+
+      return (
+        <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', background: th.bgGrad, overflow: 'hidden' }}>
+          <TopBar th={th} notifCount={2} onProfile={() => {}} onNotif={() => {}} />
+
+          {tab === 'insight' && (
+          <main style={{ flex: 1, overflowY: 'auto', padding: '92px 20px 116px', display: 'flex', flexDirection: 'column', gap: 28 }}>
+
+            {/* ── StatusCard v2 — crystal in circular progress ring + role + STAGE ── */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ position: 'relative', width: 72, height: 72, flexShrink: 0 }}>
+                <div aria-hidden style={{ position: 'absolute', inset: -3, borderRadius: '50%',
+                  background: `radial-gradient(circle, ${bpHexA('#ED4724', 0.34)} 0%, ${bpHexA('#ED4724', 0)} 70%)`, filter: 'blur(7px)' }} />
+                <svg width="72" height="72" viewBox="0 0 72 72" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+                  <circle cx="36" cy="36" r={RR} fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="3.5" />
+                  <circle cx="36" cy="36" r={RR} fill="none" stroke="#ED4724" strokeWidth="3.5" strokeLinecap="round"
+                    strokeDasharray={CIRC} strokeDashoffset={ringOff} style={{ filter: `drop-shadow(0 0 4px ${bpHexA('#ED4724', 0.7)})` }} />
+                </svg>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <SiCrystal intensity={50} size={42} color="#ED4724" reduce={true} />
+                </div>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ fontFamily: EN, fontWeight: 700, fontSize: 21, color: th.t1, letterSpacing: '-0.02em', lineHeight: 1.05, display: 'block' }}>{stage.role}</span>
+                <div style={{ fontFamily: EN, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: th.t3, marginTop: 5 }}>STAGE {stage.num}</div>
+              </div>
+              <InfoBtn th={th} onClick={() => {}} />
+            </div>
+
+            {/* ── HearthSection — the flame orb, then the 3-line message pulled up over it ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', padding: '0 0 2px' }}>
+              <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+                <div style={{ position: 'relative' }}>
+                  <SiEffortOrb intensity={score} score={shown} size={284} accent={mood} reduce={false} dark={true} spread={1.25} trend={1} />
+                  <div style={{ position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', zIndex: 3 }}>
+                    <InfoBtn th={th} onClick={() => {}} />
+                  </div>
+                </div>
+                <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 9, textAlign: 'center', maxWidth: 360, marginTop: -98 }}>
+                  <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 22, color: mood, letterSpacing: '0.02em', lineHeight: 1.2, textShadow: '0 0 14px rgba(0,0,0,0.75), 0 1px 3px rgba(0,0,0,0.8)' }}>{msg[0]}</span>
+                  <h3 style={{ margin: 0, fontFamily: TH, fontWeight: 700, fontSize: 24, lineHeight: 1.25, color: th.t1, letterSpacing: '-0.01em', textShadow: `0 1px 16px rgba(0,0,0,0.6), 0 2px 22px ${bpHexA(mood, 0.28)}` }}>{msg[1]}</h3>
+                  <span style={{ fontFamily: TH, fontWeight: 400, fontSize: 15, color: th.t2, lineHeight: 1.45, textShadow: '0 1px 10px rgba(0,0,0,0.6)' }}>{msg[2]}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── divider curve (joinstick) ── */}
+            <div aria-hidden style={{ height: 18, flexShrink: 0, width: '100%',
+              borderTop: `1.5px solid ${lc}`, borderLeft: `1.5px solid ${lc}`, borderRight: `1.5px solid ${lc}`,
+              borderTopLeftRadius: '90px 18px', borderTopRightRadius: '90px 18px',
+              WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 38%, transparent 100%)',
+              maskImage: 'linear-gradient(to bottom, #000 0%, #000 38%, transparent 100%)' }} />
+
+            {/* ── Missions (joinstick) — tap a card to play & submit ── */}
+            <Missions th={th} />
+          </main>
+          )}
+          {tab === 'leaderboard' && <BPLeaderboard th={th} />}
+          {tab === 'challenge' && <BPChallengeTab th={th} />}
+          {tab === 'resource' && <BPResource th={th} />}
+
+          <BottomNav th={th} tab={tab} setTab={setTab} />
+        </div>
+      );
+    };
+
+    /* ─────────────────────────────────────────────────────────
+       5. CHALLENGE — cards + confirm sheet + booth pin
+    ───────────────────────────────────────────────────────── */
+    const ChallengeScreen = ({ accepted, onAccept }) => {
+      const [confirming, setConfirming] = useState(null);
+      const anyAccepted = accepted.length > 0;
+
+      const accept = () => {
+        if (confirming) onAccept(confirming);
+        setConfirming(null);
+      };
+
+      return (
+        <div style={{
+          flex: 1, display: 'flex', flexDirection: 'column',
+          padding: '28px 24px', paddingBottom: anyAccepted ? 180 : 48,
+          position: 'relative', overflow: 'hidden'
+        }}>
+          <div style={{
+            position: 'absolute', top: -50, right: -60, width: 200, height: 200, borderRadius: '50%',
+            background: 'rgba(237,71,36,0.10)', filter: 'blur(44px)', pointerEvents: 'none'
+          }}/>
+
+          <HeaderChip label="Challenges"/>
+          <h2 className="font-th" style={{ color: '#ffffff', fontSize: 21, fontWeight: 700, margin: '18px 0 4px' }}>
+            เลือก Challenge ของคุณ
+          </h2>
+          <p className="font-th" style={{ color: '#a8a29e', fontSize: 13, margin: '0 0 22px' }}>
+            รับภารกิจเล็ก ๆ ไปลองทำต่อจากเวทีนี้ได้เลย
+          </p>
+
+          {CHALLENGES.map((ch) => {
+            const ts = TYPE_STYLES[ch.type];
+            const isAccepted = accepted.indexOf(ch.id) !== -1;
+            return (
+              <button key={ch.id}
+                onClick={() => { if (!isAccepted) setConfirming(ch); }}
+                style={{
+                  width: '100%', textAlign: 'left', cursor: isAccepted ? 'default' : 'pointer',
+                  background: '#1c1917',
+                  border: '1px solid ' + (isAccepted ? 'rgba(34,197,94,0.45)' : 'rgba(255,255,255,0.08)'),
+                  borderRadius: 18, padding: '16px 16px 14px', marginBottom: 12,
+                  transition: 'border-color 0.2s ease'
+                }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{
+                    background: ts.bg, border: '1px solid ' + ts.border, color: ts.color,
+                    fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 999,
+                    letterSpacing: '0.03em'
+                  }}>{ch.type}</span>
+                  <span style={{ flex: 1 }}/>
+                  {isAccepted && (
+                    <span className="font-th" style={{
+                      color: '#22c55e', fontSize: 12, fontWeight: 700,
+                      display: 'inline-flex', alignItems: 'center', gap: 4, animation: 'popIn 0.3s ease both'
+                    }}>รับแล้ว ✓</span>
+                  )}
+                  {isAccepted && (
+                    <span className="font-mono-num" style={{
+                      background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.35)',
+                      color: '#22c55e', fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 999
+                    }}>+{ch.points}</span>
+                  )}
+                </div>
+                <div className="font-th" style={{ color: '#ffffff', fontSize: 15, fontWeight: 600, lineHeight: 1.55, marginTop: 10 }}>
+                  {ch.title}
+                </div>
+                <div className="font-th" style={{ color: '#78716c', fontSize: 12, marginTop: 8, display: 'flex', gap: 14 }}>
+                  <span>⭐ {ch.points} คะแนน</span>
+                  <span>⏱ {ch.duration}</span>
+                </div>
+              </button>
+            );
+          })}
+
+          {anyAccepted && (
+            <div style={{
+              position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
+              width: '100%', maxWidth: 430, padding: '0 16px 18px', zIndex: 30, pointerEvents: 'none'
+            }}>
+              <div className="font-th" style={{
+                background: 'linear-gradient(135deg, #2a1410, #1c1917)',
+                border: '1px solid rgba(237,71,36,0.4)', borderRadius: 18,
+                padding: '16px 18px', animation: 'fadeSlideUp 0.4s ease both',
+                boxShadow: '0 -8px 32px rgba(0,0,0,0.5)'
+              }}>
+                <div style={{ color: '#ffffff', fontSize: 14, fontWeight: 600, lineHeight: 1.65 }}>
+                  เยี่ยม! เดี๋ยวเล่นต่อแบบเต็ม ๆ ได้ที่บูธ{' '}
+                  <span style={{ color: '#ED4724', fontWeight: 700, whiteSpace: 'nowrap' }}>BASE Playhouse No. E11</span>
+                </div>
+                <div style={{ color: '#a8a29e', fontSize: 12, marginTop: 6 }}>
+                  รอฟังวิทยากรช่วงถัดไปได้เลย 🎤
+                </div>
+              </div>
+            </div>
+          )}
+
+          {confirming && (
+            <div style={{ position: 'fixed', inset: 0, zIndex: 40, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+              <div onClick={() => setConfirming(null)} style={{
+                position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.65)', animation: 'fadeIn 0.2s ease both'
+              }}/>
+              <div style={{
+                position: 'relative', width: '100%', maxWidth: 430, background: '#1c1917',
+                borderRadius: '24px 24px 0 0', padding: '16px 24px 34px',
+                borderTop: '1px solid rgba(255,255,255,0.1)',
+                animation: 'sheetUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both'
+              }}>
+                <div style={{ width: 44, height: 4, borderRadius: 999, background: 'rgba(255,255,255,0.18)', margin: '0 auto 18px' }}/>
+                <span style={{
+                  background: TYPE_STYLES[confirming.type].bg,
+                  border: '1px solid ' + TYPE_STYLES[confirming.type].border,
+                  color: TYPE_STYLES[confirming.type].color,
+                  fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 999
+                }}>{confirming.type}</span>
+                <div className="font-th" style={{ color: '#ffffff', fontSize: 17, fontWeight: 600, lineHeight: 1.55, marginTop: 12 }}>
+                  {confirming.title}
+                </div>
+                <div className="font-th" style={{ color: '#78716c', fontSize: 13, marginTop: 8, display: 'flex', gap: 14 }}>
+                  <span>⭐ {confirming.points} คะแนน</span>
+                  <span>⏱ {confirming.duration}</span>
+                </div>
+                <div className="font-th" style={{ color: '#d6d3d1', fontSize: 15, fontWeight: 600, marginTop: 20 }}>
+                  รับ Challenge นี้เลย?
+                </div>
+                <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                  <button onClick={() => setConfirming(null)} className="font-th" style={{
+                    flex: 1, padding: '14px 0', borderRadius: 14,
+                    border: '1.5px solid rgba(255,255,255,0.18)', background: 'transparent',
+                    color: '#d6d3d1', fontSize: 14, fontWeight: 600, cursor: 'pointer'
+                  }}>ไว้ก่อน</button>
+                  <button onClick={accept} className="font-th" style={{
+                    flex: 2, padding: '14px 0', borderRadius: 14, border: 'none',
+                    background: '#ED4724', color: '#ffffff', fontSize: 14, fontWeight: 700,
+                    cursor: 'pointer', boxShadow: '0 8px 24px rgba(237,71,36,0.4)'
+                  }}>รับเลย 🚀</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    /* ─────────────────────────────────────────────────────────
+       6. EYES UP — phase-locked takeover
+    ───────────────────────────────────────────────────────── */
+    const EyesUpScreen = () => (
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 60, background: '#000000',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        textAlign: 'center', padding: '0 32px', animation: 'fadeIn 0.5s ease both'
+      }}>
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at 50% 115%, rgba(237,71,36,0.18) 0%, transparent 55%)'
+        }}/>
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at 50% -15%, rgba(237,71,36,0.10) 0%, transparent 50%)'
+        }}/>
+        <div style={{ animation: 'bob 3.2s ease-in-out infinite' }}>
+          <div style={{ position: 'relative', width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {/* breathing glow behind the arrow */}
+            <div aria-hidden style={{
+              position: 'absolute', width: 132, height: 132, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(237,71,36,0.5) 0%, rgba(237,71,36,0) 68%)',
+              animation: 'eyesUpGlow 2.4s ease-in-out infinite'
+            }}/>
+            {/* three upward chevrons rising in sequence (bottom → top) */}
+            <svg width="88" height="100" viewBox="0 0 84 96" fill="none"
+              style={{ position: 'relative', filter: 'drop-shadow(0 0 10px rgba(237,71,36,0.6))' }}>
+              <path d="M14 30 L42 8 L70 30" stroke="#ED4724" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round"
+                style={{ animation: 'arrowRise 1.8s ease-in-out 0.44s infinite' }}/>
+              <path d="M14 58 L42 36 L70 58" stroke="#ED4724" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round"
+                style={{ animation: 'arrowRise 1.8s ease-in-out 0.22s infinite' }}/>
+              <path d="M14 86 L42 64 L70 86" stroke="#ED4724" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round"
+                style={{ animation: 'arrowRise 1.8s ease-in-out 0s infinite' }}/>
+            </svg>
+          </div>
+        </div>
+        <h1 style={{ fontWeight: 800, fontSize: 34, color: '#ffffff', margin: '28px 0 12px', letterSpacing: '0.02em' }}>
+          Eyes Up!
+        </h1>
+        <p className="font-th" style={{ color: '#a8a29e', fontSize: 16, lineHeight: 1.75, margin: 0 }}>
+          วางมือถือก่อนนะ<br/>กลับไปฟังวิทยากรกันต่อ
+        </p>
+        <div style={{
+          position: 'absolute', bottom: 28, left: 0, right: 0,
+          display: 'flex', justifyContent: 'center', opacity: 0.3
+        }}>
+          <JoinstickLogo size={34} variant="white"/>
+        </div>
+      </div>
+    );
+
+    /* ─────────────────────────────────────────────────────────
+       7. SURVEY — 1 question, 5 emoji faces
+    ───────────────────────────────────────────────────────── */
+    /* 5-level satisfaction face, drawn as a line-SVG (replaces the OS emoji) */
+    const FaceIcon = ({ level, size = 32, color = 'currentColor' }) => {
+      const mouths = {
+        1: 'M8.4 16 Q12 12.4 15.6 16',     // frown
+        2: 'M8.4 15.2 Q12 13.6 15.6 15.2', // slight frown
+        3: 'M9 14.6 L15 14.6',             // flat
+        4: 'M8.4 14 Q12 16.6 15.6 14',     // smile
+        5: 'M7.8 13.4 Q12 18 16.2 13.4'    // big smile
+      };
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
+          strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="9.2" />
+          {level === 5 ? (
+            <>
+              <path d="M7.6 10.4 Q9 8.9 10.4 10.4" />
+              <path d="M13.6 10.4 Q15 8.9 16.4 10.4" />
+            </>
+          ) : (
+            <>
+              <circle cx="9" cy="9.9" r="1.05" fill={color} stroke="none" />
+              <circle cx="15" cy="9.9" r="1.05" fill={color} stroke="none" />
+            </>
+          )}
+          <path d={mouths[level]} />
+        </svg>
+      );
+    };
+
+    const SurveyScreen = ({ onSubmit, busy }) => {
+      const [ratings, setRatings] = useState([0, 0]);
+      const [comment, setComment] = useState('');
+      const setR = (qi, v) => setRatings(rs => rs.map((x, i) => (i === qi ? v : x)));
+      const allRated = ratings.every(r => r > 0);
+
+      // one question's 5-face row + selected-label
+      const faces = (qi) => (
+        <>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 16, padding: '0 2px' }}>
+            {SURVEY_FACES.map((f, i) => {
+              const v = i + 1, on = ratings[qi] === v;
+              return (
+                <button key={v} onClick={() => setR(qi, v)} aria-label={f.label} style={{
+                  width: 52, height: 52, borderRadius: '50%', border: 'none', cursor: 'pointer', padding: 0,
+                  background: 'transparent',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transform: on ? 'scale(1.18)' : 'scale(1)',
+                  transition: 'all 0.2s ease'
+                }}>
+                  <FaceIcon level={v} size={34} color={on ? '#ED4724' : '#a8a29e'} />
+                </button>
+              );
+            })}
+          </div>
+          <div className="font-th" style={{ textAlign: 'center', marginTop: 11, minHeight: 20, fontSize: 13.5, fontWeight: 600, color: ratings[qi] ? '#ED4724' : '#57534e' }}>
+            {ratings[qi] ? SURVEY_FACES[ratings[qi] - 1].label : 'แตะเลือกความรู้สึกของคุณ'}
+          </div>
+        </>
+      );
+
+      return (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '34px 24px 32px', position: 'relative', overflowY: 'auto' }}>
+          <div style={{
+            position: 'absolute', top: -50, left: -60, width: 200, height: 200, borderRadius: '50%',
+            background: 'rgba(237,71,36,0.10)', filter: 'blur(44px)', pointerEvents: 'none'
+          }}/>
+
+          <h2 className="font-th" style={{ color: '#ffffff', fontSize: 23, fontWeight: 800, margin: 0 }}>
+            ขอบคุณที่ร่วมเล่น!
+          </h2>
+          <p className="font-th" style={{ color: '#a8a29e', fontSize: 13, margin: '8px 0 0' }}>
+            ขออีกนิดเดียว — 2 คำถามสั้น ๆ
+          </p>
+
+          {SURVEY_QUESTIONS.map((q, qi) => (
+            <div key={qi} style={{ marginTop: qi === 0 ? 28 : 26 }}>
+              <div className="font-th" style={{ color: '#ffffff', fontSize: 16, fontWeight: 600, lineHeight: 1.6 }}>
+                <span style={{ color: '#ED4724', fontWeight: 700 }}>{qi + 1}.</span> {q}
+              </div>
+              {faces(qi)}
+            </div>
+          ))}
+
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder={"บอกเราหน่อยว่าชอบ/อยากให้ปรับอะไร\n(ไม่บังคับ)"}
+            className="font-th"
+            style={{
+              width: '100%', minHeight: 84, marginTop: 22, padding: 14, boxSizing: 'border-box',
+              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 16, color: '#fafaf9', fontSize: 16, lineHeight: 1.6,
+              resize: 'none', outline: 'none'
+            }}/>
+
+          <div style={{ flex: 1, minHeight: 16 }}/>
+          <button
+            onClick={() => { if (allRated && !busy) onSubmit(ratings, comment); }}
+            disabled={!allRated || busy}
+            className="font-th"
+            style={{
+              width: '100%', marginTop: 20, padding: '15px 0', borderRadius: 16, border: 'none', flexShrink: 0,
+              background: allRated ? '#ED4724' : 'rgba(255,255,255,0.08)',
+              color: allRated ? '#ffffff' : '#57534e',
+              fontSize: 15, fontWeight: 700, cursor: allRated && !busy ? 'pointer' : 'default',
+              boxShadow: allRated ? '0 8px 24px rgba(237,71,36,0.4)' : 'none',
+              transition: 'background 0.2s ease, color 0.2s ease'
+            }}>
+            {busy ? 'กำลังส่ง...' : 'ส่งคำตอบ'}
+          </button>
+        </div>
+      );
+    };
+
+    /* ─────────────────────────────────────────────────────────
+       8. DONE — booth info (persistent end state)
+    ───────────────────────────────────────────────────────── */
+    const DoneScreen = () => (
+      <div style={{
+        flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+        justifyContent: 'center', padding: '40px 24px', textAlign: 'center',
+        position: 'relative', overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute', bottom: -80, left: '50%', transform: 'translateX(-50%)',
+          width: 320, height: 320, borderRadius: '50%', pointerEvents: 'none',
+          background: 'radial-gradient(circle, rgba(237,71,36,0.16) 0%, transparent 65%)', filter: 'blur(20px)'
+        }}/>
+
+        <div style={{
+          width: 74, height: 74, borderRadius: '50%', background: '#22c55e',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 34, color: '#ffffff', boxShadow: '0 8px 32px rgba(34,197,94,0.35)',
+          animation: 'bounceIn 0.6s ease both'
+        }}>✓</div>
+        <h2 className="font-th" style={{ color: '#ffffff', fontSize: 24, fontWeight: 800, margin: '18px 0 6px' }}>
+          ขอบคุณมาก!
+        </h2>
+        <p className="font-th" style={{ color: '#a8a29e', fontSize: 13, margin: 0 }}>
+          คำตอบของคุณถูกบันทึกแล้ว
+        </p>
+
+        <div style={{
+          width: '100%', marginTop: 28, background: '#1c1917',
+          border: '1px solid rgba(237,71,36,0.35)', borderRadius: 22,
+          padding: '26px 22px', position: 'relative', zIndex: 2,
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          animation: 'fadeSlideUp 0.5s ease both 0.25s'
+        }}>
+          <JoinstickLogo size={44} variant="white"/>
+          <div className="font-th" style={{ color: '#ffffff', fontSize: 16, fontWeight: 700, marginTop: 14 }}>
+            อยากรู้จัก JOINSTICK มากขึ้น?
+          </div>
+          <div className="font-th" style={{ color: '#a8a29e', fontSize: 13, marginTop: 6 }}>
+            แวะมาคุยกับทีม BASE Playhouse ได้ที่บูธ
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 14 }}>
+            <MapPinIcon size={28} color="#ED4724"/>
+            <span className="font-mono-num" style={{ fontSize: 44, fontWeight: 600, color: '#ED4724', letterSpacing: '0.02em' }}>
+              E11
+            </span>
+          </div>
+          <div className="font-th" style={{ color: '#78716c', fontSize: 12.5, lineHeight: 1.7, marginTop: 12 }}>
+            มาดูเวอร์ชันเต็ม พร้อมคุยเรื่องการวัดผลการเรียนรู้ในองค์กรของคุณ
+          </div>
+        </div>
+
+        <a href="https://baseos.co/pmat2026/joinstick?src=li-app" target="_blank" rel="noopener noreferrer"
+          className="font-th" style={{
+            width: '100%', marginTop: 18, padding: '15px 0', borderRadius: 16,
+            background: '#ED4724', color: '#ffffff', fontSize: 15, fontWeight: 700,
+            textAlign: 'center', textDecoration: 'none', cursor: 'pointer',
+            boxShadow: '0 8px 24px rgba(237,71,36,0.4)', position: 'relative', zIndex: 2
+          }}>
+          สนใจ JOINSTICK →
+        </a>
+      </div>
+    );
+
+    /* ─────────────────────────────────────────────────────────
+       App — screen state machine + phase watcher + heartbeat
+    ───────────────────────────────────────────────────────── */
+    const App = () => {
+      const [screen, setScreen] = useState('boot');
+      const [session, setSession] = useState(null);
+      const [participant, setParticipant] = useState(null);
+      const [resume, setResume] = useState(null);
+      const [hvRatings, setHvRatings] = useState({});
+      const [toast, setToast] = useState(null);
+      const [surveyBusy, setSurveyBusy] = useState(false);
+
+      const sessionRef = useRef(null);
+      const participantRef = useRef(null);
+      const resumeRef = useRef(null);
+      const screenRef = useRef('boot');
+      const lastPhaseRef = useRef(null);
+      const lastDbStepRef = useRef(null);
+      const toastTimerRef = useRef(null);
+
+      const urlCode = useMemo(() => {
+        const c = new URLSearchParams(location.search).get('s');
+        return c ? c.toUpperCase() : '';
+      }, []);
+
+      const showToast = useCallback((msg) => {
+        setToast(msg || 'การเชื่อมต่อมีปัญหา ลองใหม่อีกครั้ง');
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+        toastTimerRef.current = setTimeout(() => setToast(null), 3000);
+      }, []);
+
+      const saveResume = useCallback((patch) => {
+        const sess = sessionRef.current;
+        if (!sess) return;
+        const next = { ...(resumeRef.current || {}), ...patch };
+        resumeRef.current = next;
+        setResume(next);
+        try { localStorage.setItem(stateKeyFor(sess.code), JSON.stringify(next)); } catch (e) {}
+      }, []);
+
+      /* PHASE ROUTING RULE (contract) */
+      const routeForPhase = useCallback((phase) => {
+        if (!participantRef.current) { setScreen('join'); return; }
+        const st = resumeRef.current || {};
+        if (phase === 'eyes_up') { setScreen('eyes_up'); return; }
+        if (phase === 'survey') {
+          setScreen((st.surveyDone || st.step === 'done') ? 'done' : 'survey');
+          return;
+        }
+        // phase 'demo' — resume saved step; done stays done
+        if (st.surveyDone || st.step === 'done') { setScreen('done'); return; }
+        if (st.step === 'insight' || st.step === 'challenge') setScreen('insight');
+        else setScreen('harvester');
+      }, []);
+
+      const initSession = useCallback((sess) => {
+        sessionRef.current = sess;
+        setSession(sess);
+        lastPhaseRef.current = sess.phase;
+        const saved = loadStateFor(sess.code);
+        resumeRef.current = saved || null;
+        setResume(saved || null);
+        if (saved && saved.hvRatings) setHvRatings(saved.hvRatings);
+        if (saved && saved.participantId) {
+          const p = { id: saved.participantId, nickname: saved.nickname };
+          participantRef.current = p;
+          setParticipant(p);
+          routeForPhase(sess.phase);
+        } else {
+          setScreen('join');
+        }
+      }, [routeForPhase]);
+
+      /* boot: scan = in. Resolve session with no typing, retrying until one opens:
+         1) ?s= code from the QR  2) latest active session  3) local default */
+      useEffect(() => {
+        let alive = true;
+        let timer = null;
+        const resolveSession = async () => {
+          if (!alive || sessionRef.current) return;
+          let sess = null;
+          try {
+            if (urlCode) {
+              try { sess = await api.getSessionByCode(urlCode); } catch (e) {}
+            }
+            if (!sess) {
+              try { sess = await api.getLatestActiveSession(); } catch (e) {}
+            }
+            if (!sess && IS_LOCAL) sess = await api.ensureDefaultSession();
+          } catch (e) {}
+          if (!alive) return;
+          if (sess) {
+            initSession(sess);
+          } else {
+            // no active session yet — show join screen (pad disabled) and keep retrying
+            if (screenRef.current === 'boot') setScreen('join');
+            timer = setTimeout(resolveSession, 5000);
+          }
+        };
+        resolveSession();
+        return () => {
+          alive = false;
+          if (timer) clearTimeout(timer);
+        };
+      }, []);
+
+      /* admin pressed Reset All → our participant row is gone: wipe local state, back to join */
+      const resetToJoin = useCallback(() => {
+        const sess = sessionRef.current;
+        if (sess) { try { localStorage.removeItem(stateKeyFor(sess.code)); } catch (e) {} }
+        participantRef.current = null;
+        setParticipant(null);
+        resumeRef.current = null;
+        setResume(null);
+        setHvRatings({});
+        lastDbStepRef.current = null;
+        setScreen('join');
+      }, []);
+
+      /* phase watcher: realtime subscribe + 5s poll (poll is the baseline) */
+      const handleSessionUpdate = useCallback((s) => {
+        if (!s || !s.id) return;
+        sessionRef.current = s;
+        if (s.phase !== lastPhaseRef.current) {
+          lastPhaseRef.current = s.phase;
+          setSession(s);
+          routeForPhase(s.phase);
+        }
+      }, [routeForPhase]);
+
+      useEffect(() => {
+        if (!session || !session.id) return;
+        let unsub = null;
+        try { unsub = api.subscribeSession(session.id, handleSessionUpdate); } catch (e) {}
+        const iv = setInterval(async () => {
+          try {
+            const s = await api.getSessionById(session.id);
+            if (s) handleSessionUpdate(s);
+            const p = participantRef.current;
+            if (p && p.id) {
+              // null (not an error) = row deleted by admin Reset All
+              const row = await api.getParticipantById(p.id);
+              if (row === null) resetToJoin();
+            }
+          } catch (e) {}
+        }, 5000);
+        return () => {
+          if (unsub) { try { unsub(); } catch (e) {} }
+          clearInterval(iv);
+        };
+      }, [session ? session.id : null]);
+
+      /* heartbeat every 20s */
+      useEffect(() => {
+        if (!participant || !participant.id) return;
+        const send = () => {
+          const step = lastDbStepRef.current || dbStepFor(screenRef.current) || 'join';
+          api.heartbeat(participant.id, step).catch(() => {});
+        };
+        send();
+        const iv = setInterval(send, 20000);
+        return () => clearInterval(iv);
+      }, [participant ? participant.id : null]);
+
+      /* current_step sync + step_change events on screen change */
+      useEffect(() => {
+        screenRef.current = screen;
+        const p = participantRef.current;
+        if (!p) return;
+        const step = dbStepFor(screen);
+        if (!step || step === lastDbStepRef.current) return;
+        const from = lastDbStepRef.current;
+        lastDbStepRef.current = step;
+        api.heartbeat(p.id, step).catch(() => {});
+        const sess = sessionRef.current;
+        if (sess && from) {
+          api.logEvent({
+            session_id: sess.id, participant_id: p.id,
+            event_type: 'step_change', payload: { from: from, to: step }
+          }).catch(() => {});
+        }
+      }, [screen]);
+
+      /* join (hold pad completed) */
+      const doJoin = useCallback(async () => {
+        const sess = sessionRef.current;
+        if (!sess || participantRef.current) return;
+        try {
+          const nickname = genNickname();
+          const phase = sess.phase;
+          const initialStep = phase === 'demo' ? 'harvester' : phase;
+          const p = await api.upsertParticipant({
+            session_id: sess.id, device_id: getDeviceId(), nickname: nickname,
+            user_agent: navigator.userAgent, current_step: initialStep
+          });
+          participantRef.current = p;
+          setParticipant(p);
+          lastDbStepRef.current = initialStep;
+          api.logEvent({
+            session_id: sess.id, participant_id: p.id,
+            event_type: 'join', payload: { nickname: p.nickname, code: sess.code }
+          }).catch(() => {});
+          saveResume({
+            participantId: p.id, nickname: p.nickname, step: 'harvester',
+            harvesterDone: false, challengeAccepted: [], surveyDone: false
+          });
+          if (phase === 'demo') {
+            setScreen('welcome');
+            setTimeout(() => {
+              if (screenRef.current === 'welcome') setScreen('harvester');
+            }, 1300);
+          } else {
+            routeForPhase(phase);
+          }
+        } catch (e) {
+          showToast();
+        }
+      }, [routeForPhase, saveResume, showToast]);
+
+      /* harvester finished — save 3 answers, flash 1.2s, then insight */
+      const handleHarvesterFinish = useCallback((ratings) => {
+        setHvRatings(ratings);
+        const sess = sessionRef.current;
+        const p = participantRef.current;
+        if (sess && p) {
+          (async () => {
+            try {
+              const rows = HARVESTER_QUESTIONS.map((q) => ({
+                session_id: sess.id, participant_id: p.id,
+                question_id: q.id, question_text: q.text,
+                rating: ratings[q.id] != null ? ratings[q.id] : 0
+              }));
+              await api.saveHarvesterAnswers(rows);
+              api.logEvent({
+                session_id: sess.id, participant_id: p.id,
+                event_type: 'harvester_complete', payload: { ratings: ratings }
+              }).catch(() => {});
+            } catch (e) { showToast(); }
+          })();
+        }
+        saveResume({ harvesterDone: true, step: 'insight', hvRatings: ratings });
+        setTimeout(() => {
+          const s = sessionRef.current;
+          if (s && s.phase !== 'demo') return; // a phase lock took over
+          if (screenRef.current === 'harvester') setScreen('insight');
+        }, 1200);
+      }, [saveResume, showToast]);
+
+      const goChallenge = useCallback(() => {
+        saveResume({ step: 'challenge' });
+        const s = sessionRef.current;
+        if (s && s.phase !== 'demo') return;
+        setScreen('challenge');
+      }, [saveResume]);
+
+      const handleAccept = useCallback((ch) => {
+        const sess = sessionRef.current;
+        const p = participantRef.current;
+        if (sess && p) {
+          api.logEvent({
+            session_id: sess.id, participant_id: p.id,
+            event_type: 'challenge_accept',
+            payload: { challenge_id: ch.id, title: ch.title, points: ch.points }
+          }).catch(() => { showToast(); });
+        }
+        const cur = (resumeRef.current && resumeRef.current.challengeAccepted) || [];
+        if (cur.indexOf(ch.id) === -1) {
+          saveResume({ challengeAccepted: [...cur, ch.id] });
+        }
+      }, [saveResume, showToast]);
+
+      const handleSurveySubmit = useCallback(async (ratings, comment) => {
+        const sess = sessionRef.current;
+        const p = participantRef.current;
+        if (!sess || !p) return;
+        setSurveyBusy(true);
+        const [satisfaction, transformation] = ratings;
+        const userComment = (comment || '').trim();
+        try {
+          await api.saveSurvey({
+            session_id: sess.id, participant_id: p.id,
+            rating: satisfaction, rating2: transformation, comment: userComment || null
+          });
+          api.logEvent({
+            session_id: sess.id, participant_id: p.id,
+            event_type: 'survey_submit', payload: { satisfaction: satisfaction, transformation: transformation, comment: userComment || null }
+          }).catch(() => {});
+          saveResume({ surveyDone: true, step: 'done' });
+          setScreen('done');
+        } catch (e) {
+          showToast();
+        }
+        setSurveyBusy(false);
+      }, [saveResume, showToast]);
+
+      const accepted = (resume && resume.challengeAccepted) || [];
+
+      return (
+        <div className="app-shell">
+          <div key={screen} className="screen-fade scr">
+            {screen === 'boot' && <BootScreen/>}
+            {screen === 'join' && <JoinScreen session={session} onJoin={doJoin}/>}
+            {screen === 'welcome' && <WelcomeScreen/>}
+            {screen === 'harvester' && <HarvesterScreen onFinish={handleHarvesterFinish}/>}
+            {screen === 'insight' && <InsightScreen ratings={hvRatings}/>}
+            {screen === 'eyes_up' && <EyesUpScreen/>}
+            {screen === 'survey' && <SurveyScreen onSubmit={handleSurveySubmit} busy={surveyBusy}/>}
+            {screen === 'done' && <DoneScreen/>}
+          </div>
+          {toast && <Toast msg={toast}/>}
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>
