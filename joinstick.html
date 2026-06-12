@@ -1,0 +1,2488 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JOINSTICK — App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    width: 402px; height: 874px; overflow: hidden;
+    background: #000;
+  }
+  /* Hide scrollbars (app is embedded in an iframe) — scrolling still works */
+  *::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none !important; }
+  * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+  :root { --bp-red: #ED4724; }
+
+  /* flame motion — independent licking tongues for an organic, dancing fire */
+  @keyframes bpLick1 {
+    0%, 100% { transform: scaleY(1) scaleX(1) skewX(0deg); }
+    22% { transform: scaleY(1.07) scaleX(0.965) skewX(-2.4deg); }
+    52% { transform: scaleY(0.95) scaleX(1.03) skewX(1.8deg); }
+    78% { transform: scaleY(1.035) scaleX(0.985) skewX(-1deg); }
+  }
+  @keyframes bpLick2 {
+    0%, 100% { transform: scaleY(1) skewX(0deg) translateX(0); }
+    28% { transform: scaleY(1.14) skewX(4.5deg) translateX(1.2px); }
+    58% { transform: scaleY(0.9) skewX(-4deg) translateX(-1.4px); }
+    82% { transform: scaleY(1.06) skewX(2deg) translateX(0.6px); }
+  }
+  @keyframes bpLick3 {
+    0%, 100% { transform: scaleY(0.97) skewX(0deg); }
+    34% { transform: scaleY(1.2) skewX(-6.5deg); }
+    66% { transform: scaleY(0.86) skewX(5.5deg); }
+  }
+  @keyframes bpCorePulse {
+    0%, 100% { transform: scaleY(1) translateY(0); opacity: 1; }
+    40% { transform: scaleY(1.12) translateY(-2px); opacity: 0.92; }
+    68% { transform: scaleY(0.93) translateY(1px); opacity: 1; }
+  }
+  @keyframes bpTongue {
+    0% { opacity: 0; transform: translateY(8px) scaleY(0.35) scaleX(0.9); }
+    24% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-34px) scaleY(1.5) scaleX(0.42); }
+  }
+  @keyframes bpBaseFlicker {
+    0%, 100% { opacity: 0.55; transform: translateX(-50%) scaleX(1); }
+    50% { opacity: 0.9; transform: translateX(-50%) scaleX(1.14); }
+  }
+  @keyframes bpGlow {
+    0%, 100% { opacity: 0.82; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+  /* low-poly sprite flicker — exactly one faceted frame visible at a time */
+  @keyframes bpFrameCycle {
+    0%, 33.32% { opacity: 1; }
+    33.33%, 100% { opacity: 0; }
+  }
+  /* fluid aura — slow drifting gradient fields + pulsing star core */
+  @keyframes bpAuraA { 0%,100% { transform: translate(-50%,-50%) scale(1) rotate(0deg); } 50% { transform: translate(-54%,-46%) scale(1.08) rotate(4deg); } }
+  @keyframes bpAuraB { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-45%,-55%) scale(1.12); } }
+  @keyframes bpAuraC { 0%,100% { transform: translate(-50%,-50%) scale(1.03); } 50% { transform: translate(-53%,-43%) scale(0.92); } }
+  @keyframes bpAuraD { 0%,100% { transform: translate(-50%,-50%) scale(0.95); } 50% { transform: translate(-47%,-54%) scale(1.1); } }
+  @keyframes bpAuraBreathe { 0%,100% { opacity: 0.82; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 1; transform: translate(-50%,-50%) scale(1.07); } }
+  @keyframes bpStarPulse { 0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.88; } 50% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; } }
+  @keyframes bpStarSpin { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+  @keyframes bpWisp { 0% { opacity: 0; transform: translate(-50%,12%) scaleY(0.6); } 28% { opacity: 0.7; } 100% { opacity: 0; transform: translate(-50%,-62%) scaleY(1.35); } }
+  @keyframes bpContour { 0%,100% { transform: translate(-50%,-50%) scale(1) rotate(0deg); } 50% { transform: translate(-50%,-50%) scale(1.045) rotate(-3deg); } }
+  @keyframes bpSwirl { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes bpEmber {
+    0% { opacity: 0; transform: translateY(0) scale(1); }
+    14% { opacity: 0.95; }
+    100% { opacity: 0; transform: translateY(-48px) scale(0.35); }
+  }
+  @keyframes bpFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(0.6deg); }
+  }
+  @keyframes bpShimmer {
+    0%, 100% { opacity: 0.18; }
+    45% { opacity: 0.7; }
+  }
+  @keyframes bpTwinkle {
+    0%, 100% { opacity: 0; transform: scale(0.6); }
+    50% { opacity: 0.9; transform: scale(1); }
+  }
+  /* aurora light — soft colored light blooming from below, gentle drift */
+  @keyframes bpAurHalo  { 0%,100% { opacity: 0.78; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+  @keyframes bpAurBloom { 0%,100% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; } 50% { transform: translateX(-50%) scaleY(1.12) scaleX(0.95); opacity: 1; } }
+  @keyframes bpAurSwayA { 0%,100% { transform: translateX(-50%) skewX(-7deg) scaleY(1); } 50% { transform: translateX(-44%) skewX(5deg) scaleY(1.12); } }
+  @keyframes bpAurSwayB { 0%,100% { transform: translateX(-50%) skewX(6deg) scaleY(1.06); } 50% { transform: translateX(-56%) skewX(-6deg) scaleY(0.92); } }
+  @keyframes bpAurCore  { 0%,100% { transform: translateX(-50%) scale(1); opacity: 0.82; } 50% { transform: translateX(-50%) scale(1.09); opacity: 1; } }
+  @keyframes bpFlick { 0%,100% { transform: scaleY(1) scaleX(1) skewX(0deg); } 28% { transform: scaleY(1.08) scaleX(0.95) skewX(-3deg); } 62% { transform: scaleY(0.93) scaleX(1.04) skewX(3deg); } }
+  @keyframes bpMorph { 0%,100% { border-radius: 42% 58% 55% 45% / 48% 42% 58% 52%; } 33% { border-radius: 60% 40% 46% 54% / 55% 60% 40% 45%; } 66% { border-radius: 48% 52% 62% 38% / 42% 48% 52% 58%; } }
+  @media (prefers-reduced-motion: reduce) {
+    [style*="animation"] { animation: none !important; }
+  }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" data-from="ios-frame.jsx">
+// @ds-adherence-ignore -- omelette starter scaffold (raw elements/hex/px by design)
+
+/* BEGIN USAGE */
+// iOS.jsx — Simplified iOS 26 (Liquid Glass) device frame
+// Based on the iOS 26 UI Kit + Figma status bar spec. No assets, no deps.
+// Exports (to window): IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard
+//
+// Usage — wrap your screen content in <IOSDevice> to get the bezel, status bar
+// and home indicator (props: title, dark, keyboard):
+//
+//   <IOSDevice title="Settings">
+//     ...your screen content...
+//   </IOSDevice>
+//   <IOSDevice dark title="Search" keyboard>…</IOSDevice>
+/* END USAGE */
+
+// ─────────────────────────────────────────────────────────────
+// Status bar
+// ─────────────────────────────────────────────────────────────
+function IOSStatusBar({ dark = false, time = '9:41' }) {
+  const c = dark ? '#fff' : '#000';
+  return (
+    <div style={{
+      display: 'flex', gap: 154, alignItems: 'center', justifyContent: 'center',
+      padding: '21px 24px 19px', boxSizing: 'border-box',
+      position: 'relative', zIndex: 20, width: '100%',
+    }}>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 1.5 }}>
+        <span style={{
+          fontFamily: '-apple-system, "SF Pro", system-ui', fontWeight: 590,
+          fontSize: 17, lineHeight: '22px', color: c,
+        }}>{time}</span>
+      </div>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 1, paddingRight: 1 }}>
+        <svg width="19" height="12" viewBox="0 0 19 12">
+          <rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill={c}/>
+          <rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill={c}/>
+          <rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill={c}/>
+          <rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill={c}/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12">
+          <path d="M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z" fill={c}/>
+          <path d="M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z" fill={c}/>
+          <circle cx="8.5" cy="10.5" r="1.5" fill={c}/>
+        </svg>
+        <svg width="27" height="13" viewBox="0 0 27 13">
+          <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/>
+          <rect x="2" y="2" width="20" height="9" rx="2" fill={c}/>
+          <path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill={c} fillOpacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Liquid glass pill — blur + tint + shine
+// ─────────────────────────────────────────────────────────────
+function IOSGlassPill({ children, dark = false, style = {} }) {
+  return (
+    <div style={{
+      height: 44, minWidth: 44, borderRadius: 9999,
+      position: 'relative', overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: dark
+        ? '0 2px 6px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.2)'
+        : '0 1px 3px rgba(0,0,0,0.07), 0 3px 10px rgba(0,0,0,0.06)',
+      ...style,
+    }}>
+      {/* blur + tint */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.28)' : 'rgba(255,255,255,0.5)',
+      }} />
+      {/* shine */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15), inset -1px -1px 1px rgba(255,255,255,0.08)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+      }} />
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', padding: '0 4px' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Navigation bar — glass pills + large title
+// ─────────────────────────────────────────────────────────────
+function IOSNavBar({ title = 'Title', dark = false, trailingIcon = true }) {
+  const muted = dark ? 'rgba(255,255,255,0.6)' : '#404040';
+  const text = dark ? '#fff' : '#000';
+  const pillIcon = (content) => (
+    <IOSGlassPill dark={dark}>
+      <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {content}
+      </div>
+    </IOSGlassPill>
+  );
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 10,
+      paddingTop: 62, paddingBottom: 10, position: 'relative', zIndex: 5,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px',
+      }}>
+        {/* back chevron */}
+        {pillIcon(
+          <svg width="12" height="20" viewBox="0 0 12 20" fill="none" style={{ marginLeft: -1 }}>
+            <path d="M10 2L2 10l8 8" stroke={muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+        {/* trailing ellipsis */}
+        {trailingIcon && pillIcon(
+          <svg width="22" height="6" viewBox="0 0 22 6">
+            <circle cx="3" cy="3" r="2.5" fill={muted}/>
+            <circle cx="11" cy="3" r="2.5" fill={muted}/>
+            <circle cx="19" cy="3" r="2.5" fill={muted}/>
+          </svg>
+        )}
+      </div>
+      {/* large title */}
+      <div style={{
+        padding: '0 16px',
+        fontFamily: '-apple-system, system-ui',
+        fontSize: 34, fontWeight: 700, lineHeight: '41px',
+        color: text, letterSpacing: 0.4,
+      }}>{title}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Grouped list (inset card, r:26) + row (52px)
+// ─────────────────────────────────────────────────────────────
+function IOSListRow({ title, detail, icon, chevron = true, isLast = false, dark = false }) {
+  const text = dark ? '#fff' : '#000';
+  const sec = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const ter = dark ? 'rgba(235,235,245,0.3)' : 'rgba(60,60,67,0.3)';
+  const sep = dark ? 'rgba(84,84,88,0.65)' : 'rgba(60,60,67,0.12)';
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', minHeight: 52,
+      padding: '0 16px', position: 'relative',
+      fontFamily: '-apple-system, system-ui', fontSize: 17,
+      letterSpacing: -0.43,
+    }}>
+      {icon && (
+        <div style={{
+          width: 30, height: 30, borderRadius: 7, background: icon,
+          marginRight: 12, flexShrink: 0,
+        }} />
+      )}
+      <div style={{ flex: 1, color: text }}>{title}</div>
+      {detail && <span style={{ color: sec, marginRight: 6 }}>{detail}</span>}
+      {chevron && (
+        <svg width="8" height="14" viewBox="0 0 8 14" style={{ flexShrink: 0 }}>
+          <path d="M1 1l6 6-6 6" stroke={ter} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
+      {!isLast && (
+        <div style={{
+          position: 'absolute', bottom: 0, right: 0,
+          left: icon ? 58 : 16, height: 0.5, background: sep,
+        }} />
+      )}
+    </div>
+  );
+}
+
+function IOSList({ header, children, dark = false }) {
+  const hc = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const bg = dark ? '#1C1C1E' : '#fff';
+  return (
+    <div>
+      {header && (
+        <div style={{
+          fontFamily: '-apple-system, system-ui', fontSize: 13,
+          color: hc, textTransform: 'uppercase',
+          padding: '8px 36px 6px', letterSpacing: -0.08,
+        }}>{header}</div>
+      )}
+      <div style={{
+        background: bg, borderRadius: 26,
+        margin: '0 16px', overflow: 'hidden',
+      }}>{children}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Device frame
+// ─────────────────────────────────────────────────────────────
+function IOSDevice({
+  children, width = 402, height = 874, dark = false,
+  title, keyboard = false,
+}) {
+  return (
+    <div style={{
+      width, height, borderRadius: 0, overflow: 'hidden',
+      position: 'relative', background: dark ? '#000' : '#F2F2F7',
+      boxShadow: 'none',
+      fontFamily: '-apple-system, system-ui, sans-serif',
+      WebkitFontSmoothing: 'antialiased',
+    }}>
+      {/* dynamic island */}
+      <div style={{
+        position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)',
+        width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
+      }} />
+      {/* status bar (absolute) */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+        <IOSStatusBar dark={dark} />
+      </div>
+      {/* nav + content */}
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {title !== undefined && <IOSNavBar title={title} dark={dark} />}
+        <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+        {keyboard && <IOSKeyboard dark={dark} />}
+      </div>
+      {/* home indicator — always on top */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
+        height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',
+        paddingBottom: 8, pointerEvents: 'none',
+      }}>
+        <div style={{
+          width: 139, height: 5, borderRadius: 100,
+          background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)',
+        }} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Keyboard — iOS 26 liquid glass
+// ─────────────────────────────────────────────────────────────
+function IOSKeyboard({ dark = false }) {
+  const glyph = dark ? 'rgba(255,255,255,0.7)' : '#595959';
+  const sugg = dark ? 'rgba(255,255,255,0.6)' : '#333';
+  const keyBg = dark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.85)';
+
+  // special-key icons
+  const icons = {
+    shift: <svg width="19" height="17" viewBox="0 0 19 17"><path d="M9.5 1L1 9.5h4.5V16h8V9.5H18L9.5 1z" fill={glyph}/></svg>,
+    del: <svg width="23" height="17" viewBox="0 0 23 17"><path d="M7 1h13a2 2 0 012 2v11a2 2 0 01-2 2H7l-6-7.5L7 1z" fill="none" stroke={glyph} strokeWidth="1.6" strokeLinejoin="round"/><path d="M10 5l7 7M17 5l-7 7" stroke={glyph} strokeWidth="1.6" strokeLinecap="round"/></svg>,
+    ret: <svg width="20" height="14" viewBox="0 0 20 14"><path d="M18 1v6H4m0 0l4-4M4 7l4 4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  };
+
+  const key = (content, { w, flex, ret, fs = 25, k } = {}) => (
+    <div key={k} style={{
+      height: 42, borderRadius: 8.5,
+      flex: flex ? 1 : undefined, width: w, minWidth: 0,
+      background: ret ? '#08f' : keyBg,
+      boxShadow: '0 1px 0 rgba(0,0,0,0.075)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: '-apple-system, "SF Compact", system-ui',
+      fontSize: fs, fontWeight: 458, color: ret ? '#fff' : glyph,
+    }}>{content}</div>
+  );
+
+  const row = (keys, pad = 0) => (
+    <div style={{ display: 'flex', gap: 6.5, justifyContent: 'center', padding: `0 ${pad}px` }}>
+      {keys.map(l => key(l, { flex: true, k: l }))}
+    </div>
+  );
+
+  return (
+    <div style={{
+      position: 'relative', zIndex: 15, borderRadius: 27, overflow: 'hidden',
+      padding: '11px 0 2px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      boxShadow: dark
+        ? '0 -2px 20px rgba(0,0,0,0.09)'
+        : '0 -1px 6px rgba(0,0,0,0.018), 0 -3px 20px rgba(0,0,0,0.012)',
+    }}>
+      {/* liquid glass bg — same recipe as nav pills */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.14)' : 'rgba(255,255,255,0.25)',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* autocorrect bar */}
+      <div style={{
+        display: 'flex', gap: 20, alignItems: 'center',
+        padding: '8px 22px 13px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {['"The"', 'the', 'to'].map((w, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div style={{ width: 1, height: 25, background: '#ccc', opacity: 0.3 }} />}
+            <div style={{
+              flex: 1, textAlign: 'center',
+              fontFamily: '-apple-system, system-ui', fontSize: 17,
+              color: sugg, letterSpacing: -0.43, lineHeight: '22px',
+            }}>{w}</div>
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* key layout */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: 13,
+        padding: '0 6.5px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {row(['q','w','e','r','t','y','u','i','o','p'])}
+        {row(['a','s','d','f','g','h','j','k','l'], 20)}
+        <div style={{ display: 'flex', gap: 14.25, alignItems: 'center' }}>
+          {key(icons.shift, { w: 45, k: 'shift' })}
+          <div style={{ display: 'flex', gap: 6.5, flex: 1 }}>
+            {['z','x','c','v','b','n','m'].map(l => key(l, { flex: true, k: l }))}
+          </div>
+          {key(icons.del, { w: 45, k: 'del' })}
+        </div>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          {key('ABC', { w: 92.25, fs: 18, k: 'abc' })}
+          {key('', { flex: true, k: 'space' })}
+          {key(icons.ret, { w: 92.25, ret: true, k: 'ret' })}
+        </div>
+      </div>
+
+      {/* bottom spacer (emoji+mic area, icons omitted) */}
+      <div style={{ height: 56, width: '100%', position: 'relative' }} />
+    </div>
+  );
+}
+
+Object.assign(window, {
+  IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard,
+});
+
+</script>
+<script type="text/babel" data-from="bp-icons.jsx">
+// bp-icons.jsx — minimal 2px line icons (Lucide-ish) for the Insight app.
+// Exports to window: BPIcon  ->  <BPIcon name="bell" size={20} color="#fff" stroke={2}/>
+
+const BP_ICON_PATHS = {
+  // nav
+  trophy: <g><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3"/><path d="M10 14.5V17M14 14.5V17M8 20h8M9 20a3 3 0 0 1 3-3 3 3 0 0 1 3 3"/></g>,
+  flame: <path d="M12 3c2.5 3.5 5 6 5 9.5A5 5 0 0 1 7 12.5C7 9 9.5 6.5 12 3Z"/>,
+  target: <g><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/></g>,
+  layers: <g><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="M3 13l9 5 9-5M3 18l9 5 9-5" opacity="0.55"/></g>,
+  // top bar
+  bell: <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/>,
+  user: <g><circle cx="12" cy="8" r="3.6"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></g>,
+  plus: <path d="M12 5v14M5 12h14"/>,
+  // misc
+  x: <path d="M6 6l12 12M18 6 6 18"/>,
+  chevronRight: <path d="M9 5l7 7-7 7"/>,
+  arrowLeft: <path d="M15 5l-7 7 7 7"/>,
+  arrowRight: <path d="M5 12h14M13 6l6 6-6 6"/>,
+  lock: <g><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></g>,
+  check: <path d="M5 12.5 10 17l9-10"/>,
+  clock: <g><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g>,
+  bolt: <path d="M13 3 5 13h6l-1 8 8-10h-6l1-8Z"/>,
+  play: <path d="M8 5.5v13l11-6.5-11-6.5Z"/>,
+  rotate: <g><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8"/><path d="M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 16"/><path d="M4 20v-4h4"/></g>,
+  rank: <g><path d="M5 11l7-5 7 5"/><path d="M5 16l7-5 7 5"/></g>,
+  help: <g><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2 1c0 1.8-2.5 1.9-2.5 3.6"/><circle cx="12" cy="17" r="0.7" fill="currentColor" stroke="none"/></g>,
+  info: <g><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.7" r="0.7" fill="currentColor" stroke="none"/></g>,
+  book: <path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3V4ZM8 20a3 3 0 0 0-3 3"/>,
+  sparkle: <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/>,
+};
+
+function BPIcon({ name, size = 20, color = 'currentColor', stroke = 2, filled = false, style = {} }) {
+  if (filled) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke="none" style={style}>
+        {BP_ICON_FILLED[name] || null}
+      </svg>
+    );
+  }
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+      stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round"
+      style={style}>
+      {BP_ICON_PATHS[name] || null}
+    </svg>
+  );
+}
+
+// Filled (solid) glyphs — used for the floating nav bar
+const BP_ICON_FILLED = {
+  medal: <path fillRule="evenodd" d="M8.6 2h2.6l.7 5H9.3L8.6 2Zm6.8 0h-2.6l-.7 5h2.6L15.4 2ZM5.5 15a6.5 6.5 0 1 0 13 0 6.5 6.5 0 1 0-13 0Zm6.5-3.4.95 2.23 2.4.13-1.85 1.55.6 2.34L12 16.5l-2.1 1.35.6-2.34L8.65 13.96l2.4-.13L12 11.6Z" />,
+  home: <path fillRule="evenodd" d="M12 2.6 21 10.6V20.2A1.8 1.8 0 0 1 19.2 22H4.8A1.8 1.8 0 0 1 3 20.2V10.6L12 2.6Zm-2 18.4v-5.6a.9.9 0 0 1 .9-.9h2.2a.9.9 0 0 1 .9.9V21h-4Z" />,
+  flame: <path d="M12 21.5a6.5 6.5 0 0 0 6.5-6.5c0-2.1-1-4-2.9-5.4.2 1.5-.6 2.5-1.6 2.9.4-2.5-.9-5.1-3.3-6.9-.6 2.4-2 3.6-3.3 5A7.5 7.5 0 0 0 5.5 15 6.5 6.5 0 0 0 12 21.5Z" />,
+  book: <g><path d="M11.2 7.2C9.7 6 7.5 5.2 5.1 5.2c-.9 0-1.8.1-2.6.34a1 1 0 0 0-.7.96v10.9a.85.85 0 0 0 1.1.82c.7-.2 1.45-.32 2.2-.32 2 0 3.9.66 5.3 1.74a.8.8 0 0 0 .8.12V7.2Z" /><path d="M12.8 7.2C14.3 6 16.5 5.2 18.9 5.2c.9 0 1.8.1 2.6.34a1 1 0 0 1 .7.96v10.9a.85.85 0 0 1-1.1.82c-.7-.2-1.45-.32-2.2-.32-2 0-3.9.66-5.3 1.74a.8.8 0 0 1-.8.12V7.2Z" /></g>,
+  play: <polygon points="6 3 20 12 6 21 6 3" />,
+};
+
+// JOINSTICK logo mark — rebuilt from the brand SVG (body + red swoosh + plus + bars)
+function BPJoinstick({ height = 26, color = '#FFFFFF', accent = '#ED4724', style = {} }) {
+  const w = height * (837.97 / 596.7);
+  return (
+    <svg width={w} height={height} viewBox="0 0 837.97 596.7" fill="none" style={style}>
+      <defs>
+        <linearGradient id="bpLogoGrad" x1="514.14" y1="59.92" x2="808.3" y2="520.68" gradientUnits="userSpaceOnUse">
+          <stop offset=".15" stopColor="#ed4724" /><stop offset=".26" stopColor="#e94523" /><stop offset=".37" stopColor="#dd4221" />
+          <stop offset=".48" stopColor="#c93c1e" /><stop offset=".59" stopColor="#ad331a" /><stop offset=".7" stopColor="#882914" />
+          <stop offset=".81" stopColor="#5c1b0e" /><stop offset=".92" stopColor="#290c06" /><stop offset="1" stopColor="#000" />
+        </linearGradient>
+      </defs>
+      <path fill={color} d="M315.82.01h-93.51c-3.13-.09-6.25.44-9.16,1.58-2.92,1.14-5.58,2.85-7.83,5.04-2.25,2.19-4.03,4.81-5.25,7.7-1.22,2.89-1.85,6-1.85,9.15s.63,6.25,1.85,9.15c1.22,2.89,3.01,5.51,5.25,7.7,2.25,2.19,4.91,3.9,7.83,5.04,2.92,1.14,6.04,1.67,9.16,1.58h93.51c6.08-.18,11.85-2.74,16.08-7.12,4.24-4.38,6.6-10.24,6.6-16.35s-2.37-11.97-6.6-16.35c-4.24-4.38-10-6.93-16.08-7.12ZM615.06.01h-93.51c-3.13-.09-6.25.44-9.16,1.58-2.92,1.14-5.58,2.85-7.83,5.04-2.25,2.19-4.03,4.81-5.25,7.7-1.22,2.89-1.85,6-1.85,9.15s.63,6.25,1.85,9.15c1.22,2.89,3.01,5.51,5.25,7.7,2.25,2.19,4.91,3.9,7.83,5.04,2.92,1.14,6.04,1.67,9.16,1.58h93.51c6.08-.18,11.85-2.74,16.08-7.12,4.24-4.38,6.6-10.24,6.6-16.35s-2.37-11.97-6.6-16.35c-4.24-4.38-10-6.93-16.08-7.12Z" />
+      <path fill={color} d="M704.89,596.66c-20,.03-39.75-4.54-57.72-13.37-17.97-8.83-33.67-21.68-45.91-37.57l-1.21.4-71.39-117.7c-1.88-3.07-4.51-5.6-7.65-7.36-3.13-1.76-6.66-2.7-10.24-2.72h-183.98c-3.59.02-7.12.95-10.24,2.72-3.13,1.76-5.76,4.3-7.65,7.36l-71.46,117.75-1.21-.4c-12.24,15.88-27.94,28.74-45.91,37.57-17.97,8.83-37.71,13.4-57.72,13.37-71.67,0-130.08-57.66-131.12-128.91l.15-12.95c.32-2.12,31.72-214.63,35.8-240.82C54.88,101.08,106.12,43.37,198.28,33.63v-1.57h440.93v1.7c41.24,5.05,76.13,22.86,103.62,53.06,28.27,31.01,47.52,73.69,57.23,126.87,4.78,26.27,34.6,232.48,35.95,241.24l.13,12.9c-1.16,71.25-59.57,128.82-131.24,128.82ZM613.26,510.41l6.24,9.72c9.18,14.39,21.83,26.22,36.77,34.4,14.94,8.18,31.7,12.45,48.73,12.41,55.96,0,101.51-45.33,101.51-101.04,0-2.27-.19-4.71-.38-7.28l-.49-6.52c-5.37-37.16-30.45-210.11-34.66-233.16-10.26-56.24-43.04-151.36-147.21-156.8l-8.27-.42H222.03l-8.25.42c-86.92,4.52-130.92,51.3-147.15,156.39-3.62,23.34-29.35,197.37-34.77,233.9l-.47,6.13c-.19,2.59-.36,5.03-.36,7.32.15,21.96,7.38,43.29,20.59,60.79,13.21,17.51,31.71,30.26,52.74,36.36,21.03,6.1,43.45,5.21,63.93-2.52,20.48-7.74,37.93-21.91,49.73-40.4l6.24-9.72h.15l59.21-97.48c4.54-7.41,10.88-13.54,18.44-17.8,7.56-4.26,16.07-6.51,24.74-6.54h183.98c8.67.03,17.18,2.28,24.73,6.54,7.55,4.26,13.9,10.39,18.43,17.8l59.21,97.48h.08Z" />
+      <path fill="url(#bpLogoGrad)" d="M425.41,100.67l192.93,3.14s44.73,0,74.16,37.14c15.69,19.78,30.58,75.55,30.58,75.55,0,0,39.97,212.66,39.97,240.59s-16.56,59.42-48.96,61.55c-32.4,2.12-61.01-42.28-61.01-42.28L425.41,100.67Z" />
+      <rect fill={color} x="192.55" y="176.74" width="53.71" height="131.37" rx="16.87" ry="16.87" />
+      <rect fill={color} x="192.55" y="176.74" width="53.71" height="131.37" rx="16.87" ry="16.87" transform="translate(461.83 23.02) rotate(90)" />
+    </svg>
+  );
+}
+
+Object.assign(window, { BPIcon, BPJoinstick });
+
+</script>
+<script type="text/babel" data-from="bp-flame.jsx">
+// bp-flame.jsx — the engagement visuals: color helpers, the rank crystal, and the
+// effort "flame" centerpiece (BPEffortOrb, flame branch). Intensity (0..100) → effort level
+// (1–5) → size, mood color and the circular progress ring.
+// Exports to window: BPEffortOrb, bpEffortLevel, BPCrystal, color helpers
+
+// ── tiny color helpers ────────────────────────────────────────
+function hexA(hex, a) {
+  const { r, g, b } = parseHex(hex);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function lighten(hex, amt) {
+  const { r, g, b } = parseHex(hex);
+  return `rgb(${mix(r, 255, amt)},${mix(g, 255, amt)},${mix(b, 255, amt)})`;
+}
+function darken(hex, amt) {
+  const { r, g, b } = parseHex(hex);
+  return `rgb(${mix(r, 0, amt)},${mix(g, 0, amt)},${mix(b, 0, amt)})`;
+}
+function mix(a, b, t) { return Math.round(a + (b - a) * t); }
+function parseHex(hex) {
+  let h = hex.replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  return { r: parseInt(h.slice(0, 2), 16), g: parseInt(h.slice(2, 4), 16), b: parseInt(h.slice(4, 6), 16) };
+}
+
+// ── engagement color scale: red(worst) → orange → yellow → green → blue(best)
+function engageColor(intensity) {
+  const stops = [[0, '#E5391E'], [0.27, '#F5821F'], [0.5, '#FFC93C'], [0.72, '#33B96B'], [1, '#2F80ED']];
+  const k = Math.max(0, Math.min(100, intensity)) / 100;
+  for (let i = 1; i < stops.length; i++) {
+    if (k <= stops[i][0]) {
+      const a = stops[i - 1], b = stops[i];
+      const t = (k - a[0]) / ((b[0] - a[0]) || 1);
+      return mixHex(a[1], b[1], t);
+    }
+  }
+  return stops[stops.length - 1][1];
+}
+function mixHex(a, b, t) {
+  const A = parseHex(a), B = parseHex(b);
+  const h = n => mix(A[n], B[n], t).toString(16).padStart(2, '0');
+  return '#' + h('r') + h('g') + h('b');
+}
+
+// ── faceted crystal — color carries the engagement reading ─────
+function BPCrystal({ intensity = 50, size = 200, color, reduce = false }) {
+  const c = color || engageColor(intensity);
+  const k = Math.max(0, Math.min(100, intensity)) / 100;
+  const scale = 0.84 + k * 0.20;
+  const glow = 0.32 + k * 0.5;
+  const lighter = lighten(c, 0.62), light = lighten(c, 0.32), dark = darken(c, 0.26), darker = darken(c, 0.46);
+  const animFloat = reduce ? 'none' : 'bpFloat 4.6s ease-in-out infinite';
+  const animGlow = reduce ? 'none' : 'bpGlow 3.6s ease-in-out infinite';
+  const animShim = reduce ? 'none' : 'bpShimmer 4.2s ease-in-out infinite';
+
+  // twinkle sparkles (more present at higher intensity)
+  const sparks = [{ x: '24%', y: '30%', d: 0 }, { x: '74%', y: '40%', d: 1.3 }, { x: '66%', y: '74%', d: 2.4 }];
+
+  return (
+    <div style={{ position: 'relative', width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{
+        position: 'absolute', inset: '-14%', borderRadius: '50%',
+        background: `radial-gradient(circle at 50% 50%, ${hexA(c, 0.5 * glow)} 0%, ${hexA(c, 0.14 * glow)} 38%, transparent 64%)`,
+        filter: 'blur(6px)', animation: animGlow,
+      }} />
+      {sparks.map((s, i) => (
+        <svg key={i} viewBox="0 0 10 10" width="11" height="11" style={{
+          position: 'absolute', left: s.x, top: s.y, opacity: 0,
+          animation: reduce ? 'none' : `bpTwinkle ${(2.8 + i * 0.6).toFixed(1)}s ease-in-out ${s.d}s infinite`,
+        }}>
+          <path d="M5 0 L6 4 L10 5 L6 6 L5 10 L4 6 L0 5 L4 4 Z" fill={lighten(c, 0.5)} />
+        </svg>
+      ))}
+      <div style={{ position: 'relative', zIndex: 1, transform: `scale(${scale})`, animation: animFloat, lineHeight: 0 }}>
+        <svg viewBox="0 0 100 122" width={size * 0.6} height={size * 0.74} style={{ filter: `drop-shadow(0 12px 24px ${hexA(c, 0.5)})` }}>
+          <defs>
+            <linearGradient id="bpCryCrownL" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#FFFFFF" /><stop offset="100%" stopColor={lighter} />
+            </linearGradient>
+            <linearGradient id="bpCryCrownR" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor={lighter} /><stop offset="100%" stopColor={light} />
+            </linearGradient>
+            <linearGradient id="bpCryL" x1="0" y1="0" x2="0.3" y2="1">
+              <stop offset="0" stopColor={light} /><stop offset="100%" stopColor={c} />
+            </linearGradient>
+            <linearGradient id="bpCryR" x1="1" y1="0" x2="0.6" y2="1">
+              <stop offset="0" stopColor={c} /><stop offset="100%" stopColor={darker} />
+            </linearGradient>
+          </defs>
+          {/* crown facets */}
+          <polygon points="50,6 26,40 50,46" fill="url(#bpCryCrownL)" />
+          <polygon points="50,6 74,40 50,46" fill="url(#bpCryCrownR)" />
+          {/* body facets split by central ridge */}
+          <polygon points="26,40 50,46 50,116 34,88" fill="url(#bpCryL)" />
+          <polygon points="74,40 50,46 50,116 66,88" fill="url(#bpCryR)" />
+          {/* side bevels for depth */}
+          <polygon points="26,40 34,88 28,84 22,44" fill={darker} opacity="0.55" />
+          <polygon points="74,40 66,88 72,84 78,44" fill={dark} opacity="0.5" />
+          {/* specular shimmer */}
+          <polygon points="50,6 38,34 50,46" fill="#FFFFFF" opacity="0.5" style={{ animation: animShim }} />
+          {/* crisp outline */}
+          <polygon points="50,6 26,40 34,88 50,116 66,88 74,40" fill="none" stroke={hexA(darker, 0.55)} strokeWidth="1" strokeLinejoin="round" />
+          <line x1="50" y1="46" x2="50" y2="116" stroke={hexA(lighter, 0.4)} strokeWidth="0.8" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ── Effort rings — concentric "level" gauge ────────────────────
+// Five concentric rings = five effort levels (a target/scale). A soft luminous
+// orb grows out from the centre to the ring of the current level (small→large =
+// more effort), coloured by the engagement mood. Levels already reached are
+// solid rings; levels still to unlock are dashed (same grammar as the week dots).
+function bpEffortLevel(intensity) {
+  const v = Math.max(0, Math.min(100, intensity));
+  return v < 20 ? 1 : v < 40 ? 2 : v < 60 ? 3 : v < 80 ? 4 : 5;
+}
+
+// ── Effort orb — a glowing energy ball over a frosted-glass horizon ──
+// A luminous "energy" sphere whose SIZE and COLOUR carry the effort level
+// (small→large, mood-coloured). A dashed ring around it fills clockwise from
+// the top to show how much effort is in. The lower half sits behind a dark
+// frosted-glass panel; the 3-line message is laid over that glass by the caller.
+function BPEffortOrb({ intensity = 50, size = 284, accent = '#ED4724', reduce = false, dark = true, spread = 1, trend = 1 }) {
+  const level = bpEffortLevel(intensity);
+  const c = accent;
+  const S = size;
+  const W = Math.round(S * spread);            // container width — wider so the horizon reads as a plane
+  const R = [0.16, 0.235, 0.31, 0.385, 0.46]; // 5 concentric ring radii (fraction of S)
+  const D = 2 * R[level - 1] * S;              // orb grows to reach the ring of the current level
+  const bloomD = Math.min(S * 1.08, D * 1.8);
+  const cx = W / 2, cy = S / 2;                // orb centre sits on the horizon
+
+  const ctr = (d, extra = {}) => ({
+    position: 'absolute', left: cx, top: cy, width: d, height: d,
+    transform: 'translate(-50%,-50%)', borderRadius: '50%', boxSizing: 'border-box', ...extra,
+  });
+  const breathe = (n, d, delay = 0) => reduce ? 'none' : `${n} ${d}s ease-in-out ${delay}s infinite`;
+
+  // a dark, translucent sphere — light lives on its atmospheric top rim, not its body
+  const orbBase = `radial-gradient(circle at 50% 44%, ${darken(c, 0.88)} 0%, ${darken(c, 0.82)} 58%, ${darken(c, 0.64)} 100%)`;
+  const glassBlur = (S * 0.04).toFixed(1);
+  const edgeFade = 'linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%)';
+  const glow = `drop-shadow(0 0 ${(S * 0.02).toFixed(0)}px ${hexA(c, 0.85)})`;
+  const gidRef = React.useRef();
+  if (!gidRef.current) gidRef.current = 'rimg' + Math.random().toString(36).slice(2, 8);
+  const gid = gidRef.current;
+
+  // a drifting blob of fluid energy (uses the organic bpAura* keyframes)
+  const fluid = (anim, dur, focal, color, alpha, sz, blurF, normal) => (
+    <div style={{
+      position: 'absolute', left: '50%', top: '50%', width: `${(sz * 100).toFixed(0)}%`, height: `${(sz * 100).toFixed(0)}%`,
+      transform: 'translate(-50%,-50%)', borderRadius: '50%',
+      mixBlendMode: normal ? 'normal' : 'screen',
+      filter: `blur(${(D * blurF).toFixed(0)}px)`,
+      background: `radial-gradient(circle at ${focal}, ${hexA(color, alpha)} 0%, ${hexA(color, 0)} 58%)`,
+      animation: reduce ? 'none' : `${anim} ${dur}s ease-in-out infinite`,
+    }} />
+  );
+
+  const fx = window.__FX || 'orb';
+  return (
+    <div style={{ position: 'relative', width: W, height: S, flexShrink: 0 }}>
+      {/* dim ambient bloom so the dark sphere doesn't read as a hole */}
+      <div style={ctr(bloomD)}>
+        <div style={{
+          width: '100%', height: '100%', borderRadius: '50%',
+          background: `radial-gradient(circle at 50% 40%, ${hexA(c, dark ? 0.11 : 0.09)} 0%, ${hexA(c, 0)} 58%)`,
+          filter: `blur(${(S * 0.04).toFixed(1)}px)`,
+        }} />
+      </div>
+      {fx === 'orb' && (<React.Fragment>
+      {/* atmospheric halo — broad mood glow blooming up from the top rim */}
+      <div style={{
+        position: 'absolute', left: cx, top: cy - D * 0.42, width: D * 1.22, height: D * 0.64,
+        transform: 'translate(-50%,-50%)', borderRadius: '50%', pointerEvents: 'none',
+        background: `radial-gradient(ellipse at 50% 66%, ${hexA('#FFFFFF', dark ? 0.28 : 0.18)} 0%, ${hexA(lighten(c, 0.4), dark ? 0.7 : 0.46)} 28%, ${hexA(c, 0.24)} 52%, ${hexA(c, 0)} 78%)`,
+        filter: `blur(${(S * 0.055).toFixed(0)}px)`,
+      }} />
+
+      {/* the energy orb — a contained sphere of fluid, flowing energy */}
+      <div style={ctr(D)}>
+        <div style={{
+          position: 'relative', width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden',
+          background: orbBase,
+          boxShadow: `0 -${(S * 0.045).toFixed(0)}px ${(S * 0.28).toFixed(0)}px ${hexA(lighten(c, 0.2), 0.5)}, 0 -${(S * 0.01).toFixed(0)}px ${(S * 0.1).toFixed(0)}px ${hexA(lighten(c, 0.4), 0.4)}, 0 0 ${(S * 0.18).toFixed(0)}px ${hexA(c, 0.1)}, inset 0 ${(D * 0.04).toFixed(0)}px ${(D * 0.1).toFixed(0)}px ${hexA(lighten(c, 0.5), 0.18)}`,
+        }}>
+          {/* luminous atmosphere bleeding down from the top rim */}
+          <div style={{ position: 'absolute', inset: 0, borderRadius: '50%',
+            background: `radial-gradient(ellipse 135% 100% at 50% -2%, ${hexA(lighten(c, 0.4), 0.85)} 0%, ${hexA(lighten(c, 0.15), 0.4)} 22%, ${hexA(c, 0)} 48%)` }} />
+          {/* faint living energy drifting just under the rim */}
+          {fluid('bpAuraA', 13, '46% 22%', lighten(c, 0.5), 0.5, 0.92, 0.06)}
+          {fluid('bpAuraB', 10, '58% 30%', lighten(c, 0.22), 0.4, 0.8, 0.07)}
+          {/* THICK luminous atmospheric rim — a wide bright band with a fat white-hot core */}
+          <div style={{ position: 'absolute', inset: 0, borderRadius: '50%',
+            background: `radial-gradient(circle at 50% 50%, ${hexA(c, 0)} 42%, ${hexA(lighten(c, 0.3), 0.55)} 58%, ${hexA(lighten(c, 0.65), 0.95)} 73%, ${hexA('#FFFFFF', 1)} 83%, ${hexA('#FFFFFF', 1)} 90%, ${hexA(lighten(c, 0.7), 0.85)} 95%, ${hexA(lighten(c, 0.45), 0.4)} 99%, ${hexA(c, 0)} 100%)`,
+            WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 34%, rgba(0,0,0,0.5) 54%, rgba(0,0,0,0) 74%)',
+            maskImage: 'linear-gradient(to bottom, #000 0%, #000 34%, rgba(0,0,0,0.5) 54%, rgba(0,0,0,0) 74%)' }} />
+          {/* glints of light sweeping along the rim */}
+          <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', inset: 0, animation: reduce ? 'none' : 'bpSwirl 9s linear infinite', mixBlendMode: 'screen' }}>
+              <div style={{ position: 'absolute', top: '2%', left: '50%', transform: 'translateX(-50%)', width: '42%', height: '20%', borderRadius: '50%',
+                filter: `blur(${(D * 0.04).toFixed(0)}px)`,
+                background: `radial-gradient(ellipse at 50% 50%, ${hexA('#FFFFFF', 0.95)} 0%, ${hexA(lighten(c, 0.6), 0.55)} 38%, ${hexA(c, 0)} 76%)` }} />
+              <div style={{ position: 'absolute', bottom: '2%', left: '50%', transform: 'translateX(-50%)', width: '34%', height: '17%', borderRadius: '50%',
+                filter: `blur(${(D * 0.045).toFixed(0)}px)`,
+                background: `radial-gradient(ellipse at 50% 50%, ${hexA('#FFFFFF', 0.7)} 0%, ${hexA(lighten(c, 0.5), 0.4)} 40%, ${hexA(c, 0)} 76%)` }} />
+            </div>
+          </div>
+          {/* trend flow — stacked chevrons that pulse in the trend direction (reads as flow, not a button) */}
+          {(() => {
+            const up = trend >= 0;
+            const cw = D * 0.2;
+            const tcol = up ? '#B7FFD6' : '#FFD0BC';
+            return (
+              <div style={{
+                position: 'absolute', left: '50%', top: '36%', transform: 'translate(-50%,-50%)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: `${(D * 0.028).toFixed(0)}px`, pointerEvents: 'none',
+              }}>
+                {[0, 1, 2].map(k => (
+                  <svg key={k} width={cw} height={cw * 0.5} viewBox="0 0 20 10" style={{
+                    display: 'block',
+                    filter: `drop-shadow(0 0 ${(D * 0.02).toFixed(0)}px ${hexA(tcol, 0.85)})`,
+                    animation: reduce ? 'none' : `bpShimmer 1.7s ease-in-out ${((up ? 2 - k : k) * 0.2).toFixed(2)}s infinite`,
+                  }}>
+                    <path d={up ? 'M2 8 L10 2.4 L18 8' : 'M2 2 L10 7.6 L18 2'} fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ))}
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+
+      {/* 5 concentric dashed rings — the orb's edge reaching ring N = effort level N */}
+      <svg width={W} height={S} viewBox={`0 0 ${W} ${S}`} style={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none' }}>
+        <defs>
+          {/* vertical gradient: dark at the bottom → mood-yellow at the top, yellow taking the larger share */}
+          <linearGradient id={gid} x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0" stopColor={darken(c, 0.62)} />
+            <stop offset="0.4" stopColor={c} />
+            <stop offset="1" stopColor={lighten(c, 0.4)} />
+          </linearGradient>
+        </defs>
+        {R.map((rf, i) => {
+          const current = i === level - 1;
+          const reached = i < level - 1;
+          const stroke = current ? `url(#${gid})` : reached ? hexA(c, 0.2) : (dark ? 'rgba(255,255,255,0.07)' : 'rgba(35,31,32,0.08)');
+          return <circle key={i} cx={cx} cy={cy} r={rf * S} fill="none" stroke={stroke}
+            strokeWidth={current ? 3.4 : 0.8}
+            style={current ? { filter: `drop-shadow(0 0 ${(S * 0.022).toFixed(0)}px ${hexA(c, 0.85)})` } : undefined} />;
+        })}
+      </svg>
+
+      {/* flame badge sitting on the middle (top) of the current-level ring */}
+      <div style={{
+        position: 'absolute', left: cx, top: cy - R[level - 1] * S, transform: 'translate(-50%,-50%)', zIndex: 4,
+        width: (S * 0.11).toFixed(0) + 'px', height: (S * 0.11).toFixed(0) + 'px', borderRadius: '50%',
+        background: `radial-gradient(circle at 50% 38%, ${lighten(c, 0.25)} 0%, ${c} 60%, ${darken(c, 0.12)} 100%)`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        boxShadow: `0 2px 10px ${hexA(c, 0.6)}, 0 0 ${(S * 0.05).toFixed(0)}px ${hexA(c, 0.5)}, inset 0 1px 0 ${hexA('#FFFFFF', 0.4)}`,
+      }}>
+        <BPIcon name="flame" filled size={Math.round(S * 0.058)} color="#FFFFFF" />
+      </div>
+      </React.Fragment>)}
+
+      {fx === 'flame' && (() => {
+        // REALISTIC FIRE — layered & luminous (no displacement artifacts): a teardrop body with a
+        // vertical fire gradient (deep ember tip → orange → yellow → white-hot base), a radial inner
+        // glow, a bright base hot-spot, a soft outer halo, and a gentle organic flicker.
+        const baseY = cy + S * 0.08;
+        const fh = (0.26 + (level - 1) * 0.05) * S;
+        // from the green level (4) up, the flame grows FATTER / stronger
+        const fwRatio = level <= 3 ? 0.58 : 0.58 + (level - 3) * 0.12;
+        const fw = fh * fwRatio;
+        const FD = "M50 5 C60 40 89 56 89 90 C89 118 71 132 50 132 C29 132 11 118 11 90 C11 56 40 40 50 5 Z";
+        const g = gid + 'F';
+        // colour scale ticks flanking the flame — 5 levels, current one lit
+        const COL5 = ['#E5391E', '#F5821F', '#FFC93C', '#33B96B', '#2F80ED'];
+        const tickX = S * 0.6, tickMidY = cy - S * 0.19, tickColH = S * 0.4;  // edges; level maps to the ring's full height (L1≈horizon, L5≈top)
+        const sideTicks = (sign) => (
+          <div style={{ position: 'absolute', left: cx + sign * tickX, top: tickMidY, transform: 'translate(-50%,-50%)', height: tickColH,
+            display: 'flex', flexDirection: 'column-reverse', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none' }}>
+            {COL5.map((col, i) => {
+              const on = i === level - 1;
+              return <div key={i} style={{ width: on ? S * 0.058 : S * 0.038, height: 2.5, borderRadius: 999, background: col, opacity: on ? 1 : 0.26, boxShadow: on ? `0 0 6px ${hexA(col, 0.85)}` : 'none', transition: 'all .2s' }} />;
+            })}
+          </div>
+        );
+        return (
+          <React.Fragment>
+            {sideTicks(-1)}
+            {sideTicks(1)}
+            {/* Circle Progress Bar wrapping the flame — symmetric: fills from the bottom up BOTH
+                sides to two endpoints near the top-centre (PMAT version) */}
+            {(() => {
+              const rPB = S * 0.44;
+              const topGapHalf = 12;              // small opening at top-centre → two distinct endpoints
+              const span = 180 - topGapHalf;      // each side sweeps bottom (90°) → near top
+              // fill so the green head reaches the SAME plane as the current level's side tick
+              const lvlTickY = (tickMidY + tickColH / 2) - ((level - 1) / 4) * tickColH;
+              const headAngle = Math.asin(Math.max(-1, Math.min(1, (lvlTickY - cy) / rPB))) * 180 / Math.PI;
+              const prog = Math.max(0, Math.min(1, (90 - headAngle) / span));
+              const ptOf = (deg) => { const a = deg * Math.PI / 180; return [cx + rPB * Math.cos(a), cy + rPB * Math.sin(a)]; };
+              const arc = (fromDeg, toDeg, sweep) => {
+                const [x0, y0] = ptOf(fromDeg), [x1, y1] = ptOf(toDeg);
+                const large = Math.abs(toDeg - fromDeg) > 180 ? 1 : 0;
+                return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${rPB.toFixed(2)} ${rPB.toFixed(2)} 0 ${large} ${sweep} ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+              };
+              const pw = S * 0.026;
+              const pg = gid + 'PB';
+              const rightEnd = 90 - span * prog;  // right side climbs (sweep 0)
+              const leftEnd = 90 + span * prog;   // left side climbs (sweep 1)
+              const track = hexA('#FFFFFF', dark ? 0.09 : 0.12);
+              const glow = { filter: `drop-shadow(0 0 ${(S * 0.02).toFixed(0)}px ${hexA(c, 0.7)})` };
+              return (
+                <svg width={W} height={S} viewBox={`0 0 ${W} ${S}`} style={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none' }}>
+                  <defs>
+                    <linearGradient id={pg} x1="0" y1="1" x2="0" y2="0">
+                      <stop offset="0" stopColor={darken(c, 0.12)} />
+                      <stop offset="0.5" stopColor={c} />
+                      <stop offset="1" stopColor={lighten(c, 0.45)} />
+                    </linearGradient>
+                  </defs>
+                  {/* track — both sides, full span with a small top gap */}
+                  <path d={arc(90, 90 - span, 0)} fill="none" stroke={track} strokeWidth={pw} strokeLinecap="round" />
+                  <path d={arc(90, 90 + span, 1)} fill="none" stroke={track} strokeWidth={pw} strokeLinecap="round" />
+                  {/* progress — from the bottom up both sides toward the top-centre */}
+                  <path d={arc(90, rightEnd, 0)} fill="none" stroke={`url(#${pg})`} strokeWidth={pw} strokeLinecap="round" style={glow} />
+                  <path d={arc(90, leftEnd, 1)} fill="none" stroke={`url(#${pg})`} strokeWidth={pw} strokeLinecap="round" style={glow} />
+                </svg>
+              );
+            })()}
+            {/* big faint Score — sits BEHIND the flame as a watermark (mockup) */}
+            <div style={{ position: 'absolute', left: cx, top: cy - S * 0.12, transform: 'translate(-50%,-50%)', zIndex: 0, pointerEvents: 'none',
+              fontFamily: "'Poppins', 'IBM Plex Sans Thai', sans-serif", fontWeight: 700, fontSize: Math.round(S * 0.42), lineHeight: 1,
+              letterSpacing: '0.08em',
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.18) 45%, rgba(70,70,70,0.10) 100%)',
+              WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent' }}>82</div>
+            {/* ambient bloom on the horizon */}
+            <div style={{ position: 'absolute', left: cx, top: baseY, transform: 'translate(-50%,-50%)', width: fw * 1.8, height: fh * 0.6, borderRadius: '50%',
+              background: `radial-gradient(ellipse, ${hexA(c, dark ? 0.5 : 0.34)} 0%, ${hexA(c, 0)} 70%)`, filter: `blur(${(S * 0.05).toFixed(0)}px)`, pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', left: cx, top: baseY, width: fw, height: fh, transform: 'translate(-50%,-100%)', pointerEvents: 'none' }}>
+              <svg width="100%" height="100%" viewBox="0 0 100 137" style={{ display: 'block', overflow: 'visible', transformOrigin: '50% 100%', animation: reduce ? 'none' : 'bpFlick 2.6s ease-in-out infinite' }}>
+                <defs>
+                  <linearGradient id={g + 'b'} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor={hexA(c, 0)} />
+                    <stop offset="0.12" stopColor={hexA(c, 0.55)} />
+                    <stop offset="0.36" stopColor={c} />
+                    <stop offset="0.64" stopColor={lighten(c, 0.5)} />
+                    <stop offset="0.9" stopColor={lighten(c, 0.85)} />
+                    <stop offset="1" stopColor="#FFFFFF" />
+                  </linearGradient>
+                  <radialGradient id={g + 'rc'} cx="50%" cy="62%" r="52%">
+                    <stop offset="0" stopColor="#FFFFFF" />
+                    <stop offset="0.32" stopColor={lighten(c, 0.78)} />
+                    <stop offset="0.62" stopColor={hexA(c, 0.45)} />
+                    <stop offset="1" stopColor={hexA(c, 0)} />
+                  </radialGradient>
+                  <filter id={g + 'gl'} x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="4.5" /></filter>
+                  <filter id={g + 'soft'} x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3" /></filter>
+                </defs>
+                {/* soft outer halo */}
+                <path d={FD} fill={hexA(c, 0.4)} filter={`url(#${g}gl)`} transform="translate(50 132) scale(1.16) translate(-50 -132)" />
+                {/* main fire body */}
+                <path d={FD} fill={`url(#${g}b)`} filter={`url(#${g}soft)`} />
+                {/* radial inner glow — the luminous heart, low-centred so it flows into the base */}
+                <ellipse cx="50" cy="106" rx="22" ry="48" fill={`url(#${g}rc)`} opacity="0.92" />
+                {/* white-hot base hot-spot */}
+                <ellipse cx="50" cy="118" rx="15" ry="18" fill="#FFFFFF" filter={`url(#${g}soft)`} opacity="0.95" />
+              </svg>
+            </div>
+          </React.Fragment>
+        );
+      })()}
+
+      {fx === 'line' && (() => {
+        // PRINCIPLED PLOT: the line tells the last 5 days. Each point's HEIGHT = that day's
+        // Effort level (1–5); its COLOUR follows the height via the 5-level palette
+        // (low = red … high = blue). The most recent day (rightmost) is the glowing head.
+        const COL5 = ['#E5391E', '#F5821F', '#FFC93C', '#33B96B', '#2F80ED']; // level 1..5
+        // a believable 5-day series that ends on the current level (driven by the slider)
+        const SERIES = { 1: [3, 2, 2, 1, 1], 2: [2, 1, 2, 2, 2], 3: [2, 3, 2, 3, 3], 4: [3, 2, 4, 3, 4], 5: [3, 4, 4, 5, 5] };
+        const days = SERIES[level] || [2, 3, 2, 3, 3];
+        const REC = 4;                                 // recommended Effort level (the target to reach)
+        const xFirst = W * 0.10, xLast = W * 0.82;     // day 1 … day 5 (head)
+        const leftBleed = -W * 0.12;                   // line/area run off the left screen edge (clipped by the frame)
+        const gridR = W * 0.99;                        // gridlines reach almost the full width
+        const yTop = S * 0.20, yBot = S * 0.74;        // level 5 sits at yTop, level 1 at yBot
+        const yOf = (lv) => yBot - ((lv - 1) / 4) * (yBot - yTop);
+        const pts = days.map((lv, i) => [xFirst + (xLast - xFirst) * (i / 4), yOf(lv)]);
+        const sp = (p) => {
+          let d = `M ${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}`;
+          for (let i = 0; i < p.length - 1; i++) {
+            const a = p[i - 1] || p[i], b = p[i], cc = p[i + 1], e = p[i + 2] || p[i + 1];
+            const c1x = b[0] + (cc[0] - a[0]) / 6, c1y = b[1] + (cc[1] - a[1]) / 6;
+            const c2x = cc[0] - (e[0] - b[0]) / 6, c2y = cc[1] - (e[1] - b[1]) / 6;
+            d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${cc[0].toFixed(1)} ${cc[1].toFixed(1)}`;
+          }
+          return d;
+        };
+        const pathPts = [[leftBleed, pts[0][1]], ...pts];   // flat lead-in from the screen edge into day 1
+        const lineD = sp(pathPts);
+        const areaD = `${lineD} L ${xLast.toFixed(1)} ${S} L ${leftBleed.toFixed(1)} ${S} Z`;
+        const sw = (S * 0.016).toFixed(1);
+        const rDot = S * 0.034, rMark = S * 0.017;
+        const head = pts[4], headColor = COL5[days[4] - 1];
+        const recColor = COL5[REC - 1];
+        // vertical colour scale: height → colour (top = level 5 blue … bottom = level 1 red)
+        const vStops = [[0, COL5[4]], [0.25, COL5[3]], [0.5, COL5[2]], [0.75, COL5[1]], [1, COL5[0]]];
+        return (
+          <svg width="100%" height="100%" viewBox={`0 0 ${W} ${S}`} style={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none' }}>
+            <defs>
+              <linearGradient id={gid + 'ln'} x1="0" y1={yTop} x2="0" y2={yBot} gradientUnits="userSpaceOnUse">
+                {vStops.map(([o, col]) => <stop key={o} offset={o} stopColor={col} />)}
+              </linearGradient>
+              <linearGradient id={gid + 'ar'} x1="0" y1={yTop} x2="0" y2={yBot} gradientUnits="userSpaceOnUse">
+                {vStops.map(([o, col]) => <stop key={o} offset={o} stopColor={col} stopOpacity="0.34" />)}
+              </linearGradient>
+              <linearGradient id={gid + 'fd'} x1="0" y1={yTop} x2="0" y2={S} gradientUnits="userSpaceOnUse">
+                <stop offset="0" stopColor="#fff" stopOpacity="0.85" />
+                <stop offset="0.6" stopColor="#fff" stopOpacity="0.32" />
+                <stop offset="1" stopColor="#fff" stopOpacity="0" />
+              </linearGradient>
+              <mask id={gid + 'm'}><rect x={leftBleed} y="0" width={W - leftBleed} height={S} fill={`url(#${gid}fd)`} /></mask>
+              <radialGradient id={gid + 'dg'}>
+                <stop offset="0" stopColor={headColor} stopOpacity="0.6" />
+                <stop offset="1" stopColor={headColor} stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            {/* level reference gridlines — thin lines marking each of the 5 Effort levels */}
+            {[1, 2, 3, 4, 5].map((lv) => {
+              const gy = yOf(lv), rec = lv === REC;
+              return <line key={lv} x1={leftBleed} y1={gy} x2={gridR} y2={gy}
+                stroke={rec ? hexA(recColor, 0.65) : 'rgba(255,255,255,0.12)'}
+                strokeWidth={rec ? 1.5 : 1} strokeDasharray={rec ? '6 5' : '2 5'} />;
+            })}
+            <path d={areaD} fill={`url(#${gid}ar)`} mask={`url(#${gid}m)`} />
+            <path d={lineD} fill="none" stroke={`url(#${gid}ln)`} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"
+              style={{ filter: `drop-shadow(0 0 ${(S * 0.014).toFixed(0)}px ${hexA(headColor, 0.5)})` }} />
+            {/* day markers (first 4 days) — solid beads coloured by their own height */}
+            {pts.slice(0, 4).map((p, i) => (
+              <circle key={i} cx={p[0]} cy={p[1]} r={rMark} fill={COL5[days[i] - 1]} stroke="#FFFFFF" strokeWidth={(S * 0.005).toFixed(1)}
+                style={{ filter: `drop-shadow(0 0 ${(S * 0.012).toFixed(0)}px ${hexA(COL5[days[i] - 1], 0.8)})` }} />
+            ))}
+            {/* most-recent day = glowing head */}
+            <circle cx={head[0]} cy={head[1]} r={rDot * 2.8} fill={`url(#${gid}dg)`} />
+            <circle cx={head[0]} cy={head[1]} r={rDot} fill="#FFFFFF" style={{ filter: `drop-shadow(0 0 ${(S * 0.022).toFixed(0)}px ${hexA(headColor, 0.95)})` }} />
+            {/* recommended-level label */}
+            <text x={gridR} y={yOf(REC) - S * 0.022} textAnchor="end" fill={hexA(recColor, 0.95)}
+              fontFamily="'IBM Plex Sans Thai', sans-serif" fontSize={S * 0.042} fontWeight="600">แนะนำ</text>
+          </svg>
+        );
+      })()}
+
+      {/* glassy lower half — dark frosted glass, faded at the sides to read as a horizon
+          (skipped for the 'line' variant, which reads as a clean curve on black) */}
+      {fx !== 'line' && (
+      <div style={{
+        position: 'absolute', left: 0, right: 0, top: '50%', bottom: 0,
+        backdropFilter: `blur(${glassBlur}px) saturate(135%)`, WebkitBackdropFilter: `blur(${glassBlur}px) saturate(135%)`,
+        background: dark
+          ? 'linear-gradient(180deg, rgba(6,6,9,0.40) 0%, rgba(6,6,9,0.72) 55%, rgba(6,6,9,0.88) 100%)'
+          : 'linear-gradient(180deg, rgba(40,36,38,0.30) 0%, rgba(40,36,38,0.5) 60%, rgba(40,36,38,0.62) 100%)',
+        WebkitMaskImage: edgeFade, maskImage: edgeFade,
+      }}>
+        {/* horizon line — fades out at both ends */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: 1,
+          background: `linear-gradient(90deg, transparent, ${dark ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.7)'} 50%, transparent)`,
+        }} />
+      </div>
+      )}
+    </div>
+  );
+}
+
+Object.assign(window, { BPEffortOrb, bpEffortLevel, BPCrystal, bpEngageColor: engageColor, bpHexA: hexA, bpLighten: lighten, bpDarken: darken });
+
+</script>
+<script type="text/babel" data-from="bp-leaderboard.jsx">
+// bp-leaderboard.jsx — the "อันดับ" (Leaderboard) tab for the JOINSTICK learner app.
+// Class ranking: podium for the top 3, your standing, then the full ranked list.
+// Renders the engagement "crystal" beside each learner, colored by their stage.
+// Exports to window: LeaderboardScreen
+const { useState: _lbS } = React;
+const _lbHexA = window.bpHexA, _lbEngage = window.bpEngageColor;
+const _lbTH = "'IBM Plex Sans Thai', sans-serif";
+const _lbEN = "'Poppins', 'IBM Plex Sans Thai', sans-serif";
+
+// ranked learners — "จอย" is the current user at #4 / 1,240 pts (matches profile)
+const BP_LEADERS = [
+  { name: 'พิมพ์ชนก', rank: 'Graduate',     pts: 2180, move: 0 },
+  { name: 'ธีรเดช',    rank: 'Practitioner', pts: 1920, move: 2 },
+  { name: 'ณัฐวุฒิ',   rank: 'Practitioner', pts: 1760, move: -1 },
+  { name: 'จอย',       rank: 'Practitioner', pts: 1240, move: 2, me: true },
+  { name: 'ศุภิสรา',   rank: 'Apprentice',   pts: 1180, move: 0 },
+  { name: 'กิตติพงศ์', rank: 'Apprentice',   pts: 1050, move: -2 },
+  { name: 'อารยา',     rank: 'Goal Setter',  pts: 920,  move: 1 },
+  { name: 'ปองพล',     rank: 'Goal Setter',  pts: 740,  move: 0 },
+];
+const BP_RANK_ORDER = ['Ignorance', 'Questioner', 'Goal Setter', 'Apprentice', 'Practitioner', 'Graduate'];
+function _lbRankColor(rank) {
+  const i = BP_RANK_ORDER.indexOf(rank);
+  return _lbEngage(i >= 0 ? (i / (BP_RANK_ORDER.length - 1)) * 100 : 50);
+}
+
+function MoveIndicator({ th, move }) {
+  if (!move) return <span style={{ fontFamily: _lbEN, fontSize: 11, color: th.t4 }}>—</span>;
+  const up = move > 0;
+  const c = up ? '#33B96B' : th.accent;
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2, fontFamily: _lbEN, fontSize: 11.5, fontWeight: 600, color: c }}>
+      <span style={{ fontSize: 9 }}>{up ? '▲' : '▼'}</span>{Math.abs(move)}
+    </span>
+  );
+}
+
+// top-3 podium — clean: just the crystal avatar + medal badge, #1 larger & centred (no bars)
+const _lbMEDAL = { 1: '#F1B304', 2: '#C4CAD4', 3: '#D08B5A' };
+function PodiumPillar({ th, place, learner }) {
+  const c = _lbRankColor(learner.rank);
+  const big = place === 1;
+  const ring = big ? 82 : 62;
+  const order = { 1: 2, 2: 1, 3: 3 };
+  const md = _lbMEDAL[place];
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7, order: order[place] }}>
+      <div style={{ position: 'relative' }}>
+        {big && (
+          <span style={{ position: 'absolute', top: -15, left: '50%', transform: 'translateX(-50%)' }}>
+            <BPIcon name="trophy" size={18} color="#F1B304" stroke={2} />
+          </span>
+        )}
+        <div style={{
+          width: ring, height: ring, borderRadius: 999,
+          background: _lbHexA(c, th.dark ? 0.12 : 0.08),
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <BPCrystal intensity={50} size={ring - 16} color={c} reduce={true} />
+        </div>
+        <span style={{
+          position: 'absolute', bottom: -3, left: '50%', transform: 'translateX(-50%)',
+          width: 22, height: 22, borderRadius: 999, background: md,
+          border: `2px solid ${th.dark ? '#0c0d11' : '#fff'}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: _lbEN, fontWeight: 700, fontSize: 11, color: '#16110E',
+        }}>{place}</span>
+      </div>
+      <span style={{ fontFamily: _lbTH, fontWeight: 600, fontSize: big ? 14 : 13, color: th.t1, marginTop: 4, textAlign: 'center', whiteSpace: 'nowrap' }}>{learner.name}</span>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+        <BPIcon name="flame" filled size={11} color={th.t4} />
+        <span style={{ fontFamily: _lbEN, fontWeight: 700, fontSize: 12.5, color: th.t2 }}>{learner.pts.toLocaleString()}</span>
+      </span>
+    </div>
+  );
+}
+
+// a row in the full ranked list
+function RankRow({ th, learner, place }) {
+  const c = _lbRankColor(learner.rank);
+  const me = learner.me;
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 18,
+      background: th.glassBg, backdropFilter: th.glassBlur, WebkitBackdropFilter: th.glassBlur,
+      border: `1px solid ${me ? _lbHexA(th.accent, 0.55) : th.glassBorder}`,
+      boxShadow: me ? `${th.glassSheen}, 0 8px 22px ${_lbHexA(th.accent, th.dark ? 0.18 : 0.1)}` : th.glassSheen,
+    }}>
+      <span style={{ width: 24, textAlign: 'center', fontFamily: _lbEN, fontWeight: 700, fontSize: 14, color: me ? th.accent : th.t3, flexShrink: 0 }}>{place}</span>
+      <div style={{
+        width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+        background: _lbHexA(c, th.dark ? 0.14 : 0.1), border: `1px solid ${_lbHexA(c, 0.4)}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <BPCrystal intensity={50} size={34} color={c} reduce={true} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontFamily: _lbTH, fontWeight: 600, fontSize: 14.5, color: th.t1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{learner.name}</span>
+          {me && <span style={{ fontFamily: _lbTH, fontSize: 10.5, fontWeight: 600, color: th.accent, background: _lbHexA(th.accent, th.dark ? 0.18 : 0.1), padding: '2px 7px', borderRadius: 999, flexShrink: 0 }}>คุณ</span>}
+        </div>
+        <span style={{ fontFamily: _lbEN, fontSize: 11.5, color: c, fontWeight: 600 }}>{learner.rank}</span>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2, flexShrink: 0 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+          <BPIcon name="flame" filled size={12} color={th.accent} />
+          <span style={{ fontFamily: _lbEN, fontWeight: 700, fontSize: 14, color: th.t1 }}>{learner.pts.toLocaleString()}</span>
+        </span>
+        <MoveIndicator th={th} move={learner.move} />
+      </div>
+    </div>
+  );
+}
+
+function LeaderboardScreen({ th, nickname = 'จอย', reduce = false }) {
+  const [scope, setScope] = _lbS('week'); // 'week' | 'all'
+  const sorted = BP_LEADERS.slice().sort((a, b) => b.pts - a.pts);
+  const top3 = sorted.slice(0, 3);
+  const rest = sorted.slice(3);
+  const myPlace = sorted.findIndex(l => l.me) + 1;
+
+  const seg = (id, label) => {
+    const active = scope === id;
+    return (
+      <button onClick={() => setScope(id)} style={{
+        flex: 1, cursor: 'pointer', border: 'none', borderRadius: 999, padding: '8px 0',
+        fontFamily: _lbTH, fontSize: 13, fontWeight: 600,
+        background: active ? (th.dark ? '#fff' : th.t1) : 'transparent',
+        color: active ? (th.dark ? '#16110E' : '#fff') : th.t3,
+        transition: 'background 180ms, color 180ms',
+      }}>{label}</button>
+    );
+  };
+
+  return (
+    <main style={{ flex: 1, overflowY: 'auto', padding: '114px 20px 110px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* heading */}
+      <div>
+        <h1 style={{ margin: 0, fontFamily: _lbTH, fontWeight: 600, fontSize: 25, color: th.t1, letterSpacing: '-0.01em' }}>อันดับ</h1>
+        <span style={{ fontFamily: _lbTH, fontSize: 13, color: th.t3 }}>Essential Leadership · 24 คน</span>
+      </div>
+
+      {/* scope toggle */}
+      <div style={{ display: 'flex', gap: 4, padding: 4, borderRadius: 999, background: th.dark ? 'rgba(255,255,255,0.05)' : 'rgba(35,31,32,0.05)', border: `1px solid ${th.line}` }}>
+        {seg('week', 'สัปดาห์นี้')}
+        {seg('all', 'ตลอดกาล')}
+      </div>
+
+      {/* podium — clean top 3 (no pillar bars) */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10, padding: '14px 0 6px' }}>
+        {top3.map((l, i) => <PodiumPillar key={l.name} th={th} place={i + 1} learner={l} />)}
+      </div>
+
+      {/* your standing — flat, minimal */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 13, padding: '14px 16px', borderRadius: 18,
+        background: th.glassBg, backdropFilter: th.glassBlur, WebkitBackdropFilter: th.glassBlur,
+        border: `1px solid ${_lbHexA(th.accent, 0.4)}`, boxShadow: th.glassSheen,
+      }}>
+        <span style={{ fontFamily: _lbEN, fontWeight: 700, fontSize: 20, color: th.accent }}>#{myPlace}</span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: _lbTH, fontWeight: 600, fontSize: 14, color: th.t1 }}>อันดับของคุณ</div>
+          <div style={{ fontFamily: _lbTH, fontSize: 12, color: th.t3 }}>ขยับขึ้น 2 อันดับ · อีก 520 แต้มแซง #3</div>
+        </div>
+      </div>
+
+      {/* full list (place 4+) */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+        {rest.map((l, i) => <RankRow key={l.name} th={th} learner={l} place={i + 4} />)}
+      </div>
+    </main>
+  );
+}
+
+Object.assign(window, { LeaderboardScreen });
+
+</script>
+<script type="text/babel" data-from="bp-challenge.jsx">
+// bp-challenge.jsx — the "ภารกิจ" (Challenge / Missions) tab for JOINSTICK.
+// A featured daily challenge, today's momentum stats, then all missions grouped
+// by where they stand (ค้างอยู่ / กำลังทำ / เสร็จแล้ว). Reuses the global MissionCard.
+// Exports to window: ChallengeScreen
+const { useState: _chS } = React;
+const _chHexA = window.bpHexA;
+const _chTH = "'IBM Plex Sans Thai', sans-serif";
+const _chEN = "'Poppins', 'IBM Plex Sans Thai', sans-serif";
+
+// the broader mission pool for this tab (todo / doing / late / done)
+const BP_CHALLENGES = [
+  { type: 'Recall Quiz', icon: 'rotate', title: 'ทบทวนสไตล์การนำทีม & Trust Lens', minutes: 5, points: 20, status: 'todo', daysLeft: 2 },
+  { type: 'Mission',     icon: 'target', title: 'Identify your team\'s trust lenses', minutes: 15, points: 50, status: 'doing' },
+  { type: 'Flash Card',  icon: 'layers', title: 'ทบทวนศัพท์ Leadership & Trust Lens', minutes: 8, points: 15, status: 'todo', daysLeft: 1 },
+  { type: 'Quiz',        icon: 'help',   title: 'แบบทดสอบ: สร้าง Trust ในทีม', minutes: 10, points: 30, status: 'late' },
+  { type: 'Mission',     icon: 'target', title: 'เขียนสะท้อนการนำทีมวันนี้', minutes: 7, points: 25, status: 'doing' },
+  { type: 'Flash Card',  icon: 'layers', title: 'ทบทวนรูปแบบผู้นำ 6 สไตล์', minutes: 6, points: 15, status: 'done' },
+  { type: 'Recall Quiz', icon: 'rotate', title: 'ทบทวนบท Leadership Styles', minutes: 5, points: 20, status: 'done' },
+];
+
+// ── Anytime Challenges — daily, pick ONE type per day; the other goes on Cool Down ──
+const BP_ANYTIME = [
+  { type: 'Recall Quiz', icon: 'rotate', desc: 'ทบทวนสิ่งที่เพิ่งเรียนไป', minutes: 5, points: 20 },
+  { type: 'Flash Card',  icon: 'layers', desc: 'ทวนศัพท์และหลักการสั้นๆ', minutes: 8, points: 15 },
+];
+
+// ── Main Challenges — the steady path to transformation (Home-style long cards) ──
+const BP_MAIN = [
+  { type: 'Mission', icon: 'target', title: 'Identify your team\'s trust lenses', minutes: 15, points: 50, status: 'doing' },
+  { type: 'Mission', icon: 'target', title: 'เขียนสะท้อนการนำทีมวันนี้', minutes: 7, points: 25, status: 'doing' },
+  { type: 'Quiz',    icon: 'help',   title: 'แบบทดสอบ: สร้าง Trust ในทีม', minutes: 10, points: 30, status: 'late' },
+  { type: 'Mission', icon: 'book',   title: 'อ่านบทความ The Foundation of Trust แล้วสรุป', minutes: 12, points: 35, status: 'todo', daysLeft: 3 },
+  { type: 'Quiz',    icon: 'help',   title: 'ทบทวนบท Leadership Styles', minutes: 8, points: 20, status: 'done' },
+];
+
+// compact 2-column card for the Anytime section (NOT a long row card)
+function AnytimeCard({ th, item, state, onStart }) {
+  const done = state === 'done', cool = state === 'cooldown', ready = state === 'ready';
+  const accent = done ? '#33B96B' : cool ? th.t4 : th.accent;
+  const openTask = () => { try { window.parent.postMessage({ type: 'js-open-task', taskType: item.type, title: item.title }, '*'); } catch (e) {} };
+  return (
+    <button onClick={ready ? openTask : undefined} style={{
+      flex: 1, minWidth: 0, textAlign: 'left', cursor: ready ? 'pointer' : 'default',
+      background: th.glassBg, backdropFilter: th.glassBlur, WebkitBackdropFilter: th.glassBlur,
+      border: `1px solid ${done ? _chHexA('#33B96B', 0.32) : th.glassBorder}`,
+      borderRadius: 20, padding: 15, boxShadow: th.glassSheen,
+      display: 'flex', flexDirection: 'column', gap: 11, opacity: cool ? 0.5 : 1, transition: 'all 180ms ease',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ width: 42, height: 42, borderRadius: 13, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: _chHexA(accent, th.dark ? 0.16 : 0.1), border: `1px solid ${_chHexA(accent, 0.32)}` }}>
+          <BPIcon name={item.icon} size={20} color={accent} stroke={2} />
+        </span>
+        {done && <span style={{ width: 24, height: 24, borderRadius: 999, background: _chHexA('#33B96B', 0.18), display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BPIcon name="check" size={14} color="#33B96B" stroke={2.6} /></span>}
+        {cool && <BPIcon name="lock" size={15} color={th.t4} stroke={2} />}
+      </div>
+      <div>
+        <div style={{ fontFamily: _chEN, fontSize: 13.5, fontWeight: 700, color: th.t1, letterSpacing: '-0.01em' }}>{item.type}</div>
+        <div style={{ fontFamily: _chTH, fontSize: 11.5, color: th.t3, marginTop: 2, lineHeight: 1.35 }}>{item.desc}</div>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: _chTH, fontSize: 11.5, color: th.t3 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><BPIcon name="flame" filled size={12} color={th.t4} /><span style={{ fontFamily: _chEN, fontWeight: 600, color: th.t2 }}>+{item.points}</span></span>
+        <span style={{ width: 3, height: 3, borderRadius: 99, background: th.t4 }} />
+        {item.minutes} นาที
+      </div>
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: _chTH, fontSize: 12, fontWeight: 600, color: accent, marginTop: 1 }}>
+        {done && <><span style={{ width: 6, height: 6, borderRadius: 999, background: '#33B96B', boxShadow: `0 0 6px ${_chHexA('#33B96B', 0.7)}` }} />สำเร็จแล้ว</>}
+        {cool && <><BPIcon name="clock" size={13} color={th.t4} stroke={2} />Cool Down · พรุ่งนี้</>}
+        {ready && <><BPIcon name="play" filled size={12} color={th.accent} />เริ่มทำ</>}
+      </div>
+    </button>
+  );
+}
+
+function ChallengeScreen({ th, reduce = false }) {
+  const [done, setDone] = _chS({});
+  const toggle = i => setDone(d => ({ ...d, [i]: !d[i] }));
+  // Anytime: pick ONE type per day → it becomes 'done', the other 'cooldown'
+  const [anytimeDone, setAnytimeDone] = _chS(null); // null | item.type
+  const anytimeState = item => anytimeDone == null ? 'ready' : (anytimeDone === item.type ? 'done' : 'cooldown');
+
+  // Main: sort กำลังทำ(doing) > ล่าช้า(late) > เหลืออีก(todo) > สำเร็จ(done)
+  const prio = m => m.status === 'doing' ? 1 : m.status === 'late' ? 2 : m.status === 'done' ? 4 : 3;
+  const mainSorted = BP_MAIN.map((m, i) => ({ m, i })).sort((a, b) => prio(a.m) - prio(b.m));
+
+  const head = (title, desc) => (
+    <div style={{ marginBottom: 13 }}>
+      <h2 style={{ margin: 0, fontFamily: _chTH, fontWeight: 700, fontSize: 19, color: th.t1, letterSpacing: '-0.01em' }}>{title}</h2>
+      <div style={{ fontFamily: _chTH, fontSize: 12.5, color: th.t3, marginTop: 3, lineHeight: 1.4 }}>{desc}</div>
+    </div>
+  );
+
+  return (
+    <main style={{ flex: 1, overflowY: 'auto', padding: '114px 20px 110px', display: 'flex', flexDirection: 'column', gap: 30 }}>
+      <h1 style={{ margin: 0, fontFamily: _chTH, fontWeight: 600, fontSize: 25, color: th.t1, letterSpacing: '-0.01em' }}>ภารกิจ</h1>
+
+      {/* ── Section 1 — Anytime Challenge ── */}
+      <section>
+        {head('ภารกิจทุกเมื่อ', 'เพื่อหล่อเลี้ยงความรู้ และนำไปสู่ความจำระยะยาว')}
+        <div style={{ display: 'flex', gap: 10 }}>
+          {BP_ANYTIME.map(item => (
+            <AnytimeCard key={item.type} th={th} item={item} state={anytimeState(item)} onStart={() => setAnytimeDone(item.type)} />
+          ))}
+        </div>
+      </section>
+
+      {/* ── Section 2 — Main Challenge ── */}
+      <section>
+        {head('ภารกิจหลัก', 'เพื่อการพัฒนาอย่างสม่ำเสมอสู่การเปลี่ยนแปลง')}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {mainSorted.map(({ m, i }) => (
+            <MissionCard key={i} th={th} m={m} done={done[i] ?? m.status === 'done'} onToggle={() => toggle(i)} />
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+Object.assign(window, { ChallengeScreen });
+
+</script>
+<script type="text/babel" data-from="bp-resource.jsx">
+// bp-resource.jsx — the "คลัง" (Resource / Library) tab for JOINSTICK.
+// A continue-learning resume card, category filter chips, and a grid of learning
+// resources (lessons, flash-card decks, quizzes) each with its own progress.
+// Exports to window: ResourceScreen
+const { useState: _rsS } = React;
+const _rsHexA = window.bpHexA;
+const _rsTH = "'IBM Plex Sans Thai', sans-serif";
+const _rsEN = "'Poppins', 'IBM Plex Sans Thai', sans-serif";
+
+const BP_CATEGORIES = ['ทั้งหมด', 'การคิด', 'Mindset', 'ทักษะ'];
+const BP_RESOURCES = [
+  { cat: 'ผู้นำ',   type: 'บทเรียน',    icon: 'book',   title: 'Delivery A Meaningful ONE ON ONE Session', items: '8 บท', progress: 62, color: '#2F80ED' },
+  { cat: 'การคิด',  type: 'Flash Card', icon: 'layers', title: 'Trust Lenses ทั้ง 4 แบบ', route: 'videoLesson', items: '5 นาที', progress: 40, color: '#F5821F' },
+];
+
+function ProgressBar({ th, pct, color }) {
+  const c = color || th.accent;
+  return (
+    <div style={{ height: 5, borderRadius: 999, background: th.dark ? 'rgba(255,255,255,0.08)' : 'rgba(35,31,32,0.08)', overflow: 'hidden' }}>
+      <div style={{ height: '100%', width: pct + '%', borderRadius: 999, background: `linear-gradient(90deg, ${_rsHexA(c, 0.6)}, ${c})`, transition: 'width 500ms ease' }} />
+    </div>
+  );
+}
+
+function ResourceCard({ th, r }) {
+  const finished = r.progress >= 100;
+  const openTask = () => { try { window.parent.postMessage({ type: 'js-open-task', taskType: r.route || r.type, title: r.title }, '*'); } catch (e) {} };
+  return (
+    <button onClick={openTask} style={{
+      textAlign: 'left', cursor: 'pointer', width: '100%',
+      background: th.cardGrad, border: `1px solid ${th.line}`, borderRadius: 20, padding: 16,
+      boxShadow: th.cardSheen, display: 'flex', flexDirection: 'column', gap: 12, transition: 'transform 180ms ease',
+    }}
+      onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+      onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{
+          width: 42, height: 42, borderRadius: 13, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: _rsHexA(r.color, th.dark ? 0.16 : 0.1), border: `1px solid ${_rsHexA(r.color, 0.32)}`,
+        }}>
+          <BPIcon name={r.icon} size={20} color={r.color} stroke={2} />
+        </span>
+        {finished && (
+          <span style={{ width: 24, height: 24, borderRadius: 999, background: _rsHexA('#33B96B', th.dark ? 0.2 : 0.14), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <BPIcon name="check" size={14} color="#33B96B" stroke={2.6} />
+          </span>
+        )}
+      </div>
+      <div style={{ flex: 1 }}>
+        <span style={{ fontFamily: _rsEN, fontSize: 10.5, fontWeight: 600, color: r.color, letterSpacing: '0.04em' }}>{r.type}</span>
+        <div style={{ fontFamily: _rsTH, fontWeight: 600, fontSize: 14.5, color: th.t1, lineHeight: 1.3, marginTop: 3 }}>{r.title}</div>
+        <span style={{ fontFamily: _rsTH, fontSize: 11.5, color: th.t3 }}>{r.items}</span>
+      </div>
+      <div>
+        <ProgressBar th={th} pct={r.progress} color={r.color} />
+        <span style={{ fontFamily: _rsEN, fontSize: 11, fontWeight: 600, color: th.t3, marginTop: 6, display: 'inline-block' }}>
+          {finished ? 'เรียนจบแล้ว' : r.progress > 0 ? `${r.progress}%` : 'ยังไม่เริ่ม'}
+        </span>
+      </div>
+    </button>
+  );
+}
+
+function ResourceScreen({ th, reduce = false }) {
+  const [cat, setCat] = _rsS('ทั้งหมด');
+  const resume = BP_RESOURCES[0];
+  const shown = cat === 'ทั้งหมด' ? BP_RESOURCES : BP_RESOURCES.filter(r => r.cat === cat);
+
+  return (
+    <main style={{ flex: 1, overflowY: 'auto', padding: '114px 20px 110px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div>
+        <h1 style={{ margin: 0, fontFamily: _rsTH, fontWeight: 600, fontSize: 25, color: th.t1, letterSpacing: '-0.01em' }}>คลังความรู้</h1>
+        <span style={{ fontFamily: _rsTH, fontSize: 13, color: th.t3 }}>บทเรียนและการ์ดทบทวนทั้งหมดของคุณ</span>
+      </div>
+
+      {/* search (decorative) */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 10, padding: '12px 15px', borderRadius: 14,
+        background: th.dark ? 'rgba(255,255,255,0.04)' : '#fff', border: `1px solid ${th.line}`,
+      }}>
+        <BPIcon name="help" size={17} color={th.t4} stroke={2} />
+        <span style={{ fontFamily: _rsTH, fontSize: 14, color: th.t4 }}>ค้นหาบทเรียนหรือการ์ด</span>
+      </div>
+
+      {/* continue learning */}
+      <button onClick={() => { try { window.parent.postMessage({ type: 'js-open-task', taskType: resume.type, title: resume.title }, '*'); } catch (e) {} }} style={{
+        textAlign: 'left', cursor: 'pointer', width: '100%', display: 'flex', alignItems: 'center', gap: 14,
+        padding: 16, borderRadius: 20, background: th.cardGradHi, border: `1px solid ${th.line2}`, boxShadow: th.cardSheen,
+      }}>
+        <span style={{
+          width: 54, height: 54, borderRadius: 16, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: _rsHexA(resume.color, th.dark ? 0.16 : 0.1), border: `1px solid ${_rsHexA(resume.color, 0.32)}`,
+        }}>
+          <BPIcon name="play" filled size={20} color={resume.color} />
+        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ fontFamily: _rsTH, fontSize: 11.5, fontWeight: 600, color: resume.color }}>เรียนต่อจากเดิม</span>
+          <div style={{ fontFamily: _rsTH, fontWeight: 600, fontSize: 15, color: th.t1, marginBottom: 8 }}>{resume.title} · บทที่ 5</div>
+          <ProgressBar th={th} pct={resume.progress} color={resume.color} />
+        </div>
+        <BPIcon name="chevronRight" size={20} color={th.t3} stroke={2.2} />
+      </button>
+
+      {/* category chips */}
+      <div style={{ display: 'flex', gap: 8, overflowX: 'auto', margin: '0 -20px', padding: '0 20px', scrollbarWidth: 'none' }}>
+        {BP_CATEGORIES.map(c => {
+          const active = cat === c;
+          return (
+            <button key={c} onClick={() => setCat(c)} style={{
+              flexShrink: 0, cursor: 'pointer', fontFamily: _rsTH, fontSize: 13, fontWeight: 500,
+              padding: '8px 16px', borderRadius: 999,
+              background: active ? (th.dark ? '#fff' : th.t1) : th.card,
+              color: active ? (th.dark ? '#16110E' : '#fff') : th.t2,
+              border: `1px solid ${active ? 'transparent' : th.line}`,
+              transition: 'background 160ms, color 160ms',
+            }}>{c}</button>
+          );
+        })}
+      </div>
+
+      {/* resource grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        {shown.map((r, i) => <ResourceCard key={i} th={th} r={r} />)}
+      </div>
+    </main>
+  );
+}
+
+Object.assign(window, { ResourceScreen });
+
+</script>
+<script type="text/babel" data-from="bp-insight.jsx">
+// bp-insight.jsx — the Insight (Home) screen for the BASE Playhouse learner app.
+// Renders 3 distinct layout variants around the shared "engagement flame".
+// Exports to window: InsightScreen
+const { useState: _uS, useEffect: _uE, useRef: _uR } = React;
+const { bpHexA, bpLighten, bpEngageColor } = window;
+
+// ── theme ──────────────────────────────────────────────────────
+function bpTheme(dark, accent) {
+  if (dark) {
+    return {
+      dark: true, accent, accentLight: bpLighten(accent, 0.22),
+      bg: '#000000', bgGrad: 'radial-gradient(140% 90% at 50% -18%, #141416 0%, #000000 52%)',
+      card: '#161618', cardSolid: '#1C1C1F',
+      cardGrad: 'linear-gradient(180deg, #242427 0%, #1A1A1D 100%)',
+      cardGradHi: 'linear-gradient(180deg, #2E2E32 0%, #202023 100%)',
+      cardSheen: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+      glassBg: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.022) 100%)',
+      glassBlur: 'blur(22px) saturate(150%)',
+      glassBorder: 'rgba(255,255,255,0.13)',
+      glassSheen: 'inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(255,255,255,0.04), 0 16px 40px rgba(0,0,0,0.5)',
+      line: 'rgba(255,255,255,0.08)', line2: 'rgba(255,255,255,0.14)',
+      t1: '#FFFFFF', t2: 'rgba(255,255,255,0.72)', t3: 'rgba(255,255,255,0.5)', t4: 'rgba(255,255,255,0.34)',
+    };
+  }
+  return {
+    dark: false, accent, accentLight: bpLighten(accent, 0.18),
+    bg: '#F1F0EF', bgGrad: 'radial-gradient(140% 90% at 50% -18%, #FBFAFA 0%, #F1F0EF 55%)',
+    card: '#FFFFFF', cardSolid: '#FFFFFF',
+    cardGrad: 'linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%)',
+    cardGradHi: 'linear-gradient(180deg, #FFFFFF 0%, #F6F5F5 100%)',
+    cardSheen: 'inset 0 1px 0 rgba(255,255,255,0.8)',
+    glassBg: 'linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.44) 100%)',
+    glassBlur: 'blur(20px) saturate(160%)',
+    glassBorder: 'rgba(255,255,255,0.65)',
+    glassSheen: 'inset 0 1px 0 rgba(255,255,255,0.95), 0 16px 40px rgba(35,31,32,0.12)',
+    line: 'rgba(35,31,32,0.09)', line2: 'rgba(35,31,32,0.16)',
+    t1: '#231F20', t2: 'rgba(35,31,32,0.66)', t3: 'rgba(35,31,32,0.46)', t4: 'rgba(35,31,32,0.32)',
+  };
+}
+
+const TH = "'IBM Plex Sans Thai', sans-serif";
+const EN = "'Poppins', 'IBM Plex Sans Thai', sans-serif";
+
+// ── engagement copy keyed by intensity zone ────────────────────
+function bpZone(intensity) {
+  if (intensity < 20) return 'z1';
+  if (intensity < 40) return 'z2';
+  if (intensity < 60) return 'z3';
+  if (intensity < 80) return 'z4';
+  return 'z5';
+}
+function bpMessages(intensity, name) {
+  const z = bpZone(intensity);
+  const sets = {
+    z5: { state: 'แสงเจิดจ้าเต็มที่', lines: ['สุดยอดมาก', 'การเรียนรู้ของคุณดูดีมาก', 'อย่าลืมพักผ่อนให้เพียงพอด้วยนะ'] },
+    z4: { state: 'แสงกำลังสว่างไสว', lines: ['ดูดีเลย', 'การเรียนรู้ของคุณไปได้สวย', 'รักษาระดับไว้นะ'] },
+    z3: { state: 'แสงเริ่มหรี่ลง', lines: ['ใช้ได้เลย', 'คุณเริ่มจะลืมแล้ว แต่เป็นเรื่องปกติ', 'ลองเติมแสงอีกหน่อยจะดูดีเลย'] },
+    z2: { state: 'แสงเริ่มจาง', lines: ['เราเริ่มห่างกันนะ', 'คุณกำลังลืมหลายเรื่องแล้ว', 'แต่ยังทัน มาโฟกัสกันเลยดีกว่า'] },
+    z1: { state: 'แสงแทบจะดับ', lines: ['ดีใจที่กลับมา กำลังเป็นห่วงเลย', 'การเรียนรู้ของคุณหายไปเยอะเลย', 'แต่ยังมีหวัง มาเริ่มกันเลย'] },
+  };
+  return sets[z];
+}
+function bpWeekStates(intensity) {
+  const today = 3; // พฤหัสบดี
+  const k = intensity / 100;
+  const seed = [0.85, 0.6, 0.3, 0.9, 0.5, 0.2, 0.7];
+  return seed.map((v, i) => i > today ? 'future' : (v * (0.45 + k * 0.7) >= 0.5 ? 'done' : 'missed'));
+}
+
+// ── missions ───────────────────────────────────────────────────
+const BP_MISSIONS = [
+  { type: 'Recall Quiz', icon: 'rotate', title: 'ทบทวนสไตล์การนำทีม & Trust Lens', minutes: 5, points: 20, status: 'todo', daysLeft: 2 },
+  { type: 'Mission', icon: 'target', title: 'Identify your team\'s trust lenses', minutes: 15, points: 50, status: 'doing' },
+  { type: 'Flash Card', icon: 'layers', title: 'ทบทวนศัพท์ Leadership & Trust Lens', minutes: 8, points: 15, status: 'todo', daysLeft: 1 },
+  { type: 'Quiz', icon: 'help', title: 'แบบทดสอบ: สร้าง Trust ในทีม', minutes: 10, points: 30, status: 'late' },
+];
+
+// ── top bar ────────────────────────────────────────────────────
+function TopBar({ th, onProfile, onNotif, onJoin, notifCount }) {
+  return (
+    <div style={{
+      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 5,
+      paddingTop: 58, padding: '58px 20px 12px',
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+      background: th.dark ? 'rgba(12,13,17,0.55)' : 'rgba(255,255,255,0.6)',
+      backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)',
+      borderBottom: `1px solid ${th.dark ? 'rgba(255,255,255,0.07)' : 'rgba(35,31,32,0.08)'}`,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+        <BPJoinstick height={27} color={th.dark ? '#FFFFFF' : th.t1} accent={th.accent} />
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <IconBtn th={th} name="user" onClick={onProfile} />
+        <IconBtn th={th} name="bell" onClick={onNotif} badge={notifCount} />
+      </div>
+    </div>
+  );
+}
+
+function IconBtn({ th, name, onClick, badge }) {
+  return (
+    <button onClick={onClick} style={{
+      position: 'relative', width: 40, height: 40, borderRadius: 999, cursor: 'pointer',
+      background: th.dark ? 'rgba(255,255,255,0.06)' : '#fff',
+      border: `1px solid ${th.line}`,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      transition: 'background 150ms, border-color 150ms',
+    }}
+      onMouseEnter={e => e.currentTarget.style.borderColor = th.line2}
+      onMouseLeave={e => e.currentTarget.style.borderColor = th.line}>
+      <BPIcon name={name} size={19} color={th.t1} stroke={1.9} />
+      {badge > 0 && (
+        <span style={{
+          position: 'absolute', top: 6, right: 6, minWidth: 8, height: 8, borderRadius: 999,
+          background: th.accent, boxShadow: `0 0 0 2px ${th.bg}`,
+        }} />
+      )}
+    </button>
+  );
+}
+
+// ── ranks / stages ─────────────────────────────────────────────
+const BP_RANKS = ['Ignorance', 'Questioner', 'Goal Setter', 'Apprentice', 'Practitioner', 'Graduate'];
+function bpRankNext(rank) {
+  const i = BP_RANKS.indexOf(rank);
+  return (i >= 0 && i < BP_RANKS.length - 1) ? BP_RANKS[i + 1] : null;
+}
+function StatusCard({ th, nickname, rank, onInfo }) {
+  const idx = BP_RANKS.indexOf(rank);
+  const next = bpRankNext(rank);
+  const rankColor = bpEngageColor(idx >= 0 ? (idx / (BP_RANKS.length - 1)) * 100 : 50);
+  const pts = 1240, target = 1500;
+  const pct = Math.min(100, Math.round((pts / target) * 100));
+  const hdr = window.__HDR || 'v0';
+
+  // shared: current — thin arrow — next
+  const arrowRow = (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <span style={{ fontFamily: EN, fontSize: 12, fontWeight: 400, color: th.t3, whiteSpace: 'nowrap', letterSpacing: '-0.01em' }}>{rank}</span>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+        <span style={{ flex: 1, height: 1, background: th.line2 }} />
+        <svg width="7" height="8" viewBox="0 0 7 8" style={{ display: 'block', marginLeft: -1, flexShrink: 0 }}>
+          <path d="M1 1 L5 4 L1 7" fill="none" stroke={th.t3} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <span style={{ fontFamily: EN, fontSize: 12, fontWeight: 400, color: th.t3, whiteSpace: 'nowrap', letterSpacing: '-0.01em' }}>{next}</span>
+    </div>
+  );
+
+  // ════ v1 — ELEVATED GLASS CARD (depth via gradient surface, border, shadow, sheen) ════
+  if (hdr === 'v1') {
+    return (
+      <div style={{
+        position: 'relative', flexShrink: 0, borderRadius: 22, padding: '15px 16px 17px', overflow: 'hidden',
+        background: th.dark ? 'linear-gradient(158deg, rgba(255,255,255,0.085) 0%, rgba(255,255,255,0.02) 60%, rgba(255,255,255,0.01) 100%)' : 'linear-gradient(158deg, #fff, #f3f1f2)',
+        border: `1px solid ${th.dark ? 'rgba(255,255,255,0.12)' : 'rgba(35,31,32,0.08)'}`,
+        boxShadow: th.dark ? '0 14px 34px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.10)' : '0 12px 28px rgba(35,31,32,0.12)',
+        display: 'flex', flexDirection: 'column', gap: 14,
+      }}>
+        <div aria-hidden style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '46%', background: 'linear-gradient(180deg, rgba(255,255,255,0.07), transparent)', pointerEvents: 'none' }} />
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 13 }}>
+          <div style={{ position: 'relative', width: 52, height: 52, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div aria-hidden style={{ position: 'absolute', inset: -7, borderRadius: '50%', background: `radial-gradient(circle, ${bpHexA(rankColor, 0.4)} 0%, ${bpHexA(rankColor, 0)} 68%)`, filter: 'blur(7px)' }} />
+            <BPCrystal intensity={50} size={52} color={rankColor} reduce={true} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: TH, fontWeight: 600, fontSize: 21, color: th.t1, letterSpacing: '-0.01em', lineHeight: 1.15 }}>สวัสดี, {nickname}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+              <span style={{ fontFamily: EN, fontWeight: 700, fontSize: 14.5, color: th.t1, letterSpacing: '-0.01em' }}>{rank}</span>
+              {idx >= 0 && <span style={{ fontFamily: TH, fontSize: 12.5, color: th.t3 }}>· Stage {idx}</span>}
+              <InfoBtn th={th} onClick={onInfo} style={{ marginLeft: 1 }} />
+            </div>
+          </div>
+        </div>
+        {next && (
+          <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ position: 'relative', height: 9, borderRadius: 999, background: 'rgba(0,0,0,0.32)', boxShadow: 'inset 0 1.5px 3px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.05)' }}>
+              <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: pct + '%', borderRadius: 999, background: `linear-gradient(90deg, ${bpHexA(th.accent, 0.75)}, ${th.accent})`, boxShadow: `0 0 10px ${bpHexA(th.accent, 0.65)}` }}>
+                <div aria-hidden style={{ position: 'absolute', top: 1.5, left: 3, right: 3, height: 2, borderRadius: 999, background: 'rgba(255,255,255,0.45)' }} />
+              </div>
+              <div aria-hidden style={{ position: 'absolute', top: '50%', left: `calc(${pct}% - 5px)`, width: 10, height: 10, borderRadius: '50%', background: '#fff', transform: 'translateY(-50%)', boxShadow: `0 0 8px ${bpHexA(th.accent, 0.9)}, 0 0 0 2px ${bpHexA(th.accent, 0.5)}` }} />
+            </div>
+            {arrowRow}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ════ v2 — "HEADER PANEL": the status sits on its own full-bleed raised panel (rounded bottom +
+  // shadow + faint brand glow), so the dark Effort area reads as a separate sheet below it.
+  // Strong, obvious zone split (like fintech app headers) — same content, no extra info. ════
+  if (hdr === 'v2') {
+    // "Rank emblem" — NOT the baseline layout. The horizontal %-bar is gone; progress-to-next-rank
+    // becomes a CIRCULAR RING wrapped around the crystal (a game-like level badge). One compact row:
+    // emblem + greeting/rank/→next. Distinct shape, depth from the ring + crystal glow, no bg block.
+    const phase = window.__PHASE || 'out';  // pre/in have no points yet → empty ring, no stage
+    const RR = 31, CIRC = 2 * Math.PI * RR, OFF = CIRC * (1 - (phase === 'out' ? pct : 0) / 100);
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ position: 'relative', width: 72, height: 72, flexShrink: 0 }}>
+          <div aria-hidden style={{ position: 'absolute', inset: -3, borderRadius: '50%', background: `radial-gradient(circle, ${bpHexA(th.accent, 0.34)} 0%, ${bpHexA(th.accent, 0)} 70%)`, filter: 'blur(7px)' }} />
+          <svg width="72" height="72" viewBox="0 0 72 72" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+            <circle cx="36" cy="36" r={RR} fill="none" stroke={th.dark ? 'rgba(255,255,255,0.10)' : 'rgba(35,31,32,0.10)'} strokeWidth="3.5" />
+            <circle cx="36" cy="36" r={RR} fill="none" stroke={th.accent} strokeWidth="3.5" strokeLinecap="round"
+              strokeDasharray={CIRC} strokeDashoffset={OFF} style={{ filter: `drop-shadow(0 0 4px ${bpHexA(th.accent, 0.7)})` }} />
+          </svg>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <BPCrystal intensity={50} size={42} color={th.accent} reduce={true} />
+          </div>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ fontFamily: EN, fontWeight: 700, fontSize: 21, color: th.t1, letterSpacing: '-0.02em', lineHeight: 1.05 }}>{rank}</span>
+          {phase === 'out' && idx >= 0 && <div style={{ fontFamily: EN, fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: th.t3, marginTop: 5 }}>STAGE {idx}</div>}
+        </div>
+        <InfoBtn th={th} onClick={onInfo} />
+      </div>
+    );
+  }
+
+  // ════ v0 — ORIGINAL (baseline, unchanged) ════
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 13,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 13 }}>
+        <div style={{
+          width: 50, height: 50, flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <BPCrystal intensity={50} size={50} color={rankColor} reduce={true} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: TH, fontWeight: 600, fontSize: 21, color: th.t1, letterSpacing: '-0.01em', lineHeight: 1.15 }}>สวัสดี, {nickname}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+            <span style={{ fontFamily: EN, fontWeight: 700, fontSize: 14.5, color: th.t1, letterSpacing: '-0.01em' }}>{rank}</span>
+            {idx >= 0 && <span style={{ fontFamily: TH, fontSize: 12.5, color: th.t3 }}>· Stage {idx}</span>}
+            <InfoBtn th={th} onClick={onInfo} style={{ marginLeft: 1 }} />
+          </div>
+        </div>
+      </div>
+      {next && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ height: 7, borderRadius: 999, background: th.dark ? 'rgba(255,255,255,0.08)' : 'rgba(35,31,32,0.08)', overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: pct + '%', borderRadius: 999, background: `linear-gradient(90deg, ${bpHexA(th.accent, 0.5)}, ${th.accent})` }} />
+          </div>
+          {arrowRow}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function InfoBtn({ th, onClick, style = {} }) {
+  return (
+    <button onClick={(e) => { e.stopPropagation(); onClick && onClick(); }} aria-label="รายละเอียด" style={{
+      width: 25, height: 25, borderRadius: 999, flexShrink: 0, cursor: 'pointer', padding: 0,
+      background: th.dark ? 'rgba(255,255,255,0.07)' : 'rgba(35,31,32,0.05)',
+      border: `1px solid ${th.line}`, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      transition: 'border-color 150ms, background 150ms',
+      ...style,
+    }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = th.line2; e.currentTarget.style.background = th.dark ? 'rgba(255,255,255,0.12)' : 'rgba(35,31,32,0.09)'; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = th.line; e.currentTarget.style.background = th.dark ? 'rgba(255,255,255,0.07)' : 'rgba(35,31,32,0.05)'; }}>
+      <BPIcon name="info" size={13} color={th.t3} stroke={2} />
+    </button>
+  );
+}
+
+// ── 3 inform lines ─────────────────────────────────────────────
+function HearthSection({ th, intensity, msg, week, reduce, mood, trend, onInfo }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', padding: '0 0 2px' }}>
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+        <div style={{ position: 'relative' }}>
+          <BPEffortOrb intensity={intensity} size={284} accent={mood} reduce={reduce} dark={th.dark} spread={1.25} trend={trend} />
+          {/* More Info — sits on the orb's centre line, right-aligned */}
+          <div style={{ position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', zIndex: 3 }}>
+            <InfoBtn th={th} onClick={onInfo} />
+          </div>
+        </div>
+      {/* 3-line message — pulled up close to the orb; bigger, max 3 lines, clear hierarchy */}
+      <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 9, textAlign: 'center', maxWidth: 360, marginTop: -98 }}>
+        <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 22, color: mood, letterSpacing: '0.02em', lineHeight: 1.2, textShadow: th.dark ? '0 0 14px rgba(0,0,0,0.75), 0 1px 3px rgba(0,0,0,0.8)' : 'none' }}>{msg.lines[0]}</span>
+        <h3 style={{ margin: 0, fontFamily: TH, fontWeight: 700, fontSize: 24, lineHeight: 1.25, color: th.t1, letterSpacing: '-0.01em', textShadow: th.dark ? `0 1px 16px rgba(0,0,0,0.6), 0 2px 22px ${bpHexA(mood, 0.28)}` : 'none' }}>{msg.lines[1]}</h3>
+        <span style={{ fontFamily: TH, fontWeight: 400, fontSize: 15, color: th.t2, lineHeight: 1.45, textShadow: th.dark ? '0 1px 10px rgba(0,0,0,0.6)' : 'none' }}>{msg.lines[2]}</span>
+      </div>
+      </div>
+    </div>
+  );
+}
+
+// Pre-Class hero — the Pre-Test entry (the start of the journey, before any score exists)
+function PreClassHero({ th, nickname }) {
+  return (
+    <div style={{ minHeight: 230, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, textAlign: 'center', maxWidth: 340, margin: '0 auto', padding: '12px 16px' }}>
+      <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 14, color: th.t3, letterSpacing: '0.02em' }}>สวัสดี, {nickname}</span>
+      <h3 style={{ margin: 0, fontFamily: TH, fontWeight: 600, fontSize: 23, lineHeight: 1.3, color: th.t1, letterSpacing: '-0.01em' }}>ก่อนมาเจอกัน</h3>
+      <span style={{ fontFamily: TH, fontWeight: 400, fontSize: 15, color: th.t2, lineHeight: 1.5 }}>เรามีภารกิจเล็กน้อยมาให้คุณทำ</span>
+    </div>
+  );
+}
+
+// V2 — Dashboard: flame inside a card next to a momentum meter
+function SectionHead({ th, title, action }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+      <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 17, color: th.t1, letterSpacing: '-0.01em' }}>{title}</span>
+      {action && (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2, fontFamily: TH, fontSize: 12.5, color: th.t3 }}>
+          {action}<BPIcon name="chevronRight" size={13} color={th.t4} stroke={2.2} />
+        </span>
+      )}
+    </div>
+  );
+}
+
+function statusView(th, m, done) {
+  if (done || m.status === 'done') return { label: 'เสร็จแล้ว', color: '#33B96B', dot: true };
+  if (m.status === 'late') return { label: 'ล่าช้า', color: th.accent, dot: true };
+  if (m.status === 'doing') return { label: 'กำลังทำ', color: '#4DA8F0', dot: true };
+  const d = m.daysLeft;
+  return { label: `เหลืออีก ${d} วัน`, color: th.t1, dot: true };
+}
+
+function MissionCard({ th, m, done, onToggle }) {
+  const s = statusView(th, m, done);
+  const openTask = () => { try { window.parent.postMessage({ type: 'js-open-task', taskType: m.type, title: m.title }, '*'); } catch (e) {} };
+  return (
+    <button onClick={openTask} style={{
+      textAlign: 'left', cursor: 'pointer', width: '100%',
+      background: th.glassBg, backdropFilter: th.glassBlur, WebkitBackdropFilter: th.glassBlur,
+      border: `1px solid ${th.glassBorder}`,
+      borderRadius: 22, padding: 16, boxShadow: th.glassSheen,
+      display: 'flex', flexDirection: 'column', gap: 11,
+      opacity: done ? 0.6 : 1, transition: 'all 180ms ease',
+    }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}>
+      {/* action type + engagement score */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '5px 11px 5px 9px', borderRadius: 999,
+          background: th.dark ? 'rgba(255,255,255,0.06)' : '#F1F0EF', border: `1px solid ${th.line}`,
+        }}>
+          <BPIcon name={m.icon} size={13} color={th.accent} stroke={2} />
+          <span style={{ fontFamily: EN, fontSize: 11, fontWeight: 600, color: th.t2 }}>{m.type}</span>
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+          <BPIcon name="flame" filled size={13} color={th.t4} />
+          <span style={{ fontFamily: EN, fontSize: 12.5, fontWeight: 600, color: th.t2 }}>+{m.points}</span>
+        </span>
+      </div>
+      {/* title (1–2 lines) */}
+      <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 15.5, color: th.t1, lineHeight: 1.32, textDecoration: done ? 'line-through' : 'none' }}>{m.title}</span>
+      {/* duration + status / deadline */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: TH, fontSize: 12.5, color: th.t3 }}>
+          <BPIcon name="clock" size={14} color={th.t4} stroke={2} />
+          {m.minutes} นาที
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: TH, fontSize: 12.5, fontWeight: 600, color: s.color }}>
+          {s.dot && <span style={{ width: 6, height: 6, borderRadius: 999, background: s.color, boxShadow: `0 0 6px ${bpHexA(s.color, 0.7)}` }} />}
+          {s.label}
+        </span>
+      </div>
+    </button>
+  );
+}
+
+// status priority: กำลังทำ(doing) > ล่าช้า(late) > เหลืออีก(todo) > สำเร็จ(done)
+function bpMissionPrio(x) {
+  if (x.isDone) return 4;
+  if (x.m.status === 'doing') return 1;
+  if (x.m.status === 'late') return 2;
+  return 3;
+}
+function Missions({ th, variant, done, toggle }) {
+  const horizontal = variant === 2;
+  const items = BP_MISSIONS
+    .map((m, i) => ({ m, i, isDone: !!done[i] || m.status === 'done' }))
+    .sort((a, b) => bpMissionPrio(a) - bpMissionPrio(b) || ((a.m.daysLeft || 99) - (b.m.daysLeft || 99)))
+    .slice(0, 3);
+  return (
+    <div>
+      <SectionHead th={th} title="ภารกิจที่แนะนำ" action="ดูทั้งหมด" />
+      {horizontal ? (
+        <div style={{ display: 'flex', gap: 12, overflowX: 'auto', margin: '0 -20px', padding: '2px 20px 4px', scrollbarWidth: 'none' }}>
+          {items.map(x => <MissionCard key={x.i} th={th} m={x.m} done={x.isDone} onToggle={() => toggle(x.i)} horizontal />)}
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {items.map(x => <MissionCard key={x.i} th={th} m={x.m} done={x.isDone} onToggle={() => toggle(x.i)} />)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── bottom nav ─────────────────────────────────────────────────
+const BP_TABS = [
+  { id: 'leaderboard', icon: 'medal', label: 'อันดับ' },
+  { id: 'insight', icon: 'home', label: 'วันนี้' },
+  { id: 'challenge', icon: 'flame', label: 'ภารกิจ' },
+  { id: 'resource', icon: 'book', label: 'คลัง' },
+];
+function BottomNav({ th, tab, setTab }) {
+  return (
+    <div style={{
+      position: 'absolute', left: '50%', transform: 'translateX(-50%)', bottom: 20, zIndex: 40,
+      borderRadius: 999,
+      background: th.dark ? 'rgba(30,30,34,0.55)' : 'rgba(255,255,255,0.62)',
+      backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+      border: `1px solid ${th.dark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.06)'}`,
+      boxShadow: th.dark
+        ? '0 14px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.12)'
+        : '0 14px 32px rgba(35,31,32,0.16), inset 0 1px 0 rgba(255,255,255,0.8)',
+      padding: '11px 14px',
+      display: 'flex', justifyContent: 'space-around', alignItems: 'center', gap: 6,
+    }}>
+      {BP_TABS.map(tb => {
+        const active = tab === tb.id;
+        return (
+          <button key={tb.id} onClick={() => setTab(tb.id)} aria-label={tb.label} title={tb.label} style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flex: 1, padding: 0,
+          }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 66, height: 54, borderRadius: 999,
+              background: active ? bpHexA(th.accent, th.dark ? 0.20 : 0.12) : 'transparent',
+              transition: 'background 180ms ease',
+            }}>
+              <BPIcon name={tb.icon} filled size={27} color={active ? th.accent : th.t3} />
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── placeholder for non-Insight tabs ───────────────────────────
+function Sheet({ th, open, onClose, children, title }) {
+  return (
+    <div style={{
+      position: 'absolute', inset: 0, zIndex: 80, pointerEvents: open ? 'auto' : 'none',
+    }}>
+      <div onClick={onClose} style={{
+        position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)',
+        opacity: open ? 1 : 0, transition: 'opacity 260ms ease', backdropFilter: open ? 'blur(2px)' : 'none',
+      }} />
+      <div style={{
+        position: 'absolute', left: 0, right: 0, bottom: 0,
+        background: th.dark ? '#15110E' : '#fff', borderTopLeftRadius: 26, borderTopRightRadius: 26,
+        borderTop: `1px solid ${th.line}`, padding: '14px 20px 34px',
+        transform: open ? 'translateY(0)' : 'translateY(110%)',
+        transition: 'transform 320ms cubic-bezier(0.22,1,0.36,1)',
+        boxShadow: '0 -20px 50px rgba(0,0,0,0.4)',
+      }}>
+        <div style={{ width: 38, height: 4, borderRadius: 99, background: th.line2, margin: '0 auto 14px' }} />
+        {title && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 18, color: th.t1 }}>{title}</span>
+            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+              <BPIcon name="x" size={20} color={th.t3} stroke={2} />
+            </button>
+          </div>
+        )}
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function JoinClassSheet({ th, open, onClose }) {
+  const [code, setCode] = _uS('');
+  const [joined, setJoined] = _uS(false);
+  _uE(() => { if (!open) { setTimeout(() => { setCode(''); setJoined(false); }, 320); } }, [open]);
+  return (
+    <Sheet th={th} open={open} onClose={onClose} title={joined ? null : 'เข้าร่วมคลาส'}>
+      {joined ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '12px 0 8px' }}>
+          <div style={{ width: 58, height: 58, borderRadius: 999, background: th.accent, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 10px 26px ${bpHexA(th.accent, 0.5)}` }}>
+            <BPIcon name="check" size={28} color="#fff" stroke={2.4} />
+          </div>
+          <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 18, color: th.t1 }}>เข้าคลาสสำเร็จ!</span>
+          <span style={{ fontFamily: TH, fontSize: 13.5, color: th.t3, textAlign: 'center' }}>ยินดีต้อนรับสู่ <b style={{ color: th.t1 }}>Essential Leadership</b></span>
+          <button onClick={onClose} style={primaryBtn(th)}>เริ่มเรียนเลย</button>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <span style={{ fontFamily: TH, fontSize: 13.5, color: th.t3, lineHeight: 1.55 }}>กรอกรหัสเข้าคลาสจากผู้สอน เพื่อเข้าร่วม Training</span>
+          <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="เช่น  BASE-2K9" maxLength={12} style={{
+            fontFamily: EN, fontSize: 20, fontWeight: 600, letterSpacing: '0.12em', textAlign: 'center',
+            padding: '16px', borderRadius: 14, border: `1.5px solid ${th.line2}`,
+            background: th.dark ? 'rgba(255,255,255,0.04)' : '#F4F2F1', color: th.t1, outline: 'none',
+          }}
+            onFocus={e => e.target.style.borderColor = th.accent}
+            onBlur={e => e.target.style.borderColor = th.line2} />
+          <button disabled={code.length < 4} onClick={() => setJoined(true)} style={{ ...primaryBtn(th), opacity: code.length < 4 ? 0.45 : 1 }}>เข้าร่วมคลาส</button>
+        </div>
+      )}
+    </Sheet>
+  );
+}
+function primaryBtn(th) {
+  return {
+    width: '100%', border: 'none', cursor: 'pointer', marginTop: 4,
+    background: th.dark ? '#FFFFFF' : th.t1, color: th.dark ? '#16110E' : '#fff',
+    fontFamily: TH, fontWeight: 600, fontSize: 15,
+    padding: '15px', borderRadius: 999,
+    boxShadow: th.dark ? '0 8px 22px rgba(0,0,0,0.4)' : '0 8px 20px rgba(35,31,32,0.2)',
+  };
+}
+
+const BP_NOTIFS = [
+  { icon: 'flame', title: 'แสงของคุณกำลังหรี่ลง', body: 'เข้ามาทบทวนวันนี้เพื่อรักษาโมเมนตัม', time: '5 นาที' },
+  { icon: 'trophy', title: 'คุณขยับขึ้นมาอันดับ 4', body: 'ในคลาส Essential Leadership', time: '2 ชม.' },
+  { icon: 'bolt', title: 'Challenge ใหม่มาแล้ว', body: 'ทำให้เสร็จรับ 50 แต้ม', time: 'เมื่อวาน' },
+];
+function NotifSheet({ th, open, onClose }) {
+  return (
+    <Sheet th={th} open={open} onClose={onClose} title="การแจ้งเตือน">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {BP_NOTIFS.map((n, i) => (
+          <div key={i} style={{ display: 'flex', gap: 12, padding: '12px 0', borderBottom: i < BP_NOTIFS.length - 1 ? `1px solid ${th.line}` : 'none' }}>
+            <div style={{ width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: bpHexA(th.accent, th.dark ? 0.12 : 0.08), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <BPIcon name={n.icon} size={18} color={th.accent} stroke={2} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                <span style={{ fontFamily: TH, fontWeight: 600, fontSize: 14, color: th.t1 }}>{n.title}</span>
+                <span style={{ fontFamily: TH, fontSize: 11, color: th.t4, flexShrink: 0 }}>{n.time}</span>
+              </div>
+              <span style={{ fontFamily: TH, fontSize: 12.5, color: th.t3, lineHeight: 1.5 }}>{n.body}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Sheet>
+  );
+}
+
+function ProfileSheet({ th, open, onClose, name, rank }) {
+  const stats = [['อันดับ', '#4'], ['แต้มสะสม', '1,240'], ['Streak', '3 วัน']];
+  const idx = BP_RANKS.indexOf(rank);
+  const rankColor = bpEngageColor(idx >= 0 ? (idx / (BP_RANKS.length - 1)) * 100 : 50);
+  return (
+    <Sheet th={th} open={open} onClose={onClose} title="โปรไฟล์">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18 }}>
+        <div style={{ width: 60, height: 60, borderRadius: 999, background: `linear-gradient(160deg, ${th.accentLight}, ${th.accent})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: EN, fontWeight: 700, fontSize: 24, color: '#fff', boxShadow: `0 8px 20px ${bpHexA(th.accent, 0.45)}` }}>{name.slice(0, 1)}</div>
+        <div>
+          <div style={{ fontFamily: TH, fontWeight: 600, fontSize: 19, color: th.t1 }}>{name}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
+            <BPCrystal intensity={50} size={22} color={rankColor} reduce={true} />
+            <span style={{ fontFamily: EN, fontSize: 13, fontWeight: 600, color: rankColor }}>{rank}</span>
+            <span style={{ fontFamily: TH, fontSize: 13, color: th.t3 }}>· BASE Playhouse</span>
+          </div>
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 10 }}>
+        {stats.map(([k, v]) => (
+          <div key={k} style={{ flex: 1, background: th.card, border: `1px solid ${th.line}`, borderRadius: 14, padding: '12px 10px', textAlign: 'center' }}>
+            <div style={{ fontFamily: EN, fontWeight: 700, fontSize: 19, color: th.accent }}>{v}</div>
+            <div style={{ fontFamily: TH, fontSize: 11.5, color: th.t3, marginTop: 2 }}>{k}</div>
+          </div>
+        ))}
+      </div>
+    </Sheet>
+  );
+}
+
+// ── Stage Journey (full page) ───────────────────────────────────
+// The 6 Transformation Stages. index = stage number, mapped 1:1 to BP_RANKS.
+const BP_STAGES = [
+  { n: 0, name: 'Ignorance',    persona: 'ผู้ยังไม่รู้ตัว',
+    tags: ['เปิดใจ', 'เริ่มมองเห็น'],
+    desc: 'เป็นจุดเริ่มต้นที่ยังไม่รู้ว่าตัวเองขาดอะไรไป และยังมองไม่เห็นว่าทักษะหรือความรู้เรื่องนี้สำคัญกับตัวเองอย่างไร',
+    focus: 'เปิดใจรับสิ่งใหม่ และเริ่มมองเห็นว่าเรื่องนี้เกี่ยวข้องและมีความหมายกับตัวเราจริง ๆ' },
+  { n: 1, name: 'Questioner',   persona: 'ผู้เริ่มตั้งคำถาม',
+    tags: ['สำรวจตัวเอง', 'เห็นช่องว่าง'],
+    desc: 'เริ่มรู้ตัวแล้วว่าตัวเองยังไม่เก่งหรือยังมีบางอย่างขาดไป มองเห็นจุดที่ตัวเองพลาดและเริ่มตั้งคำถามกับความสามารถเดิมที่มีอยู่',
+    focus: 'สำรวจตัวเองอย่างจริงจัง เพื่อให้เห็นชัดว่า “ช่องว่าง” ของเราอยู่ตรงไหนและห่างจากเป้าหมายมากแค่ไหน' },
+  { n: 2, name: 'Goal Setter',  persona: 'ผู้ตั้งเป้าหมาย',
+    tags: ['ตั้งเป้า', 'วางแผนเส้นทาง'],
+    desc: 'บอกได้แล้วว่าตัวเองขาดอะไร และอธิบายได้ว่าต้องเรียนรู้เรื่องอะไรบ้าง เข้าใจเนื้อหาในระดับความคิดแล้ว แต่ยังไม่ได้ลงมือทำจริง',
+    focus: 'ตั้งเป้าหมายของตัวเองให้ชัด และวางแผนเส้นทางไปสู่ภาพความสำเร็จที่อยากเป็น' },
+  { n: 3, name: 'Apprentice',   persona: 'ผู้ฝึกหัด',
+    tags: ['ฝึกซ้ำ', 'ออกจาก Comfort Zone'],
+    desc: 'เริ่มลงมือทำจริงแล้ว แต่ยังต้องคิดทีละขั้นและทำตามหลักการอยู่ ทำได้บ้างไม่ได้บ้าง ยังไม่สม่ำเสมอ',
+    focus: 'ทบทวนวิธีการทำให้แม่น ลองฝึกทำซ้ำในสถานการณ์จริง และกล้าออกจาก Comfort Zone เพื่อสร้างประสบการณ์ของตัวเอง' },
+  { n: 4, name: 'Practitioner', persona: 'ผู้ลงมือทำเป็นประจำ',
+    tags: ['ทำสม่ำเสมอ', 'สร้าง Routine'],
+    desc: 'ทำได้ดีและสม่ำเสมอมากขึ้น แม้ในวันที่ไม่มีแรงจูงใจหรือบริบทเปลี่ยนไปก็ยังทำได้',
+    focus: 'สร้างกิจวัตรหรือระบบของตัวเองมารองรับ เติมเทคนิคเพิ่มเติม และจัดการอุปสรรครอบตัว เพื่อให้พฤติกรรมนี้ค่อย ๆ กลายเป็นนิสัยที่ไม่ต้องพึ่งแค่ความตั้งใจ' },
+  { n: 5, name: 'Graduates',    persona: 'ผู้ทำจนเป็นธรรมชาติ',
+    tags: ['ทำเป็นธรรมชาติ', 'ต่อยอด'],
+    desc: 'ทำจนกลายเป็นนิสัยและทำได้อย่างชำนาญ แทบไม่ต้องใช้ความพยายามเพราะมันกลายเป็นส่วนหนึ่งของตัวเองไปแล้ว',
+    focus: 'นำไปใช้ในสถานการณ์จริงให้คล่องแคล่ว และเตรียมต่อยอดสู่เป้าหมายใหม่ในระดับที่สูงขึ้นต่อไป' },
+];
+
+function StageNode({ th, status, rankColor }) {
+  if (status === 'current') {
+    return (
+      <span style={{
+        width: 20, height: 20, borderRadius: 999, background: th.t1, flexShrink: 0,
+        boxShadow: `0 0 0 5px ${bpHexA(rankColor, th.dark ? 0.22 : 0.16)}, 0 0 14px ${bpHexA(rankColor, 0.6)}`,
+      }} />
+    );
+  }
+  if (status === 'done') {
+    return (
+      <span style={{
+        width: 24, height: 24, borderRadius: 999, flexShrink: 0,
+        border: `1.5px solid ${th.line2}`, background: th.dark ? 'rgba(255,255,255,0.04)' : 'rgba(35,31,32,0.03)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <BPIcon name="check" size={13} color={th.t3} stroke={2.6} />
+      </span>
+    );
+  }
+  return (
+    <span style={{
+      width: 22, height: 22, borderRadius: 999, flexShrink: 0,
+      border: `1.5px solid ${th.line}`, background: 'transparent',
+    }} />
+  );
+}
+
+function StageTag({ th, label }) {
+  return (
+    <span style={{
+      fontFamily: TH, fontSize: 12, fontWeight: 500, color: th.t2,
+      padding: '4px 11px', borderRadius: 999,
+      background: th.dark ? 'rgba(255,255,255,0.05)' : '#fff', border: `1px solid ${th.line}`,
+    }}>{label}</span>
+  );
+}
+
+function FocusBlock({ th, text, color }) {
+  return (
+    <div style={{
+      display: 'flex', gap: 10, alignItems: 'flex-start',
+      padding: '11px 13px', borderRadius: 13,
+      background: bpHexA(color, th.dark ? 0.1 : 0.07), border: `1px solid ${bpHexA(color, 0.3)}`,
+    }}>
+      <span style={{ flexShrink: 0, width: 24, height: 24, borderRadius: 8, marginTop: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: bpHexA(color, th.dark ? 0.18 : 0.12) }}>
+        <BPIcon name="target" size={14} color={color} stroke={2} />
+      </span>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: TH, fontSize: 11.5, fontWeight: 600, letterSpacing: '0.04em', color: color, marginBottom: 3 }}>โฟกัสช่วงนี้</div>
+        <p style={{ margin: 0, fontFamily: TH, fontSize: 13, color: th.t2, lineHeight: 1.55 }}>{text}</p>
+      </div>
+    </div>
+  );
+}
+
+function StageRow({ th, s, status, isFirst, isLast, expanded, onToggle, rankColor }) {
+  const open = status === 'current' || expanded;
+  const future = status === 'future';
+  const cardBg = status === 'current' ? th.cardGradHi : th.cardGrad;
+  const cardBorder = status === 'current' ? bpHexA(rankColor, 0.55) : th.line;
+  return (
+    <div style={{ display: 'flex', gap: 14, alignItems: 'stretch' }}>
+      {/* rail */}
+      <div style={{ position: 'relative', width: 24, flexShrink: 0 }}>
+        <span style={{ position: 'absolute', left: '50%', top: 0, height: 34, width: 2, transform: 'translateX(-50%)', background: isFirst ? 'transparent' : th.line }} />
+        <span style={{ position: 'absolute', left: '50%', top: 34, bottom: 0, width: 2, transform: 'translateX(-50%)', background: isLast ? 'transparent' : th.line }} />
+        <span style={{ position: 'absolute', left: '50%', top: 34, transform: 'translate(-50%, -50%)' }}>
+          <StageNode th={th} status={status} rankColor={rankColor} />
+        </span>
+      </div>
+      {/* card */}
+      <button onClick={onToggle} style={{
+        flex: 1, minWidth: 0, textAlign: 'left', cursor: 'pointer', marginBottom: 12,
+        background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 18,
+        padding: '15px 16px', boxShadow: status === 'current' ? `${th.cardSheen}, 0 12px 30px ${bpHexA(rankColor, th.dark ? 0.18 : 0.12)}` : th.cardSheen,
+        display: 'flex', flexDirection: 'column', gap: 12,
+        opacity: future && !open ? 0.62 : 1, transition: 'background 180ms, border-color 180ms',
+      }}>
+        {/* header */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
+              <span style={{ fontFamily: EN, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', color: status === 'current' ? rankColor : th.t3 }}>STAGE {s.n}</span>
+              <span style={{ fontFamily: TH, fontSize: 12.5, color: th.t3 }}>· {s.persona}</span>
+            </div>
+            <div style={{ fontFamily: EN, fontWeight: 700, fontSize: 20, color: th.t1, letterSpacing: '-0.01em' }}>{s.name}</div>
+          </div>
+          {status === 'current' ? (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6, flexShrink: 0,
+              fontFamily: TH, fontSize: 12, fontWeight: 600, color: th.t1,
+              padding: '6px 12px 6px 10px', borderRadius: 999,
+              background: th.dark ? 'rgba(51,185,107,0.16)' : 'rgba(51,185,107,0.12)', border: '1px solid rgba(51,185,107,0.5)',
+            }}>
+              <span style={{ width: 7, height: 7, borderRadius: 999, background: '#33B96B', boxShadow: '0 0 8px rgba(51,185,107,0.9)' }} />
+              คุณอยู่ตรงนี้
+            </span>
+          ) : (
+            <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, marginTop: 2 }}>
+              {future
+                ? <BPIcon name="lock" size={15} color={th.t4} stroke={2} />
+                : <BPIcon name="chevronRight" size={17} color={th.t3} stroke={2.2}
+                    style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform 200ms' }} />}
+            </span>
+          )}
+        </div>
+
+        {open && (
+          <React.Fragment>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+              {s.tags.map(t => <StageTag key={t} th={th} label={t} />)}
+            </div>
+            <p style={{ margin: 0, fontFamily: TH, fontSize: 13.5, color: th.t2, lineHeight: 1.6 }}>{s.desc}</p>
+            <FocusBlock th={th} text={s.focus} color={rankColor} />
+          </React.Fragment>
+        )}
+      </button>
+    </div>
+  );
+}
+
+function RankJourneyPage({ th, open, onClose, rank, reduce }) {
+  const curIdx = Math.max(0, BP_RANKS.indexOf(rank));
+  const cur = BP_STAGES[curIdx];
+  const rankColor = bpEngageColor((curIdx / (BP_RANKS.length - 1)) * 100);
+  const [expanded, setExpanded] = _uS(null);
+  _uE(() => { if (open) setExpanded(null); }, [open]);
+  const pts = 1240, target = 1500;
+  const pct = Math.min(100, Math.round((pts / target) * 100));
+  const nextStage = BP_STAGES[curIdx + 1] || null;
+  const ordered = BP_STAGES.slice().reverse(); // highest stage first
+
+  return (
+    <div style={{
+      position: 'absolute', inset: 0, zIndex: 90, display: 'flex', flexDirection: 'column',
+      background: th.bgGrad, pointerEvents: open ? 'auto' : 'none',
+      transform: open ? 'translateX(0)' : 'translateX(100%)',
+      transition: 'transform 360ms cubic-bezier(0.22,1,0.36,1)',
+      boxShadow: '-20px 0 50px rgba(0,0,0,0.4)',
+    }}>
+      {/* top bar */}
+      <div style={{ flexShrink: 0, padding: '58px 20px 14px', display: 'flex', alignItems: 'center', gap: 14 }}>
+        <button onClick={onClose} aria-label="ย้อนกลับ" style={{
+          width: 44, height: 44, borderRadius: 14, flexShrink: 0, cursor: 'pointer',
+          background: th.dark ? 'rgba(255,255,255,0.06)' : '#fff', border: `1px solid ${th.line}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <BPIcon name="arrowLeft" size={21} color={th.t1} stroke={2.2} />
+        </button>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontFamily: TH, fontWeight: 600, fontSize: 19, color: th.t1, lineHeight: 1.2 }}>เส้นทางการเรียนรู้</div>
+          <div style={{ fontFamily: EN, fontSize: 13, color: th.t3 }}>Transformation Stage</div>
+        </div>
+      </div>
+
+      <main style={{ flex: 1, overflowY: 'auto', padding: '0 0 32px' }}>
+        {/* hero */}
+        <div style={{ position: 'relative', padding: '10px 20px 30px', textAlign: 'center', overflow: 'hidden' }}>
+          <div style={{
+            position: 'absolute', left: '50%', top: -30, transform: 'translateX(-50%)', width: 320, height: 240,
+            background: `radial-gradient(circle at 50% 40%, ${bpHexA(rankColor, th.dark ? 0.3 : 0.18)} 0%, transparent 62%)`,
+            pointerEvents: 'none',
+          }} />
+          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
+            <BPCrystal intensity={50} size={132} color={rankColor} reduce={reduce} />
+          </div>
+          <div style={{ position: 'relative', marginTop: 6, fontFamily: EN, fontSize: 12.5, fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase', color: rankColor }}>
+            Stage {cur.n}
+          </div>
+          <h1 style={{ position: 'relative', margin: '6px 0 0', fontFamily: EN, fontWeight: 700, fontSize: 32, color: th.t1, letterSpacing: '-0.02em' }}>{cur.name}</h1>
+          <p style={{ position: 'relative', margin: '4px 0 0', fontFamily: TH, fontSize: 15, fontWeight: 500, color: th.t2 }}>{cur.persona}</p>
+          {nextStage && (
+            <div style={{ position: 'relative', maxWidth: 320, margin: '18px auto 0' }}>
+              <div style={{ height: 6, borderRadius: 999, background: th.dark ? 'rgba(255,255,255,0.08)' : 'rgba(35,31,32,0.08)', overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: pct + '%', borderRadius: 999, background: `linear-gradient(90deg, ${bpHexA(rankColor, 0.6)}, ${rankColor})` }} />
+              </div>
+              <div style={{ marginTop: 7, fontFamily: TH, fontSize: 12, color: th.t3 }}>อีก {(target - pts).toLocaleString()} แต้มสู่ Stage {nextStage.n} · <span style={{ color: th.t2, fontWeight: 600 }}>{nextStage.name}</span></div>
+            </div>
+          )}
+        </div>
+
+        {/* journey header */}
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', padding: '6px 20px 14px' }}>
+          <span style={{ fontFamily: EN, fontWeight: 700, fontSize: 22, color: th.t1, letterSpacing: '-0.01em' }}>Journey</span>
+          <span style={{ fontFamily: EN, fontSize: 13.5, color: th.t3 }}>{BP_STAGES.length} Stage</span>
+        </div>
+
+        {/* timeline */}
+        <div style={{ padding: '0 20px' }}>
+          {ordered.map((s, i) => {
+            const status = s.n > curIdx ? 'future' : s.n === curIdx ? 'current' : 'done';
+            return (
+              <StageRow key={s.n} th={th} s={s} status={status} rankColor={rankColor}
+                isFirst={i === 0} isLast={i === ordered.length - 1}
+                expanded={expanded === s.n}
+                onToggle={() => status !== 'current' && setExpanded(p => p === s.n ? null : s.n)} />
+            );
+          })}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+function LostTip({ th, lead, body }) {
+  return (
+    <div style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
+      <span style={{ flexShrink: 0, width: 22, height: 22, borderRadius: 7, marginTop: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: bpHexA(th.accent, th.dark ? 0.16 : 0.1) }}>
+        <BPIcon name="check" size={13} color={th.accent} stroke={2.6} />
+      </span>
+      <p style={{ margin: 0, fontFamily: TH, fontSize: 13.5, color: th.t2, lineHeight: 1.55 }}>
+        <span style={{ color: th.t1, fontWeight: 600 }}>{lead}</span> {body}
+      </p>
+    </div>
+  );
+}
+
+function EngageInfoSheet({ th, open, onClose, intensity, mood }) {
+  const row = (label, swatch) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <span style={{ width: 22, height: 22, borderRadius: 999, flexShrink: 0, ...swatch }} />
+      <span style={{ fontFamily: TH, fontSize: 13, color: th.t2 }}>{label}</span>
+    </div>
+  );
+  const litBg = th.dark ? '#fff' : th.t1;
+  const litBorder = th.dark ? '2px solid #fff' : `2px solid ${th.t1}`;
+  const ringBorder = th.dark ? '2px solid rgba(255,255,255,0.5)' : `2px solid ${th.line2}`;
+  const dashBorder = th.dark ? '2px dashed rgba(255,255,255,0.4)' : `2px dashed ${th.line2}`;
+  const h4 = { fontFamily: TH, fontWeight: 600, fontSize: 15.5, color: th.t1, margin: '0 0 8px', letterSpacing: '-0.01em' };
+  const para = { fontFamily: TH, fontSize: 13.5, color: th.t2, lineHeight: 1.65, margin: '0 0 12px' };
+  return (
+    <Sheet th={th} open={open} onClose={onClose} title="เกี่ยวกับโมเมนตัม">
+      <div style={{ maxHeight: 600, overflowY: 'auto', margin: '0 -20px', padding: '0 20px', scrollbarWidth: 'none' }}>
+        <p style={{ ...para, color: th.t3 }}>
+          แสงนี้สะท้อนว่าสัปดาห์นี้คุณเข้ามาทำ Action มากแค่ไหน — ยิ่งทำต่อเนื่อง แสงยิ่งสว่างไสว เต็มขึ้น และเปลี่ยนสีจากแดง (น้อย) ไปจนถึงน้ำเงิน (เต็มที่)
+        </p>
+        <div style={{ height: 10, borderRadius: 999, background: 'linear-gradient(90deg, #E5391E, #F5821F, #F1B304, #33B96B, #2F80ED)' }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 7, marginBottom: 18, fontFamily: TH, fontSize: 11.5, color: th.t4 }}>
+          <span>น้อย</span><span>เต็มที่</span>
+        </div>
+        <div style={{ fontFamily: TH, fontWeight: 600, fontSize: 13.5, color: th.t1, marginBottom: 10 }}>สถานะรายวัน จันทร์–อาทิตย์</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {row('ทำ Action แล้ว', { background: litBg, border: litBorder })}
+          {row('ยังไม่ได้ทำในวันนั้น', { background: 'transparent', border: ringBorder })}
+          {row('ยังมาไม่ถึง', { background: 'transparent', border: dashBorder })}
+        </div>
+
+        <div style={{ height: 1, background: th.line, margin: '22px 0' }} />
+
+        {/* Effort × Learning Lost */}
+        <h4 style={h4}>Effort ที่คุณใส่ ส่งผลกับ Learning Lost อย่างไร</h4>
+        <p style={para}>
+          ทุกครั้งที่คุณเรียนรู้สิ่งใหม่ สมองจะสร้างความจำชุดหนึ่งขึ้นมา แต่ถ้าไม่ได้ใช้หรือทบทวน มันจะค่อย ๆ จางหายไปตามเวลา — สิ่งนี้คือ <span style={{ color: th.accent, fontWeight: 600 }}>Learning Lost</span> และเกิดขึ้นกับทุกคนตามธรรมชาติ
+        </p>
+        <p style={{ ...para, marginBottom: 0 }}>
+          <span style={{ color: th.t1, fontWeight: 600 }}>Effort</span> คือความใส่ใจที่คุณลงไปในแต่ละช่วง ซึ่งสะท้อนออกมาเป็น <span style={{ color: th.t1, fontWeight: 600 }}>Engagement Score</span> ยิ่งคุณใส่ Effort อย่างสม่ำเสมอ ความจำก็ยิ่งแข็งแรงและเลือนช้าลง แต่เมื่อห่างหายไปนาน สิ่งที่เคยเรียนมาก็จะหายเร็วขึ้น ไม่ใช่เพราะคุณทำได้ไม่ดี แต่เพราะสมองตัดสิ่งที่ไม่ได้ใช้ออกไปเอง
+        </p>
+
+        <div style={{ height: 1, background: th.line, margin: '22px 0' }} />
+
+        {/* How to avoid */}
+        <h4 style={h4}>แล้วจะทำอย่างไรไม่ให้ Learning Lost?</h4>
+        <p style={para}>
+          หัวใจสำคัญคือ<span style={{ color: th.t1, fontWeight: 600 }}>ความสม่ำเสมอ</span> ไม่ใช่ความหนัก ลองเริ่มจากสิ่งเล็ก ๆ เหล่านี้
+        </p>
+        <div style={{
+          display: 'flex', flexDirection: 'column', gap: 14, padding: 16, borderRadius: 16,
+          background: th.dark ? 'rgba(255,255,255,0.04)' : '#F4F2F1', border: `1px solid ${th.line}`,
+        }}>
+          <LostTip th={th} lead="ทบทวนสั้น ๆ บ่อย ๆ" body="ดีกว่าหักโหมหนักครั้งเดียว แค่วันละไม่กี่นาทีก็ช่วยรักษาความจำไว้ได้" />
+          <LostTip th={th} lead="กลับมาทบทวนสิ่งที่เริ่มเลือน" body="ก่อนที่มันจะหายไปหมด จะใช้แรงน้อยกว่าการเริ่มใหม่" />
+          <LostTip th={th} lead="ลองนำไปใช้จริง" body="การลงมือทำช่วยตอกย้ำความจำได้ดีกว่าแค่การอ่านซ้ำ" />
+          <LostTip th={th} lead="รักษาจังหวะของตัวเองไว้" body="แม้วันที่ไม่มีแรง การแตะเบา ๆ ก็ดีกว่าหยุดไปเลย" />
+        </div>
+        <p style={{ ...para, margin: '14px 0 0' }}>
+          เพียงเท่านี้ก็ช่วยให้สิ่งที่คุณสร้างมาไม่หลุดมือ และต่อยอดได้ไกลกว่าเดิม
+        </p>
+      </div>
+    </Sheet>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════
+// InsightScreen
+// ════════════════════════════════════════════════════════════════
+function InsightScreen({ variant = 1, dark = true, accent = '#ED4724', intensity = 38, nickname = 'จอย', rank = 'Practitioner', reduce = false }) {
+  const th = bpTheme(dark, accent);
+  const msg = bpMessages(intensity, nickname);
+  const week = bpWeekStates(intensity);
+  const mood = bpEngageColor(intensity);
+  // momentum direction (this week's effort rising or falling) — drives the centre arrow
+  const trend = (() => {
+    const past = week.slice(0, 4);
+    const recent = past.slice(2).filter(s => s === 'done').length;
+    const earlier = past.slice(0, 2).filter(s => s === 'done').length;
+    return recent < earlier ? -1 : 1;
+  })();
+  const [tab, setTab] = _uS(window.__TAB || 'insight');
+  const [sheet, setSheet] = _uS(null); // 'join' | 'notif' | 'profile'
+  const [done, setDone] = _uS({});
+  const toggle = i => setDone(d => ({ ...d, [i]: !d[i] }));
+
+  return (
+    <div style={{ height: '100%', position: 'relative', display: 'flex', flexDirection: 'column', background: th.bgGrad, overflow: 'hidden' }}>
+      <TopBar th={th} notifCount={2}
+        onProfile={() => setSheet('profile')} onNotif={() => setSheet('notif')} onJoin={() => setSheet('join')} />
+
+      {tab === 'insight' && (() => {
+        // v2 ("Option 3"): the nav + status stay clean on the app base (a fixed-feeling header),
+        // and the scrollable content (Effort + missions) becomes a rounded-top SHEET with a drag
+        // handle that slides up underneath — zone division lives on the scrollable surface, not the header.
+        const sheetMode = false;  // zone-dividing sheet removed — clean continuous layout
+        const lc = th.dark ? 'rgba(255,255,255,0.13)' : 'rgba(35,31,32,0.12)';
+        const divider = (
+          <div key="dv" aria-hidden style={{
+            height: 18, flexShrink: 0, width: '100%',
+            borderTop: `1.5px solid ${lc}`, borderLeft: `1.5px solid ${lc}`, borderRight: `1.5px solid ${lc}`,
+            borderTopLeftRadius: '90px 18px', borderTopRightRadius: '90px 18px',
+            WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 38%, transparent 100%)',
+            maskImage: 'linear-gradient(to bottom, #000 0%, #000 38%, transparent 100%)',
+          }} />
+        );
+        const phase = window.__PHASE || 'out';
+        const phaseTitles = { pre: 'Pre-Class', in: 'In Class', out: 'Out of Class' };
+        const placeholder = (
+          <div key="ph" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, minHeight: 320,
+            border: `1.5px dashed ${th.line2}`, borderRadius: 24, margin: '10px 0', textAlign: 'center', padding: '36px 22px' }}>
+            <span style={{ fontFamily: EN, fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', color: th.t3, textTransform: 'uppercase' }}>{phaseTitles[phase]}</span>
+            <span style={{ fontFamily: TH, fontSize: 15.5, fontWeight: 600, color: th.t1 }}>หน้านี้ยังไม่ได้ออกแบบ</span>
+            <span style={{ fontFamily: TH, fontSize: 12.5, color: th.t3, maxWidth: 250, lineHeight: 1.5 }}>เฟสนี้ยังไม่มีเปลวไฟและระดับ Stage (ยังไม่มีคะแนน) — รอกำหนดเนื้อหา</span>
+          </div>
+        );
+        const body =
+          phase === 'out' ? [
+            variant === 1 && <HearthSection key="h" th={th} intensity={intensity} msg={msg} week={week} reduce={reduce} mood={mood} trend={trend} onInfo={() => setSheet('engageInfo')} />,
+            divider,
+            <Missions key="m" th={th} variant={variant} done={done} toggle={toggle} />,
+          ]
+          : phase === 'pre' ? [
+            // Pre-Class: Out-of-Class layout, but the flame zone is empty (3-line greeting), then the
+            // Pre-Test shown as a normal MissionCard so it matches the Out-of-Class design style
+            <PreClassHero key="ph" th={th} nickname={nickname} />,
+            divider,
+            <div key="pt">
+              <SectionHead th={th} title="ภารกิจที่แนะนำ" />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <MissionCard th={th} m={{ type: 'Pre-Test', icon: 'target', title: 'แบบทดสอบก่อนเรียน: ภาวะผู้นำ', minutes: 10, points: 30, status: 'todo', daysLeft: 3 }} done={false} onToggle={() => {}} />
+              </div>
+            </div>,
+          ]
+          : [placeholder];  // In-Class — still to be designed
+        return (
+          <main style={{ flex: 1, overflowY: 'auto', padding: sheetMode ? '4px 20px 0' : '114px 20px 110px', display: 'flex', flexDirection: 'column', gap: sheetMode ? 16 : 28 }}>
+            <StatusCard th={th} nickname={nickname} rank={rank} onInfo={() => setSheet('rankInfo')} />
+            {sheetMode ? (
+              <div style={{
+                margin: '2px -20px 0', padding: '22px 20px 120px', borderTopLeftRadius: 30, borderTopRightRadius: 30, flexShrink: 0,
+                background: th.dark
+                  ? 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.022) 28%, rgba(255,255,255,0.008) 100%)'
+                  : 'linear-gradient(180deg, #faf9fb, #f4f3f5)',
+                boxShadow: th.dark ? 'inset 0 1px 0 rgba(255,255,255,0.08), 0 -10px 26px rgba(0,0,0,0.28)' : 'inset 0 1px 0 #fff, 0 -8px 22px rgba(35,31,32,0.06)',
+                display: 'flex', flexDirection: 'column', gap: 16,
+              }}>
+                {body}
+              </div>
+            ) : body}
+          </main>
+        );
+      })()}
+      {tab === 'leaderboard' && <LeaderboardScreen th={th} nickname={nickname} reduce={reduce} />}
+      {tab === 'challenge' && <ChallengeScreen th={th} reduce={reduce} />}
+      {tab === 'resource' && <ResourceScreen th={th} reduce={reduce} />}
+
+      <BottomNav th={th} tab={tab} setTab={setTab} />
+
+      <JoinClassSheet th={th} open={sheet === 'join'} onClose={() => setSheet(null)} />
+      <NotifSheet th={th} open={sheet === 'notif'} onClose={() => setSheet(null)} />
+      <ProfileSheet th={th} open={sheet === 'profile'} onClose={() => setSheet(null)} name={nickname} rank={rank} />
+      <RankJourneyPage th={th} open={sheet === 'rankInfo'} onClose={() => setSheet(null)} rank={rank} reduce={reduce} />
+      <EngageInfoSheet th={th} open={sheet === 'engageInfo'} onClose={() => setSheet(null)} intensity={intensity} mood={mood} />
+    </div>
+  );
+}
+
+Object.assign(window, { InsightScreen });
+
+</script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+// JOINSTICK — the real app, single screen. Home = V1 "Hearth".
+function JoinstickApp() {
+  return (
+    <IOSDevice dark={true}>
+      <InsightScreen
+        variant={1}
+        dark={true}
+        accent="#ED4724"
+        intensity={window.__IN || 53}
+        nickname="จอย"
+        rank="Practitioner"
+        reduce={window.__STATIC || false}
+      />
+    </IOSDevice>
+  );
+}
+
+// ── LOCKED for development: the chosen version ──
+//   Effort visual = Flame (with the colour-scale ticks)
+//   Header        = Ring / Masthead (v2)
+//   Layout        = continuous (no zone-dividing sheet)
+window.__FX = 'flame';
+window.__HDR = 'v2';
+window.__IN = 70;   // demo intensity (level 4 = green) — wire to real data later
+// phase: 'pre' (Pre-Class) | 'in' (In-Class) | 'out' (Out-of-Class, the scored home)
+window.__PHASE = new URLSearchParams(location.search).get('phase') || 'out';
+// ?static=1 → freeze animations (use this URL for the Figma / html.to.design export)
+window.__STATIC = new URLSearchParams(location.search).has('static');
+// ?tab=insight|leaderboard|challenge|resource → open straight on a given tab
+window.__TAB = new URLSearchParams(location.search).get('tab') || 'insight';
+ReactDOM.createRoot(document.getElementById('root')).render(<JoinstickApp />);
+</script>
+</body>
+</html>
