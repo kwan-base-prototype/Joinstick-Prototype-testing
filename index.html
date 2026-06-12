@@ -399,6 +399,153 @@
       color: rgba(28,25,23,0.7);
       transform: translateX(2px);
     }
+
+    /* ── Overview hero row: Cohort Health donut (left) + Today's Focus (right) ── */
+    .hr-hero-row {
+      display: grid;
+      grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+      gap: 16px; margin-bottom: 16px; align-items: stretch;
+    }
+    @media (max-width: 1000px) {
+      .hr-hero-row { grid-template-columns: 1fr; }
+    }
+    /* When Today's Focus shares the hero row it stacks Learner / Manager sections */
+    .hr-focus.hr-focus--hero { margin-bottom: 0; height: 100%; display: flex; flex-direction: column; }
+    .hr-focus-body {
+      margin-top: 22px; display: flex; flex-direction: column; gap: 20px; flex: 1;
+    }
+    .hr-focus-section { display: flex; flex-direction: column; }
+    .hr-focus-section:last-child { margin-top: auto; }
+    .hr-focus-section-head {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    }
+    .hr-focus-section-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #57534e; flex-shrink: 0;
+      font-family: 'Sora', 'IBM Plex Sans Thai', sans-serif;
+    }
+    .hr-focus-section-rule { flex: 1; height: 1px; background: #ebe9e7; }
+    .hr-focus-section-count {
+      font-size: 0.68rem; color: #a8a29e; flex-shrink: 0;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    /* Learner grid — fits 3 across in the hero column, wraps gracefully when narrow */
+    .hr-focus-grid--learner {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); gap: 12px;
+    }
+    /* ── Editorial-minimal learner tile: left accent bar + hairline-split footer ── */
+    .hr-focus-tile--learner {
+      position: relative;
+      padding: 17px 15px 16px 19px;   /* extra left clears the accent bar */
+    }
+    .hr-focus-tile--learner::before {
+      content: ''; position: absolute; left: 0; top: 15px; bottom: 15px; width: 3px;
+      background: var(--accent); border-radius: 0 3px 3px 0; opacity: 0.9;
+    }
+    .hr-learn-label {
+      color: #78716c; font-size: 0.82rem; font-weight: 500;
+      letter-spacing: -0.005em; line-height: 1.35;
+      min-height: calc(2 * 1.35em);   /* reserve 2 lines so numbers align across tiles */
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .hr-focus-tile--learner .hr-focus-tile-num { font-size: 2.15rem; margin-top: 2px; }
+    .hr-learn-foot {
+      margin-top: auto; padding-top: 13px; border-top: 1px solid #f0eeec;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .hr-learn-status {
+      flex: 1; min-width: 0;
+      font-size: 0.82rem; font-weight: 600; letter-spacing: -0.005em; line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hr-focus-tile--learner .hr-focus-tile-chev { flex-shrink: 0; }
+    /* Manager — single wide horizontal action tile */
+    .hr-focus-manager { display: flex; }
+    .hr-focus-tile--wide {
+      flex: 1; flex-direction: row; align-items: center; gap: 16px;
+      padding: 16px 18px;
+    }
+    .hr-focus-wide-icon {
+      width: 46px; height: 46px; border-radius: 11px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center; color: #ffffff;
+    }
+    .hr-focus-wide-num {
+      font-family: 'Sora', 'JetBrains Mono', monospace;
+      font-size: 2.1rem; font-weight: 600; line-height: 1; letter-spacing: -0.045em;
+      font-variant-numeric: tabular-nums; color: #1c1917; flex-shrink: 0;
+    }
+    .hr-focus-wide-text { flex: 1; min-width: 0; }
+    .hr-focus-wide-label {
+      color: #1c1917; font-size: 0.95rem; font-weight: 500; letter-spacing: -0.01em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hr-focus-wide-sub {
+      color: #78716c; font-size: 0.78rem; margin-top: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* ── Cohort Health donut card ── */
+    .hr-cohort-card {
+      display: flex; flex-direction: column;
+      height: 100%;
+    }
+    .hr-donut-wrap {
+      position: relative;
+      width: 184px; height: 184px;
+      margin: 6px auto 4px;
+    }
+    .hr-donut-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .hr-donut-seg {
+      fill: none; stroke-linecap: round;
+      transition: stroke-width 0.22s cubic-bezier(0.22,1,0.36,1), opacity 0.22s ease;
+      cursor: pointer;
+      transform-origin: center;
+    }
+    .hr-donut-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      pointer-events: none; text-align: center;
+    }
+    .hr-donut-center-num {
+      font-family: 'Sora', 'JetBrains Mono', monospace;
+      font-size: 2.4rem; font-weight: 600; line-height: 1; letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      transition: color 0.2s ease;
+    }
+    .hr-donut-center-label {
+      font-size: 0.66rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #a8a29e; margin-top: 5px;
+      transition: color 0.2s ease;
+    }
+    .hr-donut-legend {
+      display: flex; flex-direction: column; gap: 2px; margin-top: 10px;
+    }
+    .hr-donut-legend-row {
+      display: flex; align-items: center; gap: 11px;
+      width: 100%; padding: 9px 10px; border-radius: 10px;
+      background: transparent; border: none; cursor: pointer; text-align: left;
+      font-family: 'Poppins', 'IBM Plex Sans Thai', sans-serif;
+      transition: background 0.15s ease;
+    }
+    .hr-donut-legend-row:hover { background: #fafaf9; }
+    .hr-donut-legend-dot {
+      width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0;
+      margin-top: 5px; align-self: flex-start;
+    }
+    .hr-donut-legend-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .hr-donut-legend-label { color: #44403c; font-size: 0.85rem; font-weight: 500; line-height: 1.25; }
+    .hr-donut-legend-desc {
+      color: #a8a29e; font-size: 0.7rem; line-height: 1.3; margin-top: 1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hr-donut-legend-count {
+      font-family: 'Sora', 'JetBrains Mono', monospace; font-weight: 600;
+      font-size: 0.95rem; font-variant-numeric: tabular-nums; align-self: flex-start; margin-top: 1px;
+    }
+    .hr-donut-legend-pct {
+      color: #a8a29e; font-size: 0.74rem; min-width: 38px; text-align: right;
+      font-variant-numeric: tabular-nums; align-self: flex-start; margin-top: 3px;
+    }
     /* Card hover lift, tinted shadow */
     .hr-card { transition: box-shadow 0.22s ease, transform 0.22s cubic-bezier(0.22,1,0.36,1), border-color 0.18s ease; }
     .hr-card:hover {
@@ -1100,10 +1247,11 @@
           { h:'สรุป: ความแตกต่างคือพลังของทีม',
             p:'เป้าหมายของการใช้ MBTI ไม่ใช่ทำให้ทีมเหมือนกัน แต่คือทำให้ทุกคนเข้าใจและเคารพความแตกต่างของกันและกัน เมื่อแต่ละคนรู้ว่าจุดแข็งของตัวเองคืออะไรและของเพื่อนคืออะไร ทีมจะเริ่มมอบหมายงานให้เหมาะกับแต่ละคน และเสริมจุดอ่อนของกันและกันได้อย่างเป็นธรรมชาติ' },
         ] },
-      { id:3, section:'Main Challenge', title:'Delivering A Meaningful ONE ON ONE Session',
-        category:'Communication', duration:'9 นาที', watched:false, color:'#06b6d4',
-        summary:'STAR Model เป็นเครื่องมือที่ทำให้ One-on-One Session มีคุณค่า โดยช่วยให้ทั้งผู้นำและสมาชิกทีมพูดคุยกันอย่างมีโครงสร้างและได้ข้อสรุปที่ชัดเจน',
-        principles:['Situation — อธิบายบริบทและสถานการณ์ที่เกิดขึ้นอย่างชัดเจน','Task — ระบุหน้าที่และเป้าหมายที่ต้องบรรลุ','Action & Result — เล่าสิ่งที่ทำและผลลัพธ์ที่ได้ เพื่อเรียนรู้ต่อยอด'],
+      { id:3, section:'Main Challenge', title:'Delivery A Meaningful ONE ON ONE Session',
+        category:'เอกสาร', duration:'3 นาที', watched:false, color:'#06b6d4', docType:'เอกสาร', diagram:'star',
+        documents:[{ name:'แบบสำรวจ_Trust Lens.pdf' }],
+        summary:'STAR Model เป็นเทคนิคช่วยเสริมการทำ One-on-One ให้ได้ผล — One-on-One เป็นเครื่องมือที่ดีในการให้ Feedback และเก็บ Insight ของลูกทีม ทั้งความรู้สึกระหว่างทำงาน การขอความช่วยเหลือ หรือ Career path ที่คาดหวัง ช่วยให้พนักงานได้รับฟัง Feedback และปรับตัวได้ทันก่อนเกิดผลเสียต่อการทำงาน',
+        principles:['Situation (สถานการณ์) — บริบทของสถานการณ์ที่เกิดพฤติกรรมนั้น ๆ','Task (เป้าหมาย) — หน้าที่และเป้าหมายที่ลูกทีมต้องบรรลุ','Action (สิ่งที่ทำ) — สิ่งที่ลูกทีมได้ลงมือทำจริง','Alternative Action — ทางเลือกอื่นที่กระทำได้ในสถานการณ์นั้น','Result (ผลลัพธ์) — ผลที่เกิดขึ้นจริงจากการกระทำ','Alternative Result — ผลลัพธ์อื่นที่อาจเกิดขึ้นหากเปลี่ยนวิธีการ'],
         article:[
           { h:'ทำไม One-on-One ต้องมีโครงสร้าง',
             p:'One-on-One Session ที่ไม่มีโครงสร้างมักลงเอยที่การอัปเดตงานเหมือนรายงานสถานะ ผ่านไปครึ่งชั่วโมงโดยไม่มีอะไรเปลี่ยน ทั้งฝ่ายผู้นำและสมาชิกทีมต่างรู้สึกว่าเสียเวลา การมีกรอบที่ชัดเจนจะช่วยให้บทสนทนามีทิศทาง ได้ข้อสรุปที่จับต้องได้ และสร้างความเชื่อมั่นว่าเวลาที่ใช้ไปมีประโยชน์จริง' },
@@ -1129,6 +1277,11 @@
         youtubeId:'kxMpEGxq-8I', isShort:true,
         summary:'คลิปสั้นสไตล์ Shorts สำหรับเก็บประเด็น Leadership แบบรวดเร็วในเวลาว่าง รับชมในแนวตั้ง เหมาะกับการเปิดดูบนมือถือก่อนเข้าประชุมหรือระหว่างพักสั้น ๆ',
         principles:['รับชมแบบ Quick Bite — ใช้เวลาไม่ถึง 1 นาที','จดประเด็นเดียวที่อยากนำไปลองใช้','แชร์ต่อให้เพื่อนร่วมทีมถ้าคิดว่าน่าสนใจ'] },
+      { id:5, section:'The Foundation Of Trust', title:'Trust Lenses ทั้ง 4 แบบ',
+        category:'วิดีโอ', duration:'5 นาที', watched:false, color:'#F5821F',
+        youtubeId:'dz_rvY93j5w', isShort:true,
+        summary:'Trust Lenses เป็นแนวคิดการสร้าง "ความไว้วางใจ" จากหลักสูตรพัฒนาผู้นำและทักษะองค์กร ซึ่งเน้นย้ำว่า ผู้นำต้องปรับมุมมอง (Lenses) เพื่อสร้าง Trust ให้ถูกจุดและสอดคล้องกับธรรมชาติของลูกทีมแต่ละคน',
+        note:'เนื้อหาส่วนนี้เป็นส่วนหนึ่งของ Module 1 / เรียนรู้ให้ครบเพื่อนำไปใช้ทำแบบทดสอบในตอนท้าย' },
     ];
 
     /* ── Module Data ──────────────────────────────
@@ -1800,7 +1953,6 @@
       const [exiting, setExiting] = useState(false);
       const [activeTab, setActiveTab] = useState('Home');
       const [hoverTab, setHoverTab] = useState(null);
-      const [phoneIdx, setPhoneIdx] = useState(0);
       const [stats, setStats] = useState({ orgs:0, sat:0, rating:0 });
       const [featuresInView, setFeaturesInView] = useState(false);
       const featuresRef = useRef(null);
@@ -1809,12 +1961,6 @@
         setExiting(true);
         setTimeout(onEnter, 520);
       };
-
-      // Cycle phone screens
-      useEffect(() => {
-        const id = setInterval(() => setPhoneIdx(p => (p + 1) % 4), 4200);
-        return () => clearInterval(id);
-      }, []);
 
       // Animate counters
       useEffect(() => {
@@ -2110,39 +2256,25 @@
                 position:'relative', overflow:'hidden',
                 flexShrink:0,
               }}>
-                {/* Scaled embed: real PhoneFrame (390×844) scaled by 2/3 → 260×563.
-                    Outer wrapper handles fade animation; inner wrapper holds the scale
-                    (kept separate so the keyframe's `transform` doesn't override scale). */}
-                <div key={phoneIdx} className="anim-screen-fade" style={{
+                {/* Scaled embed: the real JOINSTICK app (joinstick.html, 402×874) —
+                    same screen as the Out of Class page — scaled to fit the shell. */}
+                <div style={{
                   position:'absolute', inset:0,
                   pointerEvents:'none', userSelect:'none',
                 }}>
-                  <div style={{
-                    width:390, height:844,
-                    transform:'scale(0.66667)',
-                    transformOrigin:'top left',
-                  }}>
-                    <LearnerApp
-                      previewMode
-                      forcedTab={['home','leaderboard','challenges','lessons'][phoneIdx]}
-                    />
-                  </div>
+                  <iframe
+                    src="joinstick.html?tab=insight"
+                    title="JOINSTICK Learner App"
+                    scrolling="no"
+                    style={{
+                      width:402, height:874,
+                      transform:'scale(0.6468)',
+                      transformOrigin:'top left',
+                      border:0, display:'block', background:'#000',
+                      pointerEvents:'none',
+                    }}
+                  />
                 </div>
-              </div>
-
-              {/* Screen indicator dots */}
-              <div style={{
-                position:'absolute', bottom:-32, left:'50%',
-                transform:'translateX(-50%)',
-                display:'flex', gap:6,
-              }}>
-                {[0,1,2,3].map(i=>(
-                  <div key={i} style={{
-                    width: i===phoneIdx ? 18 : 6, height:6, borderRadius:3,
-                    background: i===phoneIdx ? '#ED4724' : 'rgba(255,255,255,0.18)',
-                    transition:'all 0.4s ease',
-                  }}/>
-                ))}
               </div>
             </div>
           </section>
@@ -2275,7 +2407,7 @@
     }
 
     /* ── LearnerApp ──────────────────────────────── */
-    function LearnerApp({ previewMode, forcedTab } = {}) {
+    function LearnerApp({ previewMode, forcedTab, autoStart, taskTitle, onExitTask } = {}) {
       const [internalActiveTab, setInternalActiveTab] = useState('home');
       const activeTab    = forcedTab || internalActiveTab;
       const setActiveTab = forcedTab ? () => {} : setInternalActiveTab;
@@ -2375,11 +2507,35 @@
         } else if (ch.type === 'Quiz') {
           setQuizStep(0); setAnswers([]); setSelected(null); setShowExp(false);
           setScreen('quiz');
+        } else if (ch.type === 'Article') {
+          const t = (ch.title || '').toLowerCase().trim();
+          let ml = microlearningData.find(m => (m.title || '').toLowerCase().trim() === t);
+          if (!ml) ml = microlearningData.find(m => m.id === 3) || microlearningData[0];
+          setMlPlaying(false); setMlChecked(false); setScreenData(ml);
+          setScreen('mlPlayer');
+        } else if (ch.type === 'videoLesson') {
+          const t = (ch.title || '').toLowerCase().trim();
+          let vl = microlearningData.find(m => (m.title || '').toLowerCase().trim() === t);
+          if (!vl) vl = microlearningData.find(m => m.id === 5) || microlearningData[0];
+          setScreenData(vl);
+          setScreen('videoLesson');
         } else {
           setSubmitted(false); setMissionText(''); setVdoPlaying(false); setVdoRipple(false);
           setScreen('mission');
         }
       };
+
+      // ── Task-overlay mode (opened from the JOINSTICK app): auto-open the flow,
+      //    and close the overlay once it returns to home (back button or finish). ──
+      const taskEnteredRef = useRef(false);
+      useEffect(() => {
+        if (!autoStart) return;
+        if (screen) taskEnteredRef.current = true;
+        else if (taskEnteredRef.current) onExitTask && onExitTask();
+      }, [screen, autoStart]);
+      useEffect(() => {
+        if (autoStart) startChallenge({ type: autoStart, title: taskTitle });
+      }, []);
 
       const openChallenge = ch => {
         setScreen('challengeDetail');
@@ -2441,7 +2597,7 @@
                   </span>
                   <span style={{background:`${ml.color}18`,border:`1px solid ${ml.color}40`,
                     color:ml.color,fontSize:'0.68rem',fontWeight:600,padding:'2px 10px',borderRadius:999}}>
-                    Micro Learning
+                    {ml.docType || 'Micro Learning'}
                   </span>
                 </div>
                 <h2 className="text-white text-[1.35rem] font-bold leading-snug mb-2">{ml.title}</h2>
@@ -2533,6 +2689,29 @@
                 </div>
               </div>
 
+              {/* ── STAR diagram ── */}
+              {ml.diagram === 'star' && (
+                <div className="mx-5 rounded-2xl p-5 mb-4" style={{background:'#161618',border:'1px solid rgba(63,63,70,.5)'}}>
+                  <div className="text-zinc-400 text-xs font-semibold mb-4">การใช้ STAR Model ในกระบวนการ One-on-One</div>
+                  <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:4}}>
+                    {[['S','Situation'],['T','Task'],['A','Action'],['R','Result']].map((it,i,arr)=>(
+                      <React.Fragment key={it[0]}>
+                        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:7,flex:1}}>
+                          <div style={{width:42,height:42,borderRadius:'50%',background:`${ml.color}1f`,border:`1.5px solid ${ml.color}`,color:ml.color,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:'1rem'}}>{it[0]}</div>
+                          <span style={{color:'#d4d4d8',fontSize:'0.6rem',fontWeight:600,textAlign:'center',lineHeight:1.2}}>{it[1]}</span>
+                        </div>
+                        {i < arr.length-1 && <div style={{flexShrink:0,color:'#52525b',fontSize:'0.9rem',marginTop:12}}>→</div>}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                  <div style={{display:'flex',gap:8,marginTop:16,paddingTop:14,borderTop:'1px solid rgba(63,63,70,.5)'}}>
+                    {['Alternative Action','Alternative Result'].map(t=>(
+                      <span key={t} style={{flex:1,textAlign:'center',background:'rgba(63,63,70,.3)',border:'1px dashed rgba(120,120,130,.45)',color:'#a1a1aa',fontSize:'0.6rem',fontWeight:600,padding:'7px 6px',borderRadius:10}}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* ── Full article ── */}
               {ml.article && (
                 <div className="mx-5 rounded-2xl p-5 mb-4"
@@ -2557,6 +2736,27 @@
                 </div>
               )}
 
+              {/* ── เอกสาร (documents) ── */}
+              {ml.documents && ml.documents.length > 0 && (
+                <div className="mx-5 rounded-2xl overflow-hidden mb-4" style={{background:'#111113',border:'1px solid rgba(63,63,70,.5)'}}>
+                  <div className="text-zinc-400 text-xs font-semibold px-5 pt-4 pb-2 border-b border-zinc-800/60">เอกสาร</div>
+                  {ml.documents.map((d,i)=>(
+                    <div key={i} className="px-5 py-3.5 flex justify-between items-center">
+                      <div className="flex items-center gap-2.5">
+                        <div style={{width:30,height:30,borderRadius:8,background:`${ml.color}1f`,border:`1px solid ${ml.color}40`,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={ml.color} strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <span className="text-zinc-300 text-[0.8rem] font-medium">{d.name}</span>
+                      </div>
+                      <button className="btn-press flex items-center gap-1.5 px-3 py-2 rounded-lg" style={{background:`${ml.color}1f`,border:`1px solid ${ml.color}40`,color:ml.color,fontSize:'0.7rem',fontWeight:600,cursor:'pointer',flexShrink:0}}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        ดาวน์โหลดไฟล์
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
             </div>
 
             {/* ── Fixed bottom CTA ── */}
@@ -2564,14 +2764,159 @@
               style={{background:'linear-gradient(to top,#09090b 70%,transparent)'}}>
               <button
                 onClick={()=>{
-                  if(nextMl){ setMlPlaying(false); setMlChecked(false); setScreenData(nextMl); }
-                  else { setMlPlaying(false); setMlChecked(false); goBack(); }
+                  setMlPlaying(false); setMlChecked(false);
+                  if(!autoStart && nextMl){ setScreenData(nextMl); }
+                  else { goBack(); }
                 }}
                 className="w-full font-semibold py-4 rounded-2xl text-base btn-press"
                 style={{background: ml.color, color:'#fff',
                   border:'none',cursor:'pointer',transition:'all 0.25s',
                   boxShadow: `0 8px 24px ${ml.color}50`}}>
-                {nextMl ? 'ถัดไป →' : 'เสร็จสิ้น'}
+                {(!autoStart && nextMl) ? 'ถัดไป →' : 'เสร็จสิ้น'}
+              </button>
+            </div>
+          </PhoneFrame>
+        );
+      }
+
+      /* ─── Video Lesson Screen ───────────────── */
+      if (screen === 'videoLesson') {
+        const vl = screenData;
+        const BRAND = '#ED4724'; // JOINSTICK CI red
+        return (
+          <PhoneFrame>
+            <div className="flex-1 overflow-y-auto pb-28 scale-in">
+
+              {/* ── Header ── */}
+              <div style={{display:'flex', alignItems:'center', gap:12, padding:'20px 20px 10px'}}>
+                <button onClick={goBack} className="btn-press"
+                  style={{width:36, height:36, borderRadius:10, border:'1px solid rgba(255,255,255,.1)',
+                          background:'#1c1c1e', display:'flex', alignItems:'center', justifyContent:'center',
+                          cursor:'pointer', flexShrink:0}}>
+                  <ChevronLeft size={18} className="text-zinc-300"/>
+                </button>
+                <span style={{fontSize:'0.82rem', fontWeight:500, color:'#a1a1aa',
+                              fontFamily:"'IBM Plex Sans Thai', sans-serif"}}>
+                  {vl.section}
+                </span>
+              </div>
+
+              {/* ── Title ── */}
+              <div style={{padding:'10px 20px 10px'}}>
+                <h1 style={{margin:0, fontSize:'1.5rem', fontWeight:700, color:'#fafafa',
+                            lineHeight:1.2, fontFamily:"'IBM Plex Sans Thai', 'Poppins', sans-serif"}}>
+                  {vl.title}
+                </h1>
+              </div>
+
+              {/* ── Type Chips ── */}
+              <div style={{display:'flex', gap:8, padding:'6px 20px 20px'}}>
+                <div style={{display:'flex', alignItems:'center', gap:5,
+                             background:`${BRAND}1f`, border:`1px solid ${BRAND}4d`, borderRadius:999,
+                             padding:'5px 13px', fontSize:'0.72rem', fontWeight:600, color:'#fb7c58',
+                             fontFamily:"'Poppins', sans-serif"}}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+                  </svg>
+                  วิดีโอ
+                </div>
+                <div style={{display:'flex', alignItems:'center', gap:5,
+                             background:'rgba(63,63,70,.5)', border:'1px solid rgba(63,63,70,.8)', borderRadius:999,
+                             padding:'5px 13px', fontSize:'0.72rem', fontWeight:600, color:'#a1a1aa',
+                             fontFamily:"'Poppins', sans-serif"}}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                  </svg>
+                  {vl.duration}
+                </div>
+              </div>
+
+              {/* ── Video Thumbnail (vertical Short) ── */}
+              <a href={`https://www.youtube.com/shorts/${vl.youtubeId}`}
+                 target="_blank" rel="noopener noreferrer"
+                 className="btn-press" style={{
+                margin:'0 auto 8px', borderRadius:18, overflow:'hidden',
+                aspectRatio:'9/16', width:'62%', maxWidth:248, display:'block',
+                position:'relative', cursor:'pointer', textDecoration:'none',
+                background:'#1a0f0a', boxShadow:'0 8px 28px rgba(237,71,36,0.22)',
+                backgroundImage:`url(https://img.youtube.com/vi/${vl.youtubeId}/hqdefault.jpg)`,
+                backgroundSize:'cover', backgroundPosition:'center'}}>
+                {/* dark overlay for contrast */}
+                <div style={{position:'absolute', inset:0,
+                             background:'linear-gradient(180deg,rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.55) 100%)'}}/>
+                {/* SHORTS badge */}
+                <div style={{position:'absolute', top:8, left:8, display:'flex', alignItems:'center', gap:4,
+                             padding:'3px 7px', borderRadius:7, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(6px)'}}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <span style={{color:'#fff', fontSize:'0.55rem', fontWeight:700, letterSpacing:'0.04em'}}>SHORTS</span>
+                </div>
+                {/* circle play button */}
+                <div style={{position:'absolute', inset:0, display:'flex',
+                             alignItems:'center', justifyContent:'center'}}>
+                  <div style={{width:56, height:56, borderRadius:'50%',
+                               background:'rgba(255,255,255,0.95)',
+                               display:'flex', alignItems:'center', justifyContent:'center',
+                               boxShadow:`0 4px 28px ${BRAND}66`}}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill={BRAND}>
+                      <polygon points="6 3 20 12 6 21 6 3"/>
+                    </svg>
+                  </div>
+                </div>
+                {/* watch on youtube */}
+                <div style={{position:'absolute', bottom:8, right:8, display:'flex', alignItems:'center', gap:4,
+                             padding:'3px 7px', borderRadius:7, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(6px)'}}>
+                  <span style={{color:'#fff', fontSize:'0.58rem', fontWeight:600}}>YouTube</span>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M7 17l10-10M7 7h10v10"/></svg>
+                </div>
+              </a>
+              <p style={{textAlign:'center', color:'#6b7280', fontSize:'0.62rem', marginBottom:18,
+                         fontFamily:"'Poppins', sans-serif"}}>
+                วิดีโอ {vl.duration} · YouTube Shorts
+              </p>
+
+              {/* ── เนื้อหาสรุป Card ── */}
+              <div style={{margin:'0 16px 20px', borderRadius:20, overflow:'hidden',
+                           background:'#161618', border:'1px solid rgba(63,63,70,.5)'}}>
+                <div style={{padding:'18px 20px 16px'}}>
+                  <div style={{fontSize:'0.67rem', fontWeight:600, color:'#9ca3af',
+                               letterSpacing:'0.07em', marginBottom:10, textTransform:'uppercase',
+                               fontFamily:"'Poppins', sans-serif"}}>
+                    เนื้อหาสรุป
+                  </div>
+                  <p style={{margin:0, fontSize:'0.875rem', lineHeight:1.75, color:'#d1d5db',
+                             fontFamily:"'IBM Plex Sans Thai', sans-serif"}}>
+                    {vl.summary}
+                  </p>
+                </div>
+                {/* Note row */}
+                <div style={{borderTop:'1px solid rgba(63,63,70,.5)',
+                             background:'rgba(255,255,255,0.02)',
+                             padding:'12px 16px', display:'flex', alignItems:'flex-start', gap:10}}>
+                  <div style={{width:30, height:30, borderRadius:9, flexShrink:0, marginTop:1,
+                               background:`${BRAND}26`,
+                               display:'flex', alignItems:'center', justifyContent:'center'}}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={BRAND} strokeWidth="2">
+                      <path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.22-1.21 4.16-3 5.2V17a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1v-2.8C7.21 13.16 6 11.22 6 9a6 6 0 0 1 6-6z"/>
+                    </svg>
+                  </div>
+                  <span style={{fontSize:'0.76rem', color:'#9ca3af', lineHeight:1.55,
+                                fontFamily:"'IBM Plex Sans Thai', sans-serif"}}>
+                    {vl.note}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* ── Fixed Bottom CTA ── */}
+            <div className="absolute bottom-0 w-full px-5 pb-8 pt-3"
+              style={{background:'linear-gradient(to top,#09090b 70%,transparent)'}}>
+              <button onClick={goBack} className="btn-press" style={{
+                width:'100%', padding:'14px', borderRadius:16, border:'none',
+                background:BRAND, color:'#fff', fontSize:'0.95rem', fontWeight:600,
+                cursor:'pointer', fontFamily:"'Poppins', sans-serif",
+                boxShadow:`0 8px 24px ${BRAND}55`}}>
+                เสร็จสิ้น
               </button>
             </div>
           </PhoneFrame>
@@ -3682,7 +4027,7 @@
 
                 <div className="rounded-2xl p-5 mb-6" style={{background:'rgba(59,130,246,.08)',border:'1px solid rgba(59,130,246,.2)'}}>
                   <div className="text-blue-300 text-xs font-medium mb-1">+{missionInfo.points} EXP เมื่อผ่าน</div>
-                  <h2 className="text-white text-xl font-semibold leading-snug mb-2">{missionInfo.title}</h2>
+                  <h2 className="text-white text-xl font-semibold leading-snug mb-2">{taskTitle || missionInfo.title}</h2>
                   <p className="text-zinc-400 text-sm leading-relaxed">{missionInfo.description}</p>
                 </div>
 
@@ -7195,7 +7540,15 @@
       const [expandedScoreCard, setExpandedScoreCard] = useState(null);  // 'transformation' | 'engagement' | null — in-drawer chart toggle
       const [hoveredStage,      setHoveredStage]      = useState(null); // Transformation Movement chart column hover
       const [growthRange,       setGrowthRange]       = useState('All'); // Growth chart time-range view
+      const [stageRange,        setStageRange]        = useState('All'); // Stage-distribution time-range view
+      const [transformView,     setTransformView]     = useState('low'); // Low / Top Transformation list toggle
+      const [insightUnlocked,   setInsightUnlocked]   = useState(false); // Insight Summary locked until data is complete
+      const [stageUnlocked,     setStageUnlocked]     = useState(false); // Transformation stage-distribution chart locked until data is complete
+      const [gridRange,         setGridRange]         = useState('90D'); // 9-Box scatter time-range view
+      const [groupUnlocked,     setGroupUnlocked]     = useState(false); // Investment Group Summary locked until data is complete
       const [hoveredPoint,      setHoveredPoint]      = useState(null); // Growth chart data-point hover (index)
+      const [cohortHover,       setCohortHover]       = useState(null); // Cohort Health donut segment hover ('onTrack'|'atRisk'|'behind')
+      const [classMetricsOpen,  setClassMetricsOpen]  = useState(false); // Class Info KPI strip — collapsed by default
 
       // Smooth-scroll to a section inside the active tab; auto-switch tab if needed
       const scrollToSection = (id, targetTab) => {
@@ -7339,8 +7692,9 @@
           (l.status === 'active' ? 40 : l.status === 'at-risk' ? 20 : 0) +
           Math.min(l.done / 18, 1) * 30
         ));
+      const daysSinceActive = (l) => { const d = /(\d+)\s*วัน/.exec(l.last); return d ? parseInt(d[1], 10) : 0; };
       const learnerStatus = (l) => {
-        if (l.status === 'inactive' || l.stage < exp - 2) return 'behind';
+        if (daysSinceActive(l) >= 5) return 'behind';          // Inactive — ไม่มี activity 5+ วัน
         if (l.status === 'at-risk' || l.stage <= exp - 1) return 'atRisk';
         return 'onTrack';
       };
@@ -7349,7 +7703,7 @@
         all:     { label:'ทั้งหมด',  color:'#1c1917', bg:'transparent',           border:'#e7e5e4' },
         onTrack: { label:'On Track', color:'#047857', bg:'rgba(16,185,129,0.10)', border:'rgba(16,185,129,0.32)' },
         atRisk:  { label:'At Risk',  color:'#b45309', bg:'rgba(245,158,11,0.12)', border:'rgba(245,158,11,0.40)' },
-        behind:  { label:'Behind',   color:'#b91c1c', bg:'rgba(239,68,68,0.10)',  border:'rgba(239,68,68,0.32)'  },
+        behind:  { label:'Inactive',   color:'#b91c1c', bg:'rgba(239,68,68,0.10)',  border:'rgba(239,68,68,0.32)'  },
       };
       const mgrColor  = (s) => s === 'completed' ? '#047857' : s === 'pending' ? '#b45309' : '#b91c1c';
       const mgrLabel  = (s) => s === 'completed' ? 'Reviewed' : s === 'pending' ? 'Pending' : 'Overdue';
@@ -7489,7 +7843,32 @@
                   <span className="num" style={{color:'#1c1917', fontWeight:500}}>1–2 May 2026</span>
                 </div>
               </div>
-              <div style={{flex:'0 0 auto', textAlign:'center', paddingRight:18, borderRight:'1px solid #f0eeec', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
+              {/* KPI toggle — icon-only arrow, collapsed by default */}
+              <button
+                onClick={() => setClassMetricsOpen(o => !o)}
+                title={classMetricsOpen ? 'ซ่อนคะแนนรวม' : 'ดูคะแนนรวมของคลาส'}
+                style={{
+                  alignSelf:'center', flexShrink:0,
+                  display:'inline-flex', alignItems:'center', justifyContent:'center',
+                  width:30, height:30, borderRadius:8, cursor:'pointer',
+                  background: classMetricsOpen ? '#f5f5f4' : 'transparent',
+                  border:'1px solid #e7e5e4', color:'#57534e',
+                  transition:'background 0.15s ease, border-color 0.15s ease',
+                }}
+                onMouseEnter={e=>{e.currentTarget.style.background='#f5f5f4'; e.currentTarget.style.borderColor='#d6d3d1';}}
+                onMouseLeave={e=>{e.currentTarget.style.background = classMetricsOpen?'#f5f5f4':'transparent'; e.currentTarget.style.borderColor='#e7e5e4';}}>
+                <ChevronRight size={16} style={{color:'#57534e', transition:'transform 0.3s ease', transform: classMetricsOpen?'none':'rotate(180deg)'}}/>
+              </button>
+
+              {/* Collapsible KPI strip — Avg Engagement / Avg Transformation / Transformation stage */}
+              <div style={{
+                display:'grid',
+                gridTemplateColumns: classMetricsOpen ? '1fr' : '0fr',
+                opacity: classMetricsOpen ? 1 : 0,
+                transition:'grid-template-columns 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease',
+              }}>
+                <div style={{overflow:'hidden', minWidth:0, display:'flex', alignItems:'stretch'}}>
+              <div style={{flex:'0 0 auto', textAlign:'center', paddingLeft:18, paddingRight:18, borderRight:'1px solid #f0eeec', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
                 <div className="hr-eyebrow" style={{fontSize:'0.58rem'}}>Avg Engagement</div>
                 <div style={{display:'inline-flex', alignItems:'center', justifyContent:'center', gap:5}}>
                   <span className="num" style={{fontSize:'1.7rem', fontWeight:600, letterSpacing:'-0.04em', color:'#0d9488', lineHeight:1}}>{avgEngagement}</span>
@@ -7527,6 +7906,8 @@
                   </span>
                 </div>
                 <div className="num" style={{color:'#78716c', fontSize:'0.6rem', letterSpacing:'0.06em', textTransform:'uppercase'}}>Stage 3–5</div>
+              </div>
+                </div>
               </div>
               <div style={{flex:'0 0 auto', textAlign:'right', display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:64}}>
                 <div className="hr-eyebrow" style={{fontSize:'0.58rem'}}>Progress</div>
@@ -7692,7 +8073,7 @@
                 };
               });
               // Apply range filter — show last N days
-              const RANGE_DAYS = { '7D': 7, '14D': 14, '1M': 30, 'All': dayCurrent + 1 };
+              const RANGE_DAYS = { '7D': 7, '14D': 14, '1M': 30, '45D': 45, '90D': 90, 'All': dayCurrent + 1 };
               const showLast = Math.min(RANGE_DAYS[growthRange] || daily.length, daily.length);
               const series = daily.slice(daily.length - showLast).map(p => ({
                 ...p,
@@ -7878,209 +8259,136 @@
                 </div>
               );
             })() : (() => {
-              const maxCount = Math.max(...stageCounts, ...prevStageCounts, 1);
-              const CHART_H = 240;
-              const BAR_MAX_H = CHART_H * 0.80;
-              // Y-axis tick values (1/4, 1/2, 3/4, top)
-              const tickValues = [0.25, 0.5, 0.75, 1].map(t => ({ pct: t, value: Math.round(t * maxCount) }));
+              const ST_RANGE_DAYS = { '7D': 7, '14D': 14, '1M': 30, '45D': 45, '90D': 90, 'All': dayCurrent };
+              const targetDay = Math.min(ST_RANGE_DAYS[stageRange] || dayCurrent, dayCurrent);
+              // Pre stays fixed at the Pre-Class baseline; only Now advances along the journey.
+              // Synthesise the Now distribution at a given day by interpolating each learner's prevStage → stage.
+              const countsAtDay = (d) => {
+                const arr = STAGE_META.map(() => 0);
+                LEARNERS.forEach(l => {
+                  const sAt = Math.round(l.prevStage + (l.stage - l.prevStage) * Math.min(d / dayCurrent, 1));
+                  arr[Math.max(0, Math.min(STAGE_META.length - 1, sAt))]++;
+                });
+                return arr;
+              };
+              const nowCounts = targetDay >= dayCurrent ? stageCounts : countsAtDay(targetDay);
+              const nowLabel = targetDay >= dayCurrent ? 'Now' : `Day ${targetDay}`;
+              const transformedNow = nowCounts.slice(3).reduce((a, b) => a + b, 0);
+              // Stable bar scale across every range so the fixed Pre bars never resize
+              let maxCount = Math.max(...prevStageCounts, ...stageCounts, 1);
+              for (let d = 0; d <= dayCurrent; d++) { const cc = countsAtDay(d); maxCount = Math.max(maxCount, ...cc); }
               return (
                 <div style={{position:'relative'}}>
-                  {/* Goal threshold pill — floating top center */}
-                  <div style={{
-                    position:'absolute', top:0, left:'calc(50% - 80px)',
-                    width:160, textAlign:'center', zIndex:2,
-                  }}>
-                    <span style={{
-                      display:'inline-flex', alignItems:'center', gap:8,
-                      padding:'4px 10px', borderRadius:999,
-                      background:'#fff', border:'1px solid rgba(5,150,105,0.32)',
-                      color:'#047857', fontSize:'0.58rem', fontWeight:600,
-                      letterSpacing:'0.18em', textTransform:'uppercase',
-                      fontFamily:"'JetBrains Mono', monospace",
-                    }}>
-                      <span style={{width:5, height:5, borderRadius:'50%', background:'#059669'}}/>
-                      Goal Threshold
+                  {/* Caption row + range selector */}
+                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16, flexWrap:'wrap', gap:10}}>
+                    <span style={{display:'inline-flex', alignItems:'center', gap:8, color:'#047857', fontSize:'0.62rem', fontWeight:600, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:"'JetBrains Mono', monospace"}}>
+                      <span style={{width:18, height:2.5, background:'#059669'}}/>Pre-Class → {nowLabel} · จำนวนผู้เรียนในแต่ละ Stage
                     </span>
+                    <div style={{display:'inline-flex', gap:2, background:'#f5f5f4', borderRadius:9, padding:2}}>
+                      {['7D','14D','1M','All'].map(r => {
+                        const active = stageRange === r;
+                        return (
+                          <button
+                            key={r}
+                            onClick={() => setStageRange(r)}
+                            style={{
+                              padding:'4px 10px', borderRadius:7, border:'none', cursor:'pointer',
+                              fontFamily:'Poppins,sans-serif', fontSize:'0.72rem', fontWeight:600, letterSpacing:'-0.005em',
+                              background: active ? '#fff' : 'transparent',
+                              color:      active ? '#1c1917' : '#78716c',
+                              boxShadow:  active ? '0 1px 3px rgba(28,25,23,0.08)' : 'none',
+                              transition:'background 0.15s, color 0.15s',
+                            }}>
+                            {r}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
-                  {/* Goal threshold vertical hairline — spans the bars plot */}
-                  <div style={{
-                    position:'absolute',
-                    top:30 + 26 + 6, // delta row height + margin
-                    left:'calc(50% - 0.5px)',
-                    height:CHART_H,
-                    width:1, background:'rgba(5,150,105,0.28)',
-                    pointerEvents:'none', zIndex:1,
-                  }}/>
-
-                  {/* Y-axis gridlines + tick labels — sit behind bars */}
-                  <div style={{
-                    position:'absolute',
-                    top:30 + 26 + 6, left:0, right:0,
-                    height:CHART_H,
-                    pointerEvents:'none', zIndex:0,
-                  }}>
-                    {tickValues.map(({pct, value}) => (
-                      <React.Fragment key={pct}>
-                        <div style={{
-                          position:'absolute', left:0, right:0,
-                          bottom: pct * CHART_H,
-                          borderTop:'1px dashed rgba(0,0,0,0.05)',
-                        }}/>
-                        <span style={{
-                          position:'absolute',
-                          right:0, bottom: pct * CHART_H - 5,
-                          color:'#d6d3d1', fontSize:'0.6rem',
-                          fontFamily:"'JetBrains Mono', monospace",
-                          background:'#fff', padding:'0 2px',
-                        }}>{value}</span>
-                      </React.Fragment>
-                    ))}
-                  </div>
-
-                  {/* Columns */}
-                  <div style={{
-                    display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:4,
-                    paddingTop:32,
-                    position:'relative', zIndex:2,
-                  }}>
+                  {/* One horizontal bar per stage */}
+                  <div style={{display:'flex', flexDirection:'column', gap:2}}>
                     {STAGE_META.map((s, i) => {
-                      const now  = stageCounts[i];
-                      const prev = prevStageCounts[i];
-                      const delta = now - prev;
-                      const isGoalStage = s.num >= 3;
-                      const prevH = (prev / maxCount) * BAR_MAX_H;
-                      const nowH  = (now  / maxCount) * BAR_MAX_H;
-                      const isGoodMove = (isGoalStage && delta > 0) || (!isGoalStage && delta < 0);
-                      const deltaColor = isGoodMove ? '#059669' : (delta === 0 ? '#d6d3d1' : '#787774');
+                      const c = nowCounts[i];
                       const isHovered = hoveredStage === s.num;
-
+                      const dim = hoveredStage !== null && !isHovered;
+                      const onEmerald = s.num >= 3;
+                      const w = (c / maxCount) * 100;
+                      const prev = prevStageCounts[i];
+                      const wPrev = (prev / maxCount) * 100;
                       return (
-                        <div
-                          key={s.num}
-                          onClick={() => { setStageFilter(s.num); setStatusFilter('all'); setTab('individual'); }}
-                          onMouseEnter={() => setHoveredStage(s.num)}
-                          onMouseLeave={() => setHoveredStage(null)}
-                          style={{
-                            cursor:'pointer', padding:'0 6px 16px',
-                            borderRadius:10,
-                            transition:'background 0.2s, transform 0.2s',
-                            background: isHovered ? 'rgba(5,150,105,0.05)' : 'transparent',
-                            position:'relative',
-                          }}>
-
-                          {/* Delta — expands to "Pre → Now (Δ)" on hover */}
-                          <div style={{
-                            height:26, display:'flex', alignItems:'center', justifyContent:'center',
-                            marginBottom:6,
-                          }}>
-                            {isHovered ? (
+                        <React.Fragment key={s.num}>
+                          {/* Goal threshold divider before Stage 3 */}
+                          {s.num === 3 && (
+                            <div style={{display:'flex', alignItems:'center', gap:10, margin:'6px 0 8px'}}>
                               <span style={{
-                                display:'inline-flex', alignItems:'baseline', gap:5,
+                                display:'inline-flex', alignItems:'center', gap:7, whiteSpace:'nowrap',
+                                padding:'3px 9px', borderRadius:999, background:'#fff',
+                                border:'1px solid rgba(5,150,105,0.32)', color:'#047857',
+                                fontSize:'0.55rem', fontWeight:600, letterSpacing:'0.16em', textTransform:'uppercase',
                                 fontFamily:"'JetBrains Mono', monospace",
-                                fontSize:'0.78rem', letterSpacing:'-0.005em',
-                                animation:'fadeIn 0.15s ease',
                               }}>
-                                <span className="num" style={{color:'#a8a29e'}}>{prev}</span>
-                                <span style={{color:'#d6d3d1', fontSize:'0.7rem'}}>→</span>
-                                <span className="num" style={{color:'#047857', fontWeight:600}}>{now}</span>
+                                <span style={{width:5, height:5, borderRadius:'50%', background:'#059669'}}/>Goal Threshold
                               </span>
-                            ) : delta !== 0 ? (
-                              <span style={{
-                                display:'inline-flex', alignItems:'baseline', gap:3,
-                                color: deltaColor,
-                                fontWeight: isGoodMove ? 500 : 400,
-                              }}>
-                                <span style={{fontSize:'0.78rem', lineHeight:1}}>{delta > 0 ? '↑' : '↓'}</span>
-                                <span className="num" style={{
-                                  fontSize:'0.95rem', fontFamily:"'JetBrains Mono', monospace",
-                                  letterSpacing:'-0.01em', lineHeight:1,
-                                }}>{Math.abs(delta)}</span>
-                              </span>
-                            ) : (
-                              <span className="num" style={{color:'#d6d3d1', fontSize:'0.95rem', fontFamily:"'JetBrains Mono', monospace"}}>0</span>
-                            )}
-                          </div>
-
-                          {/* Bars plot area */}
-                          <div style={{
-                            position:'relative', height:CHART_H,
-                            display:'flex', alignItems:'flex-end', justifyContent:'center', gap:8,
-                            borderBottom:'1px solid #d6d3d1',
-                          }}>
-                            {/* PRE bar */}
-                            <div style={{position:'relative', display:'flex', flexDirection:'column', alignItems:'center'}}>
-                              <span className="num" style={{
-                                color: isHovered ? '#57534e' : '#a8a29e',
-                                fontSize: isHovered ? '0.78rem' : '0.7rem', fontWeight: isHovered ? 600 : 400,
-                                fontFamily:"'JetBrains Mono', monospace",
-                                marginBottom:4, transition:'color 0.15s, font-size 0.15s, font-weight 0.15s',
-                                visibility: prev > 0 ? 'visible' : 'hidden',
-                              }}>{prev}</span>
-                              <div className="hr-bar-fill-v" style={{
-                                width:18,
-                                height: Math.max(prevH, prev > 0 ? 3 : 0),
-                                background: 'linear-gradient(to top, #a8a29e 0%, #c7c3c0 100%)',
-                                borderRadius:'3px 3px 0 0',
-                                boxShadow: isHovered ? 'inset 0 0 0 1px rgba(0,0,0,0.04)' : 'none',
-                                transition: 'transform 0.18s cubic-bezier(0.22,1,0.36,1)',
-                                transform: isHovered ? 'scaleY(1.04) translateY(-1px)' : 'scaleY(1)',
-                                transformOrigin: 'bottom center',
+                              <span style={{flex:1, height:1, background:'rgba(5,150,105,0.22)'}}/>
+                            </div>
+                          )}
+                          <button
+                            onClick={() => { setStageFilter(s.num); setStatusFilter('all'); setTab('individual'); }}
+                            onMouseEnter={() => setHoveredStage(s.num)}
+                            onMouseLeave={() => setHoveredStage(null)}
+                            style={{
+                              display:'flex', alignItems:'center', gap:14, width:'100%',
+                              padding:'8px', borderRadius:10, cursor:'pointer', textAlign:'left',
+                              background: isHovered ? 'rgba(5,150,105,0.05)' : 'transparent', border:'none',
+                              fontFamily:"'Poppins','IBM Plex Sans Thai',sans-serif",
+                              opacity: dim ? 0.55 : 1, transition:'background 0.15s ease, opacity 0.18s ease',
+                            }}>
+                            {/* Stage label — colour-coded per stage (dot + number) */}
+                            <div style={{width:158, flexShrink:0, display:'flex', alignItems:'flex-start', gap:8}}>
+                              <span style={{width:8, height:8, borderRadius:3, background:s.color, flexShrink:0, marginTop:5,
+                                boxShadow: isHovered ? `0 0 0 3px ${s.color}22` : 'none', transition:'box-shadow 0.18s ease'}}/>
+                              <div style={{minWidth:0}}>
+                                <div style={{display:'flex', alignItems:'baseline', gap:6}}>
+                                  <span className="num" style={{color: s.color, fontSize:'0.62rem', fontWeight:600, fontFamily:"'JetBrains Mono', monospace", letterSpacing:'0.04em'}}>0{s.num}</span>
+                                  <span style={{color:'#111111', fontSize:'0.86rem', fontWeight: isHovered ? 600 : 500, letterSpacing:'-0.01em', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>{s.name}</span>
+                                </div>
+                                <div style={{color:'#a8a29e', fontSize:'0.6rem', marginTop:1}}>{s.role}</div>
+                              </div>
+                            </div>
+                            {/* Bar track — Pre (gray) with Now (green) nested inside */}
+                            <div style={{flex:1, minWidth:0, height:28, position:'relative'}}>
+                              <div style={{position:'absolute', inset:0, background:'#f5f5f4', borderRadius:6}}/>
+                              {prev > 0 && (
+                                <div className="hr-bar-fill" style={{
+                                  position:'absolute', left:0, top:0, height:'100%', width:`${wPrev}%`, minWidth:4,
+                                  background:'#d6d3d1', borderRadius:6,
+                                }}/>
+                              )}
+                              <div className="hr-bar-fill" style={{
+                                position:'absolute', left:0, top:7, height:14, width:`${w}%`, minWidth: c > 0 ? 4 : 0,
+                                background:'linear-gradient(90deg, #059669, #10b981)', borderRadius:5,
+                                opacity: c > 0 ? 1 : 0,
+                                boxShadow: isHovered ? '0 2px 8px rgba(5,150,105,0.3)' : 'none',
+                                filter: isHovered ? 'brightness(1.05)' : 'none',
+                                transition:'width 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease, filter 0.18s ease, box-shadow 0.18s ease',
                               }}/>
                             </div>
-                            {/* NOW bar */}
-                            <div style={{position:'relative', display:'flex', flexDirection:'column', alignItems:'center'}}>
-                              <span className="num" style={{
-                                color:'#047857',
-                                fontSize: isHovered ? '0.92rem' : '0.82rem',
-                                fontWeight:600,
-                                fontFamily:"'JetBrains Mono', monospace",
-                                marginBottom:4, letterSpacing:'-0.005em',
-                                transition:'font-size 0.15s',
-                                visibility: now > 0 ? 'visible' : 'hidden',
-                              }}>{now}</span>
-                              <div className="hr-bar-fill-v" style={{
-                                width:22,
-                                height: Math.max(nowH, now > 0 ? 3 : 0),
-                                background: 'linear-gradient(to top, #059669 0%, #10b981 100%)',
-                                borderRadius:'3px 3px 0 0',
-                                boxShadow: isHovered
-                                  ? '0 6px 16px rgba(5,150,105,0.28), inset 0 1px 0 rgba(255,255,255,0.18)'
-                                  : 'inset 0 1px 0 rgba(255,255,255,0.12)',
-                                transition: 'transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s',
-                                transform: isHovered ? 'scaleY(1.04) translateY(-1px)' : 'scaleY(1)',
-                                transformOrigin: 'bottom center',
-                              }}/>
-                            </div>
-                          </div>
-
-                          {/* Stage label below */}
-                          <div style={{paddingTop:12, textAlign:'center'}}>
-                            <div className="num" style={{
-                              color: isHovered ? '#047857' : (isGoalStage ? 'rgba(5,150,105,0.55)' : '#a8a29e'),
-                              fontSize:'0.7rem', fontFamily:"'JetBrains Mono', monospace",
-                              letterSpacing:'0.04em',
-                              transition:'color 0.15s',
-                            }}>0{s.num}</div>
-                            <div style={{
-                              color:'#111111', fontSize:'0.88rem', fontWeight: isHovered ? 600 : 500,
-                              letterSpacing:'-0.01em', marginTop:3,
-                              fontFamily:"'Sora','IBM Plex Sans Thai',sans-serif",
-                              transition:'font-weight 0.15s',
-                            }}>{s.name}</div>
-                            <div style={{color:'#787774', fontSize:'0.62rem', marginTop:2, letterSpacing:'-0.005em'}}>{s.role}</div>
-                          </div>
-                        </div>
+                            {/* Pre → Now counts */}
+                            <span style={{flexShrink:0, width:62, display:'inline-flex', alignItems:'baseline', justifyContent:'flex-end', gap:5, fontFamily:"'JetBrains Mono', monospace"}}>
+                              <span className="num" style={{color: prev > 0 ? '#a8a29e' : '#e7e5e4', fontSize:'0.78rem'}}>{prev}</span>
+                              <span style={{color:'#d6d3d1', fontSize:'0.7rem'}}>→</span>
+                              <span className="num" style={{color: c > 0 ? '#047857' : '#d6d3d1', fontWeight:600, fontSize:'1rem'}}>{c}</span>
+                            </span>
+                          </button>
+                        </React.Fragment>
                       );
                     })}
                   </div>
 
                   {/* Transformed summary */}
-                  <div style={{
-                    display:'flex', justifyContent:'flex-end', marginTop:14,
-                    color:'#787774', fontSize:'0.74rem',
-                  }}>
-                    <span>Transformed (Stage 3+): <span className="num" style={{color:'#059669', fontWeight:500}}>{transformed}</span>
+                  <div style={{display:'flex', justifyContent:'flex-end', marginTop:18, color:'#787774', fontSize:'0.74rem'}}>
+                    <span>Transformed (Stage 3+): <span className="num" style={{color:'#059669', fontWeight:500}}>{transformedNow}</span>
                       <span style={{color:'#d6d3d1', margin:'0 6px'}}>/</span>
                       <span className="num">{totalLearners}</span>
                     </span>
@@ -8237,42 +8545,150 @@
         </div>
       );
 
-      const renderAtRiskTop = () => (
-        <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16}}>
-          {renderListCard({
-            title: 'At-Risk',
-            eyebrow: 'Need follow-up',
-            Icon: AlertTriangle,
-            accent: '#f59e0b',
-            accentSoft: 'rgba(245,158,11,0.04)',
-            list: atRiskList,
-            viewAllStatus: 'atRisk',
-            action: (l) => (
-              <button className="hr-btn-ghost" style={{padding:'6px 10px', fontSize:'0.74rem',
-                background:'rgba(245,158,11,0.10)', borderColor:'rgba(245,158,11,0.30)', color:'#b45309',
-                display:'inline-flex', alignItems:'center', gap:4}}>
-                <Send size={11}/> Notify
-              </button>
-            ),
-          })}
-          {renderListCard({
-            title: 'Top Performers',
-            eyebrow: 'Recognize & sustain',
-            Icon: Trophy,
-            accent: '#059669',
-            accentSoft: 'rgba(5,150,105,0.04)',
-            list: topList,
-            viewAllStatus: 'onTrack',
-            action: (l) => (
-              <button className="hr-btn-ghost" style={{padding:'6px 10px', fontSize:'0.74rem',
-                background:'rgba(5,150,105,0.10)', borderColor:'rgba(5,150,105,0.30)', color:'#047857',
-                display:'inline-flex', alignItems:'center', gap:4}}>
-                <Award size={11}/> Praise
-              </button>
-            ),
-          })}
-        </div>
-      );
+      const renderAtRiskTop = () => {
+        const isTop = transformView === 'top';
+        const sorted = [...LEARNERS].sort((a, b) =>
+          isTop ? transformationScore(b) - transformationScore(a) : transformationScore(a) - transformationScore(b)
+        );
+        const list = sorted.slice(0, 6);
+        const accent      = isTop ? '#059669' : '#f59e0b';
+        const accentSoft  = isTop ? 'rgba(5,150,105,0.04)' : 'rgba(245,158,11,0.04)';
+        const Icon        = isTop ? Trophy : AlertTriangle;
+        const eyebrow     = isTop ? 'Recognize & sustain' : 'Need follow-up';
+        const title       = isTop ? 'Top Transformation' : 'Low Transformation';
+        const subtitle    = isTop ? 'คะแนน Transformation สูงสุดในคลาส' : 'คะแนน Transformation ต่ำสุดในคลาส';
+        const ActionIcon  = isTop ? Award : Send;
+        const actionLabel = isTop ? 'Praise' : 'Notify';
+        const actionColor = isTop ? '#047857' : '#b45309';
+        const viewAllStatus = isTop ? 'onTrack' : 'atRisk';
+        const viewAllLabel  = isTop ? 'ดูผู้เรียนที่ทำได้ดีทั้งหมด' : 'ดูผู้เรียนที่ต้องติดตามทั้งหมด';
+        return (
+          <div className="hr-card" style={{borderLeft:`3px solid ${accent}`, background:`linear-gradient(135deg, #ffffff 0%, ${accentSoft} 100%)`}}>
+            <div className="hr-eyebrow" style={{marginBottom:4}}>{eyebrow}</div>
+            <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6, flexWrap:'wrap', gap:10}}>
+              <div style={{display:'flex', alignItems:'center', gap:10}}>
+                <Icon size={18} style={{color:accent}}/>
+                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>{title}</h3>
+              </div>
+              <div style={{display:'flex', alignItems:'center', gap:12}}>
+                {/* Low / Top toggle */}
+                <div style={{display:'inline-flex', gap:2, background:'#f5f5f4', borderRadius:9, padding:2, border:'1px solid #eaeaea'}}>
+                  {[{id:'low', label:'Low', Ic:AlertTriangle, c:'#b45309'}, {id:'top', label:'Top', Ic:Trophy, c:'#047857'}].map(opt => {
+                    const active = transformView === opt.id;
+                    return (
+                      <button key={opt.id} onClick={() => setTransformView(opt.id)}
+                        style={{
+                          display:'inline-flex', alignItems:'center', gap:6, padding:'6px 12px', borderRadius:7, border:'none', cursor:'pointer',
+                          fontFamily:'Poppins,sans-serif', fontSize:'0.73rem', fontWeight:600, letterSpacing:'-0.005em',
+                          background: active ? '#fff' : 'transparent',
+                          color:      active ? opt.c : '#78716c',
+                          boxShadow:  active ? '0 1px 3px rgba(28,25,23,0.08)' : 'none',
+                          transition:'background 0.15s, color 0.15s',
+                        }}>
+                        <opt.Ic size={13}/>{opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <span className="num" style={{background:`${accent}14`, color:accent, border:`1px solid ${accent}33`, borderRadius:999, padding:'3px 10px', fontSize:'0.74rem', fontWeight:600}}>{list.length} คน</span>
+              </div>
+            </div>
+            <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:18, flexWrap:'wrap', gap:8}}>
+              <span style={{color:'#78716c', fontSize:'0.78rem'}}>
+                {subtitle} · เส้นประ = ค่าเฉลี่ยทั้งคลาส <span className="num" style={{color:'#1c1917', fontWeight:600}}>{avgTransformation}</span>
+              </span>
+              {/* Pre / Now legend */}
+              <div style={{display:'flex', gap:14, fontSize:'0.6rem', fontFamily:"'JetBrains Mono', monospace", letterSpacing:'0.12em', textTransform:'uppercase'}}>
+                <span style={{display:'inline-flex', alignItems:'center', gap:6, color:'#a8a29e'}}><span style={{width:14, height:6, borderRadius:2, background:'#d6d3d1'}}/>Pre</span>
+                <span style={{display:'inline-flex', alignItems:'center', gap:6, color:'#047857'}}><span style={{width:14, height:6, borderRadius:2, background:'#059669'}}/>Now</span>
+              </div>
+            </div>
+
+            <div style={{display:'flex', flexDirection:'column'}}>
+              {list.map((l, idx) => {
+                const pre = prevTransformationScore(l);
+                const now = transformationScore(l);
+                return (
+                  <div key={l.id} style={{
+                    display:'flex', alignItems:'center', gap:14,
+                    padding:'11px 0', borderBottom: idx < list.length - 1 ? '1px solid #f5f5f4' : 'none',
+                  }}>
+                    {/* Avatar */}
+                    <div style={{
+                      width:36, height:36, borderRadius:'50%', flexShrink:0,
+                      background:`linear-gradient(135deg, ${l.bg}, ${l.bg}99)`,
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                      fontSize:'0.88rem', fontWeight:600, color:'#fff',
+                    }}>{l.av}</div>
+                    {/* Name + stage */}
+                    <div style={{width:168, flexShrink:0, minWidth:0}}>
+                      <div style={{color:'#1c1917', fontSize:'0.85rem', fontWeight:500, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>{l.name}</div>
+                      <div className="num" style={{color:'#a8a29e', fontSize:'0.66rem', marginTop:2}}>S{l.stage} {stageMeta(l.stage).name}</div>
+                    </div>
+                    {/* Transformation bullet bar (0–100): Pre gray + Now green nested */}
+                    <div style={{flex:1, minWidth:0, height:24, position:'relative'}}>
+                      <div style={{position:'absolute', inset:0, background:'#f5f5f4', borderRadius:6}}/>
+                      {/* class-average reference */}
+                      <div style={{position:'absolute', left:`${avgTransformation}%`, top:-3, bottom:-3, width:0, borderLeft:'1px dashed rgba(28,25,23,0.22)', pointerEvents:'none'}}/>
+                      {pre > 0 && (
+                        <div className="hr-bar-fill" style={{
+                          position:'absolute', left:0, top:0, height:'100%', width:`${pre}%`, minWidth:4,
+                          background:'#d6d3d1', borderRadius:6,
+                        }}/>
+                      )}
+                      {now > 0 && (
+                        <div className="hr-bar-fill" style={{
+                          position:'absolute', left:0, top:6, height:12, width:`${now}%`, minWidth:4,
+                          background:'linear-gradient(90deg, #059669, #10b981)', borderRadius:5,
+                        }}/>
+                      )}
+                    </div>
+                    {/* Pre → Now score */}
+                    <span style={{flexShrink:0, width:74, display:'inline-flex', alignItems:'baseline', justifyContent:'flex-end', gap:5, fontFamily:"'JetBrains Mono', monospace"}}>
+                      <span className="num" style={{color:'#a8a29e', fontSize:'0.78rem'}}>{pre}</span>
+                      <span style={{color:'#d6d3d1', fontSize:'0.7rem'}}>→</span>
+                      <span className="num" style={{color:'#047857', fontWeight:600, fontSize:'1rem'}}>{now}</span>
+                    </span>
+                    {/* Gain since Pre-Class (Now − Pre) */}
+                    <span className="num" style={{
+                      flexShrink:0, width:46, textAlign:'right',
+                      fontFamily:"'JetBrains Mono', monospace", fontSize:'0.84rem', fontWeight:600,
+                      color: (now - pre) > 0 ? '#047857' : '#d6d3d1',
+                    }}>
+                      {(now - pre) > 0 ? `↑${now - pre}` : '0'}
+                    </span>
+                    {/* Actions */}
+                    <div style={{display:'flex', gap:6, flexShrink:0}}>
+                      <button className="hr-btn-ghost" style={{padding:'6px 10px', fontSize:'0.74rem',
+                        background:`${accent}1a`, borderColor:`${accent}4d`, color:actionColor,
+                        display:'inline-flex', alignItems:'center', gap:4}}>
+                        <ActionIcon size={11}/> {actionLabel}
+                      </button>
+                      <button onClick={() => openLearner(l.id)} className="hr-btn-ghost" style={{padding:'6px 10px', fontSize:'0.74rem'}}>
+                        Detail
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => { setStatusFilter(viewAllStatus); setStageFilter(null); setTab('individual'); }}
+              style={{
+                marginTop:14, width:'100%', padding:'10px', borderRadius:10, cursor:'pointer',
+                background:'transparent', border:`1px dashed ${accent}55`, color:accent,
+                fontSize:'0.78rem', fontWeight:500, fontFamily:'Poppins,sans-serif',
+                display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
+                transition:'background 0.15s',
+              }}
+              onMouseEnter={e=>e.currentTarget.style.background=accentSoft}
+              onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+              {viewAllLabel} <ChevronRight size={14}/>
+            </button>
+          </div>
+        );
+      };
 
       // ─────────────────────────────────────────────────────────────
       // OVERVIEW TAB
@@ -8298,14 +8714,23 @@
           '0-1': {name:'Stuck Learner',        grade:'C',     decision:'Diagnose & Unblock'},
           '0-0': {name:'Ignorance',            grade:'F',     decision:'Re-engage First'},
         };
-        const effBands = (l) => { const eb = band(engagementScore(l)); const tb = eb === 0 ? 0 : band(transformationScore(l)); return { tb, eb }; };
+        // Time-aware scores — interpolate Pre → Now to the selected range's target day (dots shift over time)
+        const GRID_RANGE_DAYS = { '45D': 45, '90D': 90 };
+        // Project each learner's Pre → Now trajectory FORWARD to the target day (uncapped).
+        // Improving learners keep climbing (90D shows more transformation than 45D);
+        // stuck / flat-trajectory learners barely move on either view.
+        const gridFactor = (GRID_RANGE_DAYS[gridRange] || dayCurrent) / dayCurrent;
+        const clamp100 = (v) => Math.max(0, Math.min(100, Math.round(v)));
+        const transAt = (l) => { const p = prevTransformationScore(l), n = transformationScore(l); return clamp100(p + (n - p) * gridFactor); };
+        const engAt   = (l) => { const p = prevEngagementScore(l), n = engagementScore(l); return clamp100(p + (n - p) * gridFactor); };
+        const effBands = (l) => { const eb = band(engAt(l)); const tb = eb === 0 ? 0 : band(transAt(l)); return { tb, eb }; };
         const cellKey  = (l) => { const { tb, eb } = effBands(l); return `${tb}-${eb}`; };
         const classified = LEARNERS.map(l => ({ l, key: cellKey(l) }));
-        const cellList = (key) => classified.filter(c => c.key === key).map(c => c.l).sort((a, b) => transformationScore(b) - transformationScore(a));
+        const cellList = (key) => classified.filter(c => c.key === key).map(c => c.l).sort((a, b) => transAt(b) - transAt(a));
         const bandRange = (b) => b === 0 ? [0, 45] : b === 1 ? [45, 70] : [70, 100];
         const dotPos = (l) => {
           const { tb, eb } = effBands(l);
-          const es = engagementScore(l), ts = transformationScore(l);
+          const es = engAt(l), ts = transAt(l);
           const er = bandRange(eb), tr = bandRange(tb);
           const xr = Math.max(0, Math.min(1, (es - er[0]) / (er[1] - er[0])));
           const yr = Math.max(0, Math.min(1, (ts - tr[0]) / (tr[1] - tr[0])));
@@ -8317,9 +8742,29 @@
         return (
             <div className="hr-card" style={{marginBottom:16}}>
               <div className="hr-eyebrow" style={{marginBottom:4}}>Grid Investment Map</div>
-              <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:4}}>
-                <LayoutGrid size={18} style={{color:'#059669'}}/>
-                <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>9-Box · Transformation × Engagement</h3>
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, marginBottom:4, flexWrap:'wrap'}}>
+                <div style={{display:'flex', alignItems:'center', gap:10}}>
+                  <LayoutGrid size={18} style={{color:'#059669'}}/>
+                  <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>9-Box · Transformation × Engagement</h3>
+                </div>
+                <div style={{display:'inline-flex', gap:2, background:'#f5f5f4', borderRadius:9, padding:2}}>
+                  {['45D','90D'].map(r => {
+                    const active = gridRange === r;
+                    return (
+                      <button key={r} onClick={() => setGridRange(r)}
+                        style={{
+                          padding:'4px 10px', borderRadius:7, border:'none', cursor:'pointer',
+                          fontFamily:'Poppins,sans-serif', fontSize:'0.72rem', fontWeight:600, letterSpacing:'-0.005em',
+                          background: active ? '#fff' : 'transparent',
+                          color:      active ? '#1c1917' : '#78716c',
+                          boxShadow:  active ? '0 1px 3px rgba(28,25,23,0.08)' : 'none',
+                          transition:'background 0.15s, color 0.15s',
+                        }}>
+                        {r}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
               <div style={{color:'#78716c', fontSize:'0.78rem', marginBottom:14}}>
                 ใครน่าลงทุนต่อ · ใครควร support · ใครต้อง re-engage ก่อน — กดที่ช่องเพื่อดูรายละเอียดด้านล่าง
@@ -8467,21 +8912,52 @@
         // ── Today's Focus computations — what does the HR need to do today? ──
         const atRiskCount      = statusCounts.atRisk + statusCounts.behind;
         const overdueReviews   = LEARNERS.filter(l => l.mgrReview === 'overdue').length;
-        const inactiveLearners = LEARNERS.filter(l => l.streak === 0 || /\d+\s*วัน/.test(l.last)).length;
+        const inactiveLearners = LEARNERS.filter(l => {
+          const d = /(\d+)\s*วัน/.exec(l.last);
+          return d && parseInt(d[1], 10) >= 5; // ไม่มี activity ตั้งแต่ 5 วันขึ้นไป
+        }).length;
         const readyToRecognize = LEARNERS.filter(l => l.stage >= 4 && l.goalStatus === 'achieved').length;
+        // ยังไม่ส่งงาน (Goal/Mission ยังไม่คืบ: off-track หรือ set) + เลทแล้ว (ไม่มี activity เป็นวันๆ)
+        const lateNoSubmitList = LEARNERS.filter(l =>
+          (l.goalStatus === 'off-track' || l.goalStatus === 'set') && /\d+\s*วัน/.test(l.last)
+        );
+        const lateNoSubmit     = lateNoSubmitList.length;
+        const lateOverdueDays  = lateNoSubmitList.filter(l => parseInt(l.last,10) >= 3).length; // เลทหนัก 3+ วัน
 
-        // Tile data — Stats06-style cards: top label + large stat, bottom tray with status icon + sub + chevron
+        // Tile data — split into Learner-facing actions and Manager-facing actions
         const focusTiles = [
           {
+            group:'learner',
+            ico: Activity, iconSquareBg:'#ea580c',
+            num: inactiveLearners,
+            label:'ไม่มี Activity 5+ วัน',
+            sub:'ส่ง Mission กระตุ้นใหม่',
+            status:'แจ้งเตือนทันที', statusColor:'#9a3412',
+            shadow:'rgba(234,88,12,0.14)',
+            onClick: () => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); },
+          },
+          {
+            group:'learner',
             ico: AlertTriangle, iconSquareBg:'#f59e0b',
-            num: atRiskCount,
-            label:'ต้องการการดูแล',
-            sub: `At-Risk ${statusCounts.atRisk} · Behind ${statusCounts.behind}`,
-            status:'ต้องดูแลด่วน', statusColor:'#b45309',
+            num: lateNoSubmit,
+            label:'ยังไม่ส่งงานและเลทแล้ว',
+            sub: `เลยกำหนด · เลท 3+ วัน ${lateOverdueDays} คน`,
+            status:'ต้องตามส่งด่วน', statusColor:'#b45309',
             shadow:'rgba(245,158,11,0.18)',
             onClick: () => { setStatusFilter('atRisk'); setStageFilter(null); setTab('individual'); },
           },
           {
+            group:'learner',
+            ico: Award, iconSquareBg:'#059669',
+            num: readyToRecognize,
+            label:'พร้อมให้รางวัล',
+            sub:'Stage 4+ และทำ Goal สำเร็จ',
+            status:'กล่าวชมเชย', statusColor:'#047857',
+            shadow:'rgba(5,150,105,0.18)',
+            onClick: () => { setStatusFilter('onTrack'); setStageFilter(null); setTab('individual'); },
+          },
+          {
+            group:'manager',
             ico: FileText, iconSquareBg:'#ef4444',
             num: overdueReviews,
             label:'Manager Review เกินกำหนด',
@@ -8490,192 +8966,184 @@
             shadow:'rgba(239,68,68,0.16)',
             onClick: () => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); scrollToSection('ov-manager', 'overview'); },
           },
-          {
-            ico: Activity, iconSquareBg:'#ea580c',
-            num: inactiveLearners,
-            label:'ไม่มี Activity 3+ วัน',
-            sub:'ส่ง Mission กระตุ้นใหม่',
-            status:'รอ Re-engage', statusColor:'#9a3412',
-            shadow:'rgba(234,88,12,0.14)',
-            onClick: () => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); },
-          },
-          {
-            ico: Award, iconSquareBg:'#059669',
-            num: readyToRecognize,
-            label:'พร้อมให้รางวัล',
-            sub:'Stage 4+ และทำ Goal สำเร็จ',
-            status:'พร้อม Recognize', statusColor:'#047857',
-            shadow:'rgba(5,150,105,0.18)',
-            onClick: () => { setStatusFilter('onTrack'); setStageFilter(null); setTab('individual'); },
-          },
         ];
+        const learnerTiles = focusTiles.filter(t => t.group === 'learner');
+        const managerTiles = focusTiles.filter(t => t.group === 'manager');
+
+        // ── Cohort Health donut — distribution of learner statuses ──
+        const cohortSegs = [
+          { key:'onTrack', label:'On Track', desc:'ก้าวหน้าตามแผนที่วางไว้',      count:statusCounts.onTrack, color:'#10b981' },
+          { key:'atRisk',  label:'At Risk',  desc:'เริ่มช้ากว่าแผน ต้องจับตา',    count:statusCounts.atRisk,  color:'#f59e0b' },
+          { key:'behind',  label:'Inactive', desc:'หยุดเคลื่อนไหว ไม่มี Activity', count:statusCounts.behind,  color:'#ef4444' },
+        ];
+        const cohortTotal = cohortSegs.reduce((a, s) => a + s.count, 0) || 1;
+        const DONUT_R = 42, DONUT_C = 2 * Math.PI * DONUT_R, DONUT_GAP = 5;
+        // Pre-compute each arc's dash + offset, walking clockwise from 12 o'clock
+        let cohortAcc = 0;
+        const cohortArcs = cohortSegs.map(s => {
+          const frac = s.count / cohortTotal;
+          const len  = Math.max(frac * DONUT_C - DONUT_GAP, 0.0001);
+          const arc  = { ...s, frac, len, offset: -cohortAcc };
+          cohortAcc += frac * DONUT_C;
+          return arc;
+        });
+        const cohortFocus = cohortHover ? cohortSegs.find(s => s.key === cohortHover) : null;
 
         return (
         <div className="fade-in hr-reveal">
           <div id="ov-class"        style={{scrollMarginTop:120}}>{renderClassInfo()}</div>
 
+          {/* ── Hero row: Cohort Health donut (left) + Today's Focus action center (right) ── */}
+          <div className="hr-hero-row">
+
+            {/* Cohort Health — donut breakdown of learner statuses */}
+            <div id="ov-cohort" className="hr-card hr-cohort-card" style={{scrollMarginTop:120}}>
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:8}}>
+                <div className="hr-eyebrow">Cohort Health</div>
+                <div className="num" style={{color:'#a8a29e', fontSize:'0.7rem'}}>Day {dayCurrent} / {CLASS.totalDays}</div>
+              </div>
+
+              <div className="hr-donut-wrap">
+                <svg className="hr-donut-svg" viewBox="0 0 100 100" role="img" aria-label="สัดส่วนสถานะผู้เรียน">
+                  {/* track */}
+                  <circle cx="50" cy="50" r={DONUT_R} fill="none" stroke="#f5f5f4" strokeWidth="12"/>
+                  {cohortArcs.map(a => {
+                    const dim = cohortHover && cohortHover !== a.key;
+                    return (
+                      <circle
+                        key={a.key}
+                        className="hr-donut-seg"
+                        cx="50" cy="50" r={DONUT_R}
+                        stroke={a.color}
+                        strokeWidth={cohortHover === a.key ? 16 : 12}
+                        strokeDasharray={`${a.len} ${DONUT_C - a.len}`}
+                        strokeDashoffset={a.offset}
+                        style={{ opacity: dim ? 0.32 : 1 }}
+                        onMouseEnter={() => setCohortHover(a.key)}
+                        onMouseLeave={() => setCohortHover(null)}
+                        onClick={() => { setStatusFilter(a.key); setStageFilter(null); setTab('individual'); }}
+                      />
+                    );
+                  })}
+                </svg>
+                <div className="hr-donut-center">
+                  <div className="hr-donut-center-num" style={{color: cohortFocus ? cohortFocus.color : '#1c1917'}}>
+                    {cohortFocus ? cohortFocus.count : <CountUp value={cohortTotal} decimals={0} duration={700}/>}
+                  </div>
+                  <div className="hr-donut-center-label" style={{color: cohortFocus ? cohortFocus.color : '#a8a29e'}}>
+                    {cohortFocus ? `${Math.round((cohortFocus.count/cohortTotal)*100)}% ${cohortFocus.label}` : 'ผู้เรียน'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="hr-donut-legend">
+                {cohortSegs.map(s => (
+                  <button
+                    key={s.key}
+                    className="hr-donut-legend-row"
+                    onMouseEnter={() => setCohortHover(s.key)}
+                    onMouseLeave={() => setCohortHover(null)}
+                    onClick={() => { setStatusFilter(s.key); setStageFilter(null); setTab('individual'); }}
+                    title={`ดู ${s.label} ${s.count} คน`}>
+                    <span className="hr-donut-legend-dot" style={{background:s.color}}/>
+                    <span className="hr-donut-legend-text">
+                      <span className="hr-donut-legend-label">{s.label}</span>
+                      <span className="hr-donut-legend-desc">{s.desc}</span>
+                    </span>
+                    <span className="hr-donut-legend-count" style={{color:s.color}}>{s.count}</span>
+                    <span className="hr-donut-legend-pct">{Math.round((s.count/cohortTotal)*100)}%</span>
+                  </button>
+                ))}
+              </div>
+
+              <div style={{marginTop:'auto', paddingTop:14, borderTop:'1px solid #f5f5f4', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                <span style={{color:'#78716c', fontSize:'0.74rem'}}>Avg Transformation</span>
+                <span className="num" style={{color:'#1c1917', fontSize:'0.95rem', fontWeight:600}}>
+                  {Math.round(LEARNERS.reduce((a,l)=>a+transformationScore(l),0)/totalLearners)}
+                </span>
+              </div>
+            </div>
+
           {/* ── HR Action Center — surfaces today's priorities ── */}
-          <div className="hr-focus">
+          <div className="hr-focus hr-focus--hero">
             <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:16, flexWrap:'wrap'}}>
               <div>
                 <div className="hr-focus-eyebrow">Today's Focus · Day {dayCurrent} / {CLASS.totalDays}</div>
                 <h2 className="hr-focus-title">
-                  มี <span style={{color:'#b45309'}} className="num">{atRiskCount + overdueReviews}</span> รายการที่ต้องการคุณวันนี้
+                  มี <span style={{color:'#b45309'}} className="num">{inactiveLearners + lateNoSubmit + readyToRecognize + overdueReviews}</span> รายการที่ต้องการคุณวันนี้
                 </h2>
-                <div style={{color:'#78716c', fontSize:'0.86rem', marginTop:6, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>
-                  จัดลำดับ action ตามความเร่งด่วน — เริ่มจากผู้เรียนที่ At-Risk ก่อน เพื่อกู้คืน momentum ก่อนจะเข้าสู่สัปดาห์ที่ {Math.ceil(dayCurrent/7)+1}
-                </div>
               </div>
             </div>
 
-            <div>
-              <div>
-                <div className="hr-focus-grid">
-              {focusTiles.map((t, i) => {
-                const Ic = t.ico;
-                return (
-                  <button
-                    key={i}
-                    onClick={t.onClick}
-                    className="hr-focus-tile"
-                    style={{ '--hr-tile-shadow': t.shadow, animationDelay:`${i * 60}ms` }}>
-                    {/* Top — label + big stat */}
-                    <div className="hr-focus-tile-label">{t.label}</div>
-                    <div className="hr-focus-tile-num">
-                      <CountUp value={t.num} decimals={0} duration={700}/>
-                    </div>
-                    {/* Bottom tray — colored icon square + sub copy + chevron */}
-                    <div className="hr-focus-tile-tray">
-                      <span className="hr-focus-tile-icon" style={{background:t.iconSquareBg}}>
-                        <Ic size={16}/>
-                      </span>
-                      <div className="hr-focus-tile-tray-text">
-                        <div className="hr-focus-tile-tray-sub">{t.sub}</div>
-                        <div className="hr-focus-tile-tray-status" style={{color:t.statusColor}}>{t.status}</div>
-                      </div>
-                      <ChevronRight size={18} className="hr-focus-tile-chev"/>
-                    </div>
-                  </button>
-                );
-              })}
+            <div className="hr-focus-body">
+              {/* ── Learner-facing actions ── */}
+              <div className="hr-focus-section">
+                <div className="hr-focus-section-head">
+                  <span className="hr-focus-section-label">Learner</span>
+                  <span className="hr-focus-section-rule"/>
+                  <span className="hr-focus-section-count">{learnerTiles.length} actions</span>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div id="ov-transformation" style={{scrollMarginTop:120}}>{renderTransformationMovement()}</div>
-          <div className="hr-2col" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16, alignItems:'stretch'}}>
-            <div id="ov-completion" style={{scrollMarginTop:120, height:'100%'}}>{renderCompletionRate()}</div>
-            <div style={{display:'flex', flexDirection:'column', gap:16}}>
-              {/* Quick aggregate card */}
-              <div id="ov-cohort" className="hr-card" style={{scrollMarginTop:120}}>
-                <div className="hr-eyebrow" style={{marginBottom:8}}>Cohort Health · Day {dayCurrent}</div>
-                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:14}}>
-                  {[
-                    {key:'onTrack', label:'On Track', count:statusCounts.onTrack},
-                    {key:'atRisk',  label:'At Risk',  count:statusCounts.atRisk},
-                    {key:'behind',  label:'Behind',   count:statusCounts.behind},
-                  ].map(({key, label, count}) => {
-                    const m = statusMeta[key];
+                <div className="hr-focus-grid hr-focus-grid--learner">
+                  {learnerTiles.map((t, i) => {
+                    const Ic = t.ico;
                     return (
                       <button
-                        key={key}
-                        onClick={() => { setStatusFilter(key); setStageFilter(null); setTab('individual'); }}
-                        title={`ดู ${label} ${count} คน`}
-                        className="btn-press"
-                        style={{
-                          background:m.bg, border:`1px solid ${m.border}`, borderRadius:14,
-                          padding:'12px 8px', textAlign:'center', cursor:'pointer',
-                          fontFamily:'Poppins,sans-serif',
-                          transition:'transform 0.15s, box-shadow 0.15s, border-color 0.15s',
-                        }}
-                        onMouseEnter={e=>{
-                          e.currentTarget.style.boxShadow = `0 4px 14px ${m.border}`;
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                        }}
-                        onMouseLeave={e=>{
-                          e.currentTarget.style.boxShadow = 'none';
-                          e.currentTarget.style.transform = 'translateY(0)';
-                        }}>
-                        <div className="num" style={{color:m.color, fontSize:'1.8rem', fontWeight:600, lineHeight:1}}>{count}</div>
-                        <div style={{color:'#78716c', fontSize:'0.68rem', marginTop:4, letterSpacing:'0.04em', textTransform:'uppercase'}}>{label}</div>
+                        key={i}
+                        onClick={t.onClick}
+                        className="hr-focus-tile hr-focus-tile--learner"
+                        style={{ '--accent': t.iconSquareBg, '--hr-tile-shadow': t.shadow, animationDelay:`${i * 60}ms` }}>
+                        <div className="hr-learn-label">{t.label}</div>
+                        <div className="hr-focus-tile-num">
+                          <CountUp value={t.num} decimals={0} duration={700}/>
+                        </div>
+                        <div className="hr-learn-foot">
+                          <div className="hr-learn-status" style={{color:t.statusColor}}>{t.status}</div>
+                          <ChevronRight size={15} className="hr-focus-tile-chev"/>
+                        </div>
                       </button>
                     );
                   })}
                 </div>
-                <div style={{height:6, background:'#f5f5f4', borderRadius:999, overflow:'hidden', display:'flex'}}>
-                  <div className="hr-bar-fill" style={{width:`${(statusCounts.onTrack/totalLearners)*100}%`, background:'#10b981'}}/>
-                  <div className="hr-bar-fill" style={{width:`${(statusCounts.atRisk/totalLearners)*100}%`, background:'#f59e0b', animationDelay:'0.1s'}}/>
-                  <div className="hr-bar-fill" style={{width:`${(statusCounts.behind/totalLearners)*100}%`, background:'#ef4444', animationDelay:'0.2s'}}/>
-                </div>
-                <div className="num" style={{marginTop:10, color:'#78716c', fontSize:'0.7rem', textAlign:'right'}}>
-                  Avg Transformation: <span style={{color:'#1c1917', fontWeight:600}}>
-                    {Math.round(LEARNERS.reduce((a,l)=>a+transformationScore(l),0)/totalLearners)}
-                  </span>
-                </div>
-                {/* View all learners */}
-                <button
-                  onClick={() => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); }}
-                  style={{
-                    marginTop:14, width:'100%', padding:'10px', borderRadius:10, cursor:'pointer',
-                    background:'transparent', border:'1px dashed rgba(28,25,23,0.18)', color:'#57534e',
-                    fontSize:'0.78rem', fontWeight:500, fontFamily:'Poppins,sans-serif',
-                    display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
-                    transition:'background 0.15s, border-color 0.15s, color 0.15s',
-                  }}
-                  onMouseEnter={e=>{e.currentTarget.style.background='#fafaf9'; e.currentTarget.style.borderColor='rgba(28,25,23,0.32)'; e.currentTarget.style.color='#1c1917';}}
-                  onMouseLeave={e=>{e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='rgba(28,25,23,0.18)'; e.currentTarget.style.color='#57534e';}}>
-                  ดูผู้เรียนทั้งหมด ({totalLearners} คน) <ChevronRight size={14}/>
-                </button>
               </div>
-              {/* Manager Review summary */}
-              <div id="ov-manager" className="hr-card" style={{scrollMarginTop:120}}>
-                <div className="hr-eyebrow" style={{marginBottom:8}}>Manager Review</div>
-                {[
-                  {key:'completed', label:'Reviewed', color:'#047857', count: LEARNERS.filter(l=>l.mgrReview==='completed').length},
-                  {key:'pending',   label:'Pending',  color:'#b45309', count: LEARNERS.filter(l=>l.mgrReview==='pending').length},
-                  {key:'overdue',   label:'Overdue',  color:'#b91c1c', count: LEARNERS.filter(l=>l.mgrReview==='overdue').length},
-                ].map(({key,label,color,count}) => (
-                  <button
-                    key={key}
-                    onClick={() => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); /* future: setMgrReviewFilter(key) */ }}
-                    title={`ดูผู้เรียนสถานะ ${label}`}
-                    className="btn-press"
-                    style={{
-                      width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between',
-                      padding:'10px 8px', borderBottom: key !== 'overdue' ? '1px solid #f5f5f4' : 'none',
-                      background:'transparent', border:'none', cursor:'pointer', textAlign:'left',
-                      fontFamily:'Poppins,sans-serif',
-                      borderRadius:6, transition:'background 0.15s',
-                    }}
-                    onMouseEnter={e=>e.currentTarget.style.background='#fafaf9'}
-                    onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-                    <div style={{display:'flex', alignItems:'center', gap:8}}>
-                      <span style={{width:8, height:8, borderRadius:'50%', background:color}}/>
-                      <span style={{color:'#1c1917', fontSize:'0.85rem'}}>{label}</span>
-                    </div>
-                    <span style={{display:'inline-flex', alignItems:'center', gap:6}}>
-                      <span className="num" style={{color, fontSize:'0.95rem', fontWeight:600}}>{count}</span>
-                      <ChevronRight size={13} style={{color:'#a8a29e'}}/>
-                    </span>
-                  </button>
-                ))}
-                {/* See more */}
-                <button
-                  onClick={() => { setStatusFilter('all'); setStageFilter(null); setTab('individual'); }}
-                  style={{
-                    marginTop:12, width:'100%', padding:'10px', borderRadius:10, cursor:'pointer',
-                    background:'transparent', border:'1px dashed rgba(28,25,23,0.18)', color:'#57534e',
-                    fontSize:'0.78rem', fontWeight:500, fontFamily:'Poppins,sans-serif',
-                    display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
-                    transition:'background 0.15s, border-color 0.15s, color 0.15s',
-                  }}
-                  onMouseEnter={e=>{e.currentTarget.style.background='#fafaf9'; e.currentTarget.style.borderColor='rgba(28,25,23,0.32)'; e.currentTarget.style.color='#1c1917';}}
-                  onMouseLeave={e=>{e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='rgba(28,25,23,0.18)'; e.currentTarget.style.color='#57534e';}}>
-                  ดูสถานะของผู้เรียนทั้งหมด <ChevronRight size={14}/>
-                </button>
+
+              {/* ── Manager-facing actions ── */}
+              <div className="hr-focus-section">
+                <div className="hr-focus-section-head">
+                  <span className="hr-focus-section-label">Manager</span>
+                  <span className="hr-focus-section-rule"/>
+                  <span className="hr-focus-section-count">{managerTiles.length} action</span>
+                </div>
+                <div className="hr-focus-manager">
+                  {managerTiles.map((t, i) => {
+                    const Ic = t.ico;
+                    return (
+                      <button
+                        key={i}
+                        onClick={t.onClick}
+                        className="hr-focus-tile hr-focus-tile--wide"
+                        style={{ '--hr-tile-shadow': t.shadow, animationDelay:`${(learnerTiles.length + i) * 60}ms` }}>
+                        <span className="hr-focus-wide-icon" style={{background:t.iconSquareBg}}>
+                          <Ic size={20}/>
+                        </span>
+                        <div className="hr-focus-wide-num">
+                          <CountUp value={t.num} decimals={0} duration={700}/>
+                        </div>
+                        <div className="hr-focus-wide-text">
+                          <div className="hr-focus-wide-label">{t.label}</div>
+                          <div className="hr-focus-wide-sub">
+                            <span style={{color:t.statusColor, fontWeight:500}}>{t.status}</span> · {t.sub}
+                          </div>
+                        </div>
+                        <ChevronRight size={20} className="hr-focus-tile-chev"/>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
+          </div>{/* /.hr-hero-row */}
+          <div id="ov-transformation" style={{scrollMarginTop:120}}>{renderTransformationMovement()}</div>
           <div id="ov-atrisk" style={{scrollMarginTop:120}}>{renderAtRiskTop()}</div>
         </div>
         );
@@ -8703,7 +9171,7 @@
         //   peak around 60% of the window (momentum / mid-class energy)
         //   slight settle near the end (steady-state)
         // Soft weekly cadence + low-amplitude noise — no hard weekend cliffs.
-        const RANGE_DAYS = { '7D': 7, '14D': 14, '1M': 30, 'All': 60 };
+        const RANGE_DAYS = { '7D': 7, '14D': 14, '1M': 30, '45D': 45, '90D': 90, 'All': 60 };
         const rangeDays  = RANGE_DAYS[activityRange] || 14;
         const dailyActive = Array.from({ length: rangeDays }, (_, i) => {
           const t = i / Math.max(1, rangeDays - 1);                                  // 0..1 across the window
@@ -9207,43 +9675,37 @@
 
         return (
           <div className="fade-in hr-reveal">
-            {/* ── 1 · Program Snapshot ── */}
+            {/* ── 1 · Program Snapshot (always visible) ── */}
             <div className="hr-card" style={{
-              marginBottom:16, padding:'22px 26px', border:'1px solid rgba(5,150,105,0.22)',
+              marginBottom:16, padding:'18px 24px', border:'1px solid rgba(5,150,105,0.22)',
               background:'linear-gradient(135deg, rgba(5,150,105,0.05) 0%, rgba(13,148,136,0.03) 55%, #ffffff 100%)',
             }}>
-              <div className="hr-eyebrow" style={{marginBottom:10}}>Program Snapshot</div>
-              <div style={{display:'flex', alignItems:'center', gap:12, flexWrap:'wrap'}}>
+              <div style={{display:'flex', alignItems:'center', gap:14, flexWrap:'wrap'}}>
                 <div style={{
-                  width:36, height:36, borderRadius:10, flexShrink:0,
+                  width:38, height:38, borderRadius:10, flexShrink:0,
                   background:'linear-gradient(135deg, #059669, #0d9488)', color:'#fff',
                   display:'flex', alignItems:'center', justifyContent:'center',
                 }}><BookOpen size={18}/></div>
-                <div style={{flex:'1 1 200px'}}>
-                  <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.15rem', color:'#1c1917', letterSpacing:'-0.02em'}}>{CLASS.name}</h3>
-                  <div style={{color:'#78716c', fontSize:'0.78rem', marginTop:2}}>{CLASS.tagline}</div>
-                </div>
-                <div style={{display:'inline-flex', alignItems:'center', gap:6, padding:'6px 12px', borderRadius:999,
-                  background:'rgba(5,150,105,0.10)', border:'1px solid rgba(5,150,105,0.30)'}}>
-                  <span style={{width:6, height:6, borderRadius:'50%', background:'#059669'}}/>
-                  <span className="num" style={{color:'#047857', fontSize:'0.72rem', fontWeight:600}}>อยู่ระหว่าง Journey · Day {dayCurrent}/{CLASS.totalDays}</span>
-                </div>
-              </div>
-              <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:10, marginTop:16}}>
-                {[
-                  {Icon:BookOpen,  label:'คลาส',          value:CLASS.name},
-                  {Icon:Calendar,  label:'วันที่เรียน (Onsite)', value:CLASS.onsite},
-                  {Icon:Users,     label:'จำนวน Learner',  value:`${CLASS.totalLearners} คน`},
-                  {Icon:Clock,     label:'สถานะ Journey',  value:`Day ${dayCurrent} / ${CLASS.totalDays} (${dayProgress}%)`},
-                ].map(({Icon, label, value}) => (
-                  <div key={label} style={{background:'#fff', border:'1px solid #e7e5e4', borderRadius:14, padding:'12px 14px'}}>
-                    <div style={{display:'flex', alignItems:'center', gap:6, color:'#a8a29e', marginBottom:6}}>
-                      <Icon size={13}/>
-                      <span style={{fontSize:'0.64rem', letterSpacing:'0.04em', textTransform:'uppercase'}}>{label}</span>
-                    </div>
-                    <div style={{color:'#1c1917', fontSize:'0.9rem', fontWeight:600, letterSpacing:'-0.01em'}}>{value}</div>
+                <div style={{flex:'1 1 220px', minWidth:0}}>
+                  <div className="hr-eyebrow" style={{marginBottom:3}}>Program Snapshot</div>
+                  <div style={{display:'flex', alignItems:'baseline', gap:8, flexWrap:'wrap'}}>
+                    <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.1rem', color:'#1c1917', letterSpacing:'-0.02em'}}>{CLASS.name}</h3>
+                    <span style={{color:'#a8a29e', fontSize:'0.78rem'}}>{CLASS.tagline}</span>
                   </div>
-                ))}
+                </div>
+                {/* Inline meta — date · learners · journey progress */}
+                <div style={{display:'flex', alignItems:'center', gap:18, flexWrap:'wrap', fontSize:'0.82rem'}}>
+                  {[
+                    {Icon:Calendar, value:CLASS.onsite},
+                    {Icon:Users,    value:`${CLASS.totalLearners} คน`},
+                    {Icon:Clock,    value:`Day ${dayCurrent}/${CLASS.totalDays} · ${dayProgress}%`},
+                  ].map(({Icon, value}, i) => (
+                    <span key={i} style={{display:'inline-flex', alignItems:'center', gap:6, color:'#1c1917'}}>
+                      <Icon size={14} style={{color:'#059669', flexShrink:0}}/>
+                      <span className="num" style={{fontWeight:500}}>{value}</span>
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -9270,16 +9732,31 @@
                 )}
               </div>
               {execOpen && (
-                <div style={{
-                  background:'#fafaf9', border:'1px solid #f0efed', borderLeft:'3px solid #059669', borderRadius:12,
-                  padding:'16px 18px', color:'#44403c', fontSize:'0.9rem', lineHeight:1.7,
-                }}>
-                  หลังเริ่ม Transformation Journey มา <span style={{color:'#1c1917', fontWeight:600}}>{dayCurrent} จาก {CLASS.totalDays} วัน</span> พบว่าผู้เรียน
-                  {' '}<span style={{color:'#1c1917', fontWeight:600}}>{transformedCount} จาก {totalLearners} คน ({transformedPct}%)</span> มีสัญญาณ Transformation ในระดับ Mid–High (Stage 3 ขึ้นไป)
-                  {' '}โดยมี <span style={{color:'#047857', fontWeight:600}}>{gradeCount('A')} คน</span> ได้เกรด <span style={{fontWeight:600}}>A · Invest &amp; Grow</span> ที่ควรลงทุนต่อผ่าน Next Program
-                  {' '}และมี <span style={{color:'#b91c1c', fontWeight:600}}>{gradeCount('F')} คน</span> ที่ต้อง <span style={{fontWeight:600}}>Re-engage / Reassess</span> ก่อน
-                  {' '}ภาพรวม Avg Transformation อยู่ที่ <span className="num" style={{color:'#047857', fontWeight:600}}>{avgTransformation}</span> ({transformationDelta >= 0 ? '+' : ''}{transformationDelta} จากช่วงต้น)
-                  {' '}และ Avg Engagement <span className="num" style={{color:'#1c1917', fontWeight:600}}>{avgEngagement}</span> ({engagementDelta >= 0 ? '+' : ''}{engagementDelta})
+                <div style={{position:'relative'}}>
+                  <div style={{ filter: insightUnlocked ? 'none' : 'blur(6px)', pointerEvents: insightUnlocked ? 'auto' : 'none', userSelect: insightUnlocked ? 'auto' : 'none', transition:'filter 0.4s ease' }}>
+                    <div style={{
+                      background:'#fafaf9', border:'1px solid #f0efed', borderLeft:'3px solid #059669', borderRadius:12,
+                      padding:'16px 18px', color:'#44403c', fontSize:'0.9rem', lineHeight:1.7,
+                    }}>
+                      หลังเริ่ม Transformation Journey มา <span style={{color:'#1c1917', fontWeight:600}}>{dayCurrent} จาก {CLASS.totalDays} วัน</span> พบว่าผู้เรียน
+                      {' '}<span style={{color:'#1c1917', fontWeight:600}}>{transformedCount} จาก {totalLearners} คน ({transformedPct}%)</span> มีสัญญาณ Transformation ในระดับ Mid–High (Stage 3 ขึ้นไป)
+                      {' '}โดยมี <span style={{color:'#047857', fontWeight:600}}>{gradeCount('A')} คน</span> ได้เกรด <span style={{fontWeight:600}}>A · Invest &amp; Grow</span> ที่ควรลงทุนต่อผ่าน Next Program
+                      {' '}และมี <span style={{color:'#b91c1c', fontWeight:600}}>{gradeCount('F')} คน</span> ที่ต้อง <span style={{fontWeight:600}}>Re-engage / Reassess</span> ก่อน
+                      {' '}ภาพรวม Avg Transformation อยู่ที่ <span className="num" style={{color:'#047857', fontWeight:600}}>{avgTransformation}</span> ({transformationDelta >= 0 ? '+' : ''}{transformationDelta} จากช่วงต้น)
+                      {' '}และ Avg Engagement <span className="num" style={{color:'#1c1917', fontWeight:600}}>{avgEngagement}</span> ({engagementDelta >= 0 ? '+' : ''}{engagementDelta})
+                    </div>
+                  </div>
+                  {!insightUnlocked && (
+                    <div style={{ position:'absolute', inset:0, zIndex:10, borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(255,255,255,0.55)' }}>
+                      <div style={{ display:'inline-flex', alignItems:'center', gap:12, flexWrap:'wrap', justifyContent:'center', padding:'10px 14px', margin:'0 12px', background:'#fff', borderRadius:12, border:'1px solid #e7e5e4', boxShadow:'0 8px 24px rgba(28,25,23,0.12)' }}>
+                        <span style={{ width:30, height:30, borderRadius:8, flexShrink:0, background:'rgba(5,150,105,0.10)', border:'1px solid rgba(5,150,105,0.28)', color:'#059669', display:'inline-flex', alignItems:'center', justifyContent:'center' }}><Lock size={15}/></span>
+                        <span style={{fontSize:'0.84rem', color:'#1c1917', fontWeight:500}}>ต้องรอข้อมูลให้ครบตามที่กำหนด</span>
+                        <button onClick={() => setInsightUnlocked(true)} style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'7px 14px', borderRadius:8, cursor:'pointer', background:'#1c1917', color:'#fff', border:'none', fontFamily:'Poppins,sans-serif', fontSize:'0.78rem', fontWeight:600 }}>
+                          <Sparkles size={13}/> ปลดล็อค
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -9294,7 +9771,7 @@
                 <Users size={18} style={{color:'#0891b2'}}/>
                 <h3 style={{margin:0, fontFamily:'Poppins,sans-serif', fontWeight:600, fontSize:'1.05rem', color:'#1c1917', letterSpacing:'-0.015em'}}>ภาพรวมการเรียนรู้</h3>
               </div>
-              {/* grade rollup */}
+              {/* grade rollup — cards stay visible; counts hidden until unlocked */}
               <div style={{display:'grid', gridTemplateColumns:'repeat(5, 1fr)', gap:10, marginBottom:18}}>
                 {['A','B','C','F','guard'].map(k => {
                   const g = GRADE[k];
@@ -9302,7 +9779,7 @@
                     <div key={k} style={{borderRadius:14, padding:'14px 14px', background:'#fff', border:`1.5px solid ${g.bd}`}}>
                       <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8}}>
                         <span style={{width:18, height:18, borderRadius:g.shape==='circle'?'50%':5, background:g.color, color:'#fff', fontSize:'0.64rem', fontWeight:700, display:'inline-flex', alignItems:'center', justifyContent:'center'}}>{g.letter}</span>
-                        <span className="num" style={{color:g.color, fontSize:'1.4rem', fontWeight:600, lineHeight:1}}>{gradeCount(k)}</span>
+                        <span className="num" style={{color: groupUnlocked ? g.color : '#d6d3d1', fontSize:'1.4rem', fontWeight:600, lineHeight:1}}>{groupUnlocked ? gradeCount(k) : '–'}</span>
                       </div>
                       <div style={{color:'#1c1917', fontSize:'0.78rem', fontWeight:600, letterSpacing:'-0.01em'}}>{g.label}</div>
                       <div style={{color:'#78716c', fontSize:'0.66rem', marginTop:2, lineHeight:1.4}}>{g.note}</div>
@@ -9311,6 +9788,9 @@
                 })}
               </div>
 
+              {/* Locked learner list */}
+              <div style={{position:'relative'}}>
+              <div style={{ filter: groupUnlocked ? 'none' : 'blur(6px)', pointerEvents: groupUnlocked ? 'auto' : 'none', userSelect: groupUnlocked ? 'auto' : 'none', transition:'filter 0.4s ease' }}>
               {/* selected persona detail + learner list */}
               <div style={{borderRadius:14, border:`1px solid ${selG.bd}`, background:`${selG.color}06`, overflow:'hidden'}}>
                 <div style={{padding:'14px 16px', borderBottom:`1px solid ${selG.bd}`}}>
@@ -9366,6 +9846,19 @@
                   </div>
                 )}
               </div>
+              </div>{/* /.blur */}
+              {!groupUnlocked && (
+                <div style={{ position:'absolute', inset:0, zIndex:10, borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(255,255,255,0.55)' }}>
+                  <div style={{ display:'inline-flex', alignItems:'center', gap:12, flexWrap:'wrap', justifyContent:'center', padding:'10px 14px', margin:'0 12px', background:'#fff', borderRadius:12, border:'1px solid #e7e5e4', boxShadow:'0 8px 24px rgba(28,25,23,0.12)' }}>
+                    <span style={{ width:30, height:30, borderRadius:8, flexShrink:0, background:'rgba(5,150,105,0.10)', border:'1px solid rgba(5,150,105,0.28)', color:'#059669', display:'inline-flex', alignItems:'center', justifyContent:'center' }}><Lock size={15}/></span>
+                    <span style={{fontSize:'0.84rem', color:'#1c1917', fontWeight:500}}>ต้องรอข้อมูลให้ครบตามที่กำหนด</span>
+                    <button onClick={() => setGroupUnlocked(true)} style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'7px 14px', borderRadius:8, cursor:'pointer', background:'#1c1917', color:'#fff', border:'none', fontFamily:'Poppins,sans-serif', fontSize:'0.78rem', fontWeight:600 }}>
+                      <Sparkles size={13}/> ปลดล็อค
+                    </button>
+                  </div>
+                </div>
+              )}
+              </div>{/* /.relative */}
             </div>
 
             {/* ── 5 · Key Impact Metrics ── */}
@@ -9580,7 +10073,17 @@
                           <span style={{width:16, height:16, borderRadius:g.shape==='circle'?'50%':4, background:g.color, color:'#fff', fontSize:'0.58rem', fontWeight:700, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>{g.letter}</span>
                           <span style={{color:'#1c1917', fontSize:'0.82rem', fontWeight:600}}>{g.label}</span>
                         </div>
-                        <span className="num" style={{textAlign:'center', color:g.color, fontSize:'0.95rem', fontWeight:600}}>{gradeCount(a.grade)}</span>
+                        <span
+                          className="num"
+                          onClick={!groupUnlocked ? (e) => { e.stopPropagation(); setGroupUnlocked(true); } : undefined}
+                          title={!groupUnlocked ? 'ต้องรอข้อมูลให้ครบตามที่กำหนด — กดเพื่อปลดล็อค' : undefined}
+                          style={{
+                            textAlign:'center', color: groupUnlocked ? g.color : '#a8a29e',
+                            fontSize:'0.95rem', fontWeight:600,
+                            filter: groupUnlocked ? 'none' : 'blur(5px)',
+                            cursor: groupUnlocked ? 'default' : 'pointer',
+                            transition:'filter 0.35s ease',
+                          }}>{gradeCount(a.grade)}</span>
                         <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:8}}>
                           <span style={{color:'#44403c', fontSize:'0.82rem', lineHeight:1.5}}>{a.action}</span>
                           <ChevronDown size={15} style={{color:'#a8a29e', flexShrink:0, transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition:'transform 0.2s'}}/>
@@ -10378,7 +10881,7 @@
         { id:'all',     label:'ทั้งหมด',  dot:'#a8a29e', count: totalLearners       },
         { id:'onTrack', label:'On Track', dot:'#10b981', count: statusCounts.onTrack},
         { id:'atRisk',  label:'At Risk',  dot:'#f59e0b', count: statusCounts.atRisk },
-        { id:'behind',  label:'Behind',   dot:'#ef4444', count: statusCounts.behind },
+        { id:'behind',  label:'Inactive',   dot:'#ef4444', count: statusCounts.behind },
       ];
 
       return (
@@ -10435,10 +10938,8 @@
                   {[
                     { id:'ov-class',          Icon: Info,       label:'ภาพรวมคลาส'           },
                     { id:'ov-transformation', Icon: TrendingUp, label:'Transformation Movement' },
-                    { id:'ov-completion',     Icon: CheckCircle,label:'Completion Rate'      },
                     { id:'ov-cohort',         Icon: Activity,   label:'Cohort Health'        },
-                    { id:'ov-manager',        Icon: FileText,   label:'Manager Review'       },
-                    { id:'ov-atrisk',         Icon: AlertTriangle, label:'At-Risk Top'       },
+                    { id:'ov-atrisk',         Icon: AlertTriangle, label:'Low Transformation'   },
                   ].map(({id, Icon, label}) => (
                     <button
                       key={id}
@@ -10456,14 +10957,14 @@
                 When the sidebar is collapsed (sub-menu hidden), clicking falls back to navigating
                 to the Individual tab so the user can still reach it. */}
             <button
-              title={sidebarCollapsed ? 'Individual' : undefined}
+              title={sidebarCollapsed ? 'Shift' : undefined}
               onClick={() => {
                 if (sidebarCollapsed) setTab('individual');
                 else setIndividualNavOpen(o => !o);
               }}
               className={`hr-side-link ${tab === 'individual' ? 'active' : ''}`}>
               <span className="hr-side-icon"><Users size={16} strokeWidth={tab==='individual'?2.4:2}/></span>
-              <span className="hr-side-label">Individual</span>
+              <span className="hr-side-label">Shift</span>
               <span className={`hr-side-chevron ${individualNavOpen ? 'open' : ''}`}>
                 <ChevronDown size={14}/>
               </span>
@@ -10510,14 +11011,14 @@
             {/* Engagement — expandable group header; sub-anchors handle navigation + scroll.
                 Collapsed sidebar falls back to direct navigation. */}
             <button
-              title={sidebarCollapsed ? 'Engagement' : undefined}
+              title={sidebarCollapsed ? 'Hype' : undefined}
               onClick={() => {
                 if (sidebarCollapsed) setTab('engagement');
                 else setEngagementNavOpen(o => !o);
               }}
               className={`hr-side-link ${tab === 'engagement' ? 'active' : ''}`}>
               <span className="hr-side-icon"><Activity size={16} strokeWidth={tab==='engagement'?2.4:2}/></span>
-              <span className="hr-side-label">Engagement</span>
+              <span className="hr-side-label">Hype</span>
               <span className={`hr-side-chevron ${engagementNavOpen ? 'open' : ''}`}>
                 <ChevronDown size={14}/>
               </span>
@@ -10612,8 +11113,8 @@
               <div style={{width:1, height:16, background:'#e7e5e4'}}/>
               <span style={{color:'#1c1917', fontSize:'0.86rem', fontWeight:600, letterSpacing:'-0.005em'}}>
                 {tab === 'overview'   ? 'Overview'
-               : tab === 'individual' ? 'Individual'
-               : tab === 'engagement' ? 'Engagement'
+               : tab === 'individual' ? 'Shift'
+               : tab === 'engagement' ? 'Hype'
                : 'Insight Summary'}
               </span>
               {tab === 'individual' && statusFilter !== 'all' && (
@@ -10658,7 +11159,7 @@
             padding:'0 28px'}}>
             <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
               <div style={{display:'flex'}}>
-                {[['overview', BarChart2, 'Overview'], ['individual', Users, 'Individual'], ['engagement', Activity, 'Engagement'], ['insight', Sparkles, 'Insight Summary']].map(([id, TabIcon, label]) => (
+                {[['overview', BarChart2, 'Overview'], ['individual', Users, 'Shift'], ['engagement', Activity, 'Hype'], ['insight', Sparkles, 'Insight Summary']].map(([id, TabIcon, label]) => (
                   <button
                     key={id} onClick={() => setTab(id)}
                     className="hr-tab-btn"
@@ -14166,9 +14667,46 @@
       );
     }
 
+    /* ── JoinstickEmbed ─ the real JOINSTICK learner app (joinstick.html) in an iframe, fit to viewport ── */
+    function JoinstickEmbed() {
+      const [scale, setScale] = useState(1);
+      useEffect(() => {
+        const fit = () => {
+          const s = Math.min(1, (window.innerHeight - 40) / 874, (window.innerWidth - 40) / 402);
+          setScale(s > 0 ? s : 1);
+        };
+        fit();
+        window.addEventListener('resize', fit);
+        return () => window.removeEventListener('resize', fit);
+      }, []);
+      return (
+        <div style={{position:'fixed', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'#0c0d11'}}>
+          <div style={{width:402, height:874, transform:`scale(${scale})`, transformOrigin:'center center', flexShrink:0}}>
+            <iframe
+              src="joinstick.html?tab=insight"
+              title="JOINSTICK Learner App"
+              style={{width:402, height:874, border:0, display:'block', background:'#000', borderRadius:0}}
+            />
+          </div>
+        </div>
+      );
+    }
+
     /* ── App shell ────────────────────────────────── */
     function App() {
       const [scene, setScene] = useState('landing'); // 'landing'|'phases'|'preclass'|'inclass'|'learner'|'hr'|'manager'|'transform'|'journey'
+      const [learnerTask, setLearnerTask] = useState(null); // task flow opened from the JOINSTICK app (iframe → postMessage)
+
+      // Listen for mission taps inside the JOINSTICK iframe → open the real LearnerApp task flow
+      useEffect(() => {
+        const onMsg = (e) => {
+          if (!e.data || e.data.type !== 'js-open-task') return;
+          const map = { 'Quiz':'Quiz', 'Pre-Test':'Quiz', 'Recall Quiz':'Recall Quiz', 'Flash Card':'Flash Card', 'Mission':'Mission', 'บทเรียน':'Article', 'videoLesson':'videoLesson' };
+          setLearnerTask({ type: map[e.data.taskType] || 'Mission', title: e.data.title || '' });
+        };
+        window.addEventListener('message', onMsg);
+        return () => window.removeEventListener('message', onMsg);
+      }, []);
 
       const goTo = (s) => setScene(s);
 
@@ -14220,7 +14758,12 @@
           {scene === 'transform' && <TransformStage onBack={() => goTo('landing')} onNav={goTo} />}
           {scene === 'journey'   && <TransformationJourney onBack={() => goTo('landing')} onNav={goTo} />}
           {scene === 'available' && <AvailableCoursePage onBack={() => goTo('landing')} onNav={goTo} />}
-          {scene === 'learner'   && <LearnerApp />}
+          {scene === 'learner'   && <JoinstickEmbed />}
+          {scene === 'learner' && learnerTask && (
+            <div style={{position:'fixed', inset:0, zIndex:10000, background:'#0c0d11'}}>
+              <LearnerApp autoStart={learnerTask.type} taskTitle={learnerTask.title} onExitTask={() => setLearnerTask(null)} />
+            </div>
+          )}
         </>
       );
     }
